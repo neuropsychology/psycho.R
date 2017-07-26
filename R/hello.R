@@ -1,5 +1,6 @@
 #' Illustration of Hello world
 #'
+#' Change something
 #' prints hellow world \code{brocolors}
 #' Use `devtools::document()`
 #'devtools::build_vignettes()
