@@ -17,9 +17,15 @@ hello(method2order, cex, mar)
 None
 }
 \description{
+Change something
 prints hellow world \code{brocolors}
 Use `devtools::document()`
 devtools::build_vignettes()
+}
+\details{
+library(devtools)
+use_testthat()
+use_test("your_function")
 }
 \examples{
 hello()
