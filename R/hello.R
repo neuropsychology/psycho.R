@@ -5,6 +5,9 @@
 #' Use `devtools::document()`
 #'devtools::build_vignettes()
 #'
+#'library(devtools)
+#'use_testthat()
+#'use_test("your_function")
 #'
 #' @param method2order method to order colors (\code{"hsv"} or \code{"cluster"})
 #' @param cex character expansion for the text
