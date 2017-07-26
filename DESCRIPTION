@@ -1,0 +1,18 @@
+Package: psycho
+Type: Package
+Title: Toolbox for Psychologists, Neuropsychologists and Neuroscientists
+Version: 0.0.1
+Authors@R: c(person("Dominique", "Makowski", email="dom.makowski@gmail.com", role=c("aut", "cre")))
+Maintainer: Dominique Makowski <dom.makowski@gmail.com>
+URL: https://github.com/neuropsychology/psycho.R
+BugReports: https://github.com/neuropsychology/psycho.R/issues
+Description: Contains statistical functions (for patient assessment, data preprocessing and reporting, ...) 
+    and datasets useful in psychology, neuropsychology and neuroscience.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
