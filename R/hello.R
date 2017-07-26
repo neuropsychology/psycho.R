@@ -1,15 +1,8 @@
 #' Illustration of Hello world
 #'
-#' Change something
 #' prints hellow world \code{brocolors}
-#' Use `devtools::document()`
-#'devtools::build_vignettes()
 #'
-#'library(devtools)
-#'use_testthat()
-#'use_test("your_function")
-#'
-#' @param method2order method to order colors (\code{"hsv"} or \code{"cluster"})
+#'#' @param method2order method to order colors (\code{"hsv"} or \code{"cluster"})
 #' @param cex character expansion for the text
 #' @param mar margin paramaters; vector of length 4 (see \code{\link[graphics]{par}})
 #'
