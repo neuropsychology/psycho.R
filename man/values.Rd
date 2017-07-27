@@ -7,8 +7,11 @@
 values(x)
 }
 \arguments{
-\item{x}{A psycho class object}
+\item{x}{A psycho class object.}
 }
 \description{
 Extract values as list.
+}
+\author{
+Dominique Makowski, \url{https://dominiquemakowski.github.io/}
 }

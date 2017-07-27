@@ -7,10 +7,13 @@
 \method{plot}{psycho}(x, ...)
 }
 \arguments{
-\item{x}{A psycho class object}
+\item{x}{A psycho class object.}
 
 \item{...}{Arguments passed to or from other methods.}
 }
 \description{
 Plot the results.
+}
+\author{
+Dominique Makowski, \url{https://dominiquemakowski.github.io/}
 }

@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "context(\"correlation\")\n\ntest_that(\"Correct correlation\", {\n  df <- data.frame(A=c(1,2,3,4,5), B=c(2,5,1,4,2), C=c(2,5,1,6,2))\n  output <- correlation(df)\n  value <- output$values$r[2,1]\n  value <- round(value, 1)\n  expect_equal(value, -0.1)\n})\n",
+    "created" : 1501167221309.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "219080151",
+    "id" : "F93EBF5D",
+    "lastKnownWriteTime" : 1501167623,
+    "last_content_update" : 1501167623817,
+    "path" : "D:/Programs/Dropbox/RECHERCHE/N/psycho.R/tests/testthat/test-correlation.R",
+    "project_path" : "tests/testthat/test-correlation.R",
+    "properties" : {
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

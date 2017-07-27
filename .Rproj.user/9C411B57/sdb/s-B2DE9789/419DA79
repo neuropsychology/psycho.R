@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "cortable <- function(df,\n                     returns=\"both\",\n                     correction=\"holm\",\n                     type=\"pearson\",\n                     iamaboringperson=FALSE){\n\n  type <- ifelse(type == \"s\", \"spearman\",\n                 ifelse(type == \"spearman\", \"spearman\", type))\n\n  correction_text <- ifelse(correction==\"holm\", \"Holm-Bonferroni\",\n                            ifelse(correction==\"fdr\", \"False Discovery Rate\",correction))\n\n\n  if(length(names(df)) > 15 && correction==\"none\" && iamaboringperson==FALSE){\n    warning(\"We've detected that you are running a lot (> 15) of correlation tests without adjusting the p values.\nTo help you in your p fishing, we've added some cool variables:\nYou never know, you might find something significant and get to publish this paper!\n\\nTo deactivate this, change the 'iamaboringperson' argument to TRUE.\nCheers.\")\n  df$Local_Air_Density <- rnorm(nrow(df), mean=47, sd=12)\n  df$Number_of_Reproducing_Frogs <- runif(nrow(df), max=100)\n  df$Researchers_Hapinness <- rnorm(nrow(df), mean=0, sd=1)\n  df$Aliens_Motherships_Distance <- rnorm(nrow(df), mean=50000, sd=5000)\n  df$Gods_Desctrutive_Power <- runif(nrow(df), max=10)\n    }\n\n  # Remove non numeric\n  df <- df[ , sapply(df, is.numeric)]\n  \n  dimnames <- names(df)\n  df <- as.matrix(df)\n\n\n  if (type!=\"partial\"){\n    R_raw <- rcorr(df, type = type)$r\n    p <- rcorr(df, type = type)$P\n  } else {\n    R_raw <- pcor(df)$estimate\n    p <- pcor(df)$p.value\n  }\n  \n  R <- R_raw\n  p <- p.adjust(p, method = correction)\n  p.mat <- matrix(p, ncol = ncol(R), dimnames = list(dimnames,dimnames))\n\n  ## define notions for significance levels; spacing is important.\n  mystars <- ifelse(p < .001, \"***\", ifelse(p < .01, \"** \", ifelse(p < .05, \"* \", \" \")))\n\n  ## trunctuate the matrix that holds the correlations to two decimal\n  R <- format(round(cbind(rep(-1.11, ncol(df)), R), 2))[,-1]\n\n  ## build a new matrix that includes the correlations with their apropriate stars\n  table <- matrix(paste(R, mystars, sep=\"\"), ncol=ncol(df))\n  diag(table) <- paste(diag(R), \" \", sep=\"\")\n  rownames(table) <- colnames(df)\n  colnames(table) <- paste(colnames(df), \"\", sep=\"\")\n\n  ## remove upper triangle\n  table <- as.matrix(table)\n  table[upper.tri(table, diag = TRUE)] <- NA\n  table <- as.data.frame(table)\n\n  ## remove last column and return the matrix (which is now a data frame)\n  table <- cbind(table[1:length(table)-1])\n\n\n  plot <- ggcorrplot::ggcorrplot(R_raw,\n                     title = paste(\"A \", type, \"'s correlation matrix (correction: \", correction_text, \")\\n\", sep = \"\"),\n                     method = \"circle\",\n                     type=\"lower\",\n                     colors=c(\"#E91E63\", \"white\", \"#03A9F4\"),\n                     hc.order = TRUE,\n                     p.mat = p.mat,\n                     insig=\"pch\",\n                     legend.title=\"\",\n                     lab=FALSE) +\n    theme(plot.title = element_text(hjust = 0.7))\n\n\n\n  if (returns==\"table\"){\n    return(table)\n  } else if (returns==\"plot\"){\n    return(plot)\n  } else {\n    return(list(\"table\"=table, \"plot\"=plot))\n  }\n}\n",
+    "created" : 1501163430179.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "4170346403",
+    "id" : "419DA79",
+    "lastKnownWriteTime" : 1487162001,
+    "last_content_update" : 1487162001,
+    "path" : "D:/Programs/Dropbox/RECHERCHE/N/neuropsychology.R/neuropsychology.R/R/cortable.R",
+    "project_path" : null,
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

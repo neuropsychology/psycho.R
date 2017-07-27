@@ -17,7 +17,11 @@ Depends:
 Imports:
     ggplot2,
     dplyr,
-    tidyr
+    tidyr,
+    rtf,
+    psych,
+    ppcor,
+    corrplot
 Suggests:
     knitr,
     rmarkdown,

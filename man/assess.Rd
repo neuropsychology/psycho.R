@@ -5,7 +5,7 @@
 \title{Compare a score to a parent population.}
 \usage{
 assess(score, mean = 0, sd = 1, linecolor = "#E91E63",
-  fillcolor = "#2196F3")
+  fillcolor = "#2196F3", verbose = T)
 }
 \arguments{
 \item{score}{The score.}
@@ -17,6 +17,8 @@ assess(score, mean = 0, sd = 1, linecolor = "#E91E63",
 \item{linecolor}{The colour of the vertical line.}
 
 \item{fillcolor}{The colour of the density plot.}
+
+\item{verbose}{Print possible warnings.}
 }
 \value{
 output
@@ -27,4 +29,7 @@ Compare a given score to a parent population.
 \examples{
 assess(124, mean=100, sd=15)
 
+}
+\author{
+Dominique Makowski, \url{https://dominiquemakowski.github.io/}
 }

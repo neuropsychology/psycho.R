@@ -1,12 +1,12 @@
 #' Print the results.
 #'
-#' @param x A psycho class object.
+#' @param object A psycho class object.
 #' @param ... Further arguments passed to or from other methods.
 #'
 #' @author Dominique Makowski, \url{https://dominiquemakowski.github.io/}
 #'
 #' @export
-print.psycho <- function(x, ...){
-  text <- x$text
-  return(text)
+summary.psycho <- function(object, ...){
+  summary <- object$summary
+  return(summary)
 }
