@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#' Plot the results.\n#'\n#' @param x A psycho class object\n#'\n#' @export\nplot <- function(x){\n  plot <- x$plot\n  return(plot)\n}\n",
+    "created" : 1501143903807.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2093169108",
+    "id" : "4E1CE23B",
+    "lastKnownWriteTime" : 1501145298,
+    "last_content_update" : 1501145298065,
+    "path" : "D:/Programs/Dropbox/RECHERCHE/N/psycho.R/R/plot.psycho.R",
+    "project_path" : "R/plot.psycho.R",
+    "properties" : {
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
