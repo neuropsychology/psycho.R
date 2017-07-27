@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#' Print the results.\n#'\n#' @param x A psycho class object\n#' @param ... Further arguments passed to or from other methods.\n#'\n#' @export\nprint.psycho <- function(x, ...){\n  text <- x$text\n  return(text)\n}\n",
+    "created" : 1501149722112.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "4063009568",
+    "id" : "EF006AE9",
+    "lastKnownWriteTime" : 1501149839,
+    "last_content_update" : 1501149839697,
+    "path" : "D:/Programs/Dropbox/RECHERCHE/N/psycho.R/R/print.psycho.R",
+    "project_path" : "R/print.psycho.R",
+    "properties" : {
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

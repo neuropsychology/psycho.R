@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "context(\"values\")\n\ntest_that(\"It works\", {\n  output <- list(values=1)\n  class(output) <- c(\"psycho\", \"list\")\n  values <- values(output)\n  expect_equal(values, 1)\n})\n",
+    "created" : 1501150089732.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1666715205",
+    "id" : "64985B18",
+    "lastKnownWriteTime" : 1501150115,
+    "last_content_update" : 1501150115108,
+    "path" : "D:/Programs/Dropbox/RECHERCHE/N/psycho.R/tests/testthat/test-values.R",
+    "project_path" : "tests/testthat/test-values.R",
+    "properties" : {
+    },
+    "relative_order" : 9,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
