@@ -7,7 +7,7 @@
 values(x)
 }
 \arguments{
-\item{x}{A psycho class object.}
+\item{x}{A psychobject class object.}
 }
 \description{
 Extract values as list.

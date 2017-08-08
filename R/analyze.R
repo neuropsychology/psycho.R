@@ -1,12 +1,13 @@
-#' Plot the results.
+#' Analyze objects.
 #'
-#' @param x A psycho class object.
+#' Analyze objects.
+#'
+#' @param x object to analyze.
 #' @param ... Arguments passed to or from other methods.
 #'
 #' @author Dominique Makowski, \url{https://dominiquemakowski.github.io/}
 #'
 #' @export
-plot.psycho <- function(x, ...){
-  plot <- x$plot
-  return(plot)
+analyze <- function(x, ...){
+  UseMethod("analyze")
 }

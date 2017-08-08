@@ -7,7 +7,7 @@
 save_file(x, file = "results")
 }
 \arguments{
-\item{x}{A psycho class object.}
+\item{x}{A psychobject class object.}
 
 \item{file}{The Filename.}
 }

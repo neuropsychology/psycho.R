@@ -1,6 +1,6 @@
 #' Save the results to a file.
 #'
-#' @param x A psycho class object.
+#' @param x A psychobject class object.
 #' @param file The Filename.
 #'
 #' @author Dominique Makowski, \url{https://dominiquemakowski.github.io/}

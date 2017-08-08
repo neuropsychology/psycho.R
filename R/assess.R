@@ -12,7 +12,7 @@
 #' @return output
 #'
 #' @examples
-#' assess(124, mean=100, sd=15)
+#' rez <- assess(124, mean=100, sd=15)
 #'
 #' @author Dominique Makowski, \url{https://dominiquemakowski.github.io/}
 #'
@@ -65,6 +65,6 @@ assess <- function(score, mean=0, sd=1, linecolor="#E91E63", fillcolor="#2196F3"
 
   output <- list(text=text, plot=plot, summary=summary, values=values)
 
-  class(output) <- c("psycho", "list")
+  class(output) <- c("psychobject", "list")
   return(output)
 }

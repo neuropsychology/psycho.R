@@ -21,7 +21,8 @@ Imports:
     rtf,
     psych,
     ppcor,
-    corrplot
+    corrplot,
+    rstanarm
 Suggests:
     knitr,
     rmarkdown,

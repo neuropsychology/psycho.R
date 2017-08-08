@@ -27,7 +27,7 @@ output
 Compare a given score to a parent population.
 }
 \examples{
-assess(124, mean=100, sd=15)
+rez <- assess(124, mean=100, sd=15)
 
 }
 \author{

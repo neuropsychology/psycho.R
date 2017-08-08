@@ -91,6 +91,6 @@ correlation <- function(df, df2=NULL, type="full", method="pearson", adjust="hol
   # -------------
   output <- list(text=text, plot=plot, summary=summary, values=values)
 
-  class(output) <- c("psycho", "list")
+  class(output) <- c("psychobject", "list")
   return(output)
 }
