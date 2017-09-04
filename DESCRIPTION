@@ -27,5 +27,6 @@ Suggests:
     knitr,
     rmarkdown,
     testthat,
-    covr
+    covr,
+    lmerTest
 VignetteBuilder: knitr

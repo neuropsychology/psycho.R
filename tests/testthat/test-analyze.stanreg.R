@@ -2,7 +2,7 @@ context("analyze.stanreg")
 
 test_that("If it works.", {
   # Fit
-  library(rstanarm)
+  require(rstanarm)
 
   set.seed(666)
   fit <- rstanarm::stan_glm(vs ~ mpg * cyl,

@@ -4,10 +4,12 @@
 \alias{summary.psychobject}
 \title{Print the results.}
 \usage{
-\method{summary}{psychobject}(object, ...)
+\method{summary}{psychobject}(object, round = NULL, ...)
 }
 \arguments{
 \item{object}{A psychobject class object.}
+
+\item{round}{Round the ouput.}
 
 \item{...}{Further arguments passed to or from other methods.}
 }

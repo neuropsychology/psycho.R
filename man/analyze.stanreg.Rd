@@ -4,17 +4,14 @@
 \alias{analyze.stanreg}
 \title{Analyze stanreg objects.}
 \usage{
-\method{analyze}{stanreg}(x, CI = 95, MEDP_step = 0.05, MEDP_min = 0.001,
-  ...)
+\method{analyze}{stanreg}(x, CI = 95, Effect_Size = FALSE, ...)
 }
 \arguments{
 \item{x}{stanreg object.}
 
 \item{CI}{Credible interval bounds.}
 
-\item{MEDP_step}{The step used for computing Maximum Effect Direction Probability.}
-
-\item{MEDP_min}{The lower bound of MEDP (the minimum effect).}
+\item{Effect_Size}{Compute Effect Sizes according to Cohen (1988)? Your outcome variable must be standardized.}
 
 \item{...}{Arguments passed to or from other methods.}
 }

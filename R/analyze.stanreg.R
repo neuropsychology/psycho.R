@@ -4,8 +4,7 @@
 #'
 #' @param x stanreg object.
 #' @param CI Credible interval bounds.
-#' @param MEDP_step The step used for computing Maximum Effect Direction Probability.
-#' @param MEDP_min The lower bound of MEDP (the minimum effect).
+#' @param Effect_Size Compute Effect Sizes according to Cohen (1988)? Your outcome variable must be standardized.
 #' @param ... Arguments passed to or from other methods.
 #'
 #' @return output
@@ -28,7 +27,8 @@
 #' @import ggplot2
 #' @importFrom stats quantile
 #' @export
-analyze.stanreg <- function(x, CI=95, MEDP_step=0.05, MEDP_min=0.001, ...) {
+analyze.stanreg <- function(x, CI=95, Effect_Size=FALSE, ...) {
+
 
   # Processing
   # -------------
@@ -37,11 +37,15 @@ analyze.stanreg <- function(x, CI=95, MEDP_step=0.05, MEDP_min=0.001, ...) {
   # Extract posterior distributions
   posteriors <- as.data.frame(fit)
 
+  # Varnames
+  varnames <- names(fit$coefficients)
+  varnames <- varnames[grepl("b\\[", varnames)==FALSE]
+
+
   # Initialize empty values
   values <- list()
   # Loop over all variables
-  for (varname in names(posteriors)){
-
+  for (varname in varnames){
     # Extract posterior
     posterior <- posteriors[, varname]
 
@@ -50,23 +54,28 @@ analyze.stanreg <- function(x, CI=95, MEDP_step=0.05, MEDP_min=0.001, ...) {
     mad=mad(posterior)
     mean <- mean(posterior)
     sd <- sd(posterior)
-    CI_values <- quantile(posterior, c((100-CI)/2/100, 1-(100-CI)/2/100))
+    CI_values <- quantile(posterior, c((100-CI)/2/100, 1-(100-CI)/2/100), type=8)
 
-    # Compute MEDP
-    for (MEDP in seq(0, 100, by = MEDP_step)){
-      MEDP_values <- 100-MEDP
-      MEDP_values <- quantile(posterior, c(0+MEDP_values/2/100, 1-MEDP_values/2/100))
-
-      if (median >= 0){
-        if (MEDP_values[1] <= MEDP_min){
-          break
-        }
-      } else {
-        if (MEDP_values[2] >= -MEDP_min){
-          break
-        }
+    # Compute MPE
+    if (median >= 0){
+      MPE = length(posterior[posterior>=0])/length(posterior)*100
+      if (MPE == 100){
+        MPE_values = c(min(posterior), max(posterior))
+      } else{
+        MPE_values = c(0, max(posterior))
+      }
+      
+      
+    } else {
+      MPE = length(posterior[posterior<0])/length(posterior)*100
+      if (MPE == 100){
+        MPE_values = c(min(posterior), max(posterior))
+      } else{
+        MPE_values = c(min(posterior), 0)
       }
     }
+    
+
 
     # Create text
     if (grepl(":", varname)){
@@ -80,71 +89,99 @@ analyze.stanreg <- function(x, CI=95, MEDP_step=0.05, MEDP_min=0.001, ...) {
         name <- paste("effect of ", varname, sep="")
     }
 
-    text <- paste("Concerning the ", name, ", there is a probability of ", format_digit(MEDP), "% that its coefficient is between ", format_digit(MEDP_values[1]), " and ", format_digit(MEDP_values[2]), " (Median = ", format_digit(median), ", MAD = ", format_digit(mad), ", Mean = ", format_digit(mean), ", SD = ", format_digit(sd), ", ", CI, "% CI [", format_digit(CI_values[1]), ", ", format_digit(CI_values[2]), "]).", sep="")
+    text <- paste("Concerning the ", name, ", there is a probability of ", format_digit(MPE), "% that its coefficient is between ", format_digit(MPE_values[1]), " and ", format_digit(MPE_values[2]), " (Median = ", format_digit(median), ", MAD = ", format_digit(mad), ", Mean = ", format_digit(mean), ", SD = ", format_digit(sd), ", ", CI, "% CI [", format_digit(CI_values[1]), ", ", format_digit(CI_values[2]), "]).", sep="")
 
     # Store all that
-    values[[varname]] <- list(median=median,
+    values[[varname]] <- list(name=varname,
+                              median=median,
                               mad=mad,
                               mean=mean,
                               sd=sd,
                               CI_values=CI_values,
-                              MEDP=MEDP,
-                              MEDP_values=MEDP_values,
+                              MPE=MPE,
+                              MPE_values=MPE_values,
                               posterior=posterior,
                               text=text)
-
-
 
   }
 
 
   # Effect size
   # -------------
-  # if (standardized==T){
-  #   print("Interpreting effect size following Cohen (1988)... Make sure your variables were scaled and centered!")
-  #
-  #   # http://www.polyu.edu.hk/mm/effectsizefaqs/thresholds_for_interpreting_effect_sizes2.html
-  #   # Compute the probabilities
-  #
-  #   verylarge_neg <- length(posterior[posterior <= -1.30])/length(posterior)
-  #   large_neg <- length(posterior[posterior > -1.30 & posterior <= -0.80])/length(posterior)
-  #   medium_neg <- length(posterior[posterior > -0.80 & posterior <= -0.50])/length(posterior)
-  #   small_neg <- length(posterior[posterior > -0.50 & posterior <= -0.20])/length(posterior)
-  #   verysmall_neg <- length(posterior[posterior > -0.20 & posterior < 0])/length(posterior)
-  #
-  #   verylarge_pos <- length(posterior[posterior >= 1.30])/length(posterior)
-  #   large_pos <- length(posterior[posterior < 1.30 & posterior >= 0.80])/length(posterior)
-  #   medium_pos <- length(posterior[posterior < 0.80 & posterior >= 0.50])/length(posterior)
-  #   small_pos <- length(posterior[posterior < 0.50 & posterior >= 0.20])/length(posterior)
-  #   verysmall_pos <- length(posterior[posterior < 0.20 & posterior > 0])/length(posterior)
-  #
-  #
-  #
-  #   effect_size <- data.frame(Direction=c("Negative", "Negative", "Negative", "Negative", "Negative", "Positive", "Positive", "Positive", "Positive", "Positive"),
-  #                             Size=c("VeryLarge", "Large", "Medium", "Small", "VerySmall", "VerySmall", "Small", "Medium", "Large", "VeryLarge"),
-  #                             Probability=c(verylarge_neg, large_neg, medium_neg, small_neg, verysmall_neg, verysmall_pos, small_pos, medium_pos, large_pos, verylarge_pos))
-  #   effect_size$Probability[is.na(effect_size$Probability)] <- 0
-  #
-  #   if(mean >= 0){
-  #     opposite_prob <- sum(effect_size$Probability[effect_size$Direction=="Negative"])
-  #     opposite_max <- min(posterior[posterior < 0])
-  #     print(paste("Based on Cohen (1988) recommandations, there is a probability of ", round(verylarge_pos*100, 2), " that this effect size is very large, ", round(large_pos*100, 2), "% that this effect size is large, ", round(medium_pos*100, 2), "% that this effect size is medium, ", round(small_pos*100, 2), "% that this effect size is small, ", round(verysmall_pos*100, 2), "% that this effect is very small and ", round(opposite_prob*100, 2), "% that it has an opposite direction (between 0 and ", signif(opposite_max, 2), ").", sep=""))
-  #   } else{
-  #     opposite_prob <- sum(effect_size$Probability[effect_size$Direction=="Positive"])
-  #     opposite_max <- max(posterior[posterior > 0])
-  #     print(paste("Based on Cohen (1988) recommandations, there is a probability of ", round(verylarge_neg*100, 2), " that this effect size is very large, ", round(large_neg*100, 2), "% that this effect size is large, ", round(medium_neg*100, 2), "% that this effect size is medium, ", round(small_neg*100, 2), "% that this effect size is small, ", round(verysmall_neg*100, 2), "% that this effect is very small and ", round(opposite_prob*100, 2), "% that it has an opposite direction (between 0 and ", signif(opposite_max, 2), ").", sep=""))
-  #   }
-  #   return(effect_size)
-  #
-  # }
+  if (Effect_Size==T){
+    print("Interpreting effect size following Cohen (1977, 1988)... Make sure your variables were standardized!")
 
+    EffSizes <- data.frame()
+    for (varname in varnames){
+      posterior <- posteriors[, varname]
+    # Compute the probabilities
+      verylarge_neg <- length(posterior[posterior <= -1.30])/length(posterior)
+      large_neg <- length(posterior[posterior > -1.30 & posterior <= -0.80])/length(posterior)
+      medium_neg <- length(posterior[posterior > -0.80 & posterior <= -0.50])/length(posterior)
+      small_neg <- length(posterior[posterior > -0.50 & posterior <= -0.20])/length(posterior)
+      verysmall_neg <- length(posterior[posterior > -0.20 & posterior < 0])/length(posterior)
+
+      verylarge_pos <- length(posterior[posterior >= 1.30])/length(posterior)
+      large_pos <- length(posterior[posterior < 1.30 & posterior >= 0.80])/length(posterior)
+      medium_pos <- length(posterior[posterior < 0.80 & posterior >= 0.50])/length(posterior)
+      small_pos <- length(posterior[posterior < 0.50 & posterior >= 0.20])/length(posterior)
+      verysmall_pos <- length(posterior[posterior < 0.20 & posterior > 0])/length(posterior)
+
+      EffSize <- data.frame(Direction=c("Negative", "Negative", "Negative", "Negative", "Negative", "Positive", "Positive", "Positive", "Positive", "Positive"),
+                                Size=c("VeryLarge", "Large", "Medium", "Small", "VerySmall", "VerySmall", "Small", "Medium", "Large", "VeryLarge"),
+                                Probability=c(verylarge_neg, large_neg, medium_neg, small_neg, verysmall_neg, verysmall_pos, small_pos, medium_pos, large_pos, verylarge_pos))
+
+      EffSize$Probability[is.na(EffSize$Probability)] <- 0
+      EffSize$Variable <- varname
+
+      EffSizes <- rbind(EffSizes, EffSize)
+
+      if(mean(posterior) >= 0){
+        opposite_prob <- sum(EffSize$Probability[EffSize$Direction=="Negative"])
+        if (length(posterior[posterior > 0])>0){
+          opposite_max <- min(posterior[posterior > 0])
+        } else{
+          opposite_max <- 0
+        }
+        verylarge <- verylarge_pos
+        large <- large_pos
+        medium <- medium_pos
+        small <- small_pos
+        verysmall <- verysmall_pos
+      } else{
+        opposite_prob <- sum(EffSize$Probability[EffSize$Direction=="Positive"])
+        if (length(posterior[posterior > 0])>0){
+        opposite_max <- max(posterior[posterior > 0])
+        } else{
+          opposite_max <- 0
+        }
+        verylarge <- verylarge_neg
+        large <- large_neg
+        medium <- medium_neg
+        small <- small_neg
+        verysmall <- verysmall_neg
+      }
+
+      EffSize_text <- paste("Based on Cohen (1988) recommandations, there is a probability of ", round(verylarge*100, 2), "% that this effect size is very large, ", round(large*100, 2), "% that this effect size is large, ", round(medium*100, 2), "% that this effect size is medium, ", round(small*100, 2), "% that this effect size is small, ", round(verysmall*100, 2), "% that this effect is very small and ", round(opposite_prob*100, 2), "% that it has an opposite direction (between 0 and ", signif(opposite_max, 2), ").", sep="")
+      values[[varname]]$EffSize <- EffSize
+      values[[varname]]$EffSize_text <- EffSize_text
+
+      values[[varname]]$EffSize_VL <- verylarge
+      values[[varname]]$EffSize_L <- large
+      values[[varname]]$EffSize_M <- medium
+      values[[varname]]$EffSize_S <- small
+      values[[varname]]$EffSize_VS <- verysmall
+      values[[varname]]$EffSize_O <- opposite_prob
+
+    }
+    }
 
 
   # Summary
   # -------------
-  MEDPs <- c()
+  MPEs <- c()
   for (varname in names(values)){
-    MEDPs <- c(MEDPs, values[[varname]]$MEDP)
+    MPEs <- c(MPEs, values[[varname]]$MPE)
   }
   medians <- c()
   for (varname in names(values)){
@@ -166,26 +203,40 @@ analyze.stanreg <- function(x, CI=95, MEDP_step=0.05, MEDP_min=0.001, ...) {
   for (varname in names(values)){
     CIs <- c(CIs, values[[varname]]$CI_values)
   }
-  summary <- data.frame(Variable=names(values), MEDP=MEDPs, Median=medians, MAD=mads, Mean=means, SD=sds, CI_lower=CIs[seq(1, length(CIs), 2)], CI_higher=CIs[seq(2, length(CIs), 2)])
 
+  summary <- data.frame(Variable=names(values), MPE=MPEs, Median=medians, MAD=mads, Mean=means, SD=sds, CI_lower=CIs[seq(1, length(CIs), 2)], CI_higher=CIs[seq(2, length(CIs), 2)])
+
+  if (Effect_Size==T){
+    EffSizes <- data.frame()
+    for (varname in names(values)){
+      Current <- data.frame(Very_Large=values[[varname]]$EffSize_VL, Large=values[[varname]]$EffSize_L, Medium=values[[varname]]$EffSize_M, Small=values[[varname]]$EffSize_S, Very_Small=values[[varname]]$EffSize_VS, Opposite=values[[varname]]$EffSize_O)
+      EffSizes <- rbind(EffSizes, Current)
+    }
+    summary <- cbind(summary, EffSizes)
+  }
 
 
 
   # Text
   # -------------
   # Model
-  info <- paste("We fitted a Markov Chain Monte Carlo [type] model to predict [Y] with [X] (formula =", deparse(fit$formula), "). Priors were set as follow: [INSERT INFO ABOUT PRIORS].", sep="")
+  info <- paste("We fitted a Markov Chain Monte Carlo [type] model to predict [Y] with [X] (formula =", fit$formula, "). Priors were set as follow: [INSERT INFO ABOUT PRIORS].", sep="")
 
   # Coefs
   coefs_text <- c()
   for (varname in names(values)){
     coefs_text <- c(coefs_text, values[[varname]]$text)
+    if (Effect_Size==T){
+    coefs_text <- c(coefs_text, values[[varname]]$EffSize_text)
+    }
   }
   text <- c(info, coefs_text)
 
+
+
   # Plot
   # -------------
-  plot <- posteriors %>%
+  plot <- posteriors[varnames] %>%
     # select(-`(Intercept)`) %>%
     gather() %>%
     rename_(Variable="key", Coefficient="value") %>%

@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "context(\"analyze.stanreg\")\n\ntest_that(\"If it works.\", {\n  # Fit\n  require(rstanarm)\n\n  set.seed(666)\n  fit <- rstanarm::stan_glm(vs ~ mpg * cyl,\n    data=mtcars,\n    family = binomial(link = \"logit\"),\n    prior=NULL)\n\n  model <- analyze(fit)\n  values <- values(model)\n  expect_equal(round(values$mpg$median, 2), -0.64)\n})\n",
+    "created" : 1504005084342.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "296777257",
+    "id" : "D069BCC",
+    "lastKnownWriteTime" : 1502203916,
+    "last_content_update" : 1502203916,
+    "path" : "D:/Programs/Dropbox/RECHERCHE/N/psycho.R/tests/testthat/test-analyze.stanreg.R",
+    "project_path" : "tests/testthat/test-analyze.stanreg.R",
+    "properties" : {
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

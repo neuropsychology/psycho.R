@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#' Analyze merModLmerTest objects.\n#'\n#' Analyze merModLmerTest objects.\n#'\n#' @param x merModLmerTest object.\n#' @param ... Arguments passed to or from other methods.\n#'\n#' @return output\n#'\n#' @examples\n#' library(psycho)\n#'\n#' @author Dominique Makowski, \\url{https://dominiquemakowski.github.io/}\n#'\n#' @export\nanalyze.merModLmerTest <- function(x, ...) {\n\n\n  # Processing\n  # -------------\n  fit <- x\n\n  # Values\n  # -------------\n  values <- \"Not available yet\"\n\n\n\n  # Summary\n  # -------------\n  fitsum <- as.data.frame(summary(fit)$coefficients)\n\n  fitsum$Estimate <- signif(fitsum$Estimate, 2)\n  fitsum$`Std. Error` <- signif(fitsum$`Std. Error`, 2)\n  fitsum$df <- signif(as.numeric(fitsum$df), 2)\n  fitsum$`t value` <- signif(fitsum$`t value`, 2)\n\n  fitsum$Beta <- paste(fitsum$Estimate, \"\\xB1\", fitsum$`Std. Error`)\n  fitsum$t <- paste(\"t(\", fitsum$df, \") = \", fitsum$`t value`, sep=\"\")\n  fitsum$p <- format_p(fitsum$`Pr(>|t|)`)\n\n  fitsum <- select_(fitsum, \"Beta\", \"t\", \"p\")\n  # Text\n  # -------------\n  text <- \"Not available yet\"\n\n\n  # Plot\n  # -------------\n  plot <- \"Not available yet\"\n\n  output <- list(text=text, plot=plot, summary=fitsum, values=values)\n\n  class(output) <- c(\"psychobject\", \"list\")\n  return(output)\n}\n",
+    "created" : 1504188305639.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2809231025",
+    "id" : "7E07260D",
+    "lastKnownWriteTime" : 1504188490,
+    "last_content_update" : 1504188490,
+    "path" : "D:/Programs/Dropbox/RECHERCHE/N/psycho.R/R/analyze.merModLmerTest.R",
+    "project_path" : "R/analyze.merModLmerTest.R",
+    "properties" : {
+    },
+    "relative_order" : 10,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
