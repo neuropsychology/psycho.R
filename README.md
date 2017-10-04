@@ -1,4 +1,8 @@
-<p align="center"><a href=https://github.com/neuropsychology/psycho.R/><img src="https://github.com/neuropsychology/psycho.R/tree/master/vignettes/images/logo.PNG" width="200" align="center" alt="psycho logo r package"></a></p>
+<p align="center"><a href=https://github.com/neuropsychology/psycho.R/><img src="https://github.com/neuropsychology/psycho.R/blob/master/vignettes/images/logo.PNG" width="400" align="center" alt="psycho logo r package"></a></p>
+
+
+*<h4 align="center">Efficient and Publishing-oriented Data Science</h2>*
+
 
 # psycho
 [![Build Status](https://travis-ci.org/neuropsychology/psycho.R.svg?branch=master)](https://travis-ci.org/neuropsychology/psycho.R)
@@ -22,4 +26,4 @@ library("psycho")
 
 ## General Workflow
 
-[](https://github.com/neuropsychology/psycho.R/tree/master/vignettes/images/workflow.PNG)
+![](https://github.com/neuropsychology/psycho.R/blob/master/vignettes/images/workflow.PNG)
