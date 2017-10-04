@@ -18,6 +18,7 @@ Imports:
     ggplot2,
     dplyr,
     tidyr,
+    purrr,
     rtf,
     psych,
     ppcor,

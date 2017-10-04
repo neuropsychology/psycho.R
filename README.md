@@ -13,7 +13,7 @@
 
 |Name|NeuroKit|
 |----------------|---|
-|Documentation|[![](https://img.shields.io/badge/Docs-Building-orange.svg?colorB=FF5722)](https://github.com/neuropsychology/psycho.R/blob/master/vignettes/overview.R)|
+|Documentation|[![](https://img.shields.io/badge/docs-Building-orange.svg?colorB=FF5722)](https://github.com/neuropsychology/psycho.R/blob/master/vignettes/overview.R)|
 |Questions|[![](https://img.shields.io/badge/issue-create-purple.svg?colorB=FF9800)](https://github.com/neuropsychology/psycho.R/issues)|
 |Authors|[![](https://img.shields.io/badge/CV-D._Makowski-purple.svg?colorB=9C27B0)](https://dominiquemakowski.github.io/)|
 

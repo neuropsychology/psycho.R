@@ -12,5 +12,5 @@ test_that("If it works.", {
 
   model <- analyze(fit)
   values <- values(model)
-  expect_equal(round(values$mpg$median, 2), -0.64)
+  expect_equal(round(values$mpg$median, 2), -0.68)
 })
