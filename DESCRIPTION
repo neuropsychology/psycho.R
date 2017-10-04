@@ -1,12 +1,12 @@
 Package: psycho
 Type: Package
-Title: The psycho package: an Efficient and Publishing-oriented Workflow for Psychological Science
+Title: The psycho Package: an Efficient and Publishing-oriented Workflow for Psychological Science
 Version: 0.0.1
 Authors@R: c(person("Dominique", "Makowski", email="dom.makowski@gmail.com", role=c("aut", "cre")))
 Maintainer: Dominique Makowski <dom.makowski@gmail.com>
 URL: https://github.com/neuropsychology/psycho.R
 BugReports: https://github.com/neuropsychology/psycho.R/issues
-Description: The psycho package provides useful tools for psychologists, neuropsychologists and neuroscientists. It implements methods to create report-ready statistical outputs. It also implements various convenient statistical functions used in psychological science.
+Description: The psycho package provides useful tools for psychologists, neuropsychologists and neuroscientists. It implements methods to create report-ready statistical outputs, as well as various convenient statistical functions used in psychological science.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
