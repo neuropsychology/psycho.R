@@ -11,12 +11,30 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/08mg1fshh5iqx53b?svg=true)](https://ci.appveyor.com/project/DominiqueMakowski/psycho-r)
 [![codecov](https://codecov.io/gh/neuropsychology/psycho.R/branch/master/graph/badge.svg)](https://codecov.io/gh/neuropsychology/psycho.R)
 
-**Under heavy developpment. See [neuropsychology](https://github.com/neuropsychology/neuropsychology.R) for now.**
+|Name|NeuroKit|
+|----------------|---|
+|Documentation|TODO|
+|Questions|[![](https://img.shields.io/badge/issue-create-purple.svg?colorB=FF9800)](https://github.com/neuropsychology/psycho.R/issues)|
+|Authors|[![](https://img.shields.io/badge/CV-D._Makowski-purple.svg?colorB=9C27B0)](https://dominiquemakowski.github.io/)|
+
+---
+
 
 ## Goal
 
 The main goal of the `psycho` package is to provide tools for psychologists, neuropsychologists and neuroscientists, to transform statistical outputs into something readable that can be, almost directly, copied and pasted into a report. It also implements various functions, from very useful ones (`correlation()`, `normalize()`) to miscellaenous ones (`find_season()`).
 
+
+## Contribute
+
+Want to get involved in the developpment of an open-source software and improve psychological science? **Join us!**
+
+- You need some help? You found a bug? You would like to request a new feature? 
+  Just open an [issue](https://github.com/neuropsychology/psycho.R/issues) :relaxed:
+- Want to add a feature? Correct a bug? You're more than welcome to contribute!
+- **Call for help for implementation of `analyze` method for `t.test`, `cor.test`, `lm` and `lmer`**.
+  
+  
 ## Installation
 
 Open R and run the following:
