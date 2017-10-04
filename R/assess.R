@@ -52,12 +52,13 @@ assess <- function(score, mean=0, sd=1, linecolor="#E91E63", fillcolor="#2196F3"
 
   # Text
   # -------------
-  if(values$percentile<0.50){
-    values$percentile <- 1-values$percentile
+  if (values$percentile < 0.50) {
+    values$percentile <- 1 - values$percentile
     comparison <- "smaller"
   } else{
-    comparison <- "greater"}
-  
+    comparison <- "greater"
+  }
+
   text <- paste("The participant (score = ",
                 score,
                 ") is positioned at ",

@@ -7,15 +7,15 @@
 #' @return Dataframe.
 #'
 #' @examples
-#' df <- data.frame(Participant = as.factor(rep(1:50,each=2)), 
-#'   Condition = base::rep_len(c("A", "B"), 100), V1 = rnorm(100, 30, .2), 
+#' df <- data.frame(Participant = as.factor(rep(1:50,each=2)),
+#'   Condition = base::rep_len(c("A", "B"), 100), V1 = rnorm(100, 30, .2),
 #'   V2 = runif(100, 3, 5))
-#' 
+#'
 #' dfZ <- normalize(df)
 #'
 #' @author Dominique Makowski, \url{https://dominiquemakowski.github.io/}
-#' 
-#' 
+#'
+#'
 #' @import purrr
 #' @import dplyr
 #' @export
@@ -28,6 +28,6 @@ normalize <- function(df){
   } else{
     df <- dplyr::bind_cols(dfother, dfnum)
   }
-  
+
   return(df)
 }
