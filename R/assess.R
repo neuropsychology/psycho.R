@@ -52,7 +52,26 @@ assess <- function(score, mean=0, sd=1, linecolor="#E91E63", fillcolor="#2196F3"
 
   # Text
   # -------------
-  text <- "Text for assess"
+  if(values$percentile<0.50){
+    values$percentile <- 1-values$percentile
+    comparison <- "smaller"
+  } else{
+    comparison <- "greater"}
+  
+  text <- paste("The participant (score = ",
+                score,
+                ") is positioned at ",
+                as.character(round((score-mean)/sd, 2)),
+                " standard deviations from the mean (M = ",
+                as.character(mean),
+                ", SD = ",
+                as.character(sd),
+                "). ",
+                "The participant's score is ",
+                comparison,
+                " than ",
+                as.character((round(values$percentile*100, 2))),
+                " % of the general population.", sep="")
 
   # Plot
   # -------------
