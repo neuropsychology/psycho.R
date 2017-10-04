@@ -1,3 +1,5 @@
+<p align="center"><a href=https://github.com/neuropsychology/psycho.R/><img src="https://github.com/neuropsychology/psycho.R/tree/master/vignettes/images/logo.PNG" width="200" align="center" alt="psycho logo r package"></a></p>
+
 # psycho
 [![Build Status](https://travis-ci.org/neuropsychology/psycho.R.svg?branch=master)](https://travis-ci.org/neuropsychology/psycho.R)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -17,3 +19,7 @@ library("devtools")
 install_github("neuropsychology/psycho.R")
 library("psycho")
 ```
+
+## General Workflow
+
+[](https://github.com/neuropsychology/psycho.R/tree/master/vignettes/images/workflow.PNG)
