@@ -13,6 +13,10 @@
 
 **Under heavy developpment. See [neuropsychology](https://github.com/neuropsychology/neuropsychology.R) for now.**
 
+## Goal
+
+The main goal of the `psycho` package is to provide tools for psychologists, neuropsychologists and neuroscientists, to transform statistical outputs into something readable that can be, almost directly, copied and pasted into a report. It also implements various functions, from very useful ones (`correlation()`, `normalize()`) to miscellaenous ones (`find_season()`).
+
 ## Installation
 
 Open R and run the following:
@@ -25,5 +29,9 @@ library("psycho")
 ```
 
 ## General Workflow
+
+The package mainly revolves around the `psychobject`. Main functions from the package return this type, and the `analyze()` function transforms other R objects (*for now, only `stan_lmer` type*) into psychobjects. Then, 4 functions can be applied on a psychobject: `summary()`, `print()`, `plot()` and `values()`.
+
+
 
 ![](https://github.com/neuropsychology/psycho.R/blob/master/vignettes/images/workflow.PNG)
