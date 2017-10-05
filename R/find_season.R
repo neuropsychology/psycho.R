@@ -11,7 +11,7 @@
 #' find_season(dates)
 #'
 #' @author Dominique Makowski, \url{https://dominiquemakowski.github.io/}
-#' 
+#'
 #' @export
 find_season <- function(date){
   d <- as.Date(cut(as.Date(date), "month")) + 32

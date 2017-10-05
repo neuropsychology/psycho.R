@@ -50,38 +50,39 @@ analyze.stanreg <- function(x, CI=95, Effect_Size=FALSE, ...) {
     posterior <- posteriors[, varname]
 
     # Find basic posterior indices
-    median=median(posterior)
-    mad=mad(posterior)
+    median <- median(posterior)
+    mad <- mad(posterior)
     mean <- mean(posterior)
     sd <- sd(posterior)
     CI_values <- quantile(posterior, c((100-CI)/2/100, 1-(100-CI)/2/100), type=8)
 
     # Compute MPE
     if (median >= 0){
-      MPE = length(posterior[posterior>=0])/length(posterior)*100
+      MPE <- length(posterior[posterior>=0])/length(posterior)*100
       if (MPE == 100){
-        MPE_values = c(min(posterior), max(posterior))
+        MPE_values <- c(min(posterior), max(posterior))
       } else{
-        MPE_values = c(0, max(posterior))
+        MPE_values <- c(0, max(posterior))
       }
-      
-      
+
+
     } else {
-      MPE = length(posterior[posterior<0])/length(posterior)*100
+      MPE <- length(posterior[posterior<0])/length(posterior)*100
       if (MPE == 100){
-        MPE_values = c(min(posterior), max(posterior))
+        MPE_values <- c(min(posterior), max(posterior))
       } else{
-        MPE_values = c(min(posterior), 0)
+        MPE_values <- c(min(posterior), 0)
       }
     }
-    
+
 
 
     # Create text
     if (grepl(":", varname)){
       splitted <- strsplit(varname, ":")[[1]]
-      if (length(splitted)==2){
-        name <- paste("interaction effect between ", splitted[1], " and ", splitted[2], sep="")
+      if (length(splitted) == 2){
+        name <- paste("interaction effect between ",
+                      splitted[1], " and ", splitted[2], sep = "")
       } else{
           name <- varname
         }
@@ -204,12 +205,20 @@ analyze.stanreg <- function(x, CI=95, Effect_Size=FALSE, ...) {
     CIs <- c(CIs, values[[varname]]$CI_values)
   }
 
-  summary <- data.frame(Variable=names(values), MPE=MPEs, Median=medians, MAD=mads, Mean=means, SD=sds, CI_lower=CIs[seq(1, length(CIs), 2)], CI_higher=CIs[seq(2, length(CIs), 2)])
+  summary <- data.frame(Variable=names(values), MPE=MPEs, Median=medians,
+                        MAD=mads, Mean=means, SD=sds,
+                        CI_lower=CIs[seq(1, length(CIs), 2)],
+                        CI_higher=CIs[seq(2, length(CIs), 2)])
 
   if (Effect_Size==T){
     EffSizes <- data.frame()
     for (varname in names(values)){
-      Current <- data.frame(Very_Large=values[[varname]]$EffSize_VL, Large=values[[varname]]$EffSize_L, Medium=values[[varname]]$EffSize_M, Small=values[[varname]]$EffSize_S, Very_Small=values[[varname]]$EffSize_VS, Opposite=values[[varname]]$EffSize_O)
+      Current <- data.frame(Very_Large = values[[varname]]$EffSize_VL,
+                            Large = values[[varname]]$EffSize_L,
+                            Medium = values[[varname]]$EffSize_M,
+                            Small = values[[varname]]$EffSize_S,
+                            Very_Small = values[[varname]]$EffSize_VS,
+                            Opposite = values[[varname]]$EffSize_O)
       EffSizes <- rbind(EffSizes, Current)
     }
     summary <- cbind(summary, EffSizes)

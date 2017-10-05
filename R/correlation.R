@@ -84,7 +84,18 @@ correlation <- function(df, df2=NULL, type="full", method="pearson", adjust="hol
 
   # Plot
   # -------------
-  plot <- corrplot::corrplot.mixed(r, lower="ellipse", upper="number", order = "hclust", p.mat = p, sig.level = 0.05, insig="n", tl.pos="lt")
+  plot <- function() {
+    corrplot::corrplot.mixed(
+      r,
+      lower = "ellipse",
+      upper = "number",
+      order = "hclust",
+      p.mat = p,
+      sig.level = 0.05,
+      insig = "n",
+      tl.pos = "lt"
+    )
+  }
 
 
   # Output
