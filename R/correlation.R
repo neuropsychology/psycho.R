@@ -45,28 +45,28 @@ correlation <- function(df, df2=NULL, type="full", method="pearson", adjust="hol
   df <- df[ , sapply(df, is.numeric)]
 
   # Compute r coefficients
-  if (type=="full"){
-    r <- psych::corr.test(df, y=df2, use="pairwise", method=method)$r
+  if (type == "full") {
+    r <- psych::corr.test(df, y = df2, use = "pairwise", method = method)$r
   } else{
 
-    if (is.null(df2) == FALSE){
+    if (is.null(df2) == FALSE) {
       df <- cbind(df, df2)
     }
 
     df <- stats::na.omit(df)  # enable imputation
-    if (type=="partial"){
-      r <- ppcor::pcor(df, method=method)$estimate
+    if (type == "partial") {
+      r <- ppcor::pcor(df, method = method)$estimate
     }
-    if (type=="semi"){
-      r <- ppcor::spcor(df, method=method)$estimate
+    if (type == "semi") {
+      r <- ppcor::spcor(df, method = method)$estimate
     }
   }
 
 
   # Get P values
   n <- nrow(df)
-  p <- psych::corr.p(r, n, adjust=adjust)$p
-  ci <- psych::corr.p(r, n, adjust=adjust)$ci
+  p <- psych::corr.p(r, n, adjust = adjust)$p
+  ci <- psych::corr.p(r, n, adjust = adjust)$ci
 
 
   ## define notions for significance levels; spacing is important.
@@ -74,21 +74,21 @@ correlation <- function(df, df2=NULL, type="full", method="pearson", adjust="hol
   ## trunctuate the matrix that holds the correlations to two decimal
   r_format <- format(round(cbind(rep(-1.11, ncol(df)), r), 2))[,-1]
   ## build a new matrix that includes the correlations with their apropriate stars
-  table <- matrix(paste(r_format, mystars, sep=""), ncol=ncol(df))
-  diag(table) <- paste(diag(r_format), " ", sep="")
+  table <- matrix(paste(r_format, mystars, sep = ""), ncol = ncol(df))
+  diag(table) <- paste(diag(r_format), " ", sep = "")
   rownames(table) <- colnames(df)
-  colnames(table) <- paste(colnames(df), "", sep="")
+  colnames(table) <- paste(colnames(df), "", sep = "")
   ## remove upper triangle
   table <- as.matrix(table)
   table[upper.tri(table, diag = TRUE)] <- NA
   table <- as.data.frame(table)
   ## remove last column and return the matrix (which is now a data frame)
-  table <- cbind(table[1:length(table)-1])
+  table <- cbind(table[1:length(table) - 1])
 
 
   # Values
   # -------------
-  values <- list(r=r, p=p, ci=ci, table=table)
+  values <- list(r = r, p = p, ci = ci, table = table)
 
   # Summary
   # -------------
@@ -117,7 +117,7 @@ correlation <- function(df, df2=NULL, type="full", method="pearson", adjust="hol
 
   # Output
   # -------------
-  output <- list(text=text, plot=plot, summary=summary, values=values)
+  output <- list(text = text, plot = plot, summary = summary, values = values)
 
   class(output) <- c("psychobject", "list")
   return(output)
