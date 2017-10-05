@@ -69,8 +69,6 @@ correlation <- function(df, df2=NULL, type="full", method="pearson", adjust="hol
   ci <- psych::corr.p(r, n, adjust=adjust)$ci
 
 
-  # Format into a table
-  p.mat <- matrix(p, ncol=ncol(r), dimnames=list(names(df), names(df)))
   ## define notions for significance levels; spacing is important.
   mystars <- ifelse(p < .001, "***", ifelse(p < .01, "** ", ifelse(p < .05, "* ", " ")))
   ## trunctuate the matrix that holds the correlations to two decimal
