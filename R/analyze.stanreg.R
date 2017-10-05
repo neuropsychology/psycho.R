@@ -54,7 +54,8 @@ analyze.stanreg <- function(x, CI=95, Effect_Size=FALSE, ...) {
     mean <- mean(posterior)
     sd <- sd(posterior)
     CI_values <- quantile(posterior,
-                          probs = c((100 - CI) / 2 / 100, 1 - (100 - CI) / 2 / 100),
+                          probs = c((100 - CI) / 2 / 100,
+                                    1 - (100 - CI) / 2 / 100),
                           type = 8)
 
     # Compute MPE
@@ -65,7 +66,6 @@ analyze.stanreg <- function(x, CI=95, Effect_Size=FALSE, ...) {
       } else {
         MPE_values <- c(0, max(posterior))
       }
-
 
     } else {
       MPE <- length(posterior[posterior < 0]) / length(posterior) * 100
@@ -122,25 +122,38 @@ analyze.stanreg <- function(x, CI=95, Effect_Size=FALSE, ...) {
   # Effect size
   # -------------
   if (Effect_Size == T) {
-    print("Interpreting effect size following Cohen (1977, 1988)... Make sure your variables were standardized!")
 
-
+    print(paste("Interpreting effect size following Cohen (1977, 1988)...",
+                "Make sure your variables were standardized!"))
 
     EffSizes <- data.frame()
     for (varname in varnames) {
       posterior <- posteriors[, varname]
-    # Compute the probabilities
-      verylarge_neg <- length(posterior[posterior <= -1.30]) / length(posterior)
-      large_neg <- length(posterior[posterior > -1.30 & posterior <= -0.80]) / length(posterior)
-      medium_neg <- length(posterior[posterior > -0.80 & posterior <= -0.50]) / length(posterior)
-      small_neg <- length(posterior[posterior > -0.50 & posterior <= -0.20]) / length(posterior)
-      verysmall_neg <- length(posterior[posterior > -0.20 & posterior < 0]) / length(posterior)
 
-      verylarge_pos <- length(posterior[posterior >= 1.30]) / length(posterior)
-      large_pos <- length(posterior[posterior < 1.30 & posterior >= 0.80]) / length(posterior)
-      medium_pos <- length(posterior[posterior < 0.80 & posterior >= 0.50]) / length(posterior)
-      small_pos <- length(posterior[posterior < 0.50 & posterior >= 0.20]) / length(posterior)
-      verysmall_pos <- length(posterior[posterior < 0.20 & posterior > 0]) / length(posterior)
+      # Compute the probabilities
+      mkneg <- function(pmin, pmax) {
+        stopifnot(pmin < pmax) # sanity check
+        length(posterior[posterior > pmin && posterior <= pmax]) /
+          length(posterior)
+      }
+
+      mkpos <- function(pmin, pmax) {
+        stopifnot(pmin < pmax) # sanity check
+        length(posterior[posterior >= pmin && posterior < pmax]) /
+          length(posterior)
+      }
+
+      verylarge_neg <- mkneg(-Inf, -1.3)
+      large_neg     <- mkneg(-1.3, -0.8)
+      medium_neg    <- mkneg(-0.8, -0.5)
+      small_neg     <- mkneg(-0.5, -0.2)
+      verysmall_neg <- mkneg(-0.2,  0) # TODO: there was open interval at 0
+
+      verylarge_pos <- mkpos(1.3, Inf)
+      large_pos     <- mkpos(0.8, 1.3)
+      medium_pos    <- mkpos(0.5, 0.8)
+      small_pos     <- mkpos(0.2, 0.5)
+      verysmall_pos <- mkpos(0,   0.2) # TODO: there was open interval at 0
 
       EffSize <- data.frame(
         Direction = c("Negative", "Negative", "Negative", "Negative",
@@ -193,8 +206,8 @@ analyze.stanreg <- function(x, CI=95, Effect_Size=FALSE, ...) {
         round(medium * 100, 2), "% that this effect size is medium, ",
         round(small * 100, 2), "% that this effect size is small, ",
         round(verysmall * 100, 2), "% that this effect is very small and ",
-        round(opposite_prob * 100, 2), "% that it has an opposite direction (between 0 and ",
-        signif(opposite_max, 2), ").", sep = "")
+        round(opposite_prob * 100, 2), "% that it has an opposite direction",
+        "(between 0 and ", signif(opposite_max, 2), ").", sep = "")
 
       values[[varname]]$EffSize <- EffSize
       values[[varname]]$EffSize_text <- EffSize_text

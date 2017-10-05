@@ -12,11 +12,18 @@ correlation(df, df2 = NULL, type = "full", method = "pearson",
 
 \item{df2}{Optional dataframe to correlate with the first one.}
 
-\item{type}{A character string indicating which correlation type is to be computed. One of "full" (default"), "partial" or "semi" for semi-partial correlations.}
+\item{type}{A character string indicating which correlation type is to be
+computed. One of "full" (default), "partial" or "semi" for semi-partial
+correlations.}
 
-\item{method}{A character string indicating which correlation coefficient is to be computed. One of "pearson" (default), "kendall", or "spearman" can be abbreviated.}
+\item{method}{A character string indicating which correlation coefficient is
+to be computed. One of "pearson" (default), "kendall", or "spearman" can be
+abbreviated.}
 
-\item{adjust}{What adjustment for multiple tests should be used? ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"). See \link[stats]{p.adjust} for details about why to use "holm" rather than "bonferroni").}
+\item{adjust}{What adjustment for multiple tests should be used? ("holm",
+"hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"). See
+\link[stats]{p.adjust} for details about why to use "holm" rather than
+"bonferroni").}
 }
 \value{
 output
