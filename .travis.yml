@@ -1,7 +1,18 @@
 language: r
 sudo: false
-cache: packages
+
+# Using the package cache to store R package dependencies can significantly
+# speed up build times and is recommended for most builds.
+cache:
+  - apt
+  - packages
+
+warnings_are_errors: true
+
 r_packages:
   - covr
+  - lintr
+
 after_success:
   - Rscript -e 'library(covr); codecov()'
+  - Rscript -e 'devtools::install();lintr::lint_package()'
