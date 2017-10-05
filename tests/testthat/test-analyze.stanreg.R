@@ -4,13 +4,13 @@ test_that("If it works.", {
   # Fit
   require(rstanarm)
 
-  set.seed(666)
   fit <- rstanarm::stan_glm(vs ~ mpg * cyl,
     data=mtcars,
     family = binomial(link = "logit"),
-    prior=NULL)
+    prior=NULL,
+    seed=666)
 
   model <- analyze(fit)
   values <- values(model)
-  expect_equal(round(values$mpg$median, 2), -0.68, tolerance = 0.05)
+  expect_equal(round(values$mpg$median, 2), -0.64, tolerance = 0.05)
 })

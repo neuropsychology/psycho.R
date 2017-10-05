@@ -1,6 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.travis.yml
+^\.lintr
 ^appveyor.yml
 ^steps
 ^codecov\.yml$

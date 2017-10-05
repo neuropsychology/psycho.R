@@ -61,6 +61,12 @@ cortable <- print(cor)
 # Or diplay it using View(cortable)
 
 kable(cortable)
+
+
+# You can also plot it
+plot(cor)
+cor$plot
+cor$plot()
 ```
 
 
