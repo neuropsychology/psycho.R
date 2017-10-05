@@ -4,4 +4,5 @@
 ^\.lintr
 ^appveyor.yml
 ^steps
+^paper
 ^codecov\.yml$

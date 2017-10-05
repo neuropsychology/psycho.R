@@ -1,27 +1,10 @@
----
-title: "Overview"
-output: rmarkdown::html_vignette
-date: "`r Sys.Date()`"
-vignette: >
-  %\VignetteIndexEntry{Overview}
-  %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
----
-
-# psycho for R: an Overview
-
-```{r, echo=F, message=FALSE, warning=FALSE}
+## ---- echo=F, message=FALSE, warning=FALSE-------------------------------
 library(knitr)
 library(tidyverse)
 library(broom)
 library(rstanarm)
-```
 
-
-
-## Installation
-
-```{r}
+## ------------------------------------------------------------------------
 # Do this once (uncomment if needed)
 # install.packages("devtools") 
 # library(devtools)
@@ -29,26 +12,11 @@ library(rstanarm)
 
 # Load psycho (at the beginning of every script)
 library(psycho)
-```
 
-
-## General Workflow
-
-
-The package mainly revolves around the `psychobject`. Main functions from the package return this type, and the `analyze()` function transforms other R objects (*for now, only `stan_lmer` type*) into psychobjects. Then, 4 functions can be applied on a psychobject: `summary()`, `print()`, `plot()` and `values()`.
-
-```{r, out.width=800, echo = FALSE, eval = TRUE, fig.align='center'}
+## ---- out.width=800, echo = FALSE, eval = TRUE, fig.align='center'-------
 knitr::include_graphics("images/workflow.PNG")
-```
 
-<!-- ![](https://github.com/neuropsychology/psycho.R/blob/master/vignettes/images/workflow.PNG) -->
-
-
-## Examples 
-
-### Correlation Table and Plot
-
-```{r, fig.width=8, eval = TRUE, fig.align='center'}
+## ---- fig.width=8, eval = TRUE, fig.align='center'-----------------------
 library(psycho)
 
 df <- iris
@@ -65,13 +33,8 @@ kable(cortable)
 
 # You can also plot it
 cor$plot()
-```
 
-
-
-### Normalize/Z-score/Scale
-
-```{r, out.width=8, eval = TRUE, fig.align='center'}
+## ---- out.width=8, eval = TRUE, fig.align='center'-----------------------
 library(psycho)
 library(tidyverse)
 
@@ -80,12 +43,8 @@ df <- iris %>%
   psycho::normalize()
 
 summary(df)
-```
 
-### Assess
-
-
-```{r, fig.width=8, eval = TRUE, fig.align='center'}
+## ---- fig.width=8, eval = TRUE, fig.align='center'-----------------------
 library(psycho)
 
 results <- psycho::assess(124, mean=100, sd=15)
@@ -95,14 +54,8 @@ print(results)
 
 # Plot it
 plot(results)
-```
 
-
-
-
-### Bayesian Mixed Linear Model
-
-```{r, fig.width=8, eval = TRUE, fig.align='center'}
+## ---- fig.width=8, eval = TRUE, fig.align='center'-----------------------
 library(psycho)
 library(rstanarm)
 
@@ -113,17 +66,12 @@ df <- psycho::normalize(df)
 # Show dataframe
 kable(head(df))
 
-```
 
-
-
-```{r, eval=TRUE, fig.align='center', fig.width=8, message=FALSE, results="hide"}
+## ---- eval=TRUE, fig.align='center', fig.width=8, message=FALSE, results="hide"----
 # Fit bayesian mixed model
 fit <- rstanarm::stan_lmer(V1 ~ Condition / V2 + (1|Participant), data=df)
-```
 
-
-```{r, fig.width=8, eval = TRUE, fig.align='center'}
+## ---- fig.width=8, eval = TRUE, fig.align='center'-----------------------
 results <- psycho::analyze(fit)
 
 # Print summary
@@ -134,4 +82,4 @@ print(results)
 
 # Plot effects
 plot(results)
-```
+

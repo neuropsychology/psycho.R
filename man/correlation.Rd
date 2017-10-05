@@ -8,9 +8,9 @@ correlation(df, df2 = NULL, type = "full", method = "pearson",
   adjust = "holm")
 }
 \arguments{
-\item{df}{The score.}
+\item{df}{The dataframe}
 
-\item{df2}{The general population's mean.}
+\item{df2}{Optional dataframe to correlate with the first one.}
 
 \item{type}{A character string indicating which correlation type is to be computed. One of "full" (default"), "partial" or "semi" for semi-partial correlations.}
 
@@ -25,7 +25,22 @@ output
 Compare a given score to a parent population.
 }
 \examples{
-assess(124, mean=100, sd=15)
+df <- data.frame(V1 = rnorm(1000, 0, 1),
+                 V2 = rnorm(1000, 100, 15))
+df$V3 <- rnorm(1000, 50, 10) * exp(df$V1)
+df$V4 <- rnorm(1000, 5, 2) * log(df$V2)
+df$V5 <- rnorm(1000, 5, 2) * df$V3 / df$V4
+
+
+# Normal correlations
+results <- psycho::correlation(df)
+print(results)
+results$plot()
+
+# Partial correlations with correction
+results <- psycho::correlation(df, type="partial", method="spearman", adjust="holm")
+print(results)
+results$plot()
 
 }
 \author{

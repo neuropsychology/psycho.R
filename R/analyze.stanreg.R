@@ -12,12 +12,11 @@
 #' @examples
 #' library(psycho)
 #' require(rstanarm)
-#' fit <- rstanarm::stan_glm(vs ~ mpg * cyl,
-#'   data=mtcars,
-#'   family = binomial(link = "logit"),
-#'   prior=NULL)
+#' fit <- rstanarm::stan_glm(vs ~ mpg * cyl, data=mtcars)
 #'
-#'  analyze(fit)
+#' results <- analyze(fit)
+#' summary(results)
+#'
 #'
 #' @author Dominique Makowski, \url{https://dominiquemakowski.github.io/}
 #'
@@ -252,7 +251,7 @@ analyze.stanreg <- function(x, CI=95, Effect_Size=FALSE, ...) {
     ggplot(aes_string(x="Variable", y="Coefficient", fill="Variable")) +
     geom_violin() +
     geom_boxplot(fill="grey", alpha=0.3, outlier.shape=NA) +
-    stat_summary(fun.y = mean, geom = "errorbar", aes_string(ymax = "..y..", ymin = "..y.."), width = .75, linetype = "dashed", colour="red") +
+    stat_summary(fun.y = "mean", geom = "errorbar", aes_string(ymax = "..y..", ymin = "..y.."), width = .75, linetype = "dashed", colour="red") +
     geom_hline(aes(yintercept=0)) +
     theme_classic() +
     coord_flip() +
