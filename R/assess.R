@@ -48,7 +48,8 @@ assess <- function(score,
   # If score is list
   if (length(score) > 1) {
     if (verbose == T) {
-      warning("Multiple scores were provided. Returning a list containing summmary and values.")
+      warning(paste("Multiple scores were provided.",
+                    "Returning a list containing summmary and values."))
     }
     output <- list(summary = summary, values = values)
     return(output)

@@ -119,11 +119,12 @@ analyze.stanreg <- function(x, CI=95, Effect_Size=FALSE, ...) {
 
   }
 
-
   # Effect size
   # -------------
   if (Effect_Size == T) {
     print("Interpreting effect size following Cohen (1977, 1988)... Make sure your variables were standardized!")
+
+
 
     EffSizes <- data.frame()
     for (varname in varnames) {
@@ -142,9 +143,14 @@ analyze.stanreg <- function(x, CI=95, Effect_Size=FALSE, ...) {
       verysmall_pos <- length(posterior[posterior < 0.20 & posterior > 0]) / length(posterior)
 
       EffSize <- data.frame(
-        Direction = c("Negative", "Negative", "Negative", "Negative", "Negative", "Positive", "Positive", "Positive", "Positive", "Positive"),
-        Size = c("VeryLarge", "Large", "Medium", "Small", "VerySmall", "VerySmall", "Small", "Medium", "Large", "VeryLarge"),
-        Probability = c(verylarge_neg, large_neg, medium_neg, small_neg, verysmall_neg, verysmall_pos, small_pos, medium_pos, large_pos, verylarge_pos)
+        Direction = c("Negative", "Negative", "Negative", "Negative",
+                      "Negative", "Positive", "Positive", "Positive",
+                      "Positive", "Positive"),
+        Size = c("VeryLarge", "Large", "Medium", "Small", "VerySmall",
+                 "VerySmall", "Small", "Medium", "Large", "VeryLarge"),
+        Probability = c(verylarge_neg, large_neg, medium_neg, small_neg,
+                        verysmall_neg, verysmall_pos, small_pos, medium_pos,
+                        large_pos, verylarge_pos)
       )
 
       EffSize$Probability[is.na(EffSize$Probability)] <- 0
