@@ -35,6 +35,16 @@ Want to get involved in the developpment of an open-source software and improve 
 - **Call for help for implementation of `analyze` method for `t.test`, `cor.test`, `lm` and `lmer`**.
   
   
+
+## General Workflow
+
+The package revolves around the `psychobject`. Main functions from the package return this type, and the `analyze()` function transforms other R objects (*for now, only `stan_lmer` type*) into psychobjects. Four functions can then be applied on a psychobject: `summary()`, `print()`, `plot()` and `values()`.
+
+
+
+![](https://github.com/neuropsychology/psycho.R/blob/master/vignettes/images/workflow.PNG)
+
+
 ## Installation
 
 Open R and run the following:
@@ -45,11 +55,3 @@ library("devtools")
 install_github("neuropsychology/psycho.R")
 library("psycho")
 ```
-
-## General Workflow
-
-The package mainly revolves around the `psychobject`. Main functions from the package return this type, and the `analyze()` function transforms other R objects (*for now, only `stan_lmer` type*) into psychobjects. Then, 4 functions can be applied on a psychobject: `summary()`, `print()`, `plot()` and `values()`.
-
-
-
-![](https://github.com/neuropsychology/psycho.R/blob/master/vignettes/images/workflow.PNG)
