@@ -24,12 +24,11 @@ Analyze stanreg objects.
 \examples{
 library(psycho)
 require(rstanarm)
-fit <- rstanarm::stan_glm(vs ~ mpg * cyl,
-  data=mtcars,
-  family = binomial(link = "logit"),
-  prior=NULL)
+fit <- rstanarm::stan_glm(vs ~ mpg * cyl, data=mtcars)
 
- analyze(fit)
+results <- analyze(fit)
+summary(results)
+
 
 }
 \author{

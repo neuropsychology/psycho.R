@@ -3,5 +3,6 @@
 ^\.travis.yml
 ^appveyor.yml
 ^steps
+^paper
 ^codecov\.yml$
 ^\.lintr$

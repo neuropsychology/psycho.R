@@ -2,8 +2,8 @@
 #'
 #' Compare a given score to a parent population.
 #'
-#' @param df The score.
-#' @param df2 The general population's mean.
+#' @param df The dataframe
+#' @param df2 Optional dataframe to correlate with the first one.
 #' @param type A character string indicating which correlation type is to be computed. One of "full" (default"), "partial" or "semi" for semi-partial correlations.
 #' @param method A character string indicating which correlation coefficient is to be computed. One of "pearson" (default), "kendall", or "spearman" can be abbreviated.
 #' @param adjust What adjustment for multiple tests should be used? ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"). See \link[stats]{p.adjust} for details about why to use "holm" rather than "bonferroni").
@@ -11,7 +11,22 @@
 #' @return output
 #'
 #' @examples
-#' assess(124, mean=100, sd=15)
+#' df <- data.frame(V1 = rnorm(1000, 0, 1),
+#'                  V2 = rnorm(1000, 100, 15))
+#' df$V3 <- rnorm(1000, 50, 10) * exp(df$V1)
+#' df$V4 <- rnorm(1000, 5, 2) * log(df$V2)
+#' df$V5 <- rnorm(1000, 5, 2) * df$V3 / df$V4
+#'
+#'
+#' # Normal correlations
+#' results <- psycho::correlation(df)
+#' print(results)
+#' results$plot()
+#'
+#' # Partial correlations with correction
+#' results <- psycho::correlation(df, type="partial", method="spearman", adjust="holm")
+#' print(results)
+#' results$plot()
 #'
 #' @author Dominique Makowski, \url{https://dominiquemakowski.github.io/}
 #'
@@ -33,7 +48,11 @@ correlation <- function(df, df2=NULL, type="full", method="pearson", adjust="hol
   if (type=="full"){
     r <- psych::corr.test(df, y=df2, use="pairwise", method=method)$r
   } else{
-    df <- cbind(df, df2)
+
+    if (is.null(df2) == FALSE){
+      df <- cbind(df, df2)
+    }
+
     df <- stats::na.omit(df)  # enable imputation
     if (type=="partial"){
       r <- ppcor::pcor(df, method=method)$estimate
@@ -50,8 +69,6 @@ correlation <- function(df, df2=NULL, type="full", method="pearson", adjust="hol
   ci <- psych::corr.p(r, n, adjust=adjust)$ci
 
 
-  # Format into a table
-  p.mat <- matrix(p, ncol=ncol(r), dimnames=list(names(df), names(df)))
   ## define notions for significance levels; spacing is important.
   mystars <- ifelse(p < .001, "***", ifelse(p < .01, "** ", ifelse(p < .05, "* ", " ")))
   ## trunctuate the matrix that holds the correlations to two decimal
