@@ -7,7 +7,7 @@
 format_p(pvalues)
 }
 \arguments{
-\item{pvalues}{P values.}
+\item{pvalues}{P values (scalar or vector).}
 }
 \description{
 Format p values.
