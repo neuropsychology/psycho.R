@@ -7,13 +7,20 @@
 # psycho
 [![Build Status](https://travis-ci.org/neuropsychology/psycho.R.svg?branch=master)](https://travis-ci.org/neuropsychology/psycho.R)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Dependency Status](https://dependencyci.com/github/neuropsychology/psycho.R/badge)](https://dependencyci.com/github/neuropsychology/psycho.R)
+[![CRAN downloads total](http://cranlogs.r-pkg.org/badges/grand-total/psycho)](https://cran.r-project.org/web/packages/psycho/)
 [![Build status](https://ci.appveyor.com/api/projects/status/08mg1fshh5iqx53b?svg=true)](https://ci.appveyor.com/project/DominiqueMakowski/psycho-r)
 [![codecov](https://codecov.io/gh/neuropsychology/psycho.R/branch/master/graph/badge.svg)](https://codecov.io/gh/neuropsychology/psycho.R)
+[![Dependency Status](https://dependencyci.com/github/neuropsychology/psycho.R/badge)](https://dependencyci.com/github/neuropsychology/psycho.R)
+[![CRAN downloads month](https://cranlogs.r-pkg.org/badges/psycho)](https://cran.r-project.org/web/packages/psycho/)
+
+
+
 
 |Name|NeuroKit|
 |----------------|---|
-|Documentation|[![](https://img.shields.io/badge/docs-Building-orange.svg?colorB=FF5722)](https://github.com/neuropsychology/psycho.R/blob/master/vignettes/overview.Rmd)|
+|Stable|[![CRAN](https://www.r-pkg.org/badges/version/psycho)](https://cran.r-project.org/web/packages/psycho/)|
+|Examples|[![](https://img.shields.io/badge/vignettes-0.0.1-orange.svg?colorB=8BC34A)](https://cran.r-project.org/web/packages/psycho/vignettes/overview.html)|
+|Documentation|[![Rdoc](http://www.rdocumentation.org/badges/version/psycho)](http://www.rdocumentation.org/packages/psycho)|
 |Questions|[![](https://img.shields.io/badge/issue-create-purple.svg?colorB=FF9800)](https://github.com/neuropsychology/psycho.R/issues)|
 |Authors|[![](https://img.shields.io/badge/CV-D._Makowski-purple.svg?colorB=9C27B0)](https://dominiquemakowski.github.io/)|
 

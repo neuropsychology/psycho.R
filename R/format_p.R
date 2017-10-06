@@ -2,7 +2,7 @@
 #'
 #' @param pvalues P values (scalar or vector).
 #'
-#' @author Dominique Makowski, \url{https://dominiquemakowski.github.io/}
+#' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
 format_p <- function(pvalues) {

@@ -17,5 +17,5 @@ format_digit(x, digits = 2, null_treshold = 0.001)
 Dormat digits.
 }
 \author{
-Dominique Makowski, \url{https://dominiquemakowski.github.io/}
+\href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 }

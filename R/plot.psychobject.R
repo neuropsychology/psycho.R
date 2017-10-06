@@ -3,7 +3,7 @@
 #' @param x A psychobject class object.
 #' @param ... Arguments passed to or from other methods.
 #'
-#' @author Dominique Makowski, \url{https://dominiquemakowski.github.io/}
+#' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
 plot.psychobject <- function(x, ...){

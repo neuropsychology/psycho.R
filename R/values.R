@@ -2,7 +2,7 @@
 #'
 #' @param x A psychobject class object.
 #'
-#' @author Dominique Makowski, \url{https://dominiquemakowski.github.io/}
+#' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
 values <- function(x){

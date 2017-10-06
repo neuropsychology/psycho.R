@@ -4,7 +4,7 @@
 #' @param digits Number of significant digits.
 #' @param null_treshold Treshold below which return 0.
 #'
-#' @author Dominique Makowski, \url{https://dominiquemakowski.github.io/}
+#' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
 format_digit <- function(x, digits = 2, null_treshold = 0.001) {

@@ -6,7 +6,7 @@
 #' @param round Round the ouput.
 #' @param ... Further arguments passed to or from other methods.
 #'
-#' @author Dominique Makowski, \url{https://dominiquemakowski.github.io/}
+#' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
 summary.psychobject <- function(object, round=NULL, ...){
