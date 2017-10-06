@@ -10,7 +10,7 @@
 #' @examples
 #' library(psycho)
 #'
-#' @author Dominique Makowski, \url{https://dominiquemakowski.github.io/}
+#' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
 analyze.merModLmerTest <- function(x, ...) {

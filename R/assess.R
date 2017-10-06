@@ -14,7 +14,7 @@
 #' @examples
 #' rez <- assess(124, mean=100, sd=15)
 #'
-#' @author Dominique Makowski, \url{https://dominiquemakowski.github.io/}
+#' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @importFrom stats ecdf
 #' @import ggplot2

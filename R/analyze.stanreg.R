@@ -18,7 +18,7 @@
 #' summary(results)
 #'
 #'
-#' @author Dominique Makowski, \url{https://dominiquemakowski.github.io/}
+#' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @import rstanarm
 #' @import tidyr

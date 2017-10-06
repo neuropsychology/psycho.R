@@ -17,5 +17,5 @@
 Print the results.
 }
 \author{
-Dominique Makowski, \url{https://dominiquemakowski.github.io/}
+\href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 }

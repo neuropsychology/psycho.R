@@ -10,7 +10,7 @@
 #' dates <- c("2017-02-15", "2017-05-15", "2017-08-15", "2017-11-15")
 #' find_season(dates)
 #'
-#' @author Dominique Makowski, \url{https://dominiquemakowski.github.io/}
+#' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
 find_season <- function(date){

@@ -6,3 +6,4 @@
 ^paper
 ^codecov\.yml$
 ^\.lintr$
+^CONDUCT\.md$
