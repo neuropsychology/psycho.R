@@ -19,8 +19,8 @@
 |Name|NeuroKit|
 |----------------|---|
 |Stable|[![CRAN](https://www.r-pkg.org/badges/version/psycho)](https://cran.r-project.org/web/packages/psycho/)|
-|Examples|[![](https://img.shields.io/badge/vignettes-0.0.1-orange.svg?colorB=8BC34A)](https://cran.r-project.org/web/packages/psycho/vignettes/overview.html)|
 |Documentation|[![Rdoc](http://www.rdocumentation.org/badges/version/psycho)](http://www.rdocumentation.org/packages/psycho)|
+|Examples|[![](https://img.shields.io/badge/vignettes-0.0.1-orange.svg?colorB=FF5722)](https://cran.r-project.org/web/packages/psycho/vignettes/overview.html)|
 |Questions|[![](https://img.shields.io/badge/issue-create-purple.svg?colorB=FF9800)](https://github.com/neuropsychology/psycho.R/issues)|
 |Authors|[![](https://img.shields.io/badge/CV-D._Makowski-purple.svg?colorB=9C27B0)](https://dominiquemakowski.github.io/)|
 
