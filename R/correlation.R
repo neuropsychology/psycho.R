@@ -31,7 +31,9 @@
 #' results$plot()
 #'
 #' # Partial correlations with correction
-#' results <- psycho::correlation(df, type="partial", method="spearman", adjust="holm")
+#' results <- psycho::correlation(df, type="partial", 
+#'                                    method="spearman", 
+#'                                    adjust="holm")
 #' print(results)
 #' results$plot()
 #'
@@ -80,23 +82,23 @@ correlation <- function(df,
   ci <- psych::corr.p(r, n, adjust = adjust)$ci
 
 
-  ## define notions for significance levels; spacing is important.
+  # Define notions for significance levels; spacing is important.
   mystars <- ifelse(p < .001, "***",
                ifelse(p < .01, "** ",
                  ifelse(p < .05, "* ", " ")))
 
-  ## trunctuate the matrix that holds the correlations to two decimal
+  # trunctuate the matrix that holds the correlations to two decimal
   r_format <- format(round(cbind(rep(-1.11, ncol(df)), r), 2))[,-1]
-  ## build a new matrix that includes the correlations with their apropriate stars
+  ## build a new correlation matrix with significance stars
   table <- matrix(paste(r_format, mystars, sep = ""), ncol = ncol(df))
   diag(table) <- paste(diag(r_format), " ", sep = "")
   rownames(table) <- colnames(df)
   colnames(table) <- paste(colnames(df), "", sep = "")
-  ## remove upper triangle
+  # remove upper triangle
   table <- as.matrix(table)
   table[upper.tri(table, diag = TRUE)] <- NA
   table <- as.data.frame(table)
-  ## remove last column and return the matrix (which is now a data frame)
+  # remove last column and return the matrix (which is now a data frame)
   table <- cbind(table[1:length(table) - 1])
 
 
