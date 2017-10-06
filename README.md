@@ -16,7 +16,7 @@
 
 
 
-|Name|NeuroKit|
+|Name|psycho|
 |----------------|---|
 |Stable|[![CRAN](https://www.r-pkg.org/badges/version/psycho)](https://cran.r-project.org/web/packages/psycho/)|
 |Documentation|[![Rdoc](http://www.rdocumentation.org/badges/version/psycho)](http://www.rdocumentation.org/packages/psycho)|
