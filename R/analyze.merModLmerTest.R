@@ -36,7 +36,7 @@ analyze.merModLmerTest <- function(x, ...) {
   fitsum$`t value` <- signif(fitsum$`t value`, 2)
 
   fitsum$Beta <- paste(fitsum$Estimate, "\xB1", fitsum$`Std. Error`)
-  fitsum$t <- paste("t(", fitsum$df, ") = ", fitsum$`t value`, sep="")
+  fitsum$t <- paste("t(", fitsum$df, ") = ", fitsum$`t value`, sep = "")
   fitsum$p <- format_p(fitsum$`Pr(>|t|)`)
 
   fitsum <- select_(fitsum, "Beta", "t", "p")
@@ -49,7 +49,7 @@ analyze.merModLmerTest <- function(x, ...) {
   # -------------
   plot <- "Not available yet"
 
-  output <- list(text=text, plot=plot, summary=fitsum, values=values)
+  output <- list(text = text, plot = plot, summary = fitsum, values = values)
 
   class(output) <- c("psychobject", "list")
   return(output)

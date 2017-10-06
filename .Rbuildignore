@@ -1,8 +1,8 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.travis.yml
-^\.lintr
 ^appveyor.yml
 ^steps
 ^paper
 ^codecov\.yml$
+^\.lintr$
