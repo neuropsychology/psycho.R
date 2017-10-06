@@ -1,7 +1,7 @@
 <p align="center"><a href=https://github.com/neuropsychology/psycho.R/><img src="https://github.com/neuropsychology/psycho.R/blob/master/vignettes/images/logo.PNG" width="400" align="center" alt="psycho logo r package"></a></p>
 
 
-*<h4 align="center">Efficient and Publishing-oriented Workflow for Psychological Science</h2>*
+*<h4 align="center">Efficient and Publishing-Oriented Workflow for Psychological Science</h2>*
 
 
 # psycho

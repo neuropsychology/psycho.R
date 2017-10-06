@@ -45,7 +45,9 @@ print(results)
 results$plot()
 
 # Partial correlations with correction
-results <- psycho::correlation(df, type="partial", method="spearman", adjust="holm")
+results <- psycho::correlation(df, type="partial", 
+                                   method="spearman", 
+                                   adjust="holm")
 print(results)
 results$plot()
 

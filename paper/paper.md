@@ -1,5 +1,5 @@
 ---
-title: 'The psycho Package: an Efficient and Publishing-oriented Workflow for Psychological Science'
+title: 'The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science'
 tags:
 - R
 - Psychology
