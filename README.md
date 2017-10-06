@@ -54,11 +54,16 @@ The package revolves around the `psychobject`. Main functions from the package r
 
 ## Installation
 
-Open R and run the following:
+- To get the stable version from CRAN, run the following commands in your R console:
 
+```R
+install.packages("psycho")
+library("psycho")
+```
+
+- To get the latest development version, run the following:
 ```R
 install.packages("devtools")
 library("devtools")
 install_github("neuropsychology/psycho.R")
 library("psycho")
-```
