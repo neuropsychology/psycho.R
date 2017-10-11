@@ -8,6 +8,7 @@
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
+#' @method summary psychobject
 #' @export
 summary.psychobject <- function(object, round=NULL, ...){
   summary <- object$summary
