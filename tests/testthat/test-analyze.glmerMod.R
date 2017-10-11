@@ -4,7 +4,7 @@ test_that("If it works.", {
   # Fit
   require(lme4)
 
-  fit <- lme4::glmer(vs ~ mpg + (1|cyl), data=mtcars, family="binomial")
+  fit <- lme4::glmer(vs ~ mpg + (1|cyl), data = mtcars, family = "binomial")
 
   model <- psycho::analyze(fit)
   values <- values(model)
