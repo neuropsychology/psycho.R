@@ -63,7 +63,8 @@ analyze.glmerMod <- function(x, ...) {
     text <- paste("The effect of ", varname, " was [NOT] significant (beta = ",
                   format_digit(fitsum[varname, "Coef"], 2), ", SE = ",
                   format_digit(fitsum[varname, "SE"], 2), ", z = ",
-                  format_digit(fitsum[varname, "z"], 2), ").", sep="")
+                  format_digit(fitsum[varname, "z"], 2), ", p ",
+                  format_p(fitsum[varname, "p"]), ").", sep="")
 
     values[[varname]] <- list(
       Coef = fitsum[varname, "Coef"],
