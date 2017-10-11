@@ -82,7 +82,7 @@ analyze.glmerMod <- function(x, ...) {
   text <- c(paste("The overall model predicting ... successfully converged ",
                   "and explained ",
                   format_digit(R2c * 100, 2), "% of the variance of the",
-                  "endogen (the conditional R2). ",
+                  " endogen (the conditional R2). ",
                   "The variance explained by the fixed effects was of ",
                   format_digit(R2m * 100, 2), "% (the marginal R2) and the ",
                   "one explained by the random effects of ",

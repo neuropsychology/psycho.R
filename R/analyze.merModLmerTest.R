@@ -102,7 +102,7 @@ analyze.merModLmerTest <- function(x, ...) {
                   "% of the variance of the endogen (the conditional R2). ",
                   "The variance explained by the fixed effects was of ",
                   format_digit(R2m * 100, 2),
-                  "% (the marginal R2) and theone explained by the random",
+                  "% (the marginal R2) and the one explained by the random",
                   " effects of ",
                   format_digit((R2c - R2m) * 100, 2), "%.", sep = ""))
 
