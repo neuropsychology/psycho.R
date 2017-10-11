@@ -2,18 +2,16 @@ Package: psycho
 Type: Package
 Title: Efficient and Publishing-Oriented Workflow for Psychological Science
 Version: 0.0.2
-Date: 2017-10-11
-Authors@R: as.person(c(
-    "Dominique Makowski <dom.makowski@gmail.com> [aut, cre]", 
-    "Viliam Simko <viliam.simko@gmail.com> [ctb]"
-  ))
+Authors@R: c(person("Dominique", "Makowski", email="dom.makowski@gmail.com", role=c("aut", "cre")),
+             person("Viliam", "Simko", email="viliam.simko@gmail.com", role=c("ctb")))
+Maintainer: Dominique Makowski <dom.makowski@gmail.com>
 URL: https://github.com/neuropsychology/psycho.R
 BugReports: https://github.com/neuropsychology/psycho.R/issues
 Description: Toolbox for psychologists, neuropsychologists and neuroscientists.
     It implements methods to create report-ready outputs for statistical models,
     as well as various convenient statistical functions used in psychological
     science, such as correlation matrices and normalization.
-License: MIT + file LICENSE
+License: MIT
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
