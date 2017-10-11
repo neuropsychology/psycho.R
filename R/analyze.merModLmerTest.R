@@ -9,9 +9,17 @@
 #'
 #' @examples
 #' library(psycho)
+#' require(lmerTest)
+#' fit <- lmerTest::lmer(Sepal.Length ~ Sepal.Width + (1|Species), data=iris)
+#'
+#' results <- analyze(fit)
+#' summary(results)
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
+#' @importFrom MuMIn r.squaredGLMM
+#' @importFrom MuMIn std.coef
+#' @import dplyr
 #' @export
 analyze.merModLmerTest <- function(x, ...) {
 
@@ -20,29 +28,68 @@ analyze.merModLmerTest <- function(x, ...) {
   # -------------
   fit <- x
 
-  # Values
-  # -------------
-  values <- "Not available yet"
-
+  R2m <- MuMIn::r.squaredGLMM(fit)["R2m"]
+  R2c <- MuMIn::r.squaredGLMM(fit)["R2c"]
 
 
   # Summary
   # -------------
-  fitsum <- as.data.frame(summary(fit)$coefficients)
+  fitsum <- data.frame(lmerTest::summary(fit)$coefficients)
 
-  fitsum$Estimate <- signif(fitsum$Estimate, 2)
-  fitsum$`Std. Error` <- signif(fitsum$`Std. Error`, 2)
-  fitsum$df <- signif(as.numeric(fitsum$df), 2)
-  fitsum$`t value` <- signif(fitsum$`t value`, 2)
+  fitsum$Variable <- rownames(fitsum)
+  fitsum$Coef <- fitsum$Estimate
+  fitsum$SE <- fitsum$`Std..Error`
+  fitsum$df <- as.numeric(fitsum$df)
+  fitsum$t <- fitsum$`t.value`
+  fitsum$p <- fitsum$`Pr...t..`
 
-  fitsum$Beta <- paste(fitsum$Estimate, "\xB1", fitsum$`Std. Error`)
-  fitsum$t <- paste("t(", fitsum$df, ") = ", fitsum$`t value`, sep = "")
-  fitsum$p <- format_p(fitsum$`Pr(>|t|)`)
+  # standardized coefficients
+  stdz <- as.data.frame(MuMIn::std.coef(fit, F))
+  fitsum$Coef.std <- stdz$Estimate
+  fitsum$SE.std <- stdz$`Std. Error`
+  fitsum$Effect_Size <- interpret_d(fitsum$Coef.std)
 
-  fitsum <- select_(fitsum, "Beta", "t", "p")
+  fitsum <- select_(fitsum, "Coef", "SE", "t", "df", "Coef.std", "SE.std", "p", "Effect_Size")
+
+
+  # Varnames
+  varnames <- rownames(fitsum)
+
+
+  # Values
+  # -------------
+  # Initialize empty values
+  values <- list()
+  values$R2m <- R2m
+  values$R2c <- R2c
+
+  # Loop over all variables
+  for (varname in varnames){
+    text <- paste("The effect of ", varname, " was [NOT] significant (beta = ", format_digit(fitsum[varname, "Coef"], 2), ", SE = ", format_digit(fitsum[varname, "SE"], 2), ", t(", format_digit(fitsum[varname, "df"], 2), ") = ", format_digit(fitsum[varname, "t"], 2), ", p ", format_p(fitsum[varname, "p"]), ") and can be considered as ", tolower(fitsum[varname, "Effect_Size"]), " (std. beta = ", format_digit(fitsum[varname, "Coef.std"], 2), ", std. SE = ", format_digit(fitsum[varname, "SE.std"], 2), ").", sep="")
+
+    values[[varname]] <- list(
+      Coef = fitsum[varname, "Coef"],
+      SE = fitsum[varname, "SE"],
+      t = fitsum[varname, "t"],
+      df = fitsum[varname, "df"],
+      Coef.std = fitsum[varname, "Coef.std"],
+      SE.std = fitsum[varname, "SE.std"],
+      p = fitsum[varname, "p"],
+      Effect_Size = fitsum[varname, "Effect_Size"],
+      Text = text
+    )
+  }
+
+
+
   # Text
   # -------------
-  text <- "Not available yet"
+  text <- c(paste("The overall model predicting ... successfully converged and explained ", format_digit(R2c*100, 2), "% of the variance of the endogen (the conditional R2). ", "The variance explained by the fixed effects was of ", format_digit(R2m*100, 2), "% (the marginal R2) and the one explained by the random effects of ", format_digit((R2c - R2m)*100, 2), "%.", sep=""))
+
+  for (varname in varnames){
+    text <- c(text, values[[varname]]$Text)
+  }
+
 
 
   # Plot

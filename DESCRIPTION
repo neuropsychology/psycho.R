@@ -1,7 +1,7 @@
 Package: psycho
 Type: Package
 Title: Efficient and Publishing-Oriented Workflow for Psychological Science
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: c(person("Dominique", "Makowski", email="dom.makowski@gmail.com", role=c("aut", "cre")),
              person("Viliam", "Simko", email="viliam.simko@gmail.com", role=c("ctb")))
 Maintainer: Dominique Makowski <dom.makowski@gmail.com>
@@ -24,7 +24,8 @@ Imports:
     psych,
     ppcor,
     corrplot,
-    rstanarm
+    rstanarm,
+    MuMIn
 Suggests:
     knitr,
     rmarkdown,
