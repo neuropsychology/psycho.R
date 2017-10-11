@@ -4,7 +4,7 @@
 \alias{summary.psychobject}
 \title{Print the results.}
 \usage{
-\method{summary}{psychobject}(object, round = NULL, ...)
+summary.psychobject(object, round = NULL, ...)
 }
 \arguments{
 \item{object}{A psychobject class object.}

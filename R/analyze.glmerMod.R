@@ -1,6 +1,6 @@
-#' Analyze merModLmerTest objects.
+#' Analyze glmerMod objects.
 #'
-#' Analyze merModLmerTest objects.
+#' Analyze glmerMod objects.
 #'
 #' @param x merModLmerTest object.
 #' @param ... Arguments passed to or from other methods.
@@ -9,8 +9,8 @@
 #'
 #' @examples
 #' library(psycho)
-#' require(lmerTest)
-#' fit <- lmerTest::lmer(Sepal.Length ~ Sepal.Width + (1|Species), data=iris)
+#' require(lme4)
+#' fit <- lme4::glmer(vs ~ mpg + (1|cyl), data=mtcars, family="binomial")
 #'
 #' results <- analyze(fit)
 #' summary(results)
@@ -22,7 +22,7 @@
 #' @importFrom lmerTest summary
 #' @import dplyr
 #' @export
-analyze.merModLmerTest <- function(x, ...) {
+analyze.glmerMod <- function(x, ...) {
 
 
   # Processing
@@ -40,17 +40,11 @@ analyze.merModLmerTest <- function(x, ...) {
   fitsum$Variable <- rownames(fitsum)
   fitsum$Coef <- fitsum$Estimate
   fitsum$SE <- fitsum$`Std..Error`
-  fitsum$df <- as.numeric(fitsum$df)
-  fitsum$t <- fitsum$`t.value`
-  fitsum$p <- fitsum$`Pr...t..`
+  fitsum$z <- fitsum$`z.value`
+  fitsum$p <- fitsum$`Pr...z..`
 
   # standardized coefficients
-  stdz <- as.data.frame(MuMIn::std.coef(fit, F))
-  fitsum$Coef.std <- stdz$Estimate
-  fitsum$SE.std <- stdz$`Std. Error`
-  fitsum$Effect_Size <- interpret_d(fitsum$Coef.std)
-
-  fitsum <- select_(fitsum, "Coef", "SE", "t", "df", "Coef.std", "SE.std", "p", "Effect_Size")
+  fitsum <- select_(fitsum, "Coef", "SE", "z", "p")
 
 
   # Varnames
@@ -66,17 +60,13 @@ analyze.merModLmerTest <- function(x, ...) {
 
   # Loop over all variables
   for (varname in varnames){
-    text <- paste("The effect of ", varname, " was [NOT] significant (beta = ", format_digit(fitsum[varname, "Coef"], 2), ", SE = ", format_digit(fitsum[varname, "SE"], 2), ", t(", format_digit(fitsum[varname, "df"], 2), ") = ", format_digit(fitsum[varname, "t"], 2), ", p ", format_p(fitsum[varname, "p"]), ") and can be considered as ", tolower(fitsum[varname, "Effect_Size"]), " (std. beta = ", format_digit(fitsum[varname, "Coef.std"], 2), ", std. SE = ", format_digit(fitsum[varname, "SE.std"], 2), ").", sep="")
+    text <- paste("The effect of ", varname, " was [NOT] significant (beta = ", format_digit(fitsum[varname, "Coef"], 2), ", SE = ", format_digit(fitsum[varname, "SE"], 2), ", z = ", format_digit(fitsum[varname, "z"], 2), ").", sep="")
 
     values[[varname]] <- list(
       Coef = fitsum[varname, "Coef"],
       SE = fitsum[varname, "SE"],
-      t = fitsum[varname, "t"],
-      df = fitsum[varname, "df"],
-      Coef.std = fitsum[varname, "Coef.std"],
-      SE.std = fitsum[varname, "SE.std"],
+      z = fitsum[varname, "z"],
       p = fitsum[varname, "p"],
-      Effect_Size = fitsum[varname, "Effect_Size"],
       Text = text
     )
   }
