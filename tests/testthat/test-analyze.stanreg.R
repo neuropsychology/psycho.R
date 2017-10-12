@@ -21,7 +21,8 @@ test_that("If it works.", {
                              data = iris,
                              seed = 666)
 
-  model <- psycho::analyze(fit, Effect_Size=T)
+  model <- psycho::analyze(fit, Effect_Size = T)
   values <- psycho::values(model)
-  testthat::expect_equal(round(values$Sepal.Width$median, 2), 0.79, tolerance = 0.05)
+  testthat::expect_equal(round(values$Sepal.Width$median, 2), 0.79,
+                         tolerance = 0.05)
 })
