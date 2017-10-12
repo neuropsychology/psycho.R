@@ -124,7 +124,7 @@ analyze.stanreg <- function(x, CI=95, Effect_Size=FALSE, ...) {
   if (Effect_Size == T) {
 
     print(paste("Interpreting effect size following Cohen (1977, 1988)...",
-                "Make sure your variables were standardized!"))
+                "Make sure your variables were normalized!"))
 
     EffSizes <- data.frame()
     for (varname in varnames) {
@@ -133,13 +133,13 @@ analyze.stanreg <- function(x, CI=95, Effect_Size=FALSE, ...) {
       # Compute the probabilities
       mkneg <- function(pmin, pmax) {
         stopifnot(pmin < pmax) # sanity check
-        length(posterior[posterior > pmin && posterior <= pmax]) /
+        length(posterior[posterior > pmin & posterior <= pmax]) /
           length(posterior)
       }
 
       mkpos <- function(pmin, pmax) {
         stopifnot(pmin < pmax) # sanity check
-        length(posterior[posterior >= pmin && posterior < pmax]) /
+        length(posterior[posterior >= pmin & posterior < pmax]) /
           length(posterior)
       }
 
@@ -147,13 +147,13 @@ analyze.stanreg <- function(x, CI=95, Effect_Size=FALSE, ...) {
       large_neg     <- mkneg(-1.3, -0.8)
       medium_neg    <- mkneg(-0.8, -0.5)
       small_neg     <- mkneg(-0.5, -0.2)
-      verysmall_neg <- mkneg(-0.2,  0) # TODO: there was open interval at 0
+      verysmall_neg <- mkneg(-0.2, 0) # TODO: there was open interval at 0
 
       verylarge_pos <- mkpos(1.3, Inf)
       large_pos     <- mkpos(0.8, 1.3)
       medium_pos    <- mkpos(0.5, 0.8)
       small_pos     <- mkpos(0.2, 0.5)
-      verysmall_pos <- mkpos(0,   0.2) # TODO: there was open interval at 0
+      verysmall_pos <- mkpos(0, 0.2) # TODO: there was open interval at 0
 
       EffSize <- data.frame(
         Direction = c("Negative", "Negative", "Negative", "Negative",
@@ -275,7 +275,8 @@ analyze.stanreg <- function(x, CI=95, Effect_Size=FALSE, ...) {
   # -------------
   # Model
   info <- paste("We fitted a Markov Chain Monte Carlo [type] model to predict",
-                "[Y] with [X] (formula =", fit$formula, ").",
+                "[Y] with [X] (formula = ", format(fit$formula),
+                ").",
                 "Priors were set as follow: [INSERT INFO ABOUT PRIORS].",
                 sep = "")
 

@@ -17,7 +17,7 @@ test_that("If it works.", {
   testthat::expect_equal(round(values$mpg$median, 2),-0.64, tolerance = 0.05)
 
 
-  fit <- rstanarm::stan_glmer(Sepal.Length ~ Sepal.Width + (1|Species),
+  fit <- rstanarm::stan_glmer(Sepal.Length ~ Sepal.Width + (1 | Species),
                              data = iris,
                              seed = 666)
 

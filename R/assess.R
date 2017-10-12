@@ -7,6 +7,7 @@
 #' @param sd The general population's standart deviation.
 #' @param linecolor The colour of the vertical line.
 #' @param fillcolor The colour of the density plot.
+#' @param xlabel The label for the x axis.
 #' @param verbose Print possible warnings.
 #'
 #' @return output
@@ -25,6 +26,7 @@ assess <- function(score,
                    sd = 1,
                    linecolor = "#E91E63",
                    fillcolor = "#2196F3",
+                   xlabel = "Score",
                    verbose = T) {
 
   # Values
@@ -91,8 +93,11 @@ assess <- function(score,
     ggplot(aes_string(x = "Distribution")) +
     geom_density(fill = fillcolor, colour = "white", adjust = 3, na.rm = TRUE) +
     geom_vline(xintercept = score, size = 2, color = linecolor) +
-    xlab("") +
-    ylab("")
+    xlab(paste("\n", xlabel, sep = "")) +
+    ylab("") +
+    theme_minimal() +
+    theme(axis.ticks.y = element_blank(),
+          axis.text.y = element_blank())
 
   output <- list(text = text, plot = plot, summary = summary, values = values)
 
