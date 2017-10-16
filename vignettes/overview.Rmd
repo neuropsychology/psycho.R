@@ -260,4 +260,4 @@ We can also plot the effects:
 plot(results)
 ```
 
-Obviously, you need to learn more about Bayesian analyses before running them. You can find more information in the rstanarm's [vignettes](https://cran.r-project.org/web/packages/rstanarm/vignettes/rstanarm.html).
+Obviously, you need to learn more about Bayesian analyses before running them. You can find more information in the rstanarm's [vignettes](https://CRAN.R-project.org/package=rstanarm/vignettes/rstanarm.html).
