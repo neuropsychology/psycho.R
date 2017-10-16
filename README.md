@@ -39,7 +39,7 @@ Want to get involved in the developpment of an open-source software and improve 
 - You need some help? You found a bug? You would like to request a new feature? 
   Just open an [issue](https://github.com/neuropsychology/psycho.R/issues) :relaxed:
 - Want to add a feature? Correct a bug? You're more than welcome to contribute!
-- **Call for help for implementation of `analyze` method for `t.test`, `cor.test`, `lm` and `lmer`**.
+- Looking for help to implement the `analyze` method for `t.test`, `cor.test` and `anova`.
   
   
 
