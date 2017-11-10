@@ -1,3 +1,12 @@
+# 0.0.2 (2017-11-10)
+
+### Breaking changes
+### New functions / parameters
+- `n_factors`: How many factors to retain for PCA or factor analysis?
+### Major changes
+### Minor changes
+
+
 # 0.0.2 (2017-10-12)
 
 ### Breaking changes
