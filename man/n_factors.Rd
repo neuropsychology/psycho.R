@@ -11,9 +11,9 @@ n_factors(df, rotate = "varimax", fm = "minres", n_max = 8)
 
 \item{rotate}{What rotation to use c("none", "varimax", "oblimin","promax")}
 
-\item{fm}{Factoring method – fm="pa" Principal Axis Factor Analysis,
-fm = "minres" minimum residual (OLS) factoring fm="mle" Maximum Likelihood FA,
-fm="pc" Principal Components"}
+\item{fm}{Factoring method: "pa" for Principal Axis Factor Analysis,
+"minres" (default) for minimum residual (OLS) factoring, "mle" for
+Maximum Likelihood FA and "pc" for Principal Components}
 
 \item{n_max}{How many factors to test.}
 }
