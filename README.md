@@ -42,6 +42,17 @@ Want to get involved in the developpment of an open-source software and improve 
 - Looking for help to implement the `analyze` method for `t.test`, `cor.test` and `anova`.
   
   
+## Features
+
+The `psycho` package can already do the following:
+
+- [x] Normalize your data
+- [x] Enlight you on how many factors to retain for a PCA
+- [x] Give you some clinically relevant info on a participant's score
+- [x] Compute complex correlation matrices
+- [x] Help you in the interpretation of various models (lme4, stan_lmer)
+
+
 
 ## General Workflow
 

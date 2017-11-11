@@ -4,9 +4,9 @@
 #'
 #' @param df The dataframe
 #' @param rotate What rotation to use c("none", "varimax", "oblimin","promax")
-#' @param fm Factoring method – fm="pa" Principal Axis Factor Analysis,
-#' fm = "minres" minimum residual (OLS) factoring fm="mle" Maximum Likelihood FA,
-#' fm="pc" Principal Components"
+#' @param fm Factoring method: "pa" for Principal Axis Factor Analysis,
+#' "minres" (default) for minimum residual (OLS) factoring, "mle" for
+#' Maximum Likelihood FA and "pc" for Principal Components
 #' @param n_max How many factors to test.
 #'
 #' @return output
@@ -103,13 +103,30 @@ n_factors <- function(df, rotate="varimax", fm="minres", n_max=8){
   stats$map <- vss$map
   stats$n_factors <- 1:nrow(stats)
 
-  results2 <- data.frame(Method=c("Velicer MAP",
-                                  "BIC",
-                                  "Sample Size Adjusted BIC"),
-                         n_optimal=c(na.omit(stats[stats$map==min(stats$map, na.rm = T),])$n_factors,
-                                     na.omit(stats[stats$BIC==min(stats$BIC, na.rm = T),])$n_factors,
-                                     na.omit(stats[stats$SABIC==min(stats$SABIC, na.rm = T),])$n_factors))
-  results <- rbind(results, results2)
+  # map
+  if (length(stats$map[!is.na(stats$map)]) > 0){
+    min <- min(stats$map[!is.na(stats$map)])
+    opt <- stats[stats$map==min,]$n_factors[!is.na(stats[stats$map==min,]$n_factors)]
+    results <- rbind(results,
+                     data.frame(Method=c("Velicer MAP"),
+                                n_optimal=c(opt)))
+  }
+  # bic
+  if (length(stats$BIC[!is.na(stats$BIC)]) > 0){
+    min <- min(stats$BIC[!is.na(stats$BIC)])
+    opt <- stats[stats$BIC==min,]$n_factors[!is.na(stats[stats$BIC==min,]$n_factors)]
+    results <- rbind(results,
+                     data.frame(Method=c("BIC"),
+                                n_optimal=c(opt)))
+  }
+  # sabic
+  if (length(stats$SABIC[!is.na(stats$SABIC)]) > 0){
+    min <- min(stats$SABIC[!is.na(stats$SABIC)])
+    opt <- stats[stats$SABIC==min,]$n_factors[!is.na(stats[stats$SABIC==min,]$n_factors)]
+    results <- rbind(results,
+                     data.frame(Method=c("Sample Size Adjusted BIC"),
+                                n_optimal=c(opt)))
+  }
 
 
   cfits <- vss[grep("cfit", names(vss))]
@@ -174,7 +191,6 @@ n_factors <- function(df, rotate="varimax", fm="minres", n_max=8){
     ylab("Eigenvalues\n") +
     xlab("\nNumber of Factors") +
     theme_minimal()
-  plot
 
   # Output
   # -------------
