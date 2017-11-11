@@ -36,15 +36,14 @@
 n_factors <- function(df, rotate="varimax", fm="minres", n_max=8){
 
   # Copy the parallel function from nFactors to correct the use of mvrnorm
-  parallel <- function (subject = 100, var = 10, rep = 100, cent = 0.05, quantile = cent,
-            model = "components", sd = diag(1, var), ...)
+  parallel <- function (subject = 100, var = 10, rep = 100, cent = 0.05,
+                        quantile = cent, model = "components",
+                        sd = diag(1, var), ...)
   {
     r <- subject
     c <- var
     y <- matrix(c(1:r * c), nrow = r, ncol = c)
-    ycor <- matrix(c(1:c * c), nrow = c, ncol = c)
     evpea <- NULL
-    leg.txt <- "Pearson"
     for (k in c(1:rep)) {
       y <- MASS::mvrnorm(n = r, mu = rep(0, var), Sigma = sd, empirical = FALSE)
       corY <- cov(y, ...)
@@ -57,7 +56,6 @@ n_factors <- function(df, rotate="varimax", fm="minres", n_max=8){
     SEcentile <- function(sd, n = 100, p = 0.95) {
       return(sd/sqrt(n) * sqrt(p * (1 - p))/dnorm(qnorm(p)))
     }
-    sprob <- c(cent)
     mevpea <- sapply(as.data.frame(evpea), mean)
     sevpea <- sapply(as.data.frame(evpea), sd)
     qevpea <- nFactors::moreStats(evpea, quantile = quantile)[3, ]
@@ -65,7 +63,10 @@ n_factors <- function(df, rotate="varimax", fm="minres", n_max=8){
     sqevpea <- sapply(as.data.frame(sqevpea), SEcentile, n = rep,
                       p = cent)
     result <- list(eigen = data.frame(mevpea, sevpea, qevpea,
-                                      sqevpea), subject = r, variables = c, centile = cent)
+                                      sqevpea),
+                   subject = r,
+                   variables = c,
+                   centile = cent)
     class(result) <- "parallel"
     return(result)
   }
@@ -86,10 +87,18 @@ n_factors <- function(df, rotate="varimax", fm="minres", n_max=8){
 
   # Processing
   # -------------------
-  results <- data.frame(Method=c("Optimal Coordinates", "Acceleration Factor", "Parallel Analysis", "Eigenvalues (Kaiser Criterion)"), n_optimal=as.numeric(nS$Components[1,]))
+  results <- data.frame(Method=c("Optimal Coordinates",
+                                 "Acceleration Factor",
+                                 "Parallel Analysis",
+                                 "Eigenvalues (Kaiser Criterion)"),
+                        n_optimal=as.numeric(nS$Components[1,]))
 
 
-  vss <- psych::VSS(cor, n=n_max, n.obs=nrow(df), rotate=rotate, fm=fm, plot=F)  # fm can be "pa", "pc", "minres", "mle"
+  vss <- psych::VSS(cor,
+                    n=n_max,
+                    n.obs=nrow(df),
+                    rotate=rotate,
+                    fm=fm, plot=F)  # fm can be "pa", "pc", "minres", "mle"
   stats <- vss$vss.stats
   stats$map <- vss$map
   stats$n_factors <- 1:nrow(stats)
