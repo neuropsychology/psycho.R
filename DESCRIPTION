@@ -1,7 +1,7 @@
 Package: psycho
 Type: Package
 Title: Efficient and Publishing-Oriented Workflow for Psychological Science
-Version: 0.0.2
+Version: 0.0.3
 Authors@R: c(
     person("Dominique", 
         "Makowski", 
@@ -33,6 +33,9 @@ Imports:
     tidyverse,
     rtf,
     psych,
+    MASS,
+    nFactors,
+    qgraph,
     ppcor,
     corrplot,
     rstanarm,
