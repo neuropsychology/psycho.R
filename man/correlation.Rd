@@ -32,24 +32,19 @@ output
 Compare a given score to a parent population.
 }
 \examples{
-df <- data.frame(V1 = rnorm(1000, 0, 1),
-                 V2 = rnorm(1000, 100, 15))
-df$V3 <- rnorm(1000, 50, 10) * exp(df$V1)
-df$V4 <- rnorm(1000, 5, 2) * log(df$V2)
-df$V5 <- rnorm(1000, 5, 2) * df$V3 / df$V4
-
+df <- attitude
 
 # Normal correlations
 results <- psycho::correlation(df)
 print(results)
-results$plot()
+plot(results)
 
 # Partial correlations with correction
-results <- psycho::correlation(df, type="partial", 
-                                   method="spearman", 
+results <- psycho::correlation(df, type="partial",
+                                   method="spearman",
                                    adjust="holm")
 print(results)
-results$plot()
+plot(results)
 
 }
 \author{

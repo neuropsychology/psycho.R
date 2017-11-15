@@ -86,7 +86,7 @@ You can save this correlation matrix using `write.csv(print(cor), "correlation_t
 
 You can also draw a quick visualization:
 ```{r, fig.width=8, eval = TRUE, fig.align='center'}
-cor$plot()
+plot(cor)
 ```
  
 
