@@ -32,6 +32,6 @@ test_that("Ccorrelations work", {
   testthat::expect_equal(value, -0.16, tol = 0.1)
 
   # Plot
-  plot <- output$plot()
-  testthat::expect_equal(plot[1, 1], 1, tol = 0.1)
+  plot <- plot(output)
+  testthat::expect_equal(length(plot), 10, tol = 0.1)
 })

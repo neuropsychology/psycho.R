@@ -1,4 +1,14 @@
-# 0.0.2 (2017-11-10)
+# Current Dev: 0.0.4 (2017-11-15)
+
+### Breaking changes
+### New functions / parameters
+- `correlation`: Plot is now supported by ggcorrplot instead of corrplot. The function behaves consistently (`plot(correlation(df)`)
+### Major changes
+- `correlation`: Fix p values adjustment
+### Minor changes
+
+
+# 0.0.3 (2017-11-10)
 
 ### Breaking changes
 ### New functions / parameters

@@ -18,31 +18,26 @@
 #' @return output
 #'
 #' @examples
-#' df <- data.frame(V1 = rnorm(1000, 0, 1),
-#'                  V2 = rnorm(1000, 100, 15))
-#' df$V3 <- rnorm(1000, 50, 10) * exp(df$V1)
-#' df$V4 <- rnorm(1000, 5, 2) * log(df$V2)
-#' df$V5 <- rnorm(1000, 5, 2) * df$V3 / df$V4
-#'
+#' df <- attitude
 #'
 #' # Normal correlations
 #' results <- psycho::correlation(df)
 #' print(results)
-#' results$plot()
+#' plot(results)
 #'
 #' # Partial correlations with correction
-#' results <- psycho::correlation(df, type="partial", 
-#'                                    method="spearman", 
+#' results <- psycho::correlation(df, type="partial",
+#'                                    method="spearman",
 #'                                    adjust="holm")
 #' print(results)
-#' results$plot()
+#' plot(results)
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
-#' @importFrom stats na.omit
+#' @importFrom stats na.omit p.adjust
 #' @importFrom psych corr.test
-#' @importFrom psych corr.p
-#' @import corrplot
+#' @importFrom ggplot2 theme element_text
+#' @import ggcorrplot
 #' @import ppcor
 #' @export
 correlation <- function(df,
@@ -59,6 +54,13 @@ correlation <- function(df,
 
   # Compute r coefficients
   if (type == "full") {
+    corr <- psych::corr.test(df, y = df2, use = "pairwise", method = method, adjust="none")
+    r <- corr$p
+    p <- corr$p
+    t <- corr$t
+    ci <- corr$ci
+    ci.adj <- corr$ci.adj
+
     r <- psych::corr.test(df, y = df2, use = "pairwise", method = method)$r
   } else{
 
@@ -67,19 +69,27 @@ correlation <- function(df,
     }
 
     df <- stats::na.omit(df)  # enable imputation
-    if (type == "partial") {
-      r <- ppcor::pcor(df, method = method)$estimate
+    if (type == "semi") {corr <- ppcor::spcor(df, method = method)}
+    else if (type == "partial") {corr <- ppcor::pcor(df, method = method)}
+    else {
+      warning("psycho correlation(): type must be 'full', 'semi' or 'partial'")
+      return()
     }
-    if (type == "semi") {
-      r <- ppcor::spcor(df, method = method)$estimate
-    }
+    r <- corr$estimate
+    p <- corr$p.value
+    t <- corr$statistic
+    ci <- "Not available for partial and semipartial correlations."
+    ci.adj <- "Not available for partial and semipartial correlations."
   }
 
 
-  # Get P values
+  # Adjust P values
   n <- nrow(df)
-  p <- psych::corr.p(r, n, adjust = adjust)$p
-  ci <- psych::corr.p(r, n, adjust = adjust)$ci
+  if (adjust != "none"){
+    p[lower.tri(p)] <- p.adjust(p[lower.tri(p)], method=adjust, n=choose(nrow(p), 2))
+    p[upper.tri(p)] <- p.adjust(p[upper.tri(p)], method=adjust, n=choose(nrow(p), 2))
+  }
+
 
 
   # Define notions for significance levels; spacing is important.
@@ -104,7 +114,7 @@ correlation <- function(df,
 
   # Values
   # -------------
-  values <- list(r = r, p = p, ci = ci, table = table)
+  values <- list(r = r, p = p, t = t, ci = ci, ci.adj = ci.adj, table = table)
 
   # Summary
   # -------------
@@ -117,18 +127,17 @@ correlation <- function(df,
 
   # Plot
   # -------------
-  plot <- function() {
-    corrplot::corrplot.mixed(
-      r,
-      lower = "ellipse",
-      upper = "number",
-      order = "hclust",
-      p.mat = p,
-      sig.level = 0.05,
-      insig = "n",
-      tl.pos = "lt"
-    )
-  }
+  plot <- ggcorrplot::ggcorrplot(r,
+                                 title = paste("A ", type, "'s correlation matrix (correction: ", adjust, ")\n", sep = ""),
+                                 method = "circle",
+                                 type="lower",
+                                 colors=c("#E91E63", "white", "#03A9F4"),
+                                 hc.order = TRUE,
+                                 p.mat = p,
+                                 insig="pch",
+                                 legend.title="",
+                                 lab=FALSE) +
+  ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.7))
 
 
   # Output
