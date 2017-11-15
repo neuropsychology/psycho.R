@@ -1,37 +1,51 @@
 context("correlation")
 
 test_that("Ccorrelations work", {
-  df <- data.frame(
-    A = c(1, 2, 3, 4, 5),
-    B = c(2, 5, 1, 4, 2),
-    C = c(2, 5, 1, 6, 2)
-  )
+  df <- attitude[c("rating", "complaints", "privileges", "learning")]
+
 
   # Pearson
   output <- psycho::correlation(df)
   value <- output$values$r[2, 1]
-  testthat::expect_equal(value, -0.1, tol = 0.1)
+  testthat::expect_equal(value, 0.82, tol = 0.1)
 
   # Spearman
   output <- psycho::correlation(df, method = "spearman")
   value <- output$values$r[2, 1]
-  testthat::expect_equal(value, -0.10, tol = 0.1)
+  testthat::expect_equal(value, 0.83, tol = 0.1)
 
   # Partial
   output <- psycho::correlation(df, type = "partial", adjust = "holm")
   value <- output$values$r[2, 1]
-  testthat::expect_equal(value, -0.43, tol = 0.1)
+  testthat::expect_equal(value, 0.72, tol = 0.1)
 
-  # Semipartial
-  df2 <- data.frame(
-    A = c(1, 2, 3, 4, 5),
-    B = c(2, 5, 1, 4, 2)
-  )
+  # Semi
   output <- psycho::correlation(df, type = "semi", adjust = "none")
   value <- output$values$r[2, 1]
-  testthat::expect_equal(value, -0.16, tol = 0.1)
+  testthat::expect_equal(value, 0.53, tol = 0.1)
+
+  # Dual
+  df2 <- attitude[c("raises", "critical")]
+
+  output <- psycho::correlation(df, df2, type = "full", adjust = "none")
+  value <- output$values$r[2, 1]
+  testthat::expect_equal(value,  0.66, tol = 0.1)
+
+  type = "semi"
+  adjust = "none"
+  method="pearson"
+  output <- psycho::correlation(df, df2, type = "semi", adjust = "none")
+  value <- output$values$r[2, 1]
+  testthat::expect_equal(value, 0.46, tol = 0.1)
+
+  plot <- plot(output)
+  testthat::expect_equal(length(plot), 10, tol = 0.1)
+
+  # Other
+  output <- psycho::correlation(df, type = "dupa", adjust = "holm")
+  testthat::expect_null(output)
 
   # Plot
-  plot <- plot(output)
+  plot <- plot(correlation(df))
   testthat::expect_equal(length(plot), 10, tol = 0.1)
 })
