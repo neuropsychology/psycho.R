@@ -17,6 +17,14 @@
 #' results <- analyze(fit)
 #' summary(results)
 #'
+#' data <- normalize(attitude)
+#' fit <- rstanarm::stan_lm(rating ~ advance + privileges + learning + raises,
+#'                          data=data, prior=R2(1))
+#'
+#' results <- analyze(fit)
+#' summary(results)
+#' plot(results)
+#' print(results)
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
@@ -26,7 +34,7 @@
 #' @import ggplot2
 #' @importFrom stats quantile
 #' @export
-analyze.stanreg <- function(x, CI=95, Effect_Size=FALSE, ...) {
+analyze.stanreg <- function(x, CI=95, Effect_Size=FALSE, ...){
 
 
   # Processing
@@ -40,6 +48,10 @@ analyze.stanreg <- function(x, CI=95, Effect_Size=FALSE, ...) {
   varnames <- names(fit$coefficients)
   varnames <- varnames[grepl("b\\[", varnames) == FALSE]
 
+  # If the model is an LM, extract the R2 distribution
+  if ("R2" %in% names(posteriors)){
+    varnames <- c(varnames, "R2")
+  }
 
   # Initialize empty values
   values <- list()

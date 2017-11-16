@@ -6,7 +6,7 @@
 ### Major changes
 - `correlation`: Fix p values adjustment
 ### Minor changes
-
+- `analyze.stanreg`: Returns features of R2 for stan_lm
 
 # 0.0.3 (2017-11-10)
 

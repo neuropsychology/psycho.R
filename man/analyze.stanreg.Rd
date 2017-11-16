@@ -30,6 +30,12 @@ results <- analyze(fit)
 summary(results)
 
 
+fit <- rstanarm::stan_lm(rating ~ advance + privileges + learning + raises,
+                         data=attitude, prior=R2(1))
+
+results <- analyze(fit)
+summary(results)
+
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
