@@ -4,14 +4,16 @@
 \alias{analyze.stanreg}
 \title{Analyze stanreg objects.}
 \usage{
-\method{analyze}{stanreg}(x, CI = 95, Effect_Size = FALSE, ...)
+\method{analyze}{stanreg}(x, CI = 95, effsize = FALSE, verbose = T, ...)
 }
 \arguments{
 \item{x}{stanreg object.}
 
 \item{CI}{Credible interval bounds.}
 
-\item{Effect_Size}{Compute Effect Sizes according to Cohen (1988)? Your outcome variable must be standardized.}
+\item{effsize}{Compute Effect Sizes according to Cohen (1988)? Your outcome variable must be standardized.}
+
+\item{verbose}{Toggle warnings display.}
 
 \item{...}{Arguments passed to or from other methods.}
 }
@@ -29,12 +31,14 @@ fit <- rstanarm::stan_glm(vs ~ mpg * cyl, data=mtcars)
 results <- analyze(fit)
 summary(results)
 
-
+data <- normalize(attitude)
 fit <- rstanarm::stan_lm(rating ~ advance + privileges + learning + raises,
-                         data=attitude, prior=R2(1))
+                         data=data, prior=R2(1))
 
 results <- analyze(fit)
 summary(results)
+plot(results)
+print(results)
 
 }
 \author{

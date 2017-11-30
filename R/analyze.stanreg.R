@@ -4,7 +4,8 @@
 #'
 #' @param x stanreg object.
 #' @param CI Credible interval bounds.
-#' @param Effect_Size Compute Effect Sizes according to Cohen (1988)? Your outcome variable must be standardized.
+#' @param effsize Compute Effect Sizes according to Cohen (1988)? Your outcome variable must be standardized.
+#' @param verbose Toggle warnings display.
 #' @param ... Arguments passed to or from other methods.
 #'
 #' @return output
@@ -34,7 +35,7 @@
 #' @import ggplot2
 #' @importFrom stats quantile
 #' @export
-analyze.stanreg <- function(x, CI=95, Effect_Size=FALSE, ...){
+analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...){
 
 
   # Processing
@@ -109,11 +110,13 @@ analyze.stanreg <- function(x, CI=95, Effect_Size=FALSE, ...){
                   format_digit(MPE_values[2]),
                   " (Median = ",format_digit(median),
                   ", MAD = ", format_digit(mad),
-                  ", Mean = ", format_digit(mean),
-                  ", SD = ", format_digit(sd),
+                  # ", Mean = ", format_digit(mean),
+                  # ", SD = ", format_digit(sd),
                   ", ", CI, "% CI [",
                   format_digit(CI_values[1]), ", ",
-                  format_digit(CI_values[2]), "]).", sep = "")
+                  format_digit(CI_values[2]), "], ",
+                  "MPE = ", format_digit(MPE), "%).",
+                  sep = "")
 
     # Store all that
     values[[varname]] <- list(
@@ -133,10 +136,11 @@ analyze.stanreg <- function(x, CI=95, Effect_Size=FALSE, ...){
 
   # Effect size
   # -------------
-  if (Effect_Size == T) {
+  if (effsize == T) {
 
-    print(paste("Interpreting effect size following Cohen (1977, 1988)...",
-                "Make sure your variables were normalized!"))
+    if (verbose == T) {
+      warning("Interpreting effect size following Cohen (1977, 1988)... Make sure your variables were normalized!")
+    }
 
     EffSizes <- data.frame()
     for (varname in varnames) {
@@ -267,7 +271,7 @@ analyze.stanreg <- function(x, CI=95, Effect_Size=FALSE, ...){
                         CI_lower = CIs[seq(1, length(CIs), 2)],
                         CI_higher = CIs[seq(2, length(CIs), 2)])
 
-  if (Effect_Size == T) {
+  if (effsize == T) {
     EffSizes <- data.frame()
     for (varname in names(values)) {
       Current <- data.frame(Very_Large = values[[varname]]$EffSize_VL,
@@ -296,7 +300,7 @@ analyze.stanreg <- function(x, CI=95, Effect_Size=FALSE, ...){
   coefs_text <- c()
   for (varname in names(values)) {
     coefs_text <- c(coefs_text, values[[varname]]$text)
-    if (Effect_Size == T) {
+    if (effsize == T) {
       coefs_text <- c(coefs_text, values[[varname]]$EffSize_text)
     }
   }

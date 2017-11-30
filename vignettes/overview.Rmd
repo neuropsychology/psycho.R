@@ -279,7 +279,7 @@ library(rstanarm)
 fit <- rstanarm::stan_lmer(RT ~ Condition + (1|Participant) + (1|Item), data=df)
 
 # Traditional output
-results <- psycho::analyze(fit, Effect_Size=T)
+results <- psycho::analyze(fit, effsize=T)
 summary(results, round=2)
 ```
 
