@@ -6,6 +6,7 @@
 ### Major changes
 - `correlation`: Fix p values adjustment
 ### Minor changes
+- `analyze.stanreg`: Removed the mean and sd of the `print()`, added the MPE.
 - `analyze.stanreg`: Returns features of R2 for stan_lm
 
 # 0.0.3 (2017-11-10)
