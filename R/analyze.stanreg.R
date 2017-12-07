@@ -66,10 +66,8 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...){
     mad <- mad(posterior)
     mean <- mean(posterior)
     sd <- sd(posterior)
-    CI_values <- quantile(posterior,
-                          probs = c((100 - CI) / 2 / 100,
-                                    1 - (100 - CI) / 2 / 100),
-                          type = 8)
+    CI_values <- hdi(posterior, prob = CI/100)
+    CI_values <- c(CI_values$values$HDImin, CI_values$values$HDImax)
 
     # Compute MPE
     if (median >= 0) {
