@@ -1,6 +1,6 @@
 #' Multiple Correlations.
 #'
-#' Compare a given score to a parent population.
+#' Compute different kinds of correlation matrices.
 #'
 #' @param df The dataframe
 #' @param df2 Optional dataframe to correlate with the first one.

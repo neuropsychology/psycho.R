@@ -29,7 +29,7 @@ abbreviated.}
 output
 }
 \description{
-Compare a given score to a parent population.
+Compute different kinds of correlation matrices.
 }
 \examples{
 df <- attitude

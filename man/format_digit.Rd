@@ -2,7 +2,7 @@
 % Please edit documentation in R/formatting.R
 \name{format_digit}
 \alias{format_digit}
-\title{Dormat digits.}
+\title{Format digits.}
 \usage{
 format_digit(x, digits = 2, null_treshold = 0.001)
 }
@@ -14,7 +14,7 @@ format_digit(x, digits = 2, null_treshold = 0.001)
 \item{null_treshold}{Treshold below which return 0.}
 }
 \description{
-Dormat digits.
+Format digits.
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
