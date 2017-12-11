@@ -13,9 +13,11 @@
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-find_season <- function(date){
+find_season <- function(date) {
   d <- as.Date(cut(as.Date(date), "month")) + 32
-  season <- factor(quarters(d),
-                   labels = c("Winter", "Spring", "Summer", "Fall"))
+  season <- factor(
+    quarters(d),
+    labels = c("Winter", "Spring", "Summer", "Fall")
+  )
   return(season)
 }

@@ -29,11 +29,11 @@ test_that("Ccorrelations work", {
 
   output <- psycho::correlation(df, df2, type = "full", adjust = "none")
   value <- output$values$r[2, 1]
-  testthat::expect_equal(value,  0.66, tol = 0.1)
+  testthat::expect_equal(value, 0.66, tol = 0.1)
 
-  type = "semi"
-  adjust = "none"
-  method="pearson"
+  type <- "semi"
+  adjust <- "none"
+  method <- "pearson"
   output <- psycho::correlation(df, df2, type = "semi", adjust = "none")
   value <- output$values$r[2, 1]
   testthat::expect_equal(value, 0.46, tol = 0.1)

@@ -5,7 +5,7 @@
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-values <- function(x){
+values <- function(x) {
   values <- x$values
   return(values)
 }

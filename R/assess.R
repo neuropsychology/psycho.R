@@ -50,8 +50,10 @@ assess <- function(score,
   # If score is list
   if (length(score) > 1) {
     if (verbose == T) {
-      warning(paste("Multiple scores were provided.",
-                    "Returning a list containing summmary and values."))
+      warning(paste(
+        "Multiple scores were provided.",
+        "Returning a list containing summmary and values."
+      ))
     }
     output <- list(summary = summary, values = values)
     return(output)
@@ -63,7 +65,7 @@ assess <- function(score,
   if (values$percentile < 0.50) {
     values$percentile <- 1 - values$percentile
     comparison <- "smaller"
-  } else{
+  } else {
     comparison <- "greater"
   }
 
@@ -96,8 +98,10 @@ assess <- function(score,
     xlab(paste("\n", xlabel, sep = "")) +
     ylab("") +
     theme_minimal() +
-    theme(axis.ticks.y = element_blank(),
-          axis.text.y = element_blank())
+    theme(
+      axis.ticks.y = element_blank(),
+      axis.text.y = element_blank()
+    )
 
   output <- list(text = text, plot = plot, summary = summary, values = values)
 

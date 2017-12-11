@@ -10,10 +10,10 @@
 #'
 #' @method summary psychobject
 #' @export
-summary.psychobject <- function(object, round=NULL, ...){
+summary.psychobject <- function(object, round=NULL, ...) {
   summary <- object$summary
 
-  if (!is.null(round)){
+  if (!is.null(round)) {
     nums <- dplyr::select_if(summary, is.numeric)
     nums <- round(nums, round)
     fact <- dplyr::select_if(summary, is.character)

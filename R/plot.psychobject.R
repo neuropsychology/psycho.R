@@ -6,7 +6,7 @@
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-plot.psychobject <- function(x, ...){
+plot.psychobject <- function(x, ...) {
   plot <- x$plot
   return(plot)
 }

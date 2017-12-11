@@ -14,15 +14,19 @@ test_that("If it works.", {
 
   model <- psycho::analyze(fit)
   values <- psycho::values(model)
-  testthat::expect_equal(round(values$mpg$median, 2),-0.64, tolerance = 0.05)
+  testthat::expect_equal(round(values$mpg$median, 2), -0.64, tolerance = 0.05)
 
 
-  fit <- rstanarm::stan_glmer(Sepal.Length ~ Sepal.Width + (1 | Species),
-                             data = iris,
-                             seed = 666)
+  fit <- rstanarm::stan_glmer(
+    Sepal.Length ~ Sepal.Width + (1 | Species),
+    data = iris,
+    seed = 666
+  )
 
   model <- psycho::analyze(fit, effsize = T)
   values <- psycho::values(model)
-  testthat::expect_equal(round(values$Sepal.Width$median, 2), 0.79,
-                         tolerance = 0.05)
+  testthat::expect_equal(
+    round(values$Sepal.Width$median, 2), 0.79,
+    tolerance = 0.05
+  )
 })

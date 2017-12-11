@@ -7,6 +7,7 @@
 ### Major changes
 - Changed credible interval computation in analyze.stanreg
 ### Minor changes
+- Use `styler`
 
 # Current Dev: 0.0.4 (2017-11-15)
 

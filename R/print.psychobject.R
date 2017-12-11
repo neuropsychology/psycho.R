@@ -6,7 +6,7 @@
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-print.psychobject <- function(x, ...){
+print.psychobject <- function(x, ...) {
   text <- x$text
   return(text)
 }

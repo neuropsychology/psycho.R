@@ -8,6 +8,6 @@
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-analyze <- function(x, ...){
+analyze <- function(x, ...) {
   UseMethod("analyze")
 }
