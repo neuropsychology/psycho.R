@@ -6,5 +6,4 @@ test_that("Correct Value", {
 
   testthat::expect_equal(results$values$HDImin, 40)
   testthat::expect_equal(length(plot(results)), 9)
-
 })

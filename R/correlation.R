@@ -50,13 +50,13 @@ correlation <- function(df,
   # -------------------
 
   # Remove non numeric
-  df <- df[ , sapply(df, is.numeric)]
+  df <- df[, sapply(df, is.numeric)]
   if (is.null(df2) == FALSE) {
-    df2 <- df2[ , sapply(df2, is.numeric)]
+    df2 <- df2[, sapply(df2, is.numeric)]
   }
   # Compute r coefficients
   if (type == "full") {
-    corr <- psych::corr.test(df, y = df2, use = "pairwise", method = method, adjust="none")
+    corr <- psych::corr.test(df, y = df2, use = "pairwise", method = method, adjust = "none")
     r <- corr$r
     p <- corr$p
     t <- corr$t
@@ -64,15 +64,18 @@ correlation <- function(df,
     ci.adj <- corr$ci.adj
 
     r <- psych::corr.test(df, y = df2, use = "pairwise", method = method)$r
-  } else{
-
+  } else {
     if (is.null(df2) == FALSE) {
       df <- cbind(df, df2)
     }
 
-    df <- stats::na.omit(df)  # enable imputation
-    if (type == "semi") {corr <- ppcor::spcor(df, method = method)}
-    else if (type == "partial") {corr <- ppcor::pcor(df, method = method)}
+    df <- stats::na.omit(df) # enable imputation
+    if (type == "semi") {
+      corr <- ppcor::spcor(df, method = method)
+    }
+    else if (type == "partial") {
+      corr <- ppcor::pcor(df, method = method)
+    }
     else {
       warning("type parameter must be 'full', 'semi' or 'partial'")
       return()
@@ -87,12 +90,12 @@ correlation <- function(df,
 
   # Adjust P values
   n <- nrow(df)
-  if (adjust != "none"){
-    if ((type == "full" & is.null(df2)==F)|(type == "semi")) {
-      p <- p.adjust(p, method=adjust)
-    } else{
-      p[lower.tri(p)] <- p.adjust(p[lower.tri(p)], method=adjust, n=choose(nrow(p), 2))
-      p[upper.tri(p)] <- p.adjust(p[upper.tri(p)], method=adjust, n=choose(nrow(p), 2))
+  if (adjust != "none") {
+    if ((type == "full" & is.null(df2) == F) | (type == "semi")) {
+      p <- p.adjust(p, method = adjust)
+    } else {
+      p[lower.tri(p)] <- p.adjust(p[lower.tri(p)], method = adjust, n = choose(nrow(p), 2))
+      p[upper.tri(p)] <- p.adjust(p[upper.tri(p)], method = adjust, n = choose(nrow(p), 2))
     }
   }
 
@@ -100,19 +103,21 @@ correlation <- function(df,
 
   # Define notions for significance levels; spacing is important.
   mystars <- ifelse(p < .001, "***",
-               ifelse(p < .01, "** ",
-                 ifelse(p < .05, "* ", " ")))
+    ifelse(p < .01, "** ",
+      ifelse(p < .05, "* ", " ")
+    )
+  )
 
   # trunctuate the matrix that holds the correlations to two decimal
-  r_format <- format(round(cbind(rep(-1.11, ncol(df)), r), 2))[,-1]
+  r_format <- format(round(cbind(rep(-1.11, ncol(df)), r), 2))[, -1]
   # build a new correlation matrix with significance stars
   table <- matrix(paste(r_format, mystars, sep = ""), ncol = ncol(df))
 
   # Format
-  if ((type == "full" & is.null(df2)==F)|(type == "semi")) {
-    if (type == "semi"){
+  if ((type == "full" & is.null(df2) == F) | (type == "semi")) {
+    if (type == "semi") {
       rownames(table) <- colnames(df)
-    } else{
+    } else {
       rownames(table) <- colnames(df2)
     }
     colnames(table) <- paste(colnames(df), "", sep = "")
@@ -123,9 +128,9 @@ correlation <- function(df,
     rownames(table) <- colnames(df)
     colnames(table) <- paste(colnames(df), "", sep = "")
     table <- as.matrix(table)
-    table[upper.tri(table, diag = TRUE)] <- NA  # remove upper triangle
+    table[upper.tri(table, diag = TRUE)] <- NA # remove upper triangle
     table <- as.data.frame(table)
-    table <- cbind(table[1:length(table) - 1])  # remove last column and return the matrix (which is now a data frame)
+    table <- cbind(table[1:length(table) - 1]) # remove last column and return the matrix (which is now a data frame)
   }
 
 
@@ -145,39 +150,42 @@ correlation <- function(df,
 
   # Plot
   # -------------
-  if (is.null(df2)==F & type=="full"){
-    corr <- psych::corr.test(cbind(df, df2), use = "pairwise", method = method, adjust="none")
+  if (is.null(df2) == F & type == "full") {
+    corr <- psych::corr.test(cbind(df, df2), use = "pairwise", method = method, adjust = "none")
     r <- corr$r
     p <- corr$p
-    p[lower.tri(p)] <- p.adjust(p[lower.tri(p)], method=adjust, n=choose(nrow(p), 2))
-    p[upper.tri(p)] <- p.adjust(p[upper.tri(p)], method=adjust, n=choose(nrow(p), 2))
+    p[lower.tri(p)] <- p.adjust(p[lower.tri(p)], method = adjust, n = choose(nrow(p), 2))
+    p[upper.tri(p)] <- p.adjust(p[upper.tri(p)], method = adjust, n = choose(nrow(p), 2))
     warning("Due to the presence of two dataframes, the plot might be incorrect. Consider with caution.")
   }
 
-  if (type=="semi"){
-    plot <- ggcorrplot::ggcorrplot(r,
-                                   title = paste("A ", type, "'s correlation matrix (correction: ", adjust, ")\n", sep = ""),
-                                   method = "circle",
-                                   type="full",
-                                   colors=c("#E91E63", "white", "#03A9F4"),
-                                   hc.order = TRUE,
-                                   p.mat = p,
-                                   insig="pch",
-                                   legend.title="",
-                                   lab=FALSE) +
+  if (type == "semi") {
+    plot <- ggcorrplot::ggcorrplot(
+      r,
+      title = paste("A ", type, "'s correlation matrix (correction: ", adjust, ")\n", sep = ""),
+      method = "circle",
+      type = "full",
+      colors = c("#E91E63", "white", "#03A9F4"),
+      hc.order = TRUE,
+      p.mat = p,
+      insig = "pch",
+      legend.title = "",
+      lab = FALSE
+    ) +
       ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.7))
-
-  } else{
-    plot <- ggcorrplot::ggcorrplot(r,
-                                   title = paste("A ", type, "'s correlation matrix (correction: ", adjust, ")\n", sep = ""),
-                                   method = "circle",
-                                   type="lower",
-                                   colors=c("#E91E63", "white", "#03A9F4"),
-                                   hc.order = TRUE,
-                                   p.mat = p,
-                                   insig="pch",
-                                   legend.title="",
-                                   lab=FALSE) +
+  } else {
+    plot <- ggcorrplot::ggcorrplot(
+      r,
+      title = paste("A ", type, "'s correlation matrix (correction: ", adjust, ")\n", sep = ""),
+      method = "circle",
+      type = "lower",
+      colors = c("#E91E63", "white", "#03A9F4"),
+      hc.order = TRUE,
+      p.mat = p,
+      insig = "pch",
+      legend.title = "",
+      lab = FALSE
+    ) +
       ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.7))
   }
 

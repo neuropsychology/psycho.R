@@ -35,7 +35,7 @@
 #' @import ggplot2
 #' @importFrom stats quantile
 #' @export
-analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...){
+analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
 
 
   # Processing
@@ -50,14 +50,14 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...){
   varnames <- varnames[grepl("b\\[", varnames) == FALSE]
 
   # If the model is an LM, extract the R2 distribution
-  if ("R2" %in% names(posteriors)){
+  if ("R2" %in% names(posteriors)) {
     varnames <- c(varnames, "R2")
   }
 
   # Initialize empty values
   values <- list()
   # Loop over all variables
-  for (varname in varnames){
+  for (varname in varnames) {
     # Extract posterior
     posterior <- posteriors[, varname]
 
@@ -66,7 +66,7 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...){
     mad <- mad(posterior)
     mean <- mean(posterior)
     sd <- sd(posterior)
-    CI_values <- hdi(posterior, prob = CI/100)
+    CI_values <- hdi(posterior, prob = CI / 100)
     CI_values <- c(CI_values$values$HDImin, CI_values$values$HDImax)
 
     # Compute MPE
@@ -77,7 +77,6 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...){
       } else {
         MPE_values <- c(0, max(posterior))
       }
-
     } else {
       MPE <- length(posterior[posterior < 0]) / length(posterior) * 100
       if (MPE == 100) {
@@ -93,28 +92,32 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...){
     if (grepl(":", varname)) {
       splitted <- strsplit(varname, ":")[[1]]
       if (length(splitted) == 2) {
-        name <- paste("interaction effect between ",
-                      splitted[1], " and ", splitted[2], sep = "")
+        name <- paste(
+          "interaction effect between ",
+          splitted[1], " and ", splitted[2], sep = ""
+        )
       } else {
-          name <- varname
-        }
-      } else {
-        name <- paste("effect of ", varname, sep = "")
+        name <- varname
+      }
+    } else {
+      name <- paste("effect of ", varname, sep = "")
     }
 
-    text <- paste("Concerning the ", name, ", there is a probability of ",
-                  format_digit(MPE), "% that its coefficient is between ",
-                  format_digit(MPE_values[1]), " and ",
-                  format_digit(MPE_values[2]),
-                  " (Median = ",format_digit(median),
-                  ", MAD = ", format_digit(mad),
-                  # ", Mean = ", format_digit(mean),
-                  # ", SD = ", format_digit(sd),
-                  ", ", CI, "% CI [",
-                  format_digit(CI_values[1]), ", ",
-                  format_digit(CI_values[2]), "], ",
-                  "MPE = ", format_digit(MPE), "%).",
-                  sep = "")
+    text <- paste(
+      "Concerning the ", name, ", there is a probability of ",
+      format_digit(MPE), "% that its coefficient is between ",
+      format_digit(MPE_values[1]), " and ",
+      format_digit(MPE_values[2]),
+      " (Median = ", format_digit(median),
+      ", MAD = ", format_digit(mad),
+      # ", Mean = ", format_digit(mean),
+      # ", SD = ", format_digit(sd),
+      ", ", CI, "% CI [",
+      format_digit(CI_values[1]), ", ",
+      format_digit(CI_values[2]), "], ",
+      "MPE = ", format_digit(MPE), "%).",
+      sep = ""
+    )
 
     # Store all that
     values[[varname]] <- list(
@@ -129,13 +132,11 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...){
       posterior = posterior,
       text = text
     )
-
   }
 
   # Effect size
   # -------------
   if (effsize == T) {
-
     if (verbose == T) {
       warning("Interpreting effect size following Cohen (1977, 1988)... Make sure your variables were normalized!")
     }
@@ -158,26 +159,32 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...){
       }
 
       verylarge_neg <- mkneg(-Inf, -1.3)
-      large_neg     <- mkneg(-1.3, -0.8)
-      medium_neg    <- mkneg(-0.8, -0.5)
-      small_neg     <- mkneg(-0.5, -0.2)
+      large_neg <- mkneg(-1.3, -0.8)
+      medium_neg <- mkneg(-0.8, -0.5)
+      small_neg <- mkneg(-0.5, -0.2)
       verysmall_neg <- mkneg(-0.2, 0) # TODO: there was open interval at 0
 
       verylarge_pos <- mkpos(1.3, Inf)
-      large_pos     <- mkpos(0.8, 1.3)
-      medium_pos    <- mkpos(0.5, 0.8)
-      small_pos     <- mkpos(0.2, 0.5)
+      large_pos <- mkpos(0.8, 1.3)
+      medium_pos <- mkpos(0.5, 0.8)
+      small_pos <- mkpos(0.2, 0.5)
       verysmall_pos <- mkpos(0, 0.2) # TODO: there was open interval at 0
 
       EffSize <- data.frame(
-        Direction = c("Negative", "Negative", "Negative", "Negative",
-                      "Negative", "Positive", "Positive", "Positive",
-                      "Positive", "Positive"),
-        Size = c("VeryLarge", "Large", "Medium", "Small", "VerySmall",
-                 "VerySmall", "Small", "Medium", "Large", "VeryLarge"),
-        Probability = c(verylarge_neg, large_neg, medium_neg, small_neg,
-                        verysmall_neg, verysmall_pos, small_pos, medium_pos,
-                        large_pos, verylarge_pos)
+        Direction = c(
+          "Negative", "Negative", "Negative", "Negative",
+          "Negative", "Positive", "Positive", "Positive",
+          "Positive", "Positive"
+        ),
+        Size = c(
+          "VeryLarge", "Large", "Medium", "Small", "VerySmall",
+          "VerySmall", "Small", "Medium", "Large", "VeryLarge"
+        ),
+        Probability = c(
+          verylarge_neg, large_neg, medium_neg, small_neg,
+          verysmall_neg, verysmall_pos, small_pos, medium_pos,
+          large_pos, verylarge_pos
+        )
       )
 
       EffSize$Probability[is.na(EffSize$Probability)] <- 0
@@ -221,7 +228,8 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...){
         round(small * 100, 2), "% that this effect size is small, ",
         round(verysmall * 100, 2), "% that this effect is very small and ",
         round(opposite_prob * 100, 2), "% that it has an opposite direction",
-        "(between 0 and ", signif(opposite_max, 2), ").", sep = "")
+        "(between 0 and ", signif(opposite_max, 2), ").", sep = ""
+      )
 
       values[[varname]]$EffSize <- EffSize
       values[[varname]]$EffSize_text <- EffSize_text
@@ -232,7 +240,6 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...){
       values[[varname]]$EffSize_S <- small
       values[[varname]]$EffSize_VS <- verysmall
       values[[varname]]$EffSize_O <- opposite_prob
-
     }
   }
 
@@ -264,20 +271,24 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...){
     CIs <- c(CIs, values[[varname]]$CI_values)
   }
 
-  summary <- data.frame(Variable = names(values), MPE = MPEs, Median = medians,
-                        MAD = mads, Mean = means, SD = sds,
-                        CI_lower = CIs[seq(1, length(CIs), 2)],
-                        CI_higher = CIs[seq(2, length(CIs), 2)])
+  summary <- data.frame(
+    Variable = names(values), MPE = MPEs, Median = medians,
+    MAD = mads, Mean = means, SD = sds,
+    CI_lower = CIs[seq(1, length(CIs), 2)],
+    CI_higher = CIs[seq(2, length(CIs), 2)]
+  )
 
   if (effsize == T) {
     EffSizes <- data.frame()
     for (varname in names(values)) {
-      Current <- data.frame(Very_Large = values[[varname]]$EffSize_VL,
-                            Large = values[[varname]]$EffSize_L,
-                            Medium = values[[varname]]$EffSize_M,
-                            Small = values[[varname]]$EffSize_S,
-                            Very_Small = values[[varname]]$EffSize_VS,
-                            Opposite = values[[varname]]$EffSize_O)
+      Current <- data.frame(
+        Very_Large = values[[varname]]$EffSize_VL,
+        Large = values[[varname]]$EffSize_L,
+        Medium = values[[varname]]$EffSize_M,
+        Small = values[[varname]]$EffSize_S,
+        Very_Small = values[[varname]]$EffSize_VS,
+        Opposite = values[[varname]]$EffSize_O
+      )
       EffSizes <- rbind(EffSizes, Current)
     }
     summary <- cbind(summary, EffSizes)
@@ -288,11 +299,13 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...){
   # Text
   # -------------
   # Model
-  info <- paste("We fitted a Markov Chain Monte Carlo [type] model to predict",
-                "[Y] with [X] (formula = ", format(fit$formula),
-                ").",
-                "Priors were set as follow: [INSERT INFO ABOUT PRIORS].",
-                sep = "")
+  info <- paste(
+    "We fitted a Markov Chain Monte Carlo [type] model to predict",
+    "[Y] with [X] (formula = ", format(fit$formula),
+    ").",
+    "Priors were set as follow: [INSERT INFO ABOUT PRIORS].",
+    sep = ""
+  )
 
   # Coefs
   coefs_text <- c()
@@ -315,9 +328,11 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...){
     ggplot(aes_string(x = "Variable", y = "Coefficient", fill = "Variable")) +
     geom_violin() +
     geom_boxplot(fill = "grey", alpha = 0.3, outlier.shape = NA) +
-    stat_summary(fun.y = "mean", geom = "errorbar",
-                 aes_string(ymax = "..y..", ymin = "..y.."),
-                 width = .75, linetype = "dashed", colour = "red") +
+    stat_summary(
+      fun.y = "mean", geom = "errorbar",
+      aes_string(ymax = "..y..", ymin = "..y.."),
+      width = .75, linetype = "dashed", colour = "red"
+    ) +
     geom_hline(aes(yintercept = 0)) +
     theme_classic() +
     coord_flip() +

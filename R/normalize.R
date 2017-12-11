@@ -19,13 +19,13 @@
 #' @import purrr
 #' @import dplyr
 #' @export
-normalize <- function(df){
+normalize <- function(df) {
   dfother <- purrr::discard(df, is.numeric)
   dfnum <- purrr::keep(df, is.numeric)
   dfnum <- as.data.frame(scale(dfnum))
-  if (is.null(ncol(dfother))){
+  if (is.null(ncol(dfother))) {
     df <- dfnum
-  } else{
+  } else {
     df <- dplyr::bind_cols(dfother, dfnum)
   }
 

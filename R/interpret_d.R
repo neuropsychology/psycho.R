@@ -11,12 +11,14 @@
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-interpret_d <- function(x){
-
+interpret_d <- function(x) {
   interpretation <- ifelse(abs(x) > 1.3, "Very Large",
-                           ifelse(abs(x) >= 0.8, "Large",
-                           ifelse(abs(x) >= 0.5, "Medium",
-                           ifelse(abs(x) >= 0.2, "Small", "Very Small"))))
+    ifelse(abs(x) >= 0.8, "Large",
+      ifelse(abs(x) >= 0.5, "Medium",
+        ifelse(abs(x) >= 0.2, "Small", "Very Small")
+      )
+    )
+  )
 
   return(interpretation)
 }

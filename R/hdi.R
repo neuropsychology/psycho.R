@@ -19,19 +19,29 @@ hdi <- function(x, prob = .95) {
   HDImax <- x[which.min(ci.width) + ci.index]
 
   # Store results
-  values <- list(HDImin = HDImin, HDImax = HDImax, prob=prob)
-  text <- paste(prob*100, "% CI [", format_string(HDImin, "%.2f"), ", ", format_string(HDImax, "%.2f"), "]", sep="")
-  summary <- data.frame(Probability=prob, HDImin=HDImin, HDImax=HDImax)
+  values <- list(HDImin = HDImin, HDImax = HDImax, prob = prob)
+  text <- paste(prob * 100,
+                "% CI [",
+                format_string(HDImin, "%.2f"),
+                ", ",
+                format_string(HDImax, "%.2f"),
+                "]",
+                sep = "")
+  summary <- data.frame(Probability = prob, HDImin = HDImin, HDImax = HDImax)
 
 
   # Plot
-  data <- as.data.frame(x=x)
-  plot <- ggplot(data=data, aes(x)) +
-    geom_density(fill="#2196F3") +
-    geom_vline(data=data, aes(xintercept=HDImin),
-               linetype="dashed", color="#E91E63", size=1) +
-    geom_vline(data=data, aes(xintercept=HDImax),
-               linetype="dashed", color="#E91E63", size=1) +
+  data <- as.data.frame(x = x)
+  plot <- ggplot(data = data, aes(x)) +
+    geom_density(fill = "#2196F3") +
+    geom_vline(
+      data = data, aes(xintercept = HDImin),
+      linetype = "dashed", color = "#E91E63", size = 1
+    ) +
+    geom_vline(
+      data = data, aes(xintercept = HDImax),
+      linetype = "dashed", color = "#E91E63", size = 1
+    ) +
     theme_minimal()
 
 
