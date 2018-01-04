@@ -20,13 +20,15 @@ hdi <- function(x, prob = .95) {
 
   # Store results
   values <- list(HDImin = HDImin, HDImax = HDImax, prob = prob)
-  text <- paste(prob * 100,
-                "% CI [",
-                format_string(HDImin, "%.2f"),
-                ", ",
-                format_string(HDImax, "%.2f"),
-                "]",
-                sep = "")
+  text <- paste(
+    prob * 100,
+    "% CI [",
+    format_string(HDImin, "%.2f"),
+    ", ",
+    format_string(HDImax, "%.2f"),
+    "]",
+    sep = ""
+  )
   summary <- data.frame(Probability = prob, HDImin = HDImin, HDImax = HDImax)
 
 
