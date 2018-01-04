@@ -6,6 +6,7 @@
 ### Minor changes
 - Added [`CONTRIBUTING.md`](https://github.com/neuropsychology/psycho.R/blob/master/CONTRIBUTING.md)
 - Changed `format_digit`
+- Added `except` parameter to `normalize`
 
 
 # 0.0.6 (2017-12-07)

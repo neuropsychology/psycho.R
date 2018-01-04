@@ -1,11 +1,24 @@
 context("normalize")
 
 test_that("Correct Value", {
-  x <- data.frame(x = c(8, 10, 12), y = c("a", "b", "c"))
-  x <- psycho::normalize(x)
-  testthat::expect_equal(mean(x$x), 0)
+  df <- data.frame(
+    V1 = rnorm(100, 30, .2),
+    V2 = runif(100, 3, 5),
+    V3 = rnorm(100, 100, 10)
+  )
+  dfZ <- normalize(df)
+  testthat::expect_equal(mean(dfZ$V1), 0)
 
-  x <- data.frame(x = c(8, 10, 12))
-  x <- psycho::normalize(x)
-  testthat::expect_equal(mean(x$x), 0)
+  df <- data.frame(
+    Participant = as.factor(rep(1:50,each=2)),
+    Condition = base::rep_len(c("A", "B"), 100),
+    V1 = rnorm(100, 30, .2),
+    V2 = runif(100, 3, 5),
+    V3 = rnorm(100, 100, 10)
+    )
+  dfZ <- normalize(df, except="V3")
+  testthat::expect_equal(mean(dfZ$V2), 0)
+  dfZ <- normalize(df, except=c("V1", "V2"))
+  testthat::expect_equal(mean(dfZ$V3), 0)
+
 })
