@@ -1,4 +1,14 @@
-# Current Dev: 0.0.6 (2017-12-07)
+# Current Dev: 0.0.7 (2018-01-04)
+
+### Breaking changes
+### New functions / parameters
+### Major changes
+### Minor changes
+- Added [`CONTRIBUTING.md`](https://github.com/neuropsychology/psycho.R/blob/master/CONTRIBUTING.md)
+- Changed `format_digit`
+
+
+# 0.0.6 (2017-12-07)
 
 ### Breaking changes
 ### New functions / parameters
@@ -9,7 +19,7 @@
 ### Minor changes
 - Use `styler`
 
-# Current Dev: 0.0.4 (2017-11-15)
+# 0.0.4 (2017-11-15)
 
 ### Breaking changes
 ### New functions / parameters

@@ -106,15 +106,15 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
     text <- paste(
       "Concerning the ", name, ", there is a probability of ",
       format_digit(MPE), "% that its coefficient is between ",
-      format_digit(MPE_values[1]), " and ",
-      format_digit(MPE_values[2]),
-      " (Median = ", format_digit(median),
-      ", MAD = ", format_digit(mad),
+      format_digit(MPE_values[1], null_treshold = 0.0001), " and ",
+      format_digit(MPE_values[2], null_treshold = 0.0001),
+      " (Median = ", format_digit(median, null_treshold = 0.0001),
+      ", MAD = ", format_digit(mad, null_treshold = 0.0001),
       # ", Mean = ", format_digit(mean),
       # ", SD = ", format_digit(sd),
       ", ", CI, "% CI [",
-      format_digit(CI_values[1]), ", ",
-      format_digit(CI_values[2]), "], ",
+      format_digit(CI_values[1], null_treshold = 0.0001), ", ",
+      format_digit(CI_values[2], null_treshold = 0.0001), "], ",
       "MPE = ", format_digit(MPE), "%).",
       sep = ""
     )
@@ -222,13 +222,19 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
 
       EffSize_text <- paste(
         "Based on Cohen (1988) recommandations, there is a probability of ",
-        round(verylarge * 100, 2), "% that this effect size is very large, ",
-        round(large * 100, 2), "% that this effect size is large, ",
-        round(medium * 100, 2), "% that this effect size is medium, ",
-        round(small * 100, 2), "% that this effect size is small, ",
-        round(verysmall * 100, 2), "% that this effect is very small and ",
-        round(opposite_prob * 100, 2), "% that it has an opposite direction",
-        "(between 0 and ", signif(opposite_max, 2), ").", sep = ""
+        format_digit(verylarge * 100),
+        "% that this effect size is very large, ",
+        format_digit(large * 100),
+        "% that this effect size is large, ",
+        format_digit(medium * 100),
+        "% that this effect size is medium, ",
+        format_digit(small * 100),
+        "% that this effect size is small, ",
+        format_digit(verysmall * 100),
+        "% that this effect is very small and ",
+        format_digit(opposite_prob * 100),
+        "% that it has an opposite direction",
+        " (between 0 and ", signif(opposite_max, 2), ").", sep = ""
       )
 
       values[[varname]]$EffSize <- EffSize
@@ -272,11 +278,16 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
   }
 
   summary <- data.frame(
-    Variable = names(values), MPE = MPEs, Median = medians,
-    MAD = mads, Mean = means, SD = sds,
+    Variable = names(values),
+    MPE = MPEs,
+    Median = medians,
+    MAD = mads,
+    Mean = means,
+    SD = sds,
     CI_lower = CIs[seq(1, length(CIs), 2)],
     CI_higher = CIs[seq(2, length(CIs), 2)]
   )
+  names(summary) <- c("Variable", "MPE", "Median", "MAD", "Mean", "SD", paste0(CI, "_CI_lower"), paste0(CI, "_CI_higher"))
 
   if (effsize == T) {
     EffSizes <- data.frame()
