@@ -1,7 +1,7 @@
 Package: psycho
 Type: Package
 Title: Efficient and Publishing-Oriented Workflow for Psychological Science
-Version: 0.0.7
+Version: 0.0.8
 Authors@R: c(
     person("Dominique", 
         "Makowski", 
@@ -30,8 +30,6 @@ Imports:
     dplyr,
     tidyr,
     purrr,
-    tidyverse,
-    rtf,
     psych,
     MASS,
     nFactors,
@@ -42,6 +40,7 @@ Imports:
     MuMIn,
     lmerTest
 Suggests:
+    tidyverse,
     knitr,
     rmarkdown,
     testthat,

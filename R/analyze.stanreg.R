@@ -11,6 +11,7 @@
 #' @return output
 #'
 #' @examples
+#' \dontrun{
 #' library(psycho)
 #' require(rstanarm)
 #' fit <- rstanarm::stan_glm(vs ~ mpg * cyl, data=mtcars)
@@ -26,6 +27,7 @@
 #' summary(results)
 #' plot(results)
 #' print(results)
+#' }
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
