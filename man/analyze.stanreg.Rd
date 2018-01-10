@@ -24,6 +24,7 @@ output
 Analyze stanreg objects.
 }
 \examples{
+\dontrun{
 library(psycho)
 require(rstanarm)
 fit <- rstanarm::stan_glm(vs ~ mpg * cyl, data=mtcars)
@@ -39,6 +40,7 @@ results <- analyze(fit)
 summary(results)
 plot(results)
 print(results)
+}
 
 }
 \author{

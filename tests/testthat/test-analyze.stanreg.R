@@ -14,7 +14,7 @@ test_that("If it works.", {
 
   model <- psycho::analyze(fit)
   values <- psycho::values(model)
-  testthat::expect_equal(round(values$mpg$median, 2), -0.64, tolerance = 0.05)
+  testthat::expect_equal(round(values$mpg$median, 2), -0.64, tolerance = 0.10)
 
 
   fit <- rstanarm::stan_glmer(

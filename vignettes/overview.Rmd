@@ -12,6 +12,7 @@ abstract: |
 vignette: >
   %\VignetteIndexEntry{Overview}
   %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteDepends{tidyverse}
   \usepackage[utf8]{inputenc}
 ---
 
@@ -156,7 +157,7 @@ plot(results)
 The `n_factors()` function is useful in before running principal component (PCA) or factor (FA) analysis. As many statistical methods exists to that purpose, this function gathers them together and gives an overview on the most frequent result. It also draw a nice plot with the eigenvalues and the proportion of explained  variance.
 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+```{r echo=TRUE, message=FALSE, warning=FALSE, results='hide'}
 results <- attitude %>%
   select_if(is.numeric) %>% 
   psycho::n_factors()
@@ -190,11 +191,11 @@ plot(results)
 
 ## Analyze the Mixed-Modelling Framework
 
-This is possibly the most important function of the `psycho` package. Its goal is to transform complex outputs of complex statistical routines into something readable, interpretable, and formatted. It is designed to work with frequentist and Bayesian mixed models, which is the central statistical routine used in psychological science.
+This is possibly the most important function of the `psycho` package. Its goal is to transform complex outputs of complex statistical routines into something readable, interpretable, and formatted. It is designed to work with frequentist and Bayesian mixed models, which is the central statistical method for psychological science.
 
 ### Data Creation
 
-Let's start by creating a dataframe similar to those find in psychological science.
+Let's start by creating a dataframe similar to those found in psychological science.
 
 ```{r, results='hide'}
 set.seed(666)
@@ -216,11 +217,11 @@ head(df)
 kable(head(df))
 ```
 
-This dataframe contains the data of 25 participants (labelled from 1 to 25), that saw 4 items (i1-i4) in two conditions (A and B). We measured, for each item, if the response was correct or not (Error), its reaction time (RT) and the stress associated with the trial.
+This dataframe contains the data of 25 participants (labelled from 1 to 25). Each saw 4 different items (i1-i4) in two conditions (A and B). We measured, for each item, if the response was correct or not (Error), its reaction time (RT) and the stress associated with the trial.
 
 ### Ancient Approach
 
-In order to investigate the effect of the condition on the reaction time RT, the traditional, ancient and obsolete routines are to compute the mean for each participant, and run an ANOVA.
+In order to investigate the effect of the condition on the reaction time RT, the traditional, ancient and obsolete routine is 1) to compute the mean for each participant, and 2) run an ANOVA.
 
 ```{r message=FALSE, warning=FALSE, results='markup'}
 # Format data
@@ -233,7 +234,7 @@ anova <- aov(RT ~ Condition + Error(Participant), df_for_anova)
 summary(anova)
 ```
 
-As we can see, the effect of condition is not significant (unsuprisingly, as data was generated randomly). One of the many flaws of this approach is that we lose information about intra-individual and item-related variability.
+As we can see, the effect of the condition is not significant (unsuprisingly, as data was generated randomly). One of the many flaws of this approach is that we lose information about intra-individual and item-related variability.
 
 
 ### Mixed Linear Regressions (lme4, lmerTest)
@@ -271,7 +272,7 @@ print(results)
 
 ### Bayesian Mixed Linear Regressions (rstanarm)
 
-However, as the frequentist framework is criticized, it is advised to switch to a Bayesian framework. However, the interpretation of these models is even more complex and unfamiliar to regular psychologists. But stay calm, because `analyze()` handles this difficulty for you. 
+However, as the frequentist framework is criticized, it is advised to switch to the Bayesian framework. Unfortunately, interpretation of these models remain unfamiliar to regular psychologists. But stay calm, because `analyze()` handles this for you. 
 
 ```{r fig.align='center', message=FALSE, warning=FALSE, val=TRUE, results='hide'}
 library(rstanarm)
