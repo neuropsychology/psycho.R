@@ -157,7 +157,7 @@ plot(results)
 The `n_factors()` function is useful in before running principal component (PCA) or factor (FA) analysis. As many statistical methods exists to that purpose, this function gathers them together and gives an overview on the most frequent result. It also draw a nice plot with the eigenvalues and the proportion of explained  variance.
 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+```{r echo=T, message=FALSE, warning=FALSE, results='hide'}
 results <- attitude %>%
   select_if(is.numeric) %>% 
   psycho::n_factors()
