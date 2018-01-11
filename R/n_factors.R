@@ -110,6 +110,7 @@ n_factors <- function(df, rotate="varimax", fm="minres", n_max=8) {
   )
 
   # EGA Method
+  # Doesn't really work for now :(
   # ega <- EGA::EGA(cor, plot.EGA = F, matrix=T, n = nrow(df))
   # ega <- EGA::bootEGA(df, n = 1000)
 
