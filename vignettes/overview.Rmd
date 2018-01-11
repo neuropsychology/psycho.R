@@ -117,9 +117,9 @@ kable(print(pcor))
 
 ------
 
-## Normalize / Z-score / Scale
+## Standardize / Normalize / Z-score / Scale
 
-The `normalize()` function allows you to easily scale and center all numeric variables of a dataframe. It is similar to the base function `scale()`, but presents some advantages: it is tidyverse-friendly, data-type friendly (*i.e.*, does not transform it into a matrix) and can handle dataframes with categorical data.
+The `standardize()` function allows you to easily scale and center all numeric variables of a dataframe. It is similar to the base function `scale()`, but presents some advantages: it is tidyverse-friendly, data-type friendly (*i.e.*, does not transform it into a matrix) and can handle dataframes with categorical data.
 
 ```{r, out.width=8, eval = TRUE, fig.align='center', results='markup'}
 library(psycho)
@@ -127,7 +127,7 @@ library(tidyverse)
 
 iris %>% 
   select(Species, Sepal.Length, Petal.Length) %>% 
-  psycho::normalize() %>% 
+  psycho::standardize() %>% 
   summary()
 ```
 
@@ -206,8 +206,8 @@ df <- data.frame(Participant = as.factor(rep(1:25, each = 4)),
                  RT = rnorm(100, 30, .2), 
                  Stress = runif(100, 3, 5))
 
-# Normalize the numeric variables.
-df <- psycho::normalize(df)
+# Standardize the numeric variables.
+df <- psycho::standardize(df)
 
 # Take a look  at the first 10 rows
 head(df)
