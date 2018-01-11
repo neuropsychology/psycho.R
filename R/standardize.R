@@ -29,7 +29,7 @@
 standardize <- function(df, except=NULL) {
 
   # Remove exceptions
-  if(!is.null(except) && except %in% names(df)){
+  if (!is.null(except) && except %in% names(df)) {
     to_keep <- as.data.frame(df[except])
     df <- df[!names(df) %in% c(except)]
   }
@@ -46,7 +46,7 @@ standardize <- function(df, except=NULL) {
   }
 
   # Add exceptions
-  if(!is.null(except) && exists("to_keep")){
+  if (!is.null(except) && exists("to_keep")) {
     df <- dplyr::bind_cols(df, to_keep)
   }
 

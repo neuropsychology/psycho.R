@@ -16,7 +16,7 @@ affiliations:
  index: 1
 - name: INSERM U894, Center for Psychiatry and Neuroscience, Paris, France
  index: 2
-date: 19 October 2017
+date: 01 January 2018
 bibliography: paper.bib
 ---
 

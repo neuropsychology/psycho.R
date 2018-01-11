@@ -11,7 +11,8 @@ format_string(x, fmt, ...)
 
 \item{fmt}{A character vector of format strings, each of up to 8192 bytes.}
 
-\item{...}{Values to be passed into fmt. Only logical, integer, real and character vectors are supported, but some coercion will be done: see the ‘Details’ section. Up to 100.}
+\item{...}{values to be passed into fmt. Only logical, integer, real and
+character vectors are supported, but some coercion will be done: see the ‘Details’ section. Up to 100.}
 }
 \description{
 Tidyverse-friendly sprintf.

@@ -95,7 +95,7 @@ correlation <- function(df,
     else if (type == "glasso") {
       corr <- qgraph::EBICglasso(cor(df), n, gamma = 0.5)
       r <- corr
-      p <-  NULL
+      p <- NULL
       t <- NULL
       ci <- "Not available for glasso estimation."
       ci.adj <- "Not available for glasso estimation."
@@ -103,7 +103,7 @@ correlation <- function(df,
     else if (type == "cor_auto") {
       corr <- qgraph::cor_auto(df, forcePD = F)
       r <- corr
-      p <-  NULL
+      p <- NULL
       t <- NULL
       ci <- "Not available for cor_auto estimation."
       ci.adj <- "Not available for cor_auto estimation."
@@ -117,7 +117,7 @@ correlation <- function(df,
 
 
   # Adjust P values
-  if (is.null(p) == F){
+  if (is.null(p) == F) {
     if (adjust != "none") {
       if ((type == "full" & is.null(df2) == F) | (type == "semi")) {
         p <- p.adjust(p, method = adjust)
@@ -143,7 +143,7 @@ correlation <- function(df,
   # -------------
 
   # Define notions for significance levels; spacing is important.
-  if (is.null(p) == F){
+  if (is.null(p) == F) {
     mystars <- ifelse(p < .001, "***",
       ifelse(p < .01, "** ",
         ifelse(p < .05, "* ", " ")
@@ -162,20 +162,17 @@ correlation <- function(df,
 
   # Format
   rownames(table) <- colnames(df)
-  if (isSymmetric(r)){
-
+  if (isSymmetric(r)) {
     diag(table) <- paste(diag(r_format), " ", sep = "")
     colnames(table) <- paste(colnames(df), "", sep = "")
     table[upper.tri(table, diag = TRUE)] <- "" # remove upper triangle
     table <- as.data.frame(table)
     summary <- cbind(table[1:length(table) - 1]) # remove last column and return the matrix (which is now a data frame)
-
-  } else{
-
-    if (is.null(df2)){
+  } else {
+    if (is.null(df2)) {
       colnames(table) <- paste(colnames(df), "", sep = "")
     } else {
-      if (type == "semi"){
+      if (type == "semi") {
         colnames(table) <- paste(colnames(df), "", sep = "")
       } else {
         colnames(table) <- paste(colnames(df2), "", sep = "")
@@ -191,9 +188,8 @@ correlation <- function(df,
   # Text
   # -------------
   sentences <- c()
-  for(row in 1:nrow(r)){
-    for(col in 1:ncol(r)){
-
+  for (row in 1:nrow(r)) {
+    for (col in 1:ncol(r)) {
       if (as.matrix(table)[row, col] == "") next # skip iteration and go to next iteration
 
       val_r <- as.matrix(r)[row, col]
@@ -210,24 +206,24 @@ correlation <- function(df,
       var1 <- colnames(r)[col]
       var2 <- row.names(r)[row]
 
-      if (is.numeric(val_p) & val_p <= .05){
+      if (is.numeric(val_p) & val_p <= .05) {
         significance <- "significant and "
-      } else if (is.numeric(val_p) & val_p > .05){
+      } else if (is.numeric(val_p) & val_p > .05) {
         significance <- "non significant and "
-      } else{
+      } else {
         significance <- ""
       }
 
-      if (abs(val_r) < .30){
+      if (abs(val_r) < .30) {
         strength <- "weak"
-      } else if (abs(val_r) < .5){
+      } else if (abs(val_r) < .5) {
         strength <- "moderate"
       } else {
         strength <- "strong"
       }
 
 
-      if (val_r < 0){
+      if (val_r < 0) {
         direction <- "positive"
       } else {
         direction <- "negative"
@@ -251,12 +247,13 @@ correlation <- function(df,
         " and ",
         var2,
         " (r(",
-        n-2,
+        n - 2,
         ") = ",
         psycho::format_digit(val_r),
         ", p ",
         val_p,
-        ").")
+        ")."
+      )
 
       sentences <- c(sentences, sentence)
     }

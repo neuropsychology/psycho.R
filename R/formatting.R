@@ -23,7 +23,7 @@ format_digit <- function(x, digits = 2, null_treshold = 0.001) {
         # If signif cut off trailing zero, add it
         # TODO: that line of code is ugly
         if (nchar(gsub("0|-|\\.", "", formatted)) < digits) {
-          formatted <- paste0(formatted, strrep("0", digits-1))
+          formatted <- paste0(formatted, strrep("0", digits - 1))
         }
       } else {
         formatted <- format_string(round(x, digits), paste0("%.", digits, "f"))
@@ -43,7 +43,8 @@ format_digit <- function(x, digits = 2, null_treshold = 0.001) {
 #'
 #' @param x Values.
 #' @param fmt A character vector of format strings, each of up to 8192 bytes.
-#' @param ... Values to be passed into fmt. Only logical, integer, real and character vectors are supported, but some coercion will be done: see the ‘Details’ section. Up to 100.
+#' @param ... values to be passed into fmt. Only logical, integer, real and
+#' character vectors are supported, but some coercion will be done: see the ‘Details’ section. Up to 100.
 #'
 #' @export
 format_string <- function(x, fmt, ...) {
