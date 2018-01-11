@@ -93,7 +93,7 @@ analyze.glmerMod <- function(x, ...) {
   ))
 
   for (varname in varnames) {
-    text <- c(text, values[[varname]]$Text)
+    text <- c(text, paste("   -", values[[varname]]$Text))
   }
 
 

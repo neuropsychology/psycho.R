@@ -1,9 +1,9 @@
 context("analyze.glmerMod")
 
 test_that("If it works.", {
-  # Fit
   require(lme4)
 
+  # GLM
   fit <- lme4::glmer(vs ~ mpg + (1 | cyl), data = mtcars, family = "binomial")
 
   model <- psycho::analyze(fit)
@@ -13,4 +13,5 @@ test_that("If it works.", {
   # test summary
   summa <- summary(model, round = 2)
   testthat::expect_equal(nrow(summa), 2)
+
 })
