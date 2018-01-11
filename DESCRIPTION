@@ -29,6 +29,7 @@ Imports:
     ggplot2,
     dplyr,
     tidyr,
+    stringr,
     purrr,
     psych,
     MASS,

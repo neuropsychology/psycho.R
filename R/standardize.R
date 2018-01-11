@@ -1,6 +1,6 @@
-#' Normalize (scale and reduce) numeric variables.
+#' Standardize (scale and reduce) numeric variables.
 #'
-#' Select numeric variables and normalize (Z-score) them.
+#' Select numeric variables and standardize (Z-score, "normalize") them.
 #'
 #' @param df Dataframe.
 #' @param except Character or list of characters of column names to be excluded from normalization.
@@ -16,9 +16,9 @@
 #'   V3 = rnorm(100, 100, 10)
 #'   )
 #'
-#' dfZ <- normalize(df)
-#' dfZ <- normalize(df, except="V3")
-#' dfZ <- normalize(df, except=c("V1", "V2"))
+#' dfZ <- standardize(df)
+#' dfZ <- standardize(df, except="V3")
+#' dfZ <- standardize(df, except=c("V1", "V2"))
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
@@ -26,10 +26,10 @@
 #' @import purrr
 #' @import dplyr
 #' @export
-normalize <- function(df, except=NULL) {
+standardize <- function(df, except=NULL) {
 
   # Remove exceptions
-  if(!is.null(except) && except %in% names(df)){
+  if (!is.null(except) && except %in% names(df)) {
     to_keep <- as.data.frame(df[except])
     df <- df[!names(df) %in% c(except)]
   }
@@ -46,7 +46,7 @@ normalize <- function(df, except=NULL) {
   }
 
   # Add exceptions
-  if(!is.null(except) && exists("to_keep")){
+  if (!is.null(except) && exists("to_keep")) {
     df <- dplyr::bind_cols(df, to_keep)
   }
 

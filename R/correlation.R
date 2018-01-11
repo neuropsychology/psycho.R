@@ -5,8 +5,11 @@
 #' @param df The dataframe
 #' @param df2 Optional dataframe to correlate with the first one.
 #' @param type A character string indicating which correlation type is to be
-#'   computed. One of "full" (default), "partial" or "semi" for semi-partial
-#'   correlations.
+#'   computed. One of "full" (default), "partial" (partial correlations),
+#'   "semi" (semi-partial correlations), "glasso"
+#'   (Graphical lasso- estimation of Gaussian graphical models) or "cor_auto"
+#'   (will use the qgraph::cor_auto function to return pychoric or polyserial
+#'   correlations if needed).
 #' @param method A character string indicating which correlation coefficient is
 #'   to be computed. One of "pearson" (default), "kendall", or "spearman" can be
 #'   abbreviated.
@@ -34,9 +37,10 @@
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
-#' @importFrom stats na.omit p.adjust
+#' @importFrom stats na.omit p.adjust cor
 #' @importFrom psych corr.test
 #' @importFrom ggplot2 theme element_text
+#' @importFrom stringr str_to_title
 #' @import ggcorrplot
 #' @import ppcor
 #' @export
@@ -48,6 +52,8 @@ correlation <- function(df,
 
   # Processing
   # -------------------
+  # N samples
+  n <- nrow(df)
 
   # Remove non numeric
   df <- df[, sapply(df, is.numeric)]
@@ -72,80 +78,199 @@ correlation <- function(df,
     df <- stats::na.omit(df) # enable imputation
     if (type == "semi") {
       corr <- ppcor::spcor(df, method = method)
+      r <- corr$estimate
+      p <- corr$p.value
+      t <- corr$statistic
+      ci <- "Not available for partial and semipartial correlations."
+      ci.adj <- "Not available for partial and semipartial correlations."
     }
     else if (type == "partial") {
       corr <- ppcor::pcor(df, method = method)
+      r <- corr$estimate
+      p <- corr$p.value
+      t <- corr$statistic
+      ci <- "Not available for partial and semipartial correlations."
+      ci.adj <- "Not available for partial and semipartial correlations."
+    }
+    else if (type == "glasso") {
+      corr <- qgraph::EBICglasso(cor(df), n, gamma = 0.5)
+      r <- corr
+      p <- NULL
+      t <- NULL
+      ci <- "Not available for glasso estimation."
+      ci.adj <- "Not available for glasso estimation."
+    }
+    else if (type == "cor_auto") {
+      corr <- qgraph::cor_auto(df, forcePD = F)
+      r <- corr
+      p <- NULL
+      t <- NULL
+      ci <- "Not available for cor_auto estimation."
+      ci.adj <- "Not available for cor_auto estimation."
     }
     else {
-      warning("type parameter must be 'full', 'semi' or 'partial'")
+      warning("type parameter must be 'full', 'semi', 'partial', 'glasso' or 'cor_auto'")
       return()
     }
-    r <- corr$estimate
-    p <- corr$p.value
-    t <- corr$statistic
-    ci <- "Not available for partial and semipartial correlations."
-    ci.adj <- "Not available for partial and semipartial correlations."
   }
+
 
 
   # Adjust P values
-  n <- nrow(df)
-  if (adjust != "none") {
-    if ((type == "full" & is.null(df2) == F) | (type == "semi")) {
-      p <- p.adjust(p, method = adjust)
-    } else {
-      p[lower.tri(p)] <- p.adjust(p[lower.tri(p)], method = adjust, n = choose(nrow(p), 2))
-      p[upper.tri(p)] <- p.adjust(p[upper.tri(p)], method = adjust, n = choose(nrow(p), 2))
+  if (is.null(p) == F) {
+    if (adjust != "none") {
+      if ((type == "full" & is.null(df2) == F) | (type == "semi")) {
+        p <- p.adjust(p, method = adjust)
+      } else {
+        p[lower.tri(p)] <- p.adjust(p[lower.tri(p)], method = adjust, n = choose(nrow(p), 2))
+        p[upper.tri(p)] <- p.adjust(p[upper.tri(p)], method = adjust, n = choose(nrow(p), 2))
+      }
     }
   }
 
-
-
-  # Define notions for significance levels; spacing is important.
-  mystars <- ifelse(p < .001, "***",
-    ifelse(p < .01, "** ",
-      ifelse(p < .05, "* ", " ")
-    )
-  )
-
-  # trunctuate the matrix that holds the correlations to two decimal
-  r_format <- format(round(cbind(rep(-1.11, ncol(df)), r), 2))[, -1]
-  # build a new correlation matrix with significance stars
-  table <- matrix(paste(r_format, mystars, sep = ""), ncol = ncol(df))
-
-  # Format
-  if ((type == "full" & is.null(df2) == F) | (type == "semi")) {
-    if (type == "semi") {
-      rownames(table) <- colnames(df)
-    } else {
-      rownames(table) <- colnames(df2)
-    }
-    colnames(table) <- paste(colnames(df), "", sep = "")
-    table <- as.matrix(table)
-    table <- as.data.frame(table)
-  } else {
-    diag(table) <- paste(diag(r_format), " ", sep = "")
-    rownames(table) <- colnames(df)
-    colnames(table) <- paste(colnames(df), "", sep = "")
-    table <- as.matrix(table)
-    table[upper.tri(table, diag = TRUE)] <- NA # remove upper triangle
-    table <- as.data.frame(table)
-    table <- cbind(table[1:length(table) - 1]) # remove last column and return the matrix (which is now a data frame)
-  }
 
 
 
   # Values
   # -------------
-  values <- list(r = r, p = p, t = t, ci = ci, ci.adj = ci.adj, table = table)
+  values <- list(r = r, p = p, t = t, ci = ci, ci.adj = ci.adj, n = n)
+
+
+
+
 
   # Summary
   # -------------
-  summary <- table
+
+  # Define notions for significance levels; spacing is important.
+  if (is.null(p) == F) {
+    mystars <- ifelse(p < .001, "***",
+      ifelse(p < .01, "** ",
+        ifelse(p < .05, "* ", " ")
+      )
+    )
+  } else {
+    mystars <- ""
+  }
+
+
+  # trunctuate the matrix that holds the correlations to two decimal
+  r_format <- format(round(cbind(rep(-1.11, ncol(df)), r), 2))[, -1]
+  # build a new correlation matrix with significance stars
+  table <- matrix(paste(r_format, mystars, sep = ""), ncol = ncol(r))
+
+
+  # Format
+  rownames(table) <- colnames(df)
+  if (isSymmetric(r)) {
+    diag(table) <- paste(diag(r_format), " ", sep = "")
+    colnames(table) <- paste(colnames(df), "", sep = "")
+    table[upper.tri(table, diag = TRUE)] <- "" # remove upper triangle
+    table <- as.data.frame(table)
+    summary <- cbind(table[1:length(table) - 1]) # remove last column and return the matrix (which is now a data frame)
+  } else {
+    if (is.null(df2)) {
+      colnames(table) <- paste(colnames(df), "", sep = "")
+    } else {
+      if (type == "semi") {
+        colnames(table) <- paste(colnames(df), "", sep = "")
+      } else {
+        colnames(table) <- paste(colnames(df2), "", sep = "")
+      }
+    }
+    table <- as.data.frame(table)
+    summary <- table
+  }
+
+
+
 
   # Text
   # -------------
-  text <- table
+  sentences <- c()
+  for (row in 1:nrow(r)) {
+    for (col in 1:ncol(r)) {
+      if (as.matrix(table)[row, col] == "") next # skip iteration and go to next iteration
+
+      val_r <- as.matrix(r)[row, col]
+      val_t <- tryCatch({
+        as.matrix(t)[row, col]
+      }, error = function(e) {
+        "NA"
+      })
+      val_p <- tryCatch({
+        psycho::format_p(as.matrix(t)[row, col])
+      }, error = function(e) {
+        "NA"
+      })
+      var1 <- colnames(r)[col]
+      var2 <- row.names(r)[row]
+
+      if (is.numeric(val_p) & val_p <= .05) {
+        significance <- "significant and "
+      } else if (is.numeric(val_p) & val_p > .05) {
+        significance <- "non significant and "
+      } else {
+        significance <- ""
+      }
+
+      if (abs(val_r) < .30) {
+        strength <- "weak"
+      } else if (abs(val_r) < .5) {
+        strength <- "moderate"
+      } else {
+        strength <- "strong"
+      }
+
+
+      if (val_r < 0) {
+        direction <- "positive"
+      } else {
+        direction <- "negative"
+      }
+
+      sentence <- paste0(
+        "   - ",
+        var1,
+        "-",
+        var2,
+        ":   ",
+        "Results of the ",
+        stringr::str_to_title(method),
+        " correlation showed a ",
+        significance,
+        strength,
+        " ",
+        direction,
+        " association between ",
+        var1,
+        " and ",
+        var2,
+        " (r(",
+        n - 2,
+        ") = ",
+        psycho::format_digit(val_r),
+        ", p ",
+        val_p,
+        ")."
+      )
+
+      sentences <- c(sentences, sentence)
+    }
+  }
+
+  sentences <- c(paste0(
+    stringr::str_to_title(method),
+    " ",
+    stringr::str_to_title(type),
+    " Correlation (p value correction: ",
+    adjust,
+    "):"
+  ), sentences)
+
+  text <- sentences
+
+
 
 
   # Plot

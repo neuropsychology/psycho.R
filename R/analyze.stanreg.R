@@ -106,7 +106,7 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
     }
 
     text <- paste(
-      "Concerning the ", name, ", there is a probability of ",
+      "   - Concerning the ", name, ", there is a probability of ",
       format_digit(MPE), "% that its coefficient is between ",
       format_digit(MPE_values[1], null_treshold = 0.0001), " and ",
       format_digit(MPE_values[2], null_treshold = 0.0001),
@@ -140,7 +140,7 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
   # -------------
   if (effsize == T) {
     if (verbose == T) {
-      warning("Interpreting effect size following Cohen (1977, 1988)... Make sure your variables were normalized!")
+      warning("Interpreting effect size following Cohen (1977, 1988)... Make sure your variables were standardized!")
     }
 
     EffSizes <- data.frame()
@@ -223,7 +223,7 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
       }
 
       EffSize_text <- paste(
-        "Based on Cohen (1988) recommandations, there is a probability of ",
+        "   - Based on Cohen (1988) recommandations, there is a probability of ",
         format_digit(verylarge * 100),
         "% that this effect size is very large, ",
         format_digit(large * 100),
@@ -325,10 +325,10 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
   for (varname in names(values)) {
     coefs_text <- c(coefs_text, values[[varname]]$text)
     if (effsize == T) {
-      coefs_text <- c(coefs_text, values[[varname]]$EffSize_text)
+      coefs_text <- c(coefs_text, values[[varname]]$EffSize_text, "")
     }
   }
-  text <- c(info, coefs_text)
+  text <- c(info, "", coefs_text)
 
 
 

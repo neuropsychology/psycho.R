@@ -1,4 +1,28 @@
-# Current Dev: 0.0.7 (2018-01-04)
+# Current Dev 0.0.9
+
+### Breaking changes
+- `normalize` has been renamed to `standardize` #30
+### New functions / parameters
+- Added `print` output to `correlation`
+- Added glasso and cor_auto estimation for `correlation` #25 #24
+- added `is.psychobject` function.
+### Changes
+- Fixed #28
+- Nicer print.psychobject output #32
+- Replaced NAs by empty strings in `correlation` #23
+
+
+# [0.0.8](https://github.com/neuropsychology/psycho.R/releases/tag/0.0.8) (2018-01-04)
+
+### Breaking changes
+### New functions / parameters
+### Major changes
+### Minor changes
+- Added [`CONTRIBUTING.md`](https://github.com/neuropsychology/psycho.R/blob/master/CONTRIBUTING.md)
+- Changed `format_digit`
+- Added `except` parameter to `normalize`
+
+# 0.0.7 (2018-01-10)
 
 ### Breaking changes
 ### New functions / parameters

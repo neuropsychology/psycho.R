@@ -13,8 +13,11 @@ correlation(df, df2 = NULL, type = "full", method = "pearson",
 \item{df2}{Optional dataframe to correlate with the first one.}
 
 \item{type}{A character string indicating which correlation type is to be
-computed. One of "full" (default), "partial" or "semi" for semi-partial
-correlations.}
+computed. One of "full" (default), "partial" (partial correlations),
+"semi" (semi-partial correlations), "glasso"
+(Graphical lasso- estimation of Gaussian graphical models) or "cor_auto"
+(will use the qgraph::cor_auto function to return pychoric or polyserial
+correlations if needed).}
 
 \item{method}{A character string indicating which correlation coefficient is
 to be computed. One of "pearson" (default), "kendall", or "spearman" can be

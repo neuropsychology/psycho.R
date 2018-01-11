@@ -24,6 +24,16 @@ test_that("Ccorrelations work", {
   value <- output$values$r[2, 1]
   testthat::expect_equal(value, 0.53, tol = 0.1)
 
+  # glasso
+  output <- psycho::correlation(df, type = "glasso", adjust = "none")
+  value <- output$values$r[2, 1]
+  testthat::expect_equal(value, 0.66, tol = 0.1)
+
+  # cor_auto
+  output <- psycho::correlation(df, type = "cor_auto", adjust = "none")
+  value <- output$values$r[2, 1]
+  testthat::expect_equal(value, 0.82, tol = 0.1)
+
   # Dual
   df2 <- attitude[c("raises", "critical")]
 

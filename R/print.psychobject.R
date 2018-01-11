@@ -8,5 +8,6 @@
 #' @export
 print.psychobject <- function(x, ...) {
   text <- x$text
-  return(text)
+  cat(text, sep = "\n")
+  invisible(text)
 }

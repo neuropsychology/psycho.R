@@ -79,7 +79,7 @@ n_factors <- function(df, rotate="varimax", fm="minres", n_max=8) {
   }
 
 
-  cor <- qgraph::cor_auto(df)
+  cor <- qgraph::cor_auto(df, forcePD = FALSE)
 
   ap <- parallel(subject = nrow(df), var = ncol(df))
   nS <- nFactors::nScree(x = eigen(cor)$values, aparallel = ap$eigen$qevpea)
@@ -94,6 +94,9 @@ n_factors <- function(df, rotate="varimax", fm="minres", n_max=8) {
     mutate_("n.Factors" = ~1:nrow(nS$Analysis))
 
 
+
+
+
   # Processing
   # -------------------
   results <- data.frame(
@@ -106,7 +109,12 @@ n_factors <- function(df, rotate="varimax", fm="minres", n_max=8) {
     n_optimal = as.numeric(nS$Components[1, ])
   )
 
+  # EGA Method
+  # Doesn't really work for now :(
+  # ega <- EGA::EGA(cor, plot.EGA = F, matrix=T, n = nrow(df))
+  # ega <- EGA::bootEGA(df, n = 1000)
 
+  # VSS
   vss <- psych::VSS(
     cor,
     n = n_max,
