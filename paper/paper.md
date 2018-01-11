@@ -33,6 +33,9 @@ A special focus has been dedicated to the support of cutting-edge statistical ro
 
 Contrary to many other packages, whose goal is to produce statistical analyses, psycho bridges statistical R outputs with statistical report writing, with a focus on APA formatting guidelines, to enhance the standardisation of results reporting. Complex outputs, such as those of Bayesian and frequentist mixed models, are automatically transformed into readable text, tables, and plots that illustrate the effects. With this package, results can be easily incorporated into shareable reports and publications, promoting data exploration, saving time and preventing errors for better, reproducible, science.
 
+The `psycho` package can be downloaded and installed from CRAN [1](https://CRAN.R-project.org/package=psycho). Source code is available from its GitHub repository [2](https://github.com/neuropsychology/psycho.R). Documentation [3](https://www.rdocumentation.org/packages/psycho), examples [4](https://CRAN.R-project.org/package=psycho/vignettes/overview.html) and issues tracker [5](https://github.com/neuropsychology/psycho.R/issues) are also provided for a user-friendly interface.
+
+
 # Acknowledgements
 
 We warmly thank all the [contributors](https://github.com/neuropsychology/psycho.R/graphs/contributors) as well as Maurice Moss for its insights.
