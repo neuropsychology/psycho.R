@@ -211,9 +211,9 @@ correlation <- function(df,
       var2 <- row.names(r)[row]
 
       if (is.numeric(val_p) & val_p <= .05){
-        significance <- "significant"
+        significance <- "significant and "
       } else if (is.numeric(val_p) & val_p > .05){
-        significance <- "non significant"
+        significance <- "non significant and "
       } else{
         significance <- ""
       }
@@ -243,7 +243,6 @@ correlation <- function(df,
         stringr::str_to_title(method),
         " correlation showed a ",
         significance,
-        " and ",
         strength,
         " ",
         direction,
