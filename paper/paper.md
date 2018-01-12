@@ -22,7 +22,7 @@ bibliography: paper.bib
 
 # Summary
 
-Statistics are a vital aspect of psychological science. Unfortunately, the process of analyzing, formatting and reporting results is often fastidious, time-consuming and prone to errors, resulting in frustration and aversion. On top of that, many available tools for professionals and students are either overpriced, too complex (`i.e.`, displaying vast amounts of raw information neither demanded nor needed by the user) or too basic (`i.e.`, not supporting advanced statistical procedures). These factors contribute to the reproducibility crisis in psychological science [@Chambers2014, @Etz2016, @Szucs2016].
+Statistics are a vital aspect of psychological science. Unfortunately, the process of analyzing, formatting and reporting results is often fastidious, time-consuming and prone to errors, resulting in frustration and aversion. On top of that, many available tools for professionals and students are either overpriced, too complex (*i.e.*, displaying vast amounts of raw information neither demanded nor needed by the user) or too basic (*i.e.*, not supporting advanced statistical procedures). These factors contribute to the reproducibility crisis in psychological science [@Chambers2014, @Etz2016, @Szucs2016].
 
 ![psycho-workflow](figure1.PNG)
 
