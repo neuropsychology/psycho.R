@@ -32,6 +32,15 @@ analyze.merModLmerTest <- function(x, ...) {
   R2m <- MuMIn::r.squaredGLMM(fit)["R2m"]
   R2c <- MuMIn::r.squaredGLMM(fit)["R2c"]
 
+  # TODO: Bootstrapped p values
+  # boot.out = lme4::bootMer(fit, lme4::fixef, nsim=1000) #nsim determines p-value decimal places
+  # p = rbind(
+  #   (1-apply(boot.out$t<0, 2, mean))*2,
+  #   (1-apply(boot.out$t>0, 2, mean))*2)
+  # p = apply(p, 2, min)
+
+
+
 
   # Summary
   # -------------
@@ -58,6 +67,9 @@ analyze.merModLmerTest <- function(x, ...) {
 
   # Varnames
   varnames <- rownames(fitsum)
+
+
+
 
 
   # Values

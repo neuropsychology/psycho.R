@@ -3,6 +3,7 @@
 ### Breaking changes
 - `normalize` has been renamed to `standardize` #30
 ### New functions / parameters
+- Added support to lme4's merMod objects
 - Added `print` output to `correlation`
 - Added glasso and cor_auto estimation for `correlation` #25 #24
 - added `is.psychobject` function.

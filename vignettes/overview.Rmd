@@ -284,9 +284,9 @@ As we can see, the effect of the condition is not significant (unsuprisingly, as
 The use of the mixed-modelling framework allows us to add the items as random factors.
 
 ```{r fig.align='center', message=FALSE, warning=FALSE, val=TRUE, results='markup', comment=NA}
-library(lmerTest)
+library(lme4)
 
-fit <- lmerTest::lmer(RT ~ Condition + (1|Participant) + (1|Item), data=df)
+fit <- lme4::lmer(RT ~ Condition + (1|Participant) + (1|Item), data=df)
 
 # Traditional output
 summary(fit)
