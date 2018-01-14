@@ -78,6 +78,7 @@ install.packages("devtools")
 library("devtools")
 install_github("neuropsychology/psycho.R")
 library("psycho")
+```
 
 ## Credits
 
