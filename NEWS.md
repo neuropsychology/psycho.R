@@ -1,5 +1,10 @@
 # Current Dev 0.1.1
 
+### Breaking changes
+### New functions / parameters
+### Changes
+
+
 # [0.1.0](https://github.com/neuropsychology/psycho.R/releases/tag/0.1.0) (2018-02-05)
 
 ### Breaking changes
