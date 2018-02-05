@@ -16,6 +16,7 @@
 - added `is.psychobject` function.
 ### Changes
 - CRAN release
+- CRAN release
 - Fixed #28
 - Nicer print.psychobject output #32
 - Replaced NAs by empty strings in `correlation` #23
