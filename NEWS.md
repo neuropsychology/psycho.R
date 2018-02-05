@@ -15,7 +15,6 @@
 - Added glasso and cor_auto estimation for `correlation` #25 #24
 - added `is.psychobject` function.
 ### Changes
-- Zenodo release
 - CRAN release
 - Fixed #28
 - Nicer print.psychobject output #32
