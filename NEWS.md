@@ -1,4 +1,6 @@
-# Current Dev 0.1.0
+# Current Dev 0.1.1
+
+# [0.1.0](https://github.com/neuropsychology/psycho.R/releases/tag/0.1.0) (2018-02-05)
 
 ### Breaking changes
 - `normalize` has been renamed to `standardize` #30
@@ -8,7 +10,7 @@
 - Added glasso and cor_auto estimation for `correlation` #25 #24
 - added `is.psychobject` function.
 ### Changes
-- CRAN ready
+- CRAN release
 - Fixed #28
 - Nicer print.psychobject output #32
 - Replaced NAs by empty strings in `correlation` #23
