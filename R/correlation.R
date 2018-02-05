@@ -199,7 +199,7 @@ correlation <- function(df,
         "NA"
       })
       val_p <- tryCatch({
-        psycho::format_p(as.matrix(t)[row, col])
+        as.matrix(p)[row, col]
       }, error = function(e) {
         "NA"
       })
@@ -232,7 +232,7 @@ correlation <- function(df,
       sentence <- paste0(
         "   - ",
         var1,
-        "-",
+        " - ",
         var2,
         ":   ",
         "Results of the ",
@@ -251,7 +251,7 @@ correlation <- function(df,
         ") = ",
         psycho::format_digit(val_r),
         ", p ",
-        val_p,
+        psycho::format_p(val_p),
         ")."
       )
 

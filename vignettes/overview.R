@@ -26,15 +26,15 @@ cor <- psycho::correlation(df,
                            method = "pearson",
                            adjust = "none")
 
-print(cor)
+summary(cor)
 
 ## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
-kable(print(cor))
+kable(summary(cor))
 
 ## ---- fig.width=8, eval = TRUE, fig.align='center'-----------------------
 plot(cor)
 
-## ---- fig.width=8, eval = TRUE, fig.align='center', results='hide'-------
+## ---- fig.width=8, eval = TRUE, fig.align='center', results='markup', comment=NA----
 library(psycho)
 
 df <- iris
@@ -44,21 +44,21 @@ pcor <- psycho::correlation(df,
                            method = "pearson",
                            adjust = "bonferroni")
 
+summary(pcor)
+
+## ---- results='markup', comment=NA---------------------------------------
 print(pcor)
 
-## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
-kable(print(pcor))
-
-## ---- out.width=8, eval = TRUE, fig.align='center', results='markup'-----
+## ---- out.width=8, eval = TRUE, fig.align='center', results='markup', comment=NA----
 library(psycho)
 library(tidyverse)
 
 iris %>% 
   select(Species, Sepal.Length, Petal.Length) %>% 
-  psycho::normalize() %>% 
+  psycho::standardize() %>% 
   summary()
 
-## ---- fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center'----
+## ---- fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA----
 library(psycho)
 
 results <- psycho::assess(124, mean=100, sd=15)
@@ -69,7 +69,35 @@ print(results)
 # Plot it
 plot(results)
 
-## ----echo=FALSE, message=FALSE, warning=FALSE, results='hide'------------
+## ---- fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center'----
+library(psycho)
+
+results <- psycho::assess(85, mean=100, sd=15, linecolor = "orange", fillcolor = "#4CAF50")
+
+# Plot it
+plot(results)
+
+## ----eval=TRUE, fig.align='center', fig.height=4.5, fig.width=9, message=FALSE, warning=FALSE, results='markup'----
+library(psycho)
+
+# Let's create a correlation plot
+p <- plot(psycho::correlation(iris))
+
+# Custom theme and colours
+p <- p + 
+  scale_fill_gradientn(colors = c("#4CAF50", "#FFEB3B", "#FF5722")) +
+  ylab("Variables\n") +
+  labs(fill = "r") +
+  theme(plot.background = element_rect(fill = "#607D8B"),
+        axis.title.y = element_text(size = 20, angle = 90, colour="white"),
+        axis.text = element_text(size = 15, colour="white"),
+        legend.title = element_text(size = 20, colour="white"),
+        legend.text = element_text(size = 15, colour="white"),
+        title = element_text(size = 16, colour="white"))
+p
+
+
+## ----echo=TRUE, message=FALSE, warning=FALSE, results='hide'-------------
 results <- attitude %>%
   select_if(is.numeric) %>% 
   psycho::n_factors()
@@ -98,8 +126,8 @@ df <- data.frame(Participant = as.factor(rep(1:25, each = 4)),
                  RT = rnorm(100, 30, .2), 
                  Stress = runif(100, 3, 5))
 
-# Normalize the numeric variables.
-df <- psycho::normalize(df)
+# Standardize the numeric variables.
+df <- psycho::standardize(df)
 
 # Take a look  at the first 10 rows
 head(df)
@@ -107,7 +135,7 @@ head(df)
 ## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
 kable(head(df))
 
-## ----message=FALSE, warning=FALSE, results='markup'----------------------
+## ----message=FALSE, warning=FALSE, results='markup', comment=NA----------
 # Format data
 df_for_anova <- df %>% 
   dplyr::group_by(Participant, Condition) %>% 
@@ -117,10 +145,10 @@ df_for_anova <- df %>%
 anova <- aov(RT ~ Condition + Error(Participant), df_for_anova)
 summary(anova)
 
-## ----fig.align='center', message=FALSE, warning=FALSE, val=TRUE, results='markup'----
-library(lmerTest)
+## ----fig.align='center', message=FALSE, warning=FALSE, val=TRUE, results='markup', comment=NA----
+library(lme4)
 
-fit <- lmerTest::lmer(RT ~ Condition + (1|Participant) + (1|Item), data=df)
+fit <- lme4::lmer(RT ~ Condition + (1|Participant) + (1|Item), data=df)
 
 # Traditional output
 summary(fit)
@@ -134,7 +162,7 @@ summary(results, round = 2)
 ## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
 kable(summary(results, round = 2))
 
-## ---- results='markup'---------------------------------------------------
+## ---- results='markup', comment=NA---------------------------------------
 print(results)
 
 ## ----fig.align='center', message=FALSE, warning=FALSE, val=TRUE, results='hide'----
@@ -149,7 +177,7 @@ summary(results, round=2)
 ## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
 kable(summary(results, round = 2))
 
-## ---- results='markup'---------------------------------------------------
+## ---- results='markup', comment=NA---------------------------------------
 print(results)
 
 ## ---- fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center'----

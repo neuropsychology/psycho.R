@@ -107,11 +107,14 @@ pcor <- psycho::correlation(df,
                            method = "pearson",
                            adjust = "bonferroni")
 
-print(pcor)
+summary(pcor)
 ```
 
+You can also have access to the individual correlations as follows:
 
-
+```{r, results='markup', comment=NA}
+print(pcor)
+```
 
 ------
 

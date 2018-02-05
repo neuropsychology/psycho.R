@@ -4,6 +4,7 @@
 ^appveyor.yml
 ^steps
 ^paper
+^dev
 ^codecov\.yml$
 ^\.lintr$
 ^CONDUCT\.md$
