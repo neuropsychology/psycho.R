@@ -2,6 +2,7 @@
 
 ### Breaking changes
 ### New functions / parameters
+- Added `dprime` function for signal detection theory indices computation.
 ### Changes
 
 

@@ -8,7 +8,7 @@ correlation(df, df2 = NULL, type = "full", method = "pearson",
   adjust = "holm")
 }
 \arguments{
-\item{df}{The dataframe}
+\item{df}{The dataframe.}
 
 \item{df2}{Optional dataframe to correlate with the first one.}
 
