@@ -52,6 +52,7 @@ The `psycho` package can already do the following:
 - [x] Enlight you on how many factors to retain for a PCA
 - [x] Give you some clinically relevant info on a participant's score
 - [x] Compute complex correlation matrices
+- [x] Compute signal detection theory indices (d', beta, ...)
 - [x] Help you in the interpretation of various models (lme4, stan_lmer)
 
 

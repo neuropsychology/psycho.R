@@ -2,7 +2,7 @@
 #'
 #' Compute different kinds of correlation matrices.
 #'
-#' @param df The dataframe
+#' @param df The dataframe.
 #' @param df2 Optional dataframe to correlate with the first one.
 #' @param type A character string indicating which correlation type is to be
 #'   computed. One of "full" (default), "partial" (partial correlations),
