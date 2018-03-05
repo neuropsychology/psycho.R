@@ -1,7 +1,8 @@
-# Current Dev 0.1.1
+# Current Dev 0.1.2
 
 ### Breaking changes
 ### New functions / parameters
+- Added R2 for bayesian regressions.
 - Added `dprime` function for signal detection theory indices computation.
 ### Changes
 

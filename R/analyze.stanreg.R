@@ -36,6 +36,7 @@
 #' @import dplyr
 #' @import ggplot2
 #' @importFrom stats quantile
+#' @importFrom utils head tail
 #' @export
 analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
 
@@ -53,6 +54,9 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
 
   # If the model is an LM, extract the R2 distribution
   if ("R2" %in% names(posteriors)) {
+    varnames <- c(varnames, "R2")
+  } else {
+    posteriors$R2 <- rstanarm::bayes_R2(fit)
     varnames <- c(varnames, "R2")
   }
 
@@ -105,7 +109,7 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
       name <- paste("effect of ", varname, sep = "")
     }
 
-    text <- paste(
+    text <- paste0(
       "   - Concerning the ", name, ", there is a probability of ",
       format_digit(MPE), "% that its coefficient is between ",
       format_digit(MPE_values[1], null_treshold = 0.0001), " and ",
@@ -117,9 +121,27 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
       ", ", CI, "% CI [",
       format_digit(CI_values[1], null_treshold = 0.0001), ", ",
       format_digit(CI_values[2], null_treshold = 0.0001), "], ",
-      "MPE = ", format_digit(MPE), "%).",
-      sep = ""
+      "MPE = ", format_digit(MPE), "%)."
     )
+
+    if (varname == "R2"){
+      text <- paste0("The model explains between ",
+                     format_digit(min(posterior)*100),
+                     "% and ",
+                     format_digit(max(posterior)*100),
+                     "% of the outcome's variance (R2's median = ",
+                     format_digit(median(posterior)*100),
+                     ", R2's MAD = ",
+                     format_digit(mad(posterior)*100),
+                     "%, R2's ",
+                     CI,
+                     "% CI [",
+                     format_digit(CI_values[1], null_treshold = 0.0001),
+                     ", ",
+                     format_digit(CI_values[2], null_treshold = 0.0001),
+                     "])")
+
+    }
 
     # Store all that
     values[[varname]] <- list(
@@ -145,6 +167,7 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
 
     EffSizes <- data.frame()
     for (varname in varnames) {
+
       posterior <- posteriors[, varname]
 
       # Compute the probabilities
@@ -222,7 +245,7 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
         verysmall <- verysmall_neg
       }
 
-      EffSize_text <- paste(
+      EffSize_text <- paste0(
         "   - Based on Cohen (1988) recommandations, there is a probability of ",
         format_digit(verylarge * 100),
         "% that this effect size is very large, ",
@@ -236,7 +259,7 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
         "% that this effect is very small and ",
         format_digit(opposite_prob * 100),
         "% that it has an opposite direction",
-        " (between 0 and ", signif(opposite_max, 2), ").", sep = ""
+        " (between 0 and ", signif(opposite_max, 2), ")."
       )
 
       values[[varname]]$EffSize <- EffSize
@@ -248,6 +271,18 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
       values[[varname]]$EffSize_S <- small
       values[[varname]]$EffSize_VS <- verysmall
       values[[varname]]$EffSize_O <- opposite_prob
+
+      if (varname == "R2"){
+        values[[varname]]$EffSize <- NA
+        values[[varname]]$EffSize_text <- NA
+
+        values[[varname]]$EffSize_VL <- NA
+        values[[varname]]$EffSize_L <- NA
+        values[[varname]]$EffSize_M <- NA
+        values[[varname]]$EffSize_S <- NA
+        values[[varname]]$EffSize_VS <- NA
+        values[[varname]]$EffSize_O <- NA
+      }
     }
   }
 
@@ -312,12 +347,11 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
   # Text
   # -------------
   # Model
-  info <- paste(
+  info <- paste0(
     "We fitted a Markov Chain Monte Carlo [type] model to predict",
     "[Y] with [X] (formula = ", format(fit$formula),
     ").",
-    "Priors were set as follow: [INSERT INFO ABOUT PRIORS].",
-    sep = ""
+    "Priors were set as follow: [INSERT INFO ABOUT PRIORS]."
   )
 
   # Coefs
@@ -325,10 +359,12 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
   for (varname in names(values)) {
     coefs_text <- c(coefs_text, values[[varname]]$text)
     if (effsize == T) {
-      coefs_text <- c(coefs_text, values[[varname]]$EffSize_text, "")
+      if (varname != "R2"){
+        coefs_text <- c(coefs_text, values[[varname]]$EffSize_text, "")
+      }
     }
   }
-  text <- c(info, "", coefs_text)
+  text <- c(info, "", head(coefs_text, -1), "", tail(coefs_text, 1))
 
 
 
