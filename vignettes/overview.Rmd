@@ -232,6 +232,45 @@ p
 ```
 
 
+------
+
+## Single-case methods
+
+### Crawford-Howell (1998) t-test for single-case vs. control group
+
+Neuropsychologists often need to compare a single case to a small control group. However, the standard two-sample t-test does not work because the case is only one observation. Crawford and Garthwaite (2012) demonstrate that the Crawford-Howell (1998) t-test is a better approach (in terms of controlling Type I error rate) than other commonly-used alternatives.
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, results='markup'}
+library(psycho)
+
+case1 <- 82 # The IQ of a patient
+case2 <- 61 # The IQ of another patient
+controls <- c(86, 100, 112, 95, 121, 102) # The IQs of a control group
+
+rez <- crawford.test(case1, controls)
+rez <- crawford.test(case2, controls)
+```
+
+
+### Mellenbergh & van den Brink (1998) test for pre-post comparison
+
+Clinicians willing to check if their intervention had an effect on a single participant might want to use the Mellenbergh & van den Brink (1998) test, comparing the difference between baseline and post-test to the standart deviation of a control group.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, results='markup'}
+library(psycho)
+
+t0 <- 82 # The IQ of a patient at baseline
+t1 <- 105 # The IQ of a patient after the new therapy
+controls <- c(94, 100, 108, 95, 102, 94) # The IQs of a control group
+
+rez <- mellenbergh.test(t0, t1, controls = controls)
+
+# if we do not have a control group, we can also directly enter the SD of the score.
+# For IQ, the SD is of 15.
+rez <- mellenbergh.test(t0, t1, controls = 15)
+```
+
 
 ------
 
