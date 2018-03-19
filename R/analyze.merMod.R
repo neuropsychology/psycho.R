@@ -21,7 +21,6 @@
 #' @importFrom methods slot
 #' @export
 analyze.merMod <- function(x, ...) {
-
   formula <- as.character(slot(x, "call"))[2]
   data <- slot(x, "frame")
 

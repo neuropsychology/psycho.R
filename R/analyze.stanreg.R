@@ -100,7 +100,8 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
       if (length(splitted) == 2) {
         name <- paste(
           "interaction effect between ",
-          splitted[1], " and ", splitted[2], sep = ""
+          splitted[1], " and ", splitted[2],
+          sep = ""
         )
       } else {
         name <- varname
@@ -124,23 +125,24 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
       "MPE = ", format_digit(MPE), "%)."
     )
 
-    if (varname == "R2"){
-      text <- paste0("The model explains between ",
-                     format_digit(min(posterior)*100),
-                     "% and ",
-                     format_digit(max(posterior)*100),
-                     "% of the outcome's variance (R2's median = ",
-                     format_digit(median(posterior)*100),
-                     ", R2's MAD = ",
-                     format_digit(mad(posterior)*100),
-                     "%, R2's ",
-                     CI,
-                     "% CI [",
-                     format_digit(CI_values[1], null_treshold = 0.0001),
-                     ", ",
-                     format_digit(CI_values[2], null_treshold = 0.0001),
-                     "])")
-
+    if (varname == "R2") {
+      text <- paste0(
+        "The model explains between ",
+        format_digit(min(posterior) * 100),
+        "% and ",
+        format_digit(max(posterior) * 100),
+        "% of the outcome's variance (R2's median = ",
+        format_digit(median(posterior) * 100),
+        ", R2's MAD = ",
+        format_digit(mad(posterior) * 100),
+        "%, R2's ",
+        CI,
+        "% CI [",
+        format_digit(CI_values[1], null_treshold = 0.0001),
+        ", ",
+        format_digit(CI_values[2], null_treshold = 0.0001),
+        "])"
+      )
     }
 
     # Store all that
@@ -167,7 +169,6 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
 
     EffSizes <- data.frame()
     for (varname in varnames) {
-
       posterior <- posteriors[, varname]
 
       # Compute the probabilities
@@ -272,7 +273,7 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
       values[[varname]]$EffSize_VS <- verysmall
       values[[varname]]$EffSize_O <- opposite_prob
 
-      if (varname == "R2"){
+      if (varname == "R2") {
         values[[varname]]$EffSize <- NA
         values[[varname]]$EffSize_text <- NA
 
@@ -359,7 +360,7 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
   for (varname in names(values)) {
     coefs_text <- c(coefs_text, values[[varname]]$text)
     if (effsize == T) {
-      if (varname != "R2"){
+      if (varname != "R2") {
         coefs_text <- c(coefs_text, values[[varname]]$EffSize_text, "")
       }
     }

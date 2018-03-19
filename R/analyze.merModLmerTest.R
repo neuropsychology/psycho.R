@@ -93,7 +93,8 @@ analyze.merModLmerTest <- function(x, ...) {
       " (std. beta = ",
       format_digit(fitsum[varname, "Coef.std"], 2),
       ", std. SE = ",
-      format_digit(fitsum[varname, "SE.std"], 2), ").", sep = ""
+      format_digit(fitsum[varname, "SE.std"], 2), ").",
+      sep = ""
     )
 
     values[[varname]] <- list(
@@ -121,7 +122,8 @@ analyze.merModLmerTest <- function(x, ...) {
     format_digit(R2m * 100, 2),
     "% (the marginal R2) and the one explained by the random",
     " effects of ",
-    format_digit((R2c - R2m) * 100, 2), "%.", sep = ""
+    format_digit((R2c - R2m) * 100, 2), "%.",
+    sep = ""
   ))
 
   for (varname in varnames) {

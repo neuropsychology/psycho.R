@@ -65,7 +65,8 @@ analyze.glmerMod <- function(x, ...) {
       format_digit(fitsum[varname, "Coef"], 2), ", SE = ",
       format_digit(fitsum[varname, "SE"], 2), ", z = ",
       format_digit(fitsum[varname, "z"], 2), ", p ",
-      format_p(fitsum[varname, "p"]), ").", sep = ""
+      format_p(fitsum[varname, "p"]), ").",
+      sep = ""
     )
 
     values[[varname]] <- list(
@@ -89,7 +90,8 @@ analyze.glmerMod <- function(x, ...) {
     "The variance explained by the fixed effects was of ",
     format_digit(R2m * 100, 2), "% (the marginal R2) and the ",
     "one explained by the random effects of ",
-    format_digit((R2c - R2m) * 100, 2), "%.", sep = ""
+    format_digit((R2c - R2m) * 100, 2), "%.",
+    sep = ""
   ))
 
   for (varname in varnames) {

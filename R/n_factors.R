@@ -37,8 +37,8 @@ n_factors <- function(df, rotate="varimax", fm="minres", n_max=8) {
 
   # Copy the parallel function from nFactors to correct the use of mvrnorm
   parallel <- function(subject = 100, var = 10, rep = 100, cent = 0.05,
-                       quantile = cent, model = "components",
-                       sd = diag(1, var), ...) {
+                         quantile = cent, model = "components",
+                         sd = diag(1, var), ...) {
     r <- subject
     c <- var
     y <- matrix(c(1:r * c), nrow = r, ncol = c)
@@ -62,7 +62,8 @@ n_factors <- function(df, rotate="varimax", fm="minres", n_max=8) {
     qevpea <- nFactors::moreStats(evpea, quantile = quantile)[3, ]
     sqevpea <- sevpea
     sqevpea <- sapply(
-      as.data.frame(sqevpea), SEcentile, n = rep,
+      as.data.frame(sqevpea), SEcentile,
+      n = rep,
       p = cent
     )
     result <- list(
@@ -91,7 +92,7 @@ n_factors <- function(df, rotate="varimax", fm="minres", n_max=8) {
       "Exp.Variance" = "Prop",
       "Cum.Variance" = "Cumu"
     ) %>%
-    mutate_("n.Factors" = ~1:nrow(nS$Analysis))
+    mutate_("n.Factors" = ~ 1:nrow(nS$Analysis))
 
 
 
@@ -181,15 +182,15 @@ n_factors <- function(df, rotate="varimax", fm="minres", n_max=8) {
 
   eigenvalues <- results %>%
     group_by_("n_optimal") %>%
-    summarise_("n_method" = ~n()) %>%
-    mutate_("n_optimal" = ~factor(n_optimal, levels = 1:nrow(eigenvalues))) %>%
+    summarise_("n_method" = ~ n()) %>%
+    mutate_("n_optimal" = ~ factor(n_optimal, levels = 1:nrow(eigenvalues))) %>%
     complete_("n_optimal", fill = list(n_method = 0)) %>%
     arrange_("n_optimal") %>%
     rename_(
       "n.Factors" = "n_optimal",
       "n.Methods" = "n_method"
     ) %>%
-    mutate_("n.Factors" = ~as.integer(n.Factors)) %>%
+    mutate_("n.Factors" = ~ as.integer(n.Factors)) %>%
     left_join(eigenvalues, by = "n.Factors")
 
 
@@ -232,7 +233,7 @@ n_factors <- function(df, rotate="varimax", fm="minres", n_max=8) {
       size = 1
     ) +
     scale_y_continuous(sec.axis = sec_axis(
-      trans = ~. * (max(eigenvalues$Cum.Variance) / max(eigenvalues$Eigenvalues)),
+      trans = ~ . * (max(eigenvalues$Cum.Variance) / max(eigenvalues$Eigenvalues)),
       name = "Cumulative Variance\n"
     )) +
     ylab("Eigenvalues\n") +

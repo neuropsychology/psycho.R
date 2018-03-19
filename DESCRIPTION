@@ -16,9 +16,9 @@ Maintainer: Dominique Makowski <dom.makowski@gmail.com>
 URL: https://github.com/neuropsychology/psycho.R
 BugReports: https://github.com/neuropsychology/psycho.R/issues
 Description: Toolbox for psychologists, neuropsychologists and neuroscientists. 
-    It implements methods to create report-ready outputs for statistical models, 
-    as well as various convenient statistical functions used in psychological science, 
-    such as correlation matrices and normalization.
+ It implements methods to create report-ready outputs for many statistical models, 
+ as well as various convenient statistical functions used in psychological science, 
+ such as correlation matrices and standardization.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

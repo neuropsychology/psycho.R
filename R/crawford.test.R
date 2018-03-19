@@ -16,28 +16,29 @@
 #'
 #' @importFrom stats pt sd
 #' @export
-crawford.test <- function(case, controls, verbose=T){
+crawford.test <- function(case, controls, verbose=T) {
+  tval <- (case - mean(controls)) / (sd(controls) * sqrt((length(controls) + 1) / length(controls)))
 
-  tval <- (case - mean(controls)) / (sd(controls)*sqrt((length(controls)+1) / length(controls)))
+  degfree <- length(controls) - 1
 
-  degfree <- length(controls)-1
-
-  pval <- 2*(1-pt(abs(tval), df=degfree)) #two-tailed p-value
+  pval <- 2 * (1 - pt(abs(tval), df = degfree)) # two-tailed p-value
 
   p_interpretation <- ifelse(pval < 0.05, " significantly ", " not ")
-  text <- paste0("The Crawford-Howell (1998) t-test suggests that the case partipant is",
-                 p_interpretation, "distinct from the control group (t(",
-                 degfree,
-                 ") = ",
-                 format_digit(tval),
-                 ", p ",
-                 format_p(pval),
-                 ").")
+  text <- paste0(
+    "The Crawford-Howell (1998) t-test suggests that the case partipant is",
+    p_interpretation, "distinct from the control group (t(",
+    degfree,
+    ") = ",
+    format_digit(tval),
+    ", p ",
+    format_p(pval),
+    ")."
+  )
 
 
-  result <- data.frame(t = tval, df = degfree, p=pval)
+  result <- data.frame(t = tval, df = degfree, p = pval)
 
-  if (verbose == T){
+  if (verbose == T) {
     cat(paste0(text, "\n\n"))
   }
 

@@ -16,9 +16,8 @@
 #'
 #' @importFrom stats pnorm sd
 #' @export
-mellenbergh.test <- function(t0, t1, controls, verbose=T){
-
-  if (length(controls) > 1){
+mellenbergh.test <- function(t0, t1, controls, verbose=T) {
+  if (length(controls) > 1) {
     sd <- sd(controls) * sqrt(2)
   } else {
     sd <- controls * sqrt(2)
@@ -30,27 +29,29 @@ mellenbergh.test <- function(t0, t1, controls, verbose=T){
   diff_CI_top <- diff + 1.65 * sd
 
   z <- diff / sd
-  pval <- 2*pnorm(-abs(z))
+  pval <- 2 * pnorm(-abs(z))
 
 
   p_interpretation <- ifelse(pval < 0.05, " ", " not ")
-  text <- paste0("The Mellenbergh & van den Brink (1998) test suggests that the change is",
-                 p_interpretation,
-                 "significant (d = ",
-                 format_digit(diff),
-                 ", 90% CI [",
-                 format_digit(diff_CI_bottom),
-                 ", ",
-                 format_digit(diff_CI_top),
-                 "], z = ",
-                 format_digit(z),
-                 ", p ",
-                 format_p(pval),
-                 ").")
+  text <- paste0(
+    "The Mellenbergh & van den Brink (1998) test suggests that the change is",
+    p_interpretation,
+    "significant (d = ",
+    format_digit(diff),
+    ", 90% CI [",
+    format_digit(diff_CI_bottom),
+    ", ",
+    format_digit(diff_CI_top),
+    "], z = ",
+    format_digit(z),
+    ", p ",
+    format_p(pval),
+    ")."
+  )
 
-  result <- data.frame(diff = diff, diff_90_CI_lower = diff_CI_bottom, diff_90_CI_higher = diff_CI_top, z = z, p=pval)
+  result <- data.frame(diff = diff, diff_90_CI_lower = diff_CI_bottom, diff_90_CI_higher = diff_CI_top, z = z, p = pval)
 
-  if (verbose == T){
+  if (verbose == T) {
     cat(paste0(text, "\n\n"))
   }
 
