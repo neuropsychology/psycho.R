@@ -1,6 +1,17 @@
 language: r
 sudo: false
 
+r_binary_packages:
+  - methods
+  - psych
+  - MASS
+  - nFactors
+  - qgraph
+  - lmerTest
+  - MuMIn
+  - ggcorrplot
+  - ppcor
+
 # Using the package cache to store R package dependencies can significantly
 # speed up build times and is recommended for most builds.
 cache:
