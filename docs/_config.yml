@@ -2,4 +2,8 @@ theme: jekyll-theme-cayman
 title: The Psycho Blog
 description: Learn and Improve your R skills for Psychology
 google_analytics: UA-97457476-3
+url: "https://neuropsychology.github.io/psycho.R/"
 name: Dominique Makowski
+email: dom.makowski@gmail.com
+plugins:
+  - jekyll-seo-tag
