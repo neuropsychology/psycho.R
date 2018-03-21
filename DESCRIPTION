@@ -1,16 +1,20 @@
 Package: psycho
 Type: Package
 Title: Efficient and Publishing-Oriented Workflow for Psychological Science
-Version: 0.1.3
+Version: 0.1.4
 Authors@R: c(
     person("Dominique", 
         "Makowski", 
         email = "dom.makowski@gmail.com",
-        role = c("aut", "cre")), 
+        role = c("aut", "cre", "cph")), 
     person("Viliam",
         "Simko",
         role = "ctb",
-        email = "viliam.simko@gmail.com")
+        email = "viliam.simko@gmail.com"),
+    person("Sasha", 
+        "Epskamp", 
+        role = "rev",
+        comment = "Sasha reviewed the package for JOSS, see https://github.com/openjournals/joss-reviews/issues/470")
     )
 Maintainer: Dominique Makowski <dom.makowski@gmail.com>
 URL: https://github.com/neuropsychology/psycho.R

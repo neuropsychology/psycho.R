@@ -7,7 +7,7 @@
 \method{analyze}{stanreg}(x, CI = 95, effsize = FALSE, verbose = T, ...)
 }
 \arguments{
-\item{x}{stanreg object.}
+\item{x}{A stanreg model.}
 
 \item{CI}{Credible interval bounds.}
 

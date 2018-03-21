@@ -4,6 +4,7 @@ test_that("If it works.", {
   # Fit
   require(rstanarm)
 
+
   fit <- rstanarm::stan_glm(
     vs ~ mpg * cyl,
     data = mtcars,

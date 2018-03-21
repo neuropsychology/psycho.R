@@ -34,13 +34,32 @@ library(rstanarm)
 
 ## Installation
 
-```{r}
-# Do this once (uncomment if needed)
-# install.packages("devtools") 
-# library(devtools)
-# devtools::install_github("https://github.com/neuropsychology/psycho.R")
 
-# Load psycho (at the beginning of every script)
+### Install R and R Studio
+
+
+- Go here: [https://cloud.r-project.org/](https://cloud.r-project.org/)
+- Download the last version for your OS
+- Install it
+- Go here: [https://www.rstudio.com/products/rstudio/download/#download](https://www.rstudio.com/products/rstudio/download/#download)
+- Download the right version for your OS
+- Install it
+- Start R studio
+
+### Install the psycho package
+
+If you've never used `psycho`, enter this in the console and press enter:
+```{r, eval = FALSE}
+install.packages("psycho")
+
+# Or this for the dev version:
+install.packages("devtools")
+library(devtools)
+devtools::install_github("https://github.com/neuropsychology/psycho.R")
+```
+
+Else, just put this at the beginning of every script:
+```{r}
 library(psycho)
 ```
 
@@ -420,3 +439,74 @@ plot(results)
 ```
 
 Obviously, you need to learn more about Bayesian analyses before running them. You can find more information in the rstanarm's [vignettes](https://CRAN.R-project.org/package=rstanarm/vignettes/rstanarm.html).
+
+
+
+
+------
+
+## Visualize a Bayesian Model
+
+
+We often want to visualize our models. While it is relatively easy for simple models such as non-mixed and non-multiple regressions, the addition of predictors and random effects tend to decouple their results from our actual data.
+
+One thing we can do is to plot the predicted values. Let's start with simple models (based on the iris dataset).
+
+```{r, results='hide'}
+library(psycho)
+
+set.seed(666)
+fit <- rstanarm::stan_glm(Sepal.Width ~ Sepal.Length + Petal.Width, data=iris)
+predicted_data <- psycho::get_predicted(fit)
+```
+
+```{r, results='markup', comment=NA}
+names(predicted_data)
+```
+
+As we can see, the `get_predicted` function added three variables, corresponding to the median and 90% credible interval of the predicted posterior distribution. Let's plot, first, the predicted values against the true values.
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center'}
+ggplot(predicted_data, aes(x=Sepal.Width, y=pred_Sepal.Width_median)) +
+  geom_point() +
+  geom_smooth(method="lm")
+```
+We can also extract a new dataframe based on all combinations of values and plot them to better illustrate our model.
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center'}
+new_data <- psycho::get_predicted(fit, newdf=T) %>% 
+  group_by(Sepal.Length, Petal.Width) %>% 
+  summarise_all(mean)
+
+ggplot(new_data, aes(x=Sepal.Length, y=pred_Sepal.Width_median, alpha=Petal.Width, group=Petal.Width)) +
+  geom_point() +
+  geom_line()
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+summary(analyze(fit), 2)
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+kable(summary(analyze(fit), 2))
+```
+
+
+
+As you can see, the representation of the model is rather coherent with its paremeters. What now if we specify an interaction in the model?
+
+```{r, results='hide'}
+set.seed(666)
+names(iris)
+fit <- rstanarm::stan_glm(Sepal.Width ~ Sepal.Length * Petal.Width, data=iris)
+
+new_data <- psycho::get_predicted(fit, newdf=T) %>% 
+  group_by(Sepal.Length, Petal.Width) %>% 
+  summarise_all(mean)
+```
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center'}
+ggplot(new_data, aes(x=Sepal.Length, y=pred_Sepal.Width_median, alpha=Petal.Width, group=Petal.Width)) +
+  geom_point() +
+  geom_line()
+```
+

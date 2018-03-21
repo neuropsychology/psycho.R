@@ -5,6 +5,7 @@
 - Added R2 for bayesian regressions.
 - Added `dprime` function for signal detection theory indices computation.
 - Added `crawford.test` and `mellenbergh.test` function for single-case tests.
+- Added get_predicted for stanreg models
 ### Changes
 
 
