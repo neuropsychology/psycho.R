@@ -5,6 +5,16 @@ layout: default
 <div class="home">
 
 
+
+  <h1 class="page-heading">Posts</h1>
+
+  
+  
+  <p class="rss-subscribe"><a href="{{ "/feed.xml" | prepend: site.baseurl }}">Subscribe via RSS</a></p>
+  
+  
+  
+  
   <ul class="post-list">
     {% for post in site.posts %}
       <li>
@@ -13,31 +23,12 @@ layout: default
         <h2>
           <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
         </h2>
+        <div class="post_summary">{{ post.summary }}</div>
       </li>
     {% endfor %}
   </ul>
   
   
-  <h1 class="page-heading">Posts</h1>
-
-  <p class="rss-subscribe"><a href="{{ "/feed.xml" | prepend: site.baseurl }}">Subscribe via RSS</a></p>
-  
-  
-  <div id="posts">
-	<h2>Posts</h2>
-		{% for post in site.posts %}
-		<div class="post">
-			<div>
-				<span class="post_date">{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a>
-			</div>
-			<div class="post_summary">{{ post.summary }}</div>
-		</div>	
-		{% endfor %}
-</div>
-
-
-
-
   
 
 </div>

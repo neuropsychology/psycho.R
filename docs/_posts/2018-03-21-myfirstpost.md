@@ -1,5 +1,5 @@
 ---
-layout: blog
+layout: default
 title:  "My first blog post"
 date:   2018-03-21
 summary: My first jekyll post.

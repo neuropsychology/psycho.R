@@ -5,6 +5,6 @@ google_analytics: UA-97457476-3
 url: "https://neuropsychology.github.io/psycho.R/"
 name: Dominique Makowski
 email: dom.makowski@gmail.com
-pygments: true
+highlighter: rouge
 plugins:
   - jekyll-seo-tag
