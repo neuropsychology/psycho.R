@@ -6,10 +6,10 @@
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-odds_to_probs <- function(odds, log=TRUE){
-  if (log==TRUE){
-    odds = exp(odds)
+odds_to_probs <- function(odds, log=TRUE) {
+  if (log == TRUE) {
+    odds <- exp(odds)
   }
-  probs = odds/(1+odds)
+  probs <- odds / (1 + odds)
   return(probs)
 }

@@ -30,8 +30,7 @@
 #' @importFrom stats median
 #'
 #' @export
-get_predicted.stanreg <- function(fit, prob=0.9, draws=500, newdf=FALSE, precision=10, ...){
-
+get_predicted.stanreg <- function(fit, prob=0.9, draws=500, newdf=FALSE, precision=10, ...) {
   data <- fit$data
   formula <- as.character(fit$formula)
   predictors <- all.vars(fit$formula)
@@ -41,34 +40,33 @@ get_predicted.stanreg <- function(fit, prob=0.9, draws=500, newdf=FALSE, precisi
   length_out <- precision
 
 
-  if(newdf==T){
-
+  if (newdf == T) {
     info <- list()
-    for(var in predictors){
+    for (var in predictors) {
       info[[var]] <- list()
 
-      if(is.factor(data[[var]])){
+      if (is.factor(data[[var]])) {
         info[[var]]$type <- "factor"
         info[[var]]$uniques <- unique(data[[var]])
-        info[[var]]$data <- rep(info[[var]]$uniques, length.out=length_out)
-      } else{
+        info[[var]]$data <- rep(info[[var]]$uniques, length.out = length_out)
+      } else {
         info[[var]]$type <- "num"
         info[[var]]$min <- min(data[[var]])
         info[[var]]$max <- max(data[[var]])
-        info[[var]]$data <- seq(info[[var]]$min, info[[var]]$max, length.out=length_out)
+        info[[var]]$data <- seq(info[[var]]$min, info[[var]]$max, length.out = length_out)
         info[[var]]$uniques <- unique(info[[var]]$data)
       }
     }
 
     predicted <- data.frame()
-    for(var in predictors){
+    for (var in predictors) {
       other_predictors <- predictors[predictors != var]
 
-      for(value in info[[var]]$uniques){
-        temp <- data.frame("x" = rep(NA, length.out=length_out))
-        temp[var] <- rep(value, length.out=length_out)
+      for (value in info[[var]]$uniques) {
+        temp <- data.frame("x" = rep(NA, length.out = length_out))
+        temp[var] <- rep(value, length.out = length_out)
 
-        for(other_pred in other_predictors){
+        for (other_pred in other_predictors) {
           temp[other_pred] <- info[[other_pred]]$data
         }
 
@@ -76,7 +74,7 @@ get_predicted.stanreg <- function(fit, prob=0.9, draws=500, newdf=FALSE, precisi
       }
     }
     predicted <- dplyr::select_(predicted, "-x")
-  } else{
+  } else {
     predicted <- NULL
   }
 
@@ -86,33 +84,33 @@ get_predicted.stanreg <- function(fit, prob=0.9, draws=500, newdf=FALSE, precisi
   pred_y <- c()
 
 
-  for(i in pred_y_post){
+  for (i in pred_y_post) {
     pred_y <- c(pred_y, median(i))
   }
-  pred_y = as.data.frame(pred_y)
+  pred_y <- as.data.frame(pred_y)
   names(pred_y) <- paste0("pred_", outcome, "_median")
 
-  pred_y_interval <- as.data.frame(rstanarm::posterior_interval(rstanarm::posterior_predict(fit, newdata = predicted, draws = draws), prob=prob, draws = draws))
-  names(pred_y_interval) <- paste("pred", outcome, names(pred_y_interval), sep="_")
+  pred_y_interval <- as.data.frame(rstanarm::posterior_interval(rstanarm::posterior_predict(fit, newdata = predicted, draws = draws), prob = prob, draws = draws))
+  names(pred_y_interval) <- paste("pred", outcome, names(pred_y_interval), sep = "_")
 
   pred_y <- cbind(pred_y_interval, pred_y)
 
   # If Binary, add proba
-  if(length(unique(data[[outcome]])) == 2 & 0 %in% unique(data[[outcome]]) & 1 %in% unique(data[[outcome]])){
+  if (length(unique(data[[outcome]])) == 2 & 0 %in% unique(data[[outcome]]) & 1 %in% unique(data[[outcome]])) {
     pred_y_proba <- c()
-    for(i in pred_y_post){
+    for (i in pred_y_post) {
       pred_y_proba <- c(pred_y_proba, mean(i))
-        }
-      pred_y_proba = as.data.frame(pred_y_proba)
-      names(pred_y_proba) <- paste0("pred_", outcome, "_probability")
+    }
+    pred_y_proba <- as.data.frame(pred_y_proba)
+    names(pred_y_proba) <- paste0("pred_", outcome, "_probability")
     pred_y <- cbind(pred_y, pred_y_proba)
   }
 
 
 
-  if(newdf==T){
+  if (newdf == T) {
     predicted <- cbind(predicted, pred_y)
-  } else{
+  } else {
     predicted <- data
     predicted <- cbind(predicted, pred_y)
   }

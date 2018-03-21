@@ -9,30 +9,41 @@ test_that("If it works.", {
     vs ~ mpg,
     data = mtcars,
     family = binomial(link = "logit"),
-    seed=666
+    seed = 666
   )
   data <- get_predicted(fit)
   r <- as.numeric(cor.test(data$vs, data$pred_vs_median)$estimate)
-  testthat::expect_equal(r, 0.6, tolerance=0.2)
+  testthat::expect_equal(r, 0.6, tolerance = 0.2)
 
 
-  data_new <- get_predicted(fit, newdf=T)
-  testthat::expect_equal(mean(data_new$pred_vs_probability), 0.56, tolerance=0.05)
+  data_new <- get_predicted(fit, newdf = T)
+  testthat::expect_equal(mean(data_new$pred_vs_probability), 0.56, tolerance = 0.05)
 
 
 
   fit <- rstanarm::stan_glm(
     cyl ~ mpg,
     data = mtcars,
-    seed=666
+    seed = 666
   )
   data <- get_predicted(fit)
   r <- as.numeric(cor.test(data$cyl, data$pred_cyl_median)$estimate)
-  testthat::expect_equal(r, 0.84, tolerance=0.02)
+  testthat::expect_equal(r, 0.84, tolerance = 0.02)
 
 
-  data_new <- get_predicted(fit, newdf=T)
-  testthat::expect_equal(mean(data_new$pred_cyl_median), 5.66, tolerance=0.05)
+  data_new <- get_predicted(fit, newdf = T)
+  testthat::expect_equal(mean(data_new$pred_cyl_median), 5.66, tolerance = 0.05)
 
 
+  fit <- rstanarm::stan_glm(
+    Sepal.Length ~ Sepal.Width + Species,
+    data = iris,
+    seed = 666
+  )
+  data <- get_predicted(fit)
+  r <- as.numeric(cor.test(data$Sepal.Length, data$pred_Sepal.Length_median)$estimate)
+  testthat::expect_equal(r, 0.84, tolerance = 0.02)
+
+  data_new <- get_predicted(fit, newdf = T)
+  testthat::expect_equal(mean(data_new$pred_Sepal.Length_median), 5.86, tolerance = 0.05)
 })
