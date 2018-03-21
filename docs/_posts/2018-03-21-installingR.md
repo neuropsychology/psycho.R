@@ -1,3 +1,10 @@
+---
+layout: post
+title:  "Installing R and R studio"
+date:   2018-03-21
+summary: Installing R and R studio
+---
+
 How to install R?
 
 Installation
