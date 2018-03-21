@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "My first blog post"
+title:  "Installing R and R studio"
 date:   2018-03-21
 summary: My first jekyll post.
 ---
