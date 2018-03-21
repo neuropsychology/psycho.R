@@ -2,7 +2,7 @@
 #'
 #' Analyze stanreg objects.
 #'
-#' @param x stanreg object.
+#' @param x A stanreg model.
 #' @param CI Credible interval bounds.
 #' @param effsize Compute Effect Sizes according to Cohen (1988)? Your outcome variable must be standardized.
 #' @param verbose Toggle warnings display.
