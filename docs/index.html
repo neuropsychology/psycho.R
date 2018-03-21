@@ -5,7 +5,7 @@ layout: default
 <div class="home">
 
 
-  <p align="center"><a href=https://neuropsychology.github.io/psycho.R/><img src="https://raw.githubusercontent.com/neuropsychology/psycho.R/master/vignettes/images/logo.PNG" width="400" align="center" alt="psycho logo r package"></a></p>
+  <p align="center"><a href=https://neuropsychology.github.io/psycho.R/><img src="https://raw.githubusercontent.com/neuropsychology/psycho.R/master/vignettes/images/logo.PNG" width="600" align="center" alt="psycho logo r package"></a></p>
 
   
   <h1 class="page-heading">About</h1>
@@ -34,10 +34,10 @@ layout: default
       <li>
         <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
 
-        <h2>
+        <h3>
           <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-        </h2>
-        <div class="post_summary">{{ post.summary }}</div>
+        </h3>
+        {%<div class="post_summary">{{ post.summary }}</div>%}
       </li>
     {% endfor %}
   </ul>
