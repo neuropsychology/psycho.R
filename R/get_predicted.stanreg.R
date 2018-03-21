@@ -2,9 +2,9 @@
 #'
 #' Compute predicted from a stanreg model.
 #'
-#' @param x A stanreg model.
+#' @param fit A stanreg model.
 #' @param prob Probability of credible intervals (0.9 (default) will compute
-#' 5-95% CI).
+#' 5-95\% CI).
 #' @param draws Precision of the estimate.
 #' @param newdf Should the predictions be based on actual data or,
 #' generate a new dataframe based on all combinations of values
@@ -30,9 +30,8 @@
 #' @importFrom stats median
 #'
 #' @export
-get_predicted.stanreg <- function(x, prob=0.9, draws=500, newdf=FALSE, precision=10, ...){
+get_predicted.stanreg <- function(fit, prob=0.9, draws=500, newdf=FALSE, precision=10, ...){
 
-  fit <- x
   data <- fit$data
   formula <- as.character(fit$formula)
   predictors <- all.vars(fit$formula)
@@ -76,7 +75,7 @@ get_predicted.stanreg <- function(x, prob=0.9, draws=500, newdf=FALSE, precision
         predicted <- rbind(predicted, temp)
       }
     }
-    predicted <- predicted[ , -which(names(predicted) == "x")]
+    predicted <- dplyr::select_(predicted, "-x")
   } else{
     predicted <- NULL
   }
@@ -94,7 +93,7 @@ get_predicted.stanreg <- function(x, prob=0.9, draws=500, newdf=FALSE, precision
   names(pred_y) <- paste0("pred_", outcome, "_median")
 
   pred_y_interval <- as.data.frame(rstanarm::posterior_interval(rstanarm::posterior_predict(fit, newdata = predicted, draws = draws), prob=prob, draws = draws))
-  names(pred_y_interval) <- paste("pred_", outcome, names(pred_y_interval), sep="_")
+  names(pred_y_interval) <- paste("pred", outcome, names(pred_y_interval), sep="_")
 
   pred_y <- cbind(pred_y_interval, pred_y)
 

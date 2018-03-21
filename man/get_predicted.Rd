@@ -4,10 +4,10 @@
 \alias{get_predicted}
 \title{Compute predicted values from models.}
 \usage{
-get_predicted(x, ...)
+get_predicted(fit, ...)
 }
 \arguments{
-\item{x}{Model.}
+\item{fit}{Model.}
 
 \item{...}{Arguments passed to or from other methods.}
 }

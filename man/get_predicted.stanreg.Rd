@@ -4,14 +4,14 @@
 \alias{get_predicted.stanreg}
 \title{Compute predicted values of stanreg models.}
 \usage{
-\method{get_predicted}{stanreg}(x, prob = 0.9, draws = 500, newdf = FALSE,
-  precision = 10, ...)
+\method{get_predicted}{stanreg}(fit, prob = 0.9, draws = 500,
+  newdf = FALSE, precision = 10, ...)
 }
 \arguments{
-\item{x}{A stanreg model.}
+\item{fit}{A stanreg model.}
 
 \item{prob}{Probability of credible intervals (0.9 (default) will compute
-5-95% CI).}
+5-95\% CI).}
 
 \item{draws}{Precision of the estimate.}
 
@@ -26,7 +26,7 @@ generate a new dataframe based on all combinations of values}
 dataframe with predicted values.
 }
 \description{
-Compute predicted values of stanreg models.
+Compute predicted from a stanreg model.
 }
 \examples{
 \dontrun{

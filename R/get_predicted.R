@@ -2,12 +2,12 @@
 #'
 #' Compute predicted values from models.
 #'
-#' @param x Model.
+#' @param fit Model.
 #' @param ... Arguments passed to or from other methods.
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-get_predicted <- function(x, ...) {
+get_predicted <- function(fit, ...) {
   UseMethod("get_predicted")
 }
