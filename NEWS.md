@@ -1,4 +1,13 @@
-# Current Dev 0.1.3
+# Current Dev
+
+### Breaking changes
+### New functions / parameters
+- Added `crawford_dissociation.test` and `mellenbergh.test` function for single-case tests.
+### Changes
+Improved `crawford.test`
+
+# [0.1.4](https://github.com/neuropsychology/psycho.R/releases/tag/0.1.4) (2018-03-23)
+
 
 ### Breaking changes
 ### New functions / parameters

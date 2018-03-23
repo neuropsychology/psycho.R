@@ -10,38 +10,46 @@ tags:
 - r
 - psychology
 - neuroscience
-- Install R
+- neuropsychology
+- Single case methods
+- crawford-howell
+- mellenbergh
 ---
 
-How to install R?
 
-## Installation
+## Single-case methods
+
+### Crawford-Howell (1998) t-test for single-case vs. control group
+
+Neuropsychologists (and neuropsychology students) often need to compare a single case to a small control group. However, the standard two-sample t-test does not work because the case is only one observation. Crawford and Garthwaite (2012) demonstrate that the Crawford-Howell (1998) t-test is a better approach (in terms of controlling Type I error rate) than other commonly-used alternatives.
 
 
-### Install R and R Studio
+```{r echo=TRUE, message=FALSE, warning=FALSE, results='markup'}
+library(psycho)
 
+case <- 82 # The IQ of a patient
+controls <- c(86, 100, 112, 95, 121, 102) # The IQs of a control group
 
-- Go here: [https://cloud.r-project.org/](https://cloud.r-project.org/)
-- Download the last version for your OS
-- Install it
-- Go here: [https://www.rstudio.com/products/rstudio/download/#download](https://www.rstudio.com/products/rstudio/download/#download)
-- Download the right version for your OS
-- Install it
-- Start R studio
-
-### Install the psycho package
-
-If you've never used `psycho`, enter this in the console and press enter:
-```{r, eval = FALSE}
-install.packages("psycho")
-
-# Or this for the dev version:
-install.packages("devtools")
-library(devtools)
-devtools::install_github("https://github.com/neuropsychology/psycho.R")
+rez <- crawford.test(case, controls)
 ```
 
-Else, just put this at the beginning of every script:
-```{r}
+
+### Mellenbergh & van den Brink (1998) test for pre-post comparison
+
+Clinicians willing to check if their intervention had an effect on a single participant might want to use the Mellenbergh & van den Brink (1998) test, comparing the difference between baseline and post-test to the standart deviation of a control group.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, results='markup'}
 library(psycho)
+
+t0 <- 82 # The IQ of a patient at baseline
+t1 <- 105 # The IQ of a patient after the new therapy
+controls <- c(94, 100, 108, 95, 102, 94) # The IQs of a control group
+
+rez <- mellenbergh.test(t0, t1, controls = controls)
+```
+
+If we do not have a control group, we can also directly enter the SD of the score. For IQ, the SD is of 15.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, results='markup'}
+rez <- mellenbergh.test(t0, t1, controls = 15)
 ```

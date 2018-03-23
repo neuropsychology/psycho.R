@@ -1,13 +1,12 @@
 ---
 layout: post
 title:  "Installing R and R studio"
+author: Dominique Makowski
 date:   2018-03-21
 summary: Installing R and R studio
 ---
 
-How to install R?
-
-Installation
+Guide
 ------------
 
 ### Install R and R Studio
@@ -22,9 +21,10 @@ Installation
 
 ### Install the psycho package
 
-If you've never used `psycho`, enter this in the console and press enter:
+If you've never used `psycho`, enter one of the following in the console and press enter:
 
 ``` r
+# This for the stable version:
 install.packages("psycho")
 
 # Or this for the dev version:

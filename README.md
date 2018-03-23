@@ -32,7 +32,7 @@
 
 ## Goal
 
-The main goal of the `psycho` package is to provide tools for psychologists, neuropsychologists and neuroscientists, to transform statistical outputs into something readable that can be, almost directly, copied and pasted into a report. It also implements various functions, from very useful ones (`correlation()`, `normalize()`) to miscellaenous ones (`find_season()`).
+The main goal of the `psycho` package is to provide tools for psychologists, neuropsychologists and neuroscientists, to transform statistical outputs into something readable that can be, almost directly, copied and pasted into a report. It also implements various functions, from very useful ones (`correlation()`, `standardize()`) to miscellaenous ones (`find_season()`).
 
 
 ## Contribute
