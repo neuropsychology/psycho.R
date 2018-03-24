@@ -7,9 +7,9 @@
 crawford.test(case, controls, verbose = T)
 }
 \arguments{
-\item{case}{Single value.}
+\item{case}{Single value (patient's score).}
 
-\item{controls}{Vector of values.}
+\item{controls}{Vector of values (control's scores).}
 
 \item{verbose}{True or False. Prints the interpretation text.}
 }
@@ -25,5 +25,5 @@ crawford.test(case = 10, controls = c(0, -2, 5, 2, 1, 3, -4, -2))
 
 }
 \author{
-Dan Mirman
+Dan Mirman, Dominique Makowski
 }

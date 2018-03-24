@@ -4,13 +4,16 @@ library(tidyverse)
 library(broom)
 library(rstanarm)
 
-## ------------------------------------------------------------------------
-# Do this once (uncomment if needed)
-# install.packages("devtools") 
-# library(devtools)
-# devtools::install_github("https://github.com/neuropsychology/psycho.R")
+## ---- eval = FALSE-------------------------------------------------------
+#  # This for the stable version:
+#  install.packages("psycho")
+#  
+#  # Or this for the dev version:
+#  install.packages("devtools")
+#  library(devtools)
+#  devtools::install_github("https://github.com/neuropsychology/psycho.R")
 
-# Load psycho (at the beginning of every script)
+## ------------------------------------------------------------------------
 library(psycho)
 
 ## ---- out.width=700, echo = FALSE, eval = TRUE, fig.align='center'-------
@@ -221,4 +224,48 @@ print(results)
 
 ## ---- fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center'----
 plot(results)
+
+## ---- results='hide'-----------------------------------------------------
+library(psycho)
+
+set.seed(666)
+fit <- rstanarm::stan_glm(Sepal.Width ~ Sepal.Length + Petal.Width, data=iris)
+predicted_data <- psycho::get_predicted(fit)
+
+## ---- results='markup', comment=NA---------------------------------------
+names(predicted_data)
+
+## ---- fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center'----
+ggplot(predicted_data, aes(x=Sepal.Width, y=pred_Sepal.Width_median)) +
+  geom_point() +
+  geom_smooth(method="lm")
+
+## ---- fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center'----
+new_data <- psycho::get_predicted(fit, newdf=T) %>% 
+  group_by(Sepal.Length, Petal.Width) %>% 
+  summarise_all(mean)
+
+ggplot(new_data, aes(x=Sepal.Length, y=pred_Sepal.Width_median, alpha=Petal.Width, group=Petal.Width)) +
+  geom_point() +
+  geom_line()
+
+## ----echo=FALSE, message=FALSE, warning=FALSE, results='hide'------------
+summary(analyze(fit), 2)
+
+## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
+kable(summary(analyze(fit), 2))
+
+## ---- results='hide'-----------------------------------------------------
+set.seed(666)
+names(iris)
+fit <- rstanarm::stan_glm(Sepal.Width ~ Sepal.Length * Petal.Width, data=iris)
+
+new_data <- psycho::get_predicted(fit, newdf=T) %>% 
+  group_by(Sepal.Length, Petal.Width) %>% 
+  summarise_all(mean)
+
+## ---- fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center'----
+ggplot(new_data, aes(x=Sepal.Length, y=pred_Sepal.Width_median, alpha=Petal.Width, group=Petal.Width)) +
+  geom_point() +
+  geom_line()
 

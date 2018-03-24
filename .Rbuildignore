@@ -5,6 +5,7 @@
 ^steps
 ^paper
 ^dev
+^docs
 ^codecov\.yml$
 ^\.lintr$
 ^CONDUCT\.md$
