@@ -24,7 +24,6 @@
 #' @importFrom stats sd
 #' @export
 crawford_dissociation.test <- function(case_X, case_Y, controls_X, controls_Y, verbose=T) {
-
   X_mean <- mean(controls_X)
   X_sd <- sd(controls_X)
   Y_mean <- mean(controls_Y)
@@ -33,22 +32,22 @@ crawford_dissociation.test <- function(case_X, case_Y, controls_X, controls_Y, v
   n <- length(controls_X)
   degfree <- n - 1
 
-  case_X_Z <- (case_X - X_mean)/X_sd
-  case_Y_Z <- (case_Y - Y_mean)/Y_sd
+  case_X_Z <- (case_X - X_mean) / X_sd
+  case_Y_Z <- (case_Y - Y_mean) / Y_sd
 
-  tval <- (case_X_Z - case_Y_Z)/sqrt((2-2*r)*((n+1)/n))
+  tval <- (case_X_Z - case_Y_Z) / sqrt((2 - 2 * r) * ((n + 1) / n))
 
-  pval <- 2*pnorm(-abs(tval)) # two-tailed p-value
+  pval <- 2 * pnorm(-abs(tval)) # two-tailed p-value
 
   p_interpretation <- ifelse(pval < 0.05, " a significant ", " no ")
   p_interpretation2 <- ifelse(pval < 0.05, "", " not ")
   z_interpretation <- ifelse(tval < 0, " below ", " above ")
   pop_interpretation <- ifelse(tval < 0, " above ", " below ")
 
-  if (abs(case_X_Z) > abs(case_Y_Z)){
+  if (abs(case_X_Z) > abs(case_Y_Z)) {
     var_interpretation1 <- "test X"
     var_interpretation2 <- "test Y"
-  } else{
+  } else {
     var_interpretation1 <- "test Y"
     var_interpretation2 <- "test X"
   }
@@ -67,7 +66,8 @@ crawford_dissociation.test <- function(case_X, case_Y, controls_X, controls_Y, v
     " is ",
     p_interpretation2,
     "significantly altered compared to its score on ",
-    var_interpretation2)
+    var_interpretation2
+  )
 
 
   result <- data.frame(t = tval, df = degfree, p = pval)
@@ -78,6 +78,3 @@ crawford_dissociation.test <- function(case_X, case_Y, controls_X, controls_Y, v
 
   return(result)
 }
-
-
-

@@ -267,7 +267,7 @@ library(psycho)
 case <- 61 # The IQ of a patient
 controls <- c(86, 100, 112, 95, 121, 102) # The IQs of a control group
 
-crawford.test(case, controls)
+rez <- crawford.test(case, controls)
 ```
 
 ### Crawford-Howell (1998) t-test for dissociation
@@ -283,7 +283,7 @@ case_Y <- 7
 controls_X <- c(100, 125, 89, 105, 109, 99)
 controls_Y <- c(7, 8, 9, 6, 7, 10)
 
-crawford_dissociation.test(case_X, case_Y, controls_X, controls_Y)
+rez <- crawford_dissociation.test(case_X, case_Y, controls_X, controls_Y)
 ```
 
 

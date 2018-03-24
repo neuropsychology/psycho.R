@@ -17,15 +17,14 @@
 #' @importFrom stats pt sd
 #' @export
 crawford.test <- function(case, controls, verbose=T) {
-
   tval <- (case - mean(controls)) / (sd(controls) * sqrt((length(controls) + 1) / length(controls)))
 
   degfree <- length(controls) - 1
 
   pval <- 2 * (1 - pt(abs(tval), df = degfree)) # two-tailed p-value
 
-  p_interpretation <- ifelse(pval < 0.05, " significantly ", " not ")
-  t_interpretation <- ifelse(tval < 0, " below ", " above ")
+  p_interpretation <- ifelse(pval < 0.05, " significantly ", " not significantly ")
+  t_interpretation <- ifelse(tval < 0, "below ", "above ")
   pop_interpretation <- ifelse(tval < 0, " above ", " below ")
 
   text <- paste0(
@@ -40,7 +39,7 @@ crawford.test <- function(case, controls, verbose=T) {
     format_p(pval),
     "). It has estimated that the patient is located",
     t_interpretation,
-    format_digit((1-pval)*100),
+    format_digit((1 - pval) * 100),
     "% of the control population."
   )
 
@@ -53,6 +52,3 @@ crawford.test <- function(case, controls, verbose=T) {
 
   return(result)
 }
-
-
-
