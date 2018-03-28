@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Installing R and R studio"
-author: Dominique Makowski
+post_author: Dominique Makowski
 date:   2018-03-21
 summary: Installing R and R studio
 ---
