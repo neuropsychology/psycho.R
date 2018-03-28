@@ -1,0 +1,2 @@
+Double check the MD file.
+For images, add https://raw.githubusercontent.com/neuropsychology/psycho.R/master/docs/_posts/ in front of the link

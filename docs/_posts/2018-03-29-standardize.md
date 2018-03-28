@@ -14,32 +14,7 @@ The `standardize()` function allows you to easily scale and center all numeric v
 ``` r
 library(psycho)
 library(tidyverse)
-```
 
-    Warning: package 'tidyverse' was built under R version 3.4.2
-
-    -- Attaching packages ------------------------------------------------------------------------------------------------------------------------------------------------------ tidyverse 1.2.0 --
-
-    v ggplot2 2.2.1     v purrr   0.2.4
-    v tibble  1.4.2     v dplyr   0.7.4
-    v tidyr   0.8.0     v stringr 1.2.0
-    v readr   1.1.1     v forcats 0.2.0
-
-    Warning: package 'ggplot2' was built under R version 3.4.3
-
-    Warning: package 'tibble' was built under R version 3.4.4
-
-    Warning: package 'tidyr' was built under R version 3.4.3
-
-    Warning: package 'purrr' was built under R version 3.4.2
-
-    Warning: package 'dplyr' was built under R version 3.4.2
-
-    -- Conflicts --------------------------------------------------------------------------------------------------------------------------------------------------------- tidyverse_conflicts() --
-    x dplyr::filter() masks stats::filter()
-    x dplyr::lag()    masks stats::lag()
-
-``` r
 z_iris <- iris %>% 
   psycho::standardize() 
 
@@ -74,4 +49,4 @@ z_iris %>%
       scale_fill_brewer(palette="Spectral")
 ```
 
-<img src="2018-03-29-standardize_files/figure-markdown_github/unnamed-chunk-2-1.png" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/neuropsychology/psycho.R/master/docs/_posts/2018-03-29-standardize_files/figure-markdown_github/unnamed-chunk-2-1.png" style="display: block; margin: auto;" />
