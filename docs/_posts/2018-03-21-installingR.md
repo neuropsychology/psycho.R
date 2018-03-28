@@ -1,10 +1,7 @@
 ---
 layout: post
 title:  "Installing R and R studio"
-author: 
-  Makowski:
-    name: Dominique Makowski
-    web: https://dominiquemakowski.github.io/
+author: Makowski
 date:   2018-03-21
 summary: Installing R and R studio
 ---
