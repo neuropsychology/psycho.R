@@ -1,8 +1,9 @@
 ---
 layout: post
-title:  "Standardize (Z-score) a dataframe"
-author: Makowski
-date:   2018-03-29
+title: "Standardize (Z-score) a dataframe"
+author: Dominique Makowski
+author_web: https://dominiquemakowski.github.io/
+date: 2018-03-29
 summary: Standardize (Z-score) a dataframe
 ---
 

@@ -2,23 +2,22 @@
 layout: default
 ---
 
-<!-- Look the author details up from the site config. -->
-{% assign author = site.data.authors[page.author] %}
 
-<!-- Output author details if some exist. -->
-{% if author %}
-    <span>
-        <!-- Personal Info. -->
-        Written by <a href="{{ author.web }}" target="_blank">{{ author.name }}</a>
-    </span>
-{% endif %}
+<span>
+    <!-- Personal Info. -->
+    Written by <a href="{{ page.author_web }}" target="_blank">{{ page.author }}</a>
+    
+    <p class="meta">{{ page.date | date_to_string }}</p>
+
+    <a onclick="window.history.back()">Previous</a>
+</span>
+
 
 
 <h1>{{ page.title }}</h1>
-<p class="meta">{{ page.date | date_to_string }}</p>
-
-<a onclick="window.history.back()">Back</a>
 
 {{ content }}
+
+
 
 
