@@ -465,3 +465,10 @@ Critically, see THIS vignette for a guide to bayesian statistics for psychology.
 
 
 
+### Credits
+
+You liked it? Don't forget to cite the various packages you used :)
+
+You can cite `psycho` as follows:
+
+- Makowski, (2018). **The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science**. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470
