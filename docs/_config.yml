@@ -8,9 +8,9 @@ email: dom.makowski@gmail.com
 highlighter: rouge
 plugins:
   - jekyll-seo-tag
-authors:
+author:
   Makowski:
-    display_name: Dominique Makowski
+    name: Dominique Makowski
     email: dom.makowski@gmail.com
     web: https://dominiquemakowski.github.io/
     github: DominiqueMakowski
