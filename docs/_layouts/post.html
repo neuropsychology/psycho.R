@@ -5,11 +5,12 @@ layout: default
 
 <span>
     {{ page.date | date_to_string }} - Written by <a href="{{ page.author_web }}" target="_blank">{{ page.author }}</a>
+    
+    <p><a onclick="window.history.back()">Go to main menu.</a></p>
 </span>
 
-<span>
-    <a onclick="window.history.back()">Go to main menu.</a>
-</span>
+
+    
 
 
 <h1>{{ page.title }}</h1>
