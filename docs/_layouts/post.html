@@ -4,12 +4,9 @@ layout: default
 
 
 <span>
-    <!-- Personal Info. -->
-    Written by <a href="{{ page.author_web }}" target="_blank">{{ page.author }}</a>
-    
-    <p class="meta">{{ page.date | date_to_string }}</p>
+    {{ page.date | date_to_string }} - Written by <a href="{{ page.author_web }}" target="_blank">{{ page.author }}</a>
 
-    <a onclick="window.history.back()">Previous</a>
+    <a onclick="window.history.back()">Go to main menu.</a>
 </span>
 
 
