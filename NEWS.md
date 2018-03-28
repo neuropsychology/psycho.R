@@ -1,10 +1,15 @@
 # Current Dev
 
 ### Breaking changes
+- Changed order of parameters in `dprime`.
 ### New functions / parameters
-- Added `crawford_dissociation.test` and `mellenbergh.test` function for single-case tests.
+- Added `get_contrasts.stanreg` and `get_predicted.stanreg` functions.
+- Added `crawford_dissociation.test` function for single-case tests.
+- Externalized the "mpe" function.
+- Added `affective` dataset.
 ### Changes
-Improved `crawford.test`
+- Added new vignette for "Bayesian analyses in psychology"
+- Improved `crawford.test`
 
 # [0.1.4](https://github.com/neuropsychology/psycho.R/releases/tag/0.1.4) (2018-03-23)
 

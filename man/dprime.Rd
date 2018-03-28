@@ -4,16 +4,23 @@
 \alias{dprime}
 \title{Dprime and Other Signal Detection Theory indices.}
 \usage{
-dprime(n_hit, n_miss, n_fa, n_cr)
+dprime(n_hit, n_fa, n_miss = NULL, n_cr = NULL, n_targets = NULL,
+  n_distractors = NULL, adjusted = TRUE)
 }
 \arguments{
 \item{n_hit}{Number of hits.}
 
-\item{n_miss}{Number of misses.}
-
 \item{n_fa}{Number of false alarms.}
 
+\item{n_miss}{Number of misses.}
+
 \item{n_cr}{Number of correct rejections.}
+
+\item{n_targets}{Number of targets (n_hit + n_miss).}
+
+\item{n_distractors}{Number of distractors (n_fa + n_cr).}
+
+\item{adjusted}{Should it use the Hautus (1995) adjustments for extreme values.}
 }
 \value{
 Calculates the d', the beta, the A' and the B''D based on the signal detection theory (SRT). See Pallier (2002) for the algorithms.
@@ -22,10 +29,11 @@ Returns a list containing 4 objects:
 \itemize{
  \item{dprime (d'): }{The sensitivity. Reflects the distance between the two distributions: signal, and signal+noise and corresponds to the Z value of the hit-rate minus that of the false-alarm rate.}
  \item{beta: }{The bias (criterion). The value for beta is the ratio of the normal density functions at the criterion of the Z values used in the computation of d'. This reflects an observer's bias to say 'yes' or 'no' with the unbiased observer having a value around 1.0. As the bias to say 'yes' increases (liberal), resulting in a higher hit-rate and false-alarm-rate, beta approaches 0.0. As the bias to say 'no' increases (conservative), resulting in a lower hit-rate and false-alarm rate, beta increases over 1.0 on an open-ended scale.}
- \item{aprime (A'): }{Non-parametric estimate of discriminability. An A' near 1.0 indicates good discriminability, while a value near 0.5 means chance performance.}
- \item{bppd (B''D): }{Non-parametric estimate of bias. A B''D equal to 0.0 indicates no bias, positive numbers represent conservative bias (i.e., a tendency to answer 'no'), negative numbers represent liberal bias (i.e. a tendency to answer 'yes'). The maximum absolute value is 1.0.}
  \item{c: }{Another index of bias. the number of standard deviations from the midpoint between these two distributions, i.e., a measure on a continuum from "conservative" to "liberal".}
 }
+ \item{aprime (A'): }{Non-parametric estimate of discriminability. An A' near 1.0 indicates good discriminability, while a value near 0.5 means chance performance.}
+ \item{bppd (B''D): }{Non-parametric estimate of bias. A B''D equal to 0.0 indicates no bias, positive numbers represent conservative bias (i.e., a tendency to answer 'no'), negative numbers represent liberal bias (i.e. a tendency to answer 'yes'). The maximum absolute value is 1.0.}
+
 
 Note that for d' and beta, adjustement for extreme values are made following the recommandations Hautus (1995).
 }
@@ -34,11 +42,18 @@ Computes Signal Detection Theory indices (d', beta, A', B''D, c).
 }
 \examples{
 n_hit <- 9
-n_miss <- 1
 n_fa <- 2
+n_miss <- 1
 n_cr <- 7
 
-indices <- dprime(n_hit, n_miss, n_fa, n_cr)
+indices <- dprime(n_hit, n_fa, n_miss, n_cr)
+
+df <- data.frame(Participant = c("A", "B", "C"),
+    n_hit = c(1, 2, 5),
+    n_fa = c(6, 8, 1))
+
+indices <- dprime(n_hit=df$n_hit, n_fa=df$n_fa, n_targets=10, n_distractors=10, adjusted=FALSE)
+
 
 }
 \author{

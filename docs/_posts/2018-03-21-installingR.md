@@ -30,7 +30,7 @@ install.packages("psycho")
 # Or this for the dev version:
 install.packages("devtools")
 library(devtools)
-devtools::install_github("https://github.com/neuropsychology/psycho.R")
+devtools::install_github("neuropsychology/psycho.R")
 ```
 
 Else, just put this at the beginning of every script:

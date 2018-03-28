@@ -13,15 +13,11 @@
 #' @examples
 #' \dontrun{
 #' library(psycho)
-#' require(rstanarm)
-#' fit <- rstanarm::stan_glm(vs ~ mpg * cyl, data=mtcars)
+#' library(rstanarm)
 #'
-#' results <- analyze(fit)
-#' summary(results)
-#'
-#' data <- normalize(attitude)
-#' fit <- rstanarm::stan_lm(rating ~ advance + privileges + learning + raises,
-#'                          data=data, prior=R2(1))
+#' data <- standardize(attitude)
+#' fit <- rstanarm::stan_glm(rating ~ advance + privileges + learning + raises,
+#'                          data=data, prior=normal(0, 1))
 #'
 #' results <- analyze(fit)
 #' summary(results)
@@ -44,6 +40,10 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
   # Processing
   # -------------
   fit <- x
+
+  predictors <- all.vars(fit$formula)
+  outcome <- predictors[[1]]
+  predictors <- tail(predictors, -1)
 
   # Extract posterior distributions
   posteriors <- as.data.frame(fit)
@@ -76,21 +76,24 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
     CI_values <- c(CI_values$values$HDImin, CI_values$values$HDImax)
 
     # Compute MPE
-    if (median >= 0) {
-      MPE <- length(posterior[posterior >= 0]) / length(posterior) * 100
-      if (MPE == 100) {
-        MPE_values <- c(min(posterior), max(posterior))
-      } else {
-        MPE_values <- c(0, max(posterior))
-      }
-    } else {
-      MPE <- length(posterior[posterior < 0]) / length(posterior) * 100
-      if (MPE == 100) {
-        MPE_values <- c(min(posterior), max(posterior))
-      } else {
-        MPE_values <- c(min(posterior), 0)
-      }
-    }
+    MPE <- mpe(posterior)$MPE
+    MPE_values <- mpe(posterior)$values
+
+    # if (median >= 0) {
+    #   MPE <- length(posterior[posterior >= 0]) / length(posterior) * 100
+    #   if (MPE == 100) {
+    #     MPE_values <- c(min(posterior), max(posterior))
+    #   } else {
+    #     MPE_values <- c(0, max(posterior))
+    #   }
+    # } else {
+    #   MPE <- length(posterior[posterior < 0]) / length(posterior) * 100
+    #   if (MPE == 100) {
+    #     MPE_values <- c(min(posterior), max(posterior))
+    #   } else {
+    #     MPE_values <- c(min(posterior), 0)
+    #   }
+    # }
 
 
 
@@ -349,10 +352,10 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
   # -------------
   # Model
   info <- paste0(
-    "We fitted a Markov Chain Monte Carlo [type] model to predict",
-    "[Y] with [X] (formula = ", format(fit$formula),
-    ").",
-    "Priors were set as follow: [INSERT INFO ABOUT PRIORS]."
+    "We fitted a Markov Chain Monte Carlo [TYPE] model to predict ",
+    outcome,
+    " (formula = ", format(fit$formula),
+    "). Priors were set as follows: [INSERT INFO ABOUT PRIORS]."
   )
 
   # Coefs

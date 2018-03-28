@@ -4,19 +4,20 @@
 \alias{get_predicted.stanreg}
 \title{Compute predicted values of stanreg models.}
 \usage{
-\method{get_predicted}{stanreg}(fit, prob = 0.9, draws = 500,
-  newdf = FALSE, precision = 10, ...)
+\method{get_predicted}{stanreg}(fit, refgrid = NULL, posterior_predict = F,
+  prob = 0.9, draws = 1000, precision = 10, ...)
 }
 \arguments{
 \item{fit}{A stanreg model.}
+
+\item{refgrid}{Do the prediction on the actual dataframe or on a provided refgrid (created with emmeans). See the emmeans::ref_grid function.}
+
+\item{posterior_predict}{Should the prediction be based on the posterior draws or not.}
 
 \item{prob}{Probability of credible intervals (0.9 (default) will compute
 5-95\% CI).}
 
 \item{draws}{Precision of the estimate.}
-
-\item{newdf}{Should the predictions be based on actual data or,
-generate a new dataframe based on all combinations of values}
 
 \item{precision}{Precision of the new dataframe to be generated.}
 
