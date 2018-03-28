@@ -11,13 +11,10 @@ test_that("If it works.", {
     family = binomial(link = "logit"),
     seed = 666
   )
-  data <- get_predicted(fit)
-  r <- as.numeric(cor.test(data$vs, data$pred_vs_median)$estimate)
+  data <- get_predicted(fit, posterior_predict = T)
+  r <- as.numeric(cor.test(data$vs, data$pred_vs)$estimate)
   testthat::expect_equal(r, 0.6, tolerance = 0.2)
 
-
-  data_new <- get_predicted(fit, newdf = T)
-  testthat::expect_equal(mean(data_new$pred_vs_probability), 0.56, tolerance = 0.05)
 
 
 
@@ -26,13 +23,10 @@ test_that("If it works.", {
     data = mtcars,
     seed = 666
   )
-  data <- get_predicted(fit)
-  r <- as.numeric(cor.test(data$cyl, data$pred_cyl_median)$estimate)
-  testthat::expect_equal(r, 0.84, tolerance = 0.02)
+  data <- get_predicted(fit, posterior_predict = T)
+  r <- as.numeric(cor.test(data$cyl, data$pred_cyl)$estimate)
+  testthat::expect_equal(r, 0.85, tolerance = 0.02)
 
-
-  data_new <- get_predicted(fit, newdf = T)
-  testthat::expect_equal(mean(data_new$pred_cyl_median), 5.66, tolerance = 0.05)
 
 
   fit <- rstanarm::stan_glm(
@@ -40,10 +34,22 @@ test_that("If it works.", {
     data = iris,
     seed = 666
   )
-  data <- get_predicted(fit)
-  r <- as.numeric(cor.test(data$Sepal.Length, data$pred_Sepal.Length_median)$estimate)
+  data <- get_predicted(fit, posterior_predict = T)
+  r <- as.numeric(cor.test(data$Sepal.Length, data$pred_Sepal.Length)$estimate)
   testthat::expect_equal(r, 0.84, tolerance = 0.02)
 
-  data_new <- get_predicted(fit, newdf = T)
-  testthat::expect_equal(mean(data_new$pred_Sepal.Length_median), 5.86, tolerance = 0.05)
+
+  # Actual test -------------------------------------------------------------
+
+  df <- psycho::affective
+  fit <- rstanarm::stan_glm(Life_Satisfaction ~ Tolerating, data = df)
+  ref_grid <- emmeans::ref_grid(fit, at = list(
+    Tolerating = seq(min(df$Tolerating),
+      max(df$Tolerating),
+      length.out = 10
+    )
+  ))
+
+  predicted <- psycho::get_predicted(fit, refgrid = ref_grid)
+  testthat::expect_equal(mean(predicted$pred_Life_Satisfaction), 4.77, tolerance = 0.05)
 })

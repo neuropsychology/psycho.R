@@ -1,7 +1,7 @@
 Package: psycho
 Type: Package
 Title: Efficient and Publishing-Oriented Workflow for Psychological Science
-Version: 0.1.5
+Version: 0.1.6
 Authors@R: c(
     person("Dominique", 
         "Makowski", 
@@ -44,7 +44,9 @@ Imports:
     ggcorrplot,
     rstanarm,
     MuMIn,
-    lmerTest
+    lmerTest,
+    coda,
+    emmeans
 Suggests:
     tidyverse,
     knitr,
@@ -52,5 +54,6 @@ Suggests:
     testthat,
     covr,
     lme4,
-    broom
+    broom,
+    plotly
 VignetteBuilder: knitr

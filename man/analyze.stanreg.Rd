@@ -26,15 +26,11 @@ Analyze stanreg objects.
 \examples{
 \dontrun{
 library(psycho)
-require(rstanarm)
-fit <- rstanarm::stan_glm(vs ~ mpg * cyl, data=mtcars)
+library(rstanarm)
 
-results <- analyze(fit)
-summary(results)
-
-data <- normalize(attitude)
-fit <- rstanarm::stan_lm(rating ~ advance + privileges + learning + raises,
-                         data=data, prior=R2(1))
+data <- standardize(attitude)
+fit <- rstanarm::stan_glm(rating ~ advance + privileges + learning + raises,
+                         data=data, prior=normal(0, 1))
 
 results <- analyze(fit)
 summary(results)

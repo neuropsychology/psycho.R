@@ -40,7 +40,7 @@ crawford_dissociation.test <- function(case_X, case_Y, controls_X, controls_Y, v
   pval <- 2 * pnorm(-abs(tval)) # two-tailed p-value
 
   p_interpretation <- ifelse(pval < 0.05, " a significant ", " no ")
-  p_interpretation2 <- ifelse(pval < 0.05, "", " not ")
+  p_interpretation2 <- ifelse(pval < 0.05, " ", " not ")
   z_interpretation <- ifelse(tval < 0, " below ", " above ")
   pop_interpretation <- ifelse(tval < 0, " above ", " below ")
 
@@ -63,10 +63,11 @@ crawford_dissociation.test <- function(case_X, case_Y, controls_X, controls_Y, v
     format_p(pval),
     "). The patient's score on ",
     var_interpretation1,
-    " is ",
+    " is",
     p_interpretation2,
     "significantly altered compared to its score on ",
-    var_interpretation2
+    var_interpretation2,
+    "."
   )
 
 
