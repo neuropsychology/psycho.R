@@ -47,7 +47,7 @@ get_predicted.stanreg <- function(fit, refgrid=NULL, posterior_predict=F, prob=0
 
   if (posterior_predict == F) {
     if (is.null(refgrid)) {
-      warning("Non-posterior based prediction needs a refgrid. Set posterior_predict to TRUE or include a refgrid")
+      warning("Non-posterior based prediction needs a reference grid. Set posterior_predict to TRUE or include a refgrid")
       return()
     }
     name_outcome <- paste0("pred_", outcome)

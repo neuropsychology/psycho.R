@@ -177,7 +177,7 @@ kable(contrasts$means)
 ```
 
 
-And the contrast comparisons like that:
+And the contrasts comparisons like that:
 ```{r echo=T, message=FALSE, warning=FALSE, results='hide'}
 contrasts$contrasts
 ```
