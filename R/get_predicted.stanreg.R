@@ -61,6 +61,7 @@ get_predicted.stanreg <- function(fit, refgrid=NULL, posterior_predict=F, prob=0
     )
   } else {
     pred_y_post <- as.matrix(rstanarm::posterior_predict(fit, newdata = newdata, draws = draws))
+    # posterior_linpred
     pred_y <- c()
 
 

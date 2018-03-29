@@ -34,7 +34,7 @@
 #' @importFrom stats quantile
 #' @importFrom utils head tail
 #' @export
-analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
+analyze.stanreg <- function(x, CI=90, effsize=FALSE, verbose=T, ...) {
 
 
   # Processing
@@ -79,21 +79,6 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
     MPE <- mpe(posterior)$MPE
     MPE_values <- mpe(posterior)$values
 
-    # if (median >= 0) {
-    #   MPE <- length(posterior[posterior >= 0]) / length(posterior) * 100
-    #   if (MPE == 100) {
-    #     MPE_values <- c(min(posterior), max(posterior))
-    #   } else {
-    #     MPE_values <- c(0, max(posterior))
-    #   }
-    # } else {
-    #   MPE <- length(posterior[posterior < 0]) / length(posterior) * 100
-    #   if (MPE == 100) {
-    #     MPE_values <- c(min(posterior), max(posterior))
-    #   } else {
-    #     MPE_values <- c(min(posterior), 0)
-    #   }
-    # }
 
 
 
@@ -114,7 +99,7 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
     }
 
     text <- paste0(
-      "   - Concerning the ", name, ", there is a probability of ",
+      "   - The ", name, " has a probability of ",
       format_digit(MPE), "% that its coefficient is between ",
       format_digit(MPE_values[1], null_treshold = 0.0001), " and ",
       format_digit(MPE_values[2], null_treshold = 0.0001),
@@ -128,6 +113,22 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
       "MPE = ", format_digit(MPE), "%)."
     )
 
+    if (varname == "(Intercept)") {
+      text <- paste0(
+        "The model's intercept is at ",
+        format_digit(median(posterior)),
+        " (MAD = ",
+        format_digit(mad(posterior)),
+        ", ",
+        CI,
+        "% CI [",
+        format_digit(CI_values[1], null_treshold = 0.0001),
+        ", ",
+        format_digit(CI_values[2], null_treshold = 0.0001),
+        "]). Within this model:"
+      )
+    }
+
     if (varname == "R2") {
       text <- paste0(
         "The model explains between ",
@@ -135,10 +136,10 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
         "% and ",
         format_digit(max(posterior) * 100),
         "% of the outcome's variance (R2's median = ",
-        format_digit(median(posterior) * 100),
-        ", R2's MAD = ",
-        format_digit(mad(posterior) * 100),
-        "%, R2's ",
+        format_digit(median(posterior)),
+        ", MAD = ",
+        format_digit(mad(posterior)),
+        ", ",
         CI,
         "% CI [",
         format_digit(CI_values[1], null_treshold = 0.0001),
@@ -250,7 +251,7 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
       }
 
       EffSize_text <- paste0(
-        "   - Based on Cohen (1988) recommandations, there is a probability of ",
+        "   - There is a probability of ",
         format_digit(verylarge * 100),
         "% that this effect size is very large, ",
         format_digit(large * 100),
@@ -350,12 +351,44 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
 
   # Text
   # -------------
+  if(effsize){
+    info_effsize <- " Effect sizes are based on Cohen (1988) recommandations."
+  } else{
+    info_effsize <- ""
+  }
+
   # Model
   info <- paste0(
     "We fitted a Markov Chain Monte Carlo [TYPE] model to predict ",
     outcome,
     " (formula = ", format(fit$formula),
-    "). Priors were set as follows: [INSERT INFO ABOUT PRIORS]."
+    ").",
+    info_effsize,
+    " Priors were set as follows: "
+  )
+
+  # Priors
+  info_priors <- prior_summary(fit)
+
+  if('adjusted_scale' %in% names(info_priors$prior)){
+    scale <- paste0(
+      "), scale = (",
+      paste(info_priors$prior$adjusted_scale, collapse = ", ")
+    )
+  } else{
+    scale <- paste0(
+      "), scale = (",
+      paste(info_priors$prior$scale, collapse = ", ")
+    )
+  }
+
+  info_priors <- paste0(
+    "  ~ ",
+    info_priors$prior$dist,
+    " (location = (",
+    paste(info_priors$prior$location, collapse = ", "),
+    scale,
+    "))"
   )
 
   # Coefs
@@ -363,12 +396,12 @@ analyze.stanreg <- function(x, CI=95, effsize=FALSE, verbose=T, ...) {
   for (varname in names(values)) {
     coefs_text <- c(coefs_text, values[[varname]]$text)
     if (effsize == T) {
-      if (varname != "R2") {
+      if (!varname %in% c("(Intercept)", "R2")) {
         coefs_text <- c(coefs_text, values[[varname]]$EffSize_text, "")
       }
     }
   }
-  text <- c(info, "", head(coefs_text, -1), "", tail(coefs_text, 1))
+  text <- c(info, "", info_priors, "", "", tail(coefs_text, 1), head(coefs_text, 1), "", head(tail(coefs_text, -1), -1))
 
 
 

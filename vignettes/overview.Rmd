@@ -465,9 +465,9 @@ Critically, see THIS vignette for a guide to bayesian statistics for psychology.
 
 
 
-### Credits
+## Credits
 
-You liked it? Don't forget to cite the various packages you used :)
+This package helped you? Don't forget to cite the various packages you used :)
 
 You can cite `psycho` as follows:
 
