@@ -12,7 +12,8 @@ abstract: |
 vignette: >
   %\VignetteIndexEntry{BayesianPsychology}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteDepends{tidyverse}
+  %\VignetteDepends{dplyr}
+  %\VignetteDepends{ggplot2}
   \usepackage[utf8]{inputenc}
 ---
 
@@ -43,16 +44,27 @@ In short, because it's:
 
 > Reasons to prefer this approach is better accuracy in noisy data, the possibility of introducing prior knowledge into the analysis and, critically, results intuitiveness and their straightforward interpretation. Indeed, in the frequentist view, the effects are fixed (but unknown) and data are random, while the Bayesian inference calculates the probability of different effect values (called the **"posterior" distribution**) given the observed data. Bayesian’s uncertainty can be summarized by giving a range of values on the posterior distribution that includes 95% of the probability (the 95% *Credible Interval*). To illustrate the difference, the Bayesian framework allows to say "*given the observed data, the effect has 95% probability of falling within this range*", while the Frequentist less straightforward equivalent would be "*there is a 95% probability that when computing a confidence interval from data of this sort, the effect falls within this range*".
 
+## What is the Bayesian Framework?
 
+Once we agreed that the Bayesian framework is the right way to go, you might wonder what is the Bayesian framework. **What's all the fuss about?**
+
+Omitting the maths behind it, let's just say that:
+
+- The frequentist guy tries to estimate "the real effect". The "real" value of the correlation between X and Y. It returns a "point-estimate" (*i.e.*, a single value) of the "real" correlation (*e.g.*, r = 0.42), considering that the data is sampled at random from a "parent", usually normal distribution of data.
+- **The Bayesian master assumes not such thing**. The data are what they are. Based on this observed data (and eventually from its expectations), the Bayesian sampling algorithm will return a probability distribution of the effect that is compatible with the observed data. For the correlation between X and Y, it will return distribution that says "the most probable effect is 0.42, but this data is also compatible with a correlation of 0.12 or 0.74".
+- To characterize our effects, **no need of p values** or other mysterious indices. We simply describe the posterior distribution (*i.e.*, the distribution of the effect). We can present the median (better than the mean, as it actually means that the effect has 50% of chance of being higher and 50% of chance of being lower), the MAD (a median-based, robust equivalent of SD) and other stuff such as the 90% HDI, called here *credible interval*.
+
+**Let's practice!**
 
 ## The affective Dataset
 
 Let's start by taking a look at the dataset included within the `psycho` package.
 
 ```{r, echo=T, message=FALSE, warning=FALSE, results='hide'}
-library(tidyverse)
 library(rstanarm)
 library(emmeans)
+library(dplyr)
+library(ggplot2)
 library(coda)
 library(psycho)
 
@@ -64,7 +76,7 @@ summary(df)
 summary(df)
 ```
 
-The data includes **5 continuous variables** (age, life satisfaction and affective styles) and **3 factors** (sex, salary and season of birth).
+The data includes **5 continuous variables** (age, life satisfaction and 3 affective styles) and **3 factors** (sex, salary and season of birth).
 
 ## Simple Regression (*Correlation*)
 
@@ -100,10 +112,12 @@ print(results)
 ### Interpretation
 
 
-> Full Bayesian mixed linear models are fitted using the rstanarm R wrapper for the stan probabilistic language (Gabry & Goodrich, 2016). Bayesian inference was done using Markov Chain Monte Carlo (MCMC) sampling. The prior distributions of all effects were set as weakly informative (*we will cover priors in another chapter*), meaning that we did not expect effects different from null in any particular direction. For each model and each coefficient, we will present several characteristics of the posterior distribution, such as its median (a robust estimate comparable to the beta from frequentist linear models), MAD (median absolute deviation, a robust equivalent of standard deviation) and the 95% credible interval. Instead of the p value as an index of effect existence, we also computed the maximum probability of effect (MPE), *i.e.*, the maximum probability that the effect is different from 0 in the median’s direction. An effect can be considered as inconsistant if its MPE is lower than 90% (however, **caution not to fall in the *p* value problem**).
+> Full Bayesian mixed linear models are fitted using the rstanarm R wrapper for the stan probabilistic language (Gabry & Goodrich, 2016). Bayesian inference was done using Markov Chain Monte Carlo (MCMC) sampling. The prior distributions of all effects were set as weakly informative, meaning that we did not expect effects different from null in any particular direction. For each model and each coefficient, we will present several characteristics of the posterior distribution, such as its median (a robust estimate comparable to the beta from frequentist linear models), MAD (median absolute deviation, a robust equivalent of standard deviation) and the 95% credible interval. Instead of the p value as an index of effect existence, we also computed the maximum probability of effect (MPE), *i.e.*, the maximum probability that the effect is different from 0 in the median’s direction. An effect can be considered as inconsistant if its MPE is lower than 90% (however, **caution not to fall in the *p* value problem**).
+
+
+The current model explains about 2.3% of life satisfaction variance. Within this model, a positive linear relationship between life satisfaction and tolerating exists with high probability (Median = 0.19, MAD = 0.035, 95% CI [0.12, 0.26], MPE = 100%).
 
 ### Model Visualization
-
 
 To visualize the model, we have to extract the "reference grid" (a theorethical dataframe with balanced data), using the `emmeans` package.
 
@@ -476,11 +490,64 @@ ggplotly(p) # To transform a ggplot into an interactive plot
 
 **It's good to take a few steps back and look at the bigger picture :)**
 
+## Piors Specification
+
+One of the interesting aspect of the Bayesian framework is the possibility of adding prior expectations about the effect, to help model fitting and increase accuracy in noisy data or small samples.
 
 
-### Credits
+### Weakly informative priors
 
-You liked it? Don't forget to cite the various packages you used :)
+As you might have notice, we didn't specify any priors in the previous analyses. In fact, we let the algorithm define and set *weakly informative priors*, designed to provide moderate regularization and help stabilize computation, without biasing the effect direction. For example, a wealky informative prior, for a standardized predictor (with mean = 0 and SD = 1) could be a normal distribution with mean = 0 and SD = 1. This means that the effect of this predictor is expected to be equally probable in any direction (as the distribution is symmetric around 0), with probability being higher close to 0 and lower far from 0.
+
+While this prior doesn't bias the direction of the Bayesian (MCMC) sampling, it suggests that having an effect of 100 (*i.e.*, located at 100 SD of the mean as our variables are standardized) is highly unprobable, and that an effect close to 0 is more probable.
+
+To better play with priors, let's start by standardizing our dataframe.
+
+
+```{r, message=FALSE, results="hide"}
+# Standardize (scale and center) the numeric variables
+dfZ <- psycho::standardize(df)
+```
+
+Then, we can explicitly specify a weakly informative prior for all effects of the model.
+
+```{r, message=FALSE, results="hide"}
+# Let's fit our model
+fit <- rstanarm::stan_glm(Life_Satisfaction ~ Tolerating, 
+                          data=dfZ,
+                          prior=normal(location = 0, # Mean
+                                       scale = 1)) # SD
+```
+
+Let's plot the prior (the expectation) against the posterior (the estimated effect) distribution.
+
+```{r, message=FALSE, results="hide"}
+results <- psycho::analyze(fit)
+
+# Extract the posterior
+posterior <- results$values$Tolerating$posterior
+
+# Create a posterior with the prior and posterior distribution and plot them.
+data.frame(posterior = posterior,
+           prior = rnorm(length(posterior), 0, 1)) %>% 
+  ggplot() +
+  geom_density(aes(x=posterior), fill="lightblue", alpha=0.5) +
+  geom_density(aes(x=prior), fill="blue", alpha=0.5) +
+  scale_y_sqrt() # Change the Y axis so the plot is less ugly
+```
+
+
+This plot is rather ugly, because our posterior is very precise (due to the large sample) compared to the prior. 
+
+### Informative priors
+
+It is important to underline that setting informative priors (**if realistic**), does not overbias the analysis. In other words, is only "directs" the sampling. But the observed data still wins. **In other words, you can't change the results dramatically by tweaking the priors**. Of course, if you see someone using a prior with mean = 42 and SD = 0.0001, you should look at his results with caution...
+
+
+
+## Credits
+
+This package helped you? Don't forget to cite the various packages you used :)
 
 You can cite `psycho` as follows:
 

@@ -30,4 +30,32 @@ test_that("If it works.", {
     round(values$Sepal.Width$median, 2), 0.79,
     tolerance = 0.05
   )
+
+  fit <- rstanarm::stan_glmer(
+    Sepal.Length ~ Sepal.Width + (1 | Species),
+    data = iris,
+    seed = 666
+  )
+
+  data <- standardize(attitude)
+  fit <- rstanarm::stan_glm(rating ~ advance + privileges,
+                            data=data,
+                            prior=rstanarm::normal(0, 1, autoscale = F),
+                            seed = 666)
+  results <- analyze(fit)
+  testthat::expect_equal(
+    round(results$values$advance$median), 0.01,
+    tolerance = 0.025
+  )
+
+  data <- standardize(attitude)
+  fit <- rstanarm::stan_glm(rating ~ advance + privileges,
+                            data=data,
+                            prior=rstanarm::normal(0, 1, autoscale = T),
+                            seed = 666)
+  results <- analyze(fit)
+  testthat::expect_equal(
+    round(results$values$advance$median), 0,
+    tolerance = 0.025
+  )
 })

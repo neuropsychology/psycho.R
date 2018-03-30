@@ -15,6 +15,18 @@ list containing the MPE and its values.
 \description{
 Compute the Maximum Probability of Effect (MPE), i.e., the proportion of posterior distribution that is of the same sign as the median. In other words, it corresponds to the maximum probability that the effect is different from 0 in the median’s direction.
 }
+\examples{
+library(psycho)
+library(rstanarm)
+
+fit <- rstanarm::stan_glm(rating ~ advance, data=attitude)
+posterior <- psycho::analyze(fit)$values$advance$posterior
+mpe <- psycho::mpe(posterior)
+print(mpe$MPE)
+print(mpe$values)
+
+
+}
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 }
