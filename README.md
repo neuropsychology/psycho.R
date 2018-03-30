@@ -55,7 +55,7 @@ The `psycho` package can already do the following:
 - [x] Implements methods for single-case analyses
 - [x] Compute complex correlation matrices
 - [x] Compute signal detection theory indices (d', beta, ...)
-- [x] Help you in the interpretation of various models (lme4, stan_lmer)
+- [x] Help you in the interpretation of various models (mixed, Bayesian, ...)
 
 
 
