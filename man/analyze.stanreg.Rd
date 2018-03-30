@@ -4,7 +4,7 @@
 \alias{analyze.stanreg}
 \title{Analyze stanreg objects.}
 \usage{
-\method{analyze}{stanreg}(x, CI = 95, effsize = FALSE, verbose = T, ...)
+\method{analyze}{stanreg}(x, CI = 90, effsize = FALSE, ...)
 }
 \arguments{
 \item{x}{A stanreg model.}
@@ -12,8 +12,6 @@
 \item{CI}{Credible interval bounds.}
 
 \item{effsize}{Compute Effect Sizes according to Cohen (1988)? Your outcome variable must be standardized.}
-
-\item{verbose}{Toggle warnings display.}
 
 \item{...}{Arguments passed to or from other methods.}
 }
@@ -29,8 +27,7 @@ library(psycho)
 library(rstanarm)
 
 data <- standardize(attitude)
-fit <- rstanarm::stan_glm(rating ~ advance + privileges + learning + raises,
-                         data=data, prior=normal(0, 1))
+fit <- rstanarm::stan_glm(rating ~ advance + privileges, data=data)
 
 results <- analyze(fit)
 summary(results)

@@ -48,7 +48,6 @@ Imports:
     coda,
     emmeans
 Suggests:
-    tidyverse,
     knitr,
     rmarkdown,
     testthat,

@@ -5,7 +5,6 @@
 #' @param x A stanreg model.
 #' @param CI Credible interval bounds.
 #' @param effsize Compute Effect Sizes according to Cohen (1988)? Your outcome variable must be standardized.
-#' @param verbose Toggle warnings display.
 #' @param ... Arguments passed to or from other methods.
 #'
 #' @return output
@@ -16,8 +15,7 @@
 #' library(rstanarm)
 #'
 #' data <- standardize(attitude)
-#' fit <- rstanarm::stan_glm(rating ~ advance + privileges + learning + raises,
-#'                          data=data, prior=normal(0, 1))
+#' fit <- rstanarm::stan_glm(rating ~ advance + privileges, data=data)
 #'
 #' results <- analyze(fit)
 #' summary(results)
@@ -34,7 +32,7 @@
 #' @importFrom stats quantile
 #' @importFrom utils head tail
 #' @export
-analyze.stanreg <- function(x, CI=90, effsize=FALSE, verbose=T, ...) {
+analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
 
 
   # Processing
@@ -167,9 +165,16 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, verbose=T, ...) {
   # Effect size
   # -------------
   if (effsize == T) {
-    if (verbose == T) {
-      warning("Interpreting effect size following Cohen (1977, 1988)... Make sure your variables were standardized!")
+
+    # Check if standardized
+    model_data <- fit$data
+    model_data <- model_data[all.vars(fit$formula)]
+    standardized <- is.standardized(model_data)
+
+    if (standardized == FALSE) {
+      warning("It seems that your data was not standardized... Interpret effect sizes with caution!")
     }
+
 
     EffSizes <- data.frame()
     for (varname in varnames) {
@@ -351,9 +356,9 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, verbose=T, ...) {
 
   # Text
   # -------------
-  if(effsize){
+  if (effsize) {
     info_effsize <- " Effect sizes are based on Cohen (1988) recommandations."
-  } else{
+  } else {
     info_effsize <- ""
   }
 
@@ -370,12 +375,12 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, verbose=T, ...) {
   # Priors
   info_priors <- prior_summary(fit)
 
-  if('adjusted_scale' %in% names(info_priors$prior)){
+  if ("adjusted_scale" %in% names(info_priors$prior)) {
     scale <- paste0(
       "), scale = (",
       paste(info_priors$prior$adjusted_scale, collapse = ", ")
     )
-  } else{
+  } else {
     scale <- paste0(
       "), scale = (",
       paste(info_priors$prior$scale, collapse = ", ")

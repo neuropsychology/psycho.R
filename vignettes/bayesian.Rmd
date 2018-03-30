@@ -12,7 +12,8 @@ abstract: |
 vignette: >
   %\VignetteIndexEntry{BayesianPsychology}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteDepends{tidyverse}
+  %\VignetteDepends{dplyr}
+  %\VignetteDepends{ggplot2}
   \usepackage[utf8]{inputenc}
 ---
 
@@ -60,9 +61,10 @@ Omitting the maths behind it, let's just say that:
 Let's start by taking a look at the dataset included within the `psycho` package.
 
 ```{r, echo=T, message=FALSE, warning=FALSE, results='hide'}
-library(tidyverse)
 library(rstanarm)
 library(emmeans)
+library(dplyr)
+library(ggplot2)
 library(coda)
 library(psycho)
 
