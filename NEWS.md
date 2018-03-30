@@ -1,13 +1,15 @@
 # Current Dev
 
 ### Breaking changes
-- Changed order of parameters in `dprime`.
+- Changed order of parameters in `dprime`
 ### New functions / parameters
-- Added `get_contrasts.stanreg` and `get_predicted.stanreg` functions.
-- Added `crawford_dissociation.test` function for single-case tests.
-- Externalized the "mpe" function.
-- Added `affective` dataset.
+- Added `is.standardized` function
+- Added `get_contrasts.stanreg` and `get_predicted.stanreg` functions
+- Added `crawford_dissociation.test` function for single-case tests
+- Externalized the "mpe" function
+- Added `affective` dataset
 ### Changes
+- Improved `analyze.stanreg`
 - Added new vignette for "Bayesian analyses in psychology"
 - Improved `crawford.test`
 
@@ -16,9 +18,9 @@
 
 ### Breaking changes
 ### New functions / parameters
-- Added R2 for bayesian regressions.
-- Added `dprime` function for signal detection theory indices computation.
-- Added `crawford.test` and `mellenbergh.test` function for single-case tests.
+- Added R2 for bayesian regressions
+- Added `dprime` function for signal detection theory indices computation
+- Added `crawford.test` and `mellenbergh.test` function for single-case tests
 - Added get_predicted for stanreg models
 ### Changes
 
