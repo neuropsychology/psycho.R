@@ -39,7 +39,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
   # -------------
   fit <- x
 
-  predictors <- all.vars(fit$formula)
+  predictors <- all.vars(as.formula(fit$formula))
   outcome <- predictors[[1]]
   predictors <- tail(predictors, -1)
 
