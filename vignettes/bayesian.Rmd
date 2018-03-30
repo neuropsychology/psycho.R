@@ -34,7 +34,6 @@ In short, because it's:
 - Simpler
 - Superior
 - Preferable
-- Above
 - More appropriate
 - More desirable
 - More useful
@@ -51,7 +50,7 @@ Once we agreed that the Bayesian framework is the right way to go, you might won
 Omitting the maths behind it, let's just say that:
 
 - The frequentist guy tries to estimate "the real effect". The "real" value of the correlation between X and Y. It returns a "point-estimate" (*i.e.*, a single value) of the "real" correlation (*e.g.*, r = 0.42), considering that the data is sampled at random from a "parent", usually normal distribution of data.
-- **The Bayesian master assumes not such thing**. The data are what they are. Based on this observed data (and eventually from its expectations), the Bayesian sampling algorithm will return a probability distribution of the effect that is compatible with the observed data. For the correlation between X and Y, it will return distribution that says "the most probable effect is 0.42, but this data is also compatible with a correlation of 0.12 or 0.74".
+- **The Bayesian master assumes not such thing**. The data are what they are. Based on this observed data (and eventually from its expectations), the Bayesian sampling algorithm will return a probability distribution of the effect that is compatible with the observed data. For the correlation between X and Y, it will return a distribution that says "the most probable effect is 0.42, but this data is also compatible with correlations of 0.12 or 0.74".
 - To characterize our effects, **no need of p values** or other mysterious indices. We simply describe the posterior distribution (*i.e.*, the distribution of the effect). We can present the median (better than the mean, as it actually means that the effect has 50% of chance of being higher and 50% of chance of being lower), the MAD (a median-based, robust equivalent of SD) and other stuff such as the 90% HDI, called here *credible interval*.
 
 **Let's practice!**

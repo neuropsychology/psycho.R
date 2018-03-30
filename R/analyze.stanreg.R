@@ -162,13 +162,16 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
     )
   }
 
+
+
+
   # Effect size
   # -------------
   if (effsize == T) {
 
     # Check if standardized
     model_data <- fit$data
-    model_data <- model_data[all.vars(fit$formula)]
+    model_data <- model_data[all.vars(as.formula(fit$formula))]
     standardized <- is.standardized(model_data)
 
     if (standardized == FALSE) {
