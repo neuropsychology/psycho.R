@@ -143,7 +143,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
         format_digit(CI_values[1], null_treshold = 0.0001),
         ", ",
         format_digit(CI_values[2], null_treshold = 0.0001),
-        "])"
+        "]). "
       )
     }
 
@@ -378,12 +378,12 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
   if ("adjusted_scale" %in% names(info_priors$prior)) {
     scale <- paste0(
       "), scale = (",
-      paste(info_priors$prior$adjusted_scale, collapse = ", ")
+      paste(sapply(info_priors$prior$adjusted_scale, format_digit), collapse = ", ")
     )
   } else {
     scale <- paste0(
       "), scale = (",
-      paste(info_priors$prior$scale, collapse = ", ")
+      paste(sapply(info_priors$prior$scale, format_digit),collapse = ", ")
     )
   }
 
@@ -406,7 +406,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
       }
     }
   }
-  text <- c(info, "", info_priors, "", "", tail(coefs_text, 1), head(coefs_text, 1), "", head(tail(coefs_text, -1), -1))
+  text <- c(info, "", info_priors, "", "", paste0(tail(coefs_text, 1), head(coefs_text, 1)), "", head(tail(coefs_text, -1), -1))
 
 
 
