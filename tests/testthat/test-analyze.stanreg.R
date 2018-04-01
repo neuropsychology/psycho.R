@@ -31,11 +31,6 @@ test_that("If it works.", {
     tolerance = 0.05
   )
 
-  fit <- rstanarm::stan_glmer(
-    Sepal.Length ~ Sepal.Width + (1 | Species),
-    data = iris,
-    seed = 666
-  )
 
   data <- standardize(attitude)
   fit <- rstanarm::stan_glm(rating ~ advance + privileges,

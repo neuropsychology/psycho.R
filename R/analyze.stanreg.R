@@ -21,6 +21,8 @@
 #' summary(results)
 #' plot(results)
 #' print(results)
+#'
+#' fit <- rstanarm::stan_glmer(Sepal.Length ~ Sepal.Width + (1|Species), data=iris)
 #' }
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
@@ -29,8 +31,9 @@
 #' @import tidyr
 #' @import dplyr
 #' @import ggplot2
-#' @importFrom stats quantile
+#' @importFrom stats quantile as.formula
 #' @importFrom utils head tail
+#' @importFrom broom tidy
 #' @export
 analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
 
@@ -58,6 +61,24 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
     varnames <- c(varnames, "R2")
   }
 
+
+
+  # If Mixed
+  mixed = tryCatch({
+    broom::tidy(fit, parameters = "varying")
+    TRUE
+  }, error = function(e) {
+    FALSE
+  })
+
+  if(mixed == TRUE){
+    random_info <- broom::tidy(fit, parameters = "varying") %>%
+      dplyr::rename_("Median"="estimate",
+                     "MAD"="std.error")
+  }
+
+
+
   # Initialize empty values
   values <- list()
   # Loop over all variables
@@ -84,16 +105,14 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
     if (grepl(":", varname)) {
       splitted <- strsplit(varname, ":")[[1]]
       if (length(splitted) == 2) {
-        name <- paste(
+        name <- paste0(
           "interaction effect between ",
-          splitted[1], " and ", splitted[2],
-          sep = ""
-        )
+          splitted[1], " and ", splitted[2])
       } else {
         name <- varname
       }
     } else {
-      name <- paste("effect of ", varname, sep = "")
+      name <- paste0("effect of ", varname)
     }
 
     text <- paste0(
@@ -367,7 +386,11 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
 
   # Model
   info <- paste0(
-    "We fitted a Markov Chain Monte Carlo [TYPE] model to predict ",
+    "We fitted a Markov Chain Monte Carlo ",
+    fit$family$family,
+    " (link = ",
+    fit$family$link,
+    ") model to predict ",
     outcome,
     " (formula = ", format(fit$formula),
     ").",
@@ -433,8 +456,11 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
     scale_fill_brewer(palette = "Set1") +
     scale_colour_brewer(palette = "Set1")
 
-
-  output <- list(text = text, plot = plot, summary = summary, values = values)
+  if(mixed == TRUE){
+    output <- list(text = text, plot = plot, summary = summary, values = values, random=random_info)
+  } else{
+    output <- list(text = text, plot = plot, summary = summary, values = values)
+  }
 
   class(output) <- c("psychobject", "list")
   return(output)
