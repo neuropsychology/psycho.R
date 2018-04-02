@@ -1,4 +1,4 @@
-context("find_combinations.formula")
+context("find_best_model.stanreg")
 
 test_that("Correct", {
   data <- standardize(attitude)
