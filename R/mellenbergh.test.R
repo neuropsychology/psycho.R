@@ -35,11 +35,12 @@ mellenbergh.test <- function(t0, t1, controls, verbose=T) {
   pval <- 2 * pnorm(-abs(z))
 
   # One-tailed p value
-  if(pval > .05 & pval/2 < .05){
-    one_tailed <- paste0(" However, the null hypothesis of no change can be rejected at a one-tailed 5% significance level (one-tailed p ",
-                         format_p(pval/2),
-                         ").")
-
+  if (pval > .05 & pval / 2 < .05) {
+    one_tailed <- paste0(
+      " However, the null hypothesis of no change can be rejected at a one-tailed 5% significance level (one-tailed p ",
+      format_p(pval / 2),
+      ")."
+    )
   } else {
     one_tailed <- ""
   }

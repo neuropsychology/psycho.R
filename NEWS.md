@@ -4,7 +4,7 @@
 - Changed order of parameters in `dprime`
 ### New functions / parameters
 - Added `find_combinations` function
-- Added `find_best_combination` function
+- Added `find_best_model` function
 - Added `is.standardized` function
 - Added `get_contrasts.stanreg` and `get_predicted.stanreg` functions
 - Added `crawford_dissociation.test` function for single-case tests

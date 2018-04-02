@@ -64,17 +64,19 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
 
 
   # If Mixed
-  mixed = tryCatch({
+  mixed <- tryCatch({
     broom::tidy(fit, parameters = "varying")
     TRUE
   }, error = function(e) {
     FALSE
   })
 
-  if(mixed == TRUE){
+  if (mixed == TRUE) {
     random_info <- broom::tidy(fit, parameters = "varying") %>%
-      dplyr::rename_("Median"="estimate",
-                     "MAD"="std.error")
+      dplyr::rename_(
+        "Median" = "estimate",
+        "MAD" = "std.error"
+      )
   }
 
 
@@ -107,7 +109,8 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
       if (length(splitted) == 2) {
         name <- paste0(
           "interaction effect between ",
-          splitted[1], " and ", splitted[2])
+          splitted[1], " and ", splitted[2]
+        )
       } else {
         name <- varname
       }
@@ -409,7 +412,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
   } else {
     scale <- paste0(
       "), scale = (",
-      paste(sapply(info_priors$prior$scale, format_digit),collapse = ", ")
+      paste(sapply(info_priors$prior$scale, format_digit), collapse = ", ")
     )
   }
 
@@ -456,9 +459,9 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
     scale_fill_brewer(palette = "Set1") +
     scale_colour_brewer(palette = "Set1")
 
-  if(mixed == TRUE){
-    output <- list(text = text, plot = plot, summary = summary, values = values, random=random_info)
-  } else{
+  if (mixed == TRUE) {
+    output <- list(text = text, plot = plot, summary = summary, values = values, random = random_info)
+  } else {
     output <- list(text = text, plot = plot, summary = summary, values = values)
   }
 

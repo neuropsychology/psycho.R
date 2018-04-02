@@ -27,11 +27,12 @@ crawford.test <- function(case, controls, verbose=T) {
   pval <- 2 * (1 - pt(abs(tval), df = degfree)) # two-tailed p-value
 
   # One-tailed p value
-  if(pval > .05 & pval/2 < .05){
-    one_tailed <- paste0(" However, the null hypothesis of no difference can be rejected at a one-tailed 5% significance level (one-tailed p ",
-                         format_p(pval/2),
-                         ").")
-
+  if (pval > .05 & pval / 2 < .05) {
+    one_tailed <- paste0(
+      " However, the null hypothesis of no difference can be rejected at a one-tailed 5% significance level (one-tailed p ",
+      format_p(pval / 2),
+      ")."
+    )
   } else {
     one_tailed <- ""
   }

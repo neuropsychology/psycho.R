@@ -4,12 +4,16 @@
 \alias{find_combinations.formula}
 \title{Generate all combinations of predictors of a formula.}
 \usage{
-\method{find_combinations}{formula}(object, interaction = TRUE, ...)
+\method{find_combinations}{formula}(object, interaction = TRUE,
+  fixed = NULL, ...)
 }
 \arguments{
 \item{object}{Formula.}
 
 \item{interaction}{Include interaction term.}
+
+\item{fixed}{Additional formula part to add at the beginning of
+each combination.}
 
 \item{...}{Arguments passed to or from other methods.}
 }
