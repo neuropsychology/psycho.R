@@ -44,7 +44,13 @@ Want to get involved in the developpment of an open-source software and improve 
 - Want to add a feature? Correct a bug? You're more than welcome to contribute!
 - Looking for help to implement the `analyze` method for `t.test`, `cor.test` and `anova`.
   
-  
+## Examples
+
+Check examples in the following vignettes:
+- [Overview of the psycho package](https://CRAN.R-project.org/package=psycho/vignettes/overview.html)
+- [Bayesian Analysis in Psychology](https://github.com/neuropsychology/psycho.R/blob/master/vignettes/bayesian.Rmd)
+
+
 ## Features
 
 The `psycho` package can already do the following:
@@ -88,7 +94,7 @@ library("psycho")
 ## Credits
 
 You can cite the package as following:
-- Makowski, (2018). The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470
+- Makowski, (2018). *The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470
 
 
 Please remember that `psycho` is a high-level package that heavily relies on many other packages, such as [tidyverse](https://www.tidyverse.org/), [psych](http://personality-project.org/r/overview.pdf), [qgraph](http://sachaepskamp.com/qgraph), [rstanarm](https://github.com/stan-dev/rstanarm), [lme4](https://CRAN.R-project.org/package=lme4) and others (See [Description](https://github.com/neuropsychology/psycho.R/blob/master/DESCRIPTION) for the full list of dependencies). Please cite their authors ;)

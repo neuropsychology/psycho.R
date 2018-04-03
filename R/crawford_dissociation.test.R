@@ -12,6 +12,8 @@
 #' @return Returns a data frame containing the t-value, degrees of freedom, and p-value. If significant, the dissociation between test X and test Y is significant.
 #'
 #' @examples
+#' library(psycho)
+#'
 #' case_X <- 142
 #' case_Y <- 7
 #' controls_X <- c(100, 125, 89, 105, 109, 99)
@@ -21,7 +23,7 @@
 #'
 #' @author Dominique Makowski
 #'
-#' @importFrom stats sd
+#' @importFrom stats sd pt
 #' @export
 crawford_dissociation.test <- function(case_X, case_Y, controls_X, controls_Y, verbose=T) {
   X_mean <- mean(controls_X)
@@ -37,7 +39,11 @@ crawford_dissociation.test <- function(case_X, case_Y, controls_X, controls_Y, v
 
   tval <- (case_X_Z - case_Y_Z) / sqrt((2 - 2 * r) * ((n + 1) / n))
 
-  pval <- 2 * pnorm(-abs(tval)) # two-tailed p-value
+  pval <- 2 * (1 - pt(abs(tval), df = degfree)) # two-tailed p-value
+
+
+
+
 
   p_interpretation <- ifelse(pval < 0.05, " a significant ", " no ")
   p_interpretation2 <- ifelse(pval < 0.05, " ", " not ")

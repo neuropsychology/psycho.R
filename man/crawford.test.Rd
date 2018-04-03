@@ -21,7 +21,10 @@ Neuropsychologists often need to compare a single case to a small control group.
 .
 }
 \examples{
+library(psycho)
+
 crawford.test(case = 10, controls = c(0, -2, 5, 2, 1, 3, -4, -2))
+crawford.test(case = 7, controls = c(0, -2, 5, 2, 1, 3, -4, -2))
 
 }
 \author{

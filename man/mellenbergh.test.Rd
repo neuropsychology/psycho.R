@@ -22,7 +22,10 @@ Returns a data frame containing the z-value and p-value. If significant, the dif
 Test for comparing post-test to baseline for a single participant.
 }
 \examples{
+library(psycho)
+
 mellenbergh.test(t0 = 4, t1 = 12, controls = c(0, -2, 5, 2, 1, 3, -4, -2))
+mellenbergh.test(t0 = 8, t1 = 2, controls = 2.6)
 
 }
 \author{

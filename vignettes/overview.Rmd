@@ -14,7 +14,6 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteDepends{dplyr}
   %\VignetteDepends{ggplot2}
-  %\VignetteDepends{broom}
   \usepackage[utf8]{inputenc}
 ---
 
@@ -289,7 +288,7 @@ Assessing dissociation between processes is a fundamental part of clinical neuro
 ```{r echo=TRUE, message=FALSE, warning=FALSE, results='markup'}
 library(psycho)
 
-case_X <- 142
+case_X <- 132
 case_Y <- 7
 controls_X <- c(100, 125, 89, 105, 109, 99)
 controls_Y <- c(7, 8, 9, 6, 7, 10)
@@ -473,12 +472,11 @@ Critically, see THIS vignette for a guide to bayesian statistics for psychology.
 
 
 
-
 ## Credits
 
 This package helped you? Don't forget to cite the various packages you used :)
 
 You can cite `psycho` as follows:
 
-- Makowski, (2018). **The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science**. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470
+- Makowski, (2018). *The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470
 

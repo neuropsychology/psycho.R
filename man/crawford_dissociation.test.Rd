@@ -26,6 +26,8 @@ Assessing dissociation between processes is a fundamental part of clinical neuro
 .
 }
 \examples{
+library(psycho)
+
 case_X <- 142
 case_Y <- 7
 controls_X <- c(100, 125, 89, 105, 109, 99)

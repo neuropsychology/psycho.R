@@ -1,5 +1,5 @@
 ---
-title: "Bayesian Analyses in Psychology"
+title: "Bayesian Analysis in Psychology"
 output: 
   rmarkdown::html_vignette:
     toc: true
@@ -41,7 +41,7 @@ In short, because it's:
 
 ##### **From Makowski et al. (*under review*):**
 
-> Reasons to prefer this approach is better accuracy in noisy data, the possibility of introducing prior knowledge into the analysis and, critically, results intuitiveness and their straightforward interpretation. Indeed, in the frequentist view, the effects are fixed (but unknown) and data are random, while the Bayesian inference calculates the probability of different effect values (called the **"posterior" distribution**) given the observed data. Bayesian’s uncertainty can be summarized by giving a range of values on the posterior distribution that includes 95% of the probability (the 95% *Credible Interval*). To illustrate the difference, the Bayesian framework allows to say "*given the observed data, the effect has 95% probability of falling within this range*", while the Frequentist less straightforward equivalent would be "*there is a 95% probability that when computing a confidence interval from data of this sort, the effect falls within this range*".
+> Reasons to prefer this approach is better accuracy in noisy data, the possibility of introducing prior knowledge into the analysis and, critically, results intuitiveness and their straightforward interpretation. Indeed, in the frequentist view, the effects are fixed (but unknown) and data are random, while the Bayesian inference calculates the probability of different effect values (called the **"posterior" distribution**) given the observed data. Bayesian’s uncertainty can be summarized by giving a range of values on the posterior distribution that includes 95% of the probability (the 95% *Credible Interval*). To illustrate the difference, the Bayesian framework allows to say "*given the observed data, the effect has 95% probability of falling within this range*", while the Frequentist less straightforward equivalent would be "*there is a 95% probability that when computing a confidence interval from data of this sort, the effect falls within this range*". In general, the frequentist approach has been associated with the focus on null hypothesis testing, and the misuse of *p* values has been shown to critically contribute to the reproducibility crisis of psychological science (Chambers, Feredoes, Muthukumaraswamy, Suresh, & Etchells, 2014; Szucs & Ioannidis, 2016). There is a general agreement that the generalization of the Bayesian approach is a way of overcoming these issues (Benjamin et al., 2018; Etz & Vandekerckhove, 2016).
 
 ## What is the Bayesian Framework?
 
@@ -111,10 +111,10 @@ print(results)
 ### Interpretation
 
 
-> Full Bayesian mixed linear models are fitted using the rstanarm R wrapper for the stan probabilistic language (Gabry & Goodrich, 2016). Bayesian inference was done using Markov Chain Monte Carlo (MCMC) sampling. The prior distributions of all effects were set as weakly informative, meaning that we did not expect effects different from null in any particular direction. For each model and each coefficient, we will present several characteristics of the posterior distribution, such as its median (a robust estimate comparable to the beta from frequentist linear models), MAD (median absolute deviation, a robust equivalent of standard deviation) and the 95% credible interval. Instead of the p value as an index of effect existence, we also computed the maximum probability of effect (MPE), *i.e.*, the maximum probability that the effect is different from 0 in the median’s direction. An effect can be considered as inconsistant if its MPE is lower than 90% (however, **caution not to fall in the *p* value problem**).
+> Full Bayesian mixed linear models are fitted using the rstanarm R wrapper for the stan probabilistic language (Gabry & Goodrich, 2016). Bayesian inference was done using Markov Chain Monte Carlo (MCMC) sampling. The prior distributions of all effects were set as weakly informative, meaning that we did not expect effects different from null in any particular direction. For each model and each coefficient, we will present several characteristics of the posterior distribution, such as its median (a robust estimate comparable to the beta from frequentist linear models), MAD (median absolute deviation, a robust equivalent of standard deviation) and the 90% credible interval. Instead of the *p value* as an index of effect existence, we also computed the maximum probability of effect (MPE), *i.e.*, the maximum probability that the effect is different from 0 in the median’s direction. For our analyses, we will consider an effect as inconsistant (*i.e.*, not probable enough) if its MPE is lower than 90% (however, **beware not to fall in a *p* value-like obsession**).
 
 
-The current model explains about 2.3% of life satisfaction variance. Within this model, a positive linear relationship between life satisfaction and tolerating exists with high probability (Median = 0.19, MAD = 0.035, 95% CI [0.12, 0.26], MPE = 100%).
+The current model explains about `r psycho::format_digit(results$values$R2$median*100)`% of life satisfaction variance. Within this model, a positive linear relationship between life satisfaction and tolerating exists with high probability (Median = `r psycho::format_digit(results$values$Tolerating$median)`, MAD = `r psycho::format_digit(results$values$Tolerating$mad)`, 90% CI [`r paste(psycho::format_digit(results$values$Tolerating$CI_values), collapse = ', ')`], MPE = `r psycho::format_digit(results$values$Tolerating$MPE)`%).
 
 ### Model Visualization
 
@@ -164,14 +164,13 @@ When the predictor is categorical, simplifying the model is called running an AN
 fit <- rstanarm::stan_glm(Life_Satisfaction ~ Salary, data=df)
 ```
 Let's check the results: 
-```{r, message=FALSE, results="hide"}
+```{r, message=FALSE, warning=FALSE}
 # Format the results using analyze()
 results <- psycho::analyze(fit)
 
 # We can extract a formatted summary table
-summary(results, round = 2)
+print(results)
 ```
-
 
 ### Post-hoc / Contrasts / Comparisons
 
@@ -186,7 +185,7 @@ We can see the estimated means like that:
 contrasts$means
 ```
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-kable(contrasts$means)
+kable(contrasts$means, digits=2)
 ```
 
 
@@ -195,7 +194,7 @@ And the contrasts comparisons like that:
 contrasts$contrasts
 ```
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-kable(contrasts$contrasts)
+kable(contrasts$contrasts, digits=2)
 ```
 
 As we can see, the only probable difference (MPE > 90%) is between **Salary <1000** and **Salary 2000+**.
@@ -309,17 +308,14 @@ Again, it is important to notice that the intercept (the baseline) corresponds h
 
 How to represent this type of models? Again, we have to generate a reference grid.
 
-```{r echo=T, message=FALSE, warning=FALSE}
+```{r echo=T, message=FALSE, warning=FALSE, results="hide"}
 ref_grid <- emmeans::ref_grid(fit, at = list(
   Concealing = seq(min(df$Concealing),
                    max(df$Concealing),
                    length.out = 5)))
 predicted <- psycho::get_predicted(fit, refgrid=ref_grid)
-```
-```{r echo=T, message=FALSE, warning=FALSE, results='hide'}
 predicted
 ```
-
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 kable(predicted)
 ```
@@ -337,7 +333,7 @@ ggplot(predicted, aes(x=Concealing, y=pred_Life_Satisfaction, colour=Sex, fill=S
 
 First, we can see that the error for the males is larger, due to less observations. Second, we can see that the plot is a bit edgy, and we can smooth it by generating a more detailed reference grid.
 
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA}
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 ref_grid <- emmeans::ref_grid(fit, at = list(
   Concealing = seq(min(df$Concealing),
                    max(df$Concealing),
@@ -515,7 +511,8 @@ Then, we can explicitly specify a weakly informative prior for all effects of th
 fit <- rstanarm::stan_glm(Life_Satisfaction ~ Tolerating, 
                           data=dfZ,
                           prior=normal(location = 0, # Mean
-                                       scale = 1)) # SD
+                                       scale = 1, # SD
+                                       autoscale=FALSE)) # Don't adjust scale automatically
 ```
 
 Let's plot the prior (the expectation) against the posterior (the estimated effect) distribution.
@@ -540,7 +537,7 @@ This plot is rather ugly, because our posterior is very precise (due to the larg
 
 ### Informative priors
 
-It is important to underline that setting informative priors (**if realistic**), does not overbias the analysis. In other words, is only "directs" the sampling. But the observed data still wins. **In other words, you can't change the results dramatically by tweaking the priors**. Of course, if you see someone using a prior with mean = 42 and SD = 0.0001, you should look at his results with caution...
+Although the default priors tend to work well, prudent use of more informative priors is encouraged. It is important to underline that setting informative priors (**if realistic**), does not overbias the analysis. In other words, is only "directs" the sampling: if the data are highly informative about the parameter values (enough to overwhelm the prior), a prudent informative prior (even if oppositive to the observed effect) will yield similar results to a non-informative prior. **In other words, you can't change the results dramatically by tweaking the priors**. But as the amount of data and/or the signal-to-noise ratio decrease, using a more informative prior becomes increasingly important. Of course, if you see someone using a prior with mean = 42 and SD = 0.0001, you should look at his results with caution...
 
 
 
@@ -550,4 +547,4 @@ This package helped you? Don't forget to cite the various packages you used :)
 
 You can cite `psycho` as follows:
 
-- Makowski, (2018). **The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science**. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470
+- Makowski, (2018). *The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470
