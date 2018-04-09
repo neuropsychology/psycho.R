@@ -19,6 +19,11 @@
 #' dfZ <- standardize(df)
 #' dfZ <- standardize(df, except="V3")
 #' dfZ <- standardize(df, except=c("V1", "V2"))
+#' dfZ <- standardize(df, subset="V3")
+#' dfZ <- standardize(df, subset=c("V1", "V2"))
+#' dfZ <- standardize(df, subset=c("V1", "V2"), except="V3")
+#'
+#' summary(dfZ)
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
@@ -26,28 +31,56 @@
 #' @import purrr
 #' @import dplyr
 #' @export
-standardize <- function(df, except=NULL) {
+standardize <- function(df, subset=NULL, except=NULL) {
+
+  # Variable order
+  var_order <- names(df)
+
+  # Keep subset
+  if (!is.null(subset) && subset %in% names(df)) {
+    to_keep <- as.data.frame(df[!names(df) %in% c(subset)])
+    df <- df[names(df) %in% c(subset)]
+  } else{
+    to_keep <- NULL
+  }
 
   # Remove exceptions
   if (!is.null(except) && except %in% names(df)) {
-    to_keep <- as.data.frame(df[except])
+
+    if(is.null(to_keep)){
+      to_keep <- as.data.frame(df[except])
+    } else{
+      to_keep <- cbind(to_keep, as.data.frame(df[except]))
+    }
+
     df <- df[!names(df) %in% c(except)]
   }
 
-  # Remove non-numerics
-  dfother <- purrr::discard(df, is.numeric)
-  dfnum <- purrr::keep(df, is.numeric)
-  dfnum <- as.data.frame(scale(dfnum))
-  # Add non-numerics
-  if (is.null(ncol(dfother))) {
-    df <- dfnum
-  } else {
-    df <- dplyr::bind_cols(dfother, dfnum)
-  }
+  # If dataframe
+  if(length(names(df)) > 1 | !is.null(subset)){
 
-  # Add exceptions
-  if (!is.null(except) && exists("to_keep")) {
-    df <- dplyr::bind_cols(df, to_keep)
+    # Remove non-numerics
+    dfother <- purrr::discard(df, is.numeric)
+    dfnum <- purrr::keep(df, is.numeric)
+    dfnum <- as.data.frame(scale(dfnum))
+
+    # Add non-numerics
+    if (is.null(ncol(dfother))) {
+      df <- dfnum
+    } else {
+      df <- dplyr::bind_cols(dfother, dfnum)
+    }
+
+    # Add exceptions
+    if (!is.null(subset) | !is.null(except) && exists("to_keep")) {
+      df <- dplyr::bind_cols(df, to_keep)
+    }
+
+    # Reorder
+    df <- df[var_order]
+
+  } else{ # If vector
+    df <- as.vector(scale(df))
   }
 
   return(df)

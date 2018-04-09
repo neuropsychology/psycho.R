@@ -55,4 +55,19 @@ test_that("If it works.", {
     round(results$values$advance$median), 0,
     tolerance = 0.025
   )
+
+  fit <- rstanarm::stan_glm(
+    Sepal.Length ~ Sepal.Width,
+    data = iris,
+    seed = 666,
+    algorithm="meanfield"
+  )
+
+  model <- psycho::analyze(fit, effsize = T)
+  values <- psycho::values(model)
+  testthat::expect_equal(
+    round(values$Sepal.Width$median, 2), -0.46,
+    tolerance = 0.05
+  )
+
 })
