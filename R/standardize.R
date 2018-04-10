@@ -35,7 +35,7 @@
 standardize <- function(df, subset=NULL, except=NULL) {
 
   # If vector
-  if(ncol(as.matrix(df))==1){
+  if (ncol(as.matrix(df)) == 1) {
     return(as.vector(scale(df)))
   }
 
@@ -46,16 +46,15 @@ standardize <- function(df, subset=NULL, except=NULL) {
   if (!is.null(subset) && subset %in% names(df)) {
     to_keep <- as.data.frame(df[!names(df) %in% c(subset)])
     df <- df[names(df) %in% c(subset)]
-  } else{
+  } else {
     to_keep <- NULL
   }
 
   # Remove exceptions
   if (!is.null(except) && except %in% names(df)) {
-
-    if(is.null(to_keep)){
+    if (is.null(to_keep)) {
       to_keep <- as.data.frame(df[except])
-    } else{
+    } else {
       to_keep <- cbind(to_keep, as.data.frame(df[except]))
     }
 

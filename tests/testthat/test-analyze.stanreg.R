@@ -60,7 +60,7 @@ test_that("If it works.", {
     Sepal.Length ~ Sepal.Width,
     data = iris,
     seed = 666,
-    algorithm="meanfield"
+    algorithm = "meanfield"
   )
 
   model <- psycho::analyze(fit, effsize = T)
@@ -69,5 +69,4 @@ test_that("If it works.", {
     round(values$Sepal.Width$median, 2), -0.46,
     tolerance = 0.05
   )
-
 })

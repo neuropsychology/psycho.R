@@ -104,16 +104,18 @@ interpret_d_posterior <- function(posterior) {
   )
 
 
-  interpretation <- list(table=EffSize,
-                         text=EffSize_text,
-                         probs=list(
-                           VeryLarge=verylarge,
-                           Large=large,
-                           Medium=medium,
-                           Small=small,
-                           VerySmall=verysmall,
-                           Opposite=opposite_prob
-                         ))
+  interpretation <- list(
+    table = EffSize,
+    text = EffSize_text,
+    probs = list(
+      VeryLarge = verylarge,
+      Large = large,
+      Medium = medium,
+      Small = small,
+      VerySmall = verysmall,
+      Opposite = opposite_prob
+    )
+  )
 
   return(interpretation)
 }

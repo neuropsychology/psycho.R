@@ -21,6 +21,6 @@ test_that("Correct Value", {
   dfZ <- standardize(df, subset = c("V1", "V2"))
   testthat::expect_equal(mean(dfZ$V1), 0)
 
-  dfZ <- standardize(df, subset = "V1", except="V3")
+  dfZ <- standardize(df, subset = "V1", except = "V3")
   testthat::expect_equal(mean(dfZ$V1), 0)
 })

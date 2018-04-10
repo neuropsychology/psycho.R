@@ -38,7 +38,7 @@ find_best_model.merModLmerTest <- function(fit, interaction=TRUE, fixed=NULL, ..
 
   # fit models
   models <- c()
-  for(formula in combinations){
+  for (formula in combinations) {
     newfit <- update(fit, formula)
     models <- c(models, newfit)
   }

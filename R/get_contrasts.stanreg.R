@@ -33,7 +33,6 @@
 #'
 #' @export
 get_contrasts.stanreg <- function(fit, formula, prob=0.9, ...) {
-
   formula <- as.formula(paste0("~", formula))
 
 

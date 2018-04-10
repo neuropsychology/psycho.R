@@ -59,20 +59,20 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
   info_priors <- rstanarm::prior_summary(fit)
 
 
-# R2 ----------------------------------------------------------------------
+  # R2 ----------------------------------------------------------------------
   if ("R2" %in% names(posteriors)) {
     varnames <- c(varnames, "R2")
     R2 <- TRUE
   } else {
-    posteriors$R2 = tryCatch({
+    posteriors$R2 <- tryCatch({
       rstanarm::bayes_R2(fit)
-    },error = function(e) {
+    }, error = function(e) {
       0
     })
 
-    if(all(posteriors$R2 == 0)){
+    if (all(posteriors$R2 == 0)) {
       R2 <- FALSE
-    } else{
+    } else {
       R2 <- TRUE
     }
 
@@ -82,7 +82,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
 
 
 
-# Random effect info --------------------------------------------
+  # Random effect info --------------------------------------------
   mixed <- tryCatch({
     broom::tidy(fit, parameters = "varying")
     TRUE
@@ -100,7 +100,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
 
 
 
-# Get indices of each variable --------------------------------------------
+  # Get indices of each variable --------------------------------------------
 
   # Initialize empty values
   values <- list()
@@ -113,11 +113,13 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
     # Prior
     # TBD: this doesn't work with categorical predictors :(
     info_prior <- list()
-    if(varname %in% predictors){
+    if (varname %in% predictors) {
       predictor_index <- which(predictors == varname)
-      if(length(info_priors$prior$dist) == 1){
-        info_priors$prior$dist <- rep(info_priors$prior$dist,
-                                      length(info_priors$prior$location))
+      if (length(info_priors$prior$dist) == 1) {
+        info_priors$prior$dist <- rep(
+          info_priors$prior$dist,
+          length(info_priors$prior$location)
+        )
       }
       info_prior["distribution"] <- info_priors$prior$dist[predictor_index]
       info_prior["location"] <- info_priors$prior$location[predictor_index]
@@ -125,7 +127,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
       info_prior["adjusted_scale"] <- info_priors$prior$adjusted_scale[predictor_index]
     }
 
-    if(varname == "(Intercept)"){
+    if (varname == "(Intercept)") {
       info_prior["distribution"] <- info_priors$prior_intercept$dist
       info_prior["location"] <- info_priors$prior_intercept$location
       info_prior["scale"] <- info_priors$prior_intercept$scale
@@ -138,7 +140,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
     # Extract posterior
     posterior <- posteriors[, varname]
 
-    if(varname == "R2" & R2==FALSE){
+    if (varname == "R2" & R2 == FALSE) {
       text <- ""
       median <- "unavailable"
       mad <- "unavailable"
@@ -148,8 +150,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
       CI_values <- "unavailable"
       MPE <- "unavailable"
       MPE_values <- "unavailable"
-
-    } else{
+    } else {
       # Find basic posterior indices
       median <- median(posterior)
       mad <- mad(posterior)
@@ -229,8 +230,8 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
           format_digit(CI_values[2], null_treshold = 0.0001),
           "]). "
         )
-        }
       }
+    }
 
 
     # Store all indices
@@ -245,15 +246,16 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
       MPE_values = MPE_values,
       posterior = posterior,
       text = text,
-      prior = info_prior)
-    }
+      prior = info_prior
+    )
+  }
 
 
 
 
 
 
-# Effect Sizes ------------------------------------------------------------
+  # Effect Sizes ------------------------------------------------------------
   if (effsize == T) {
 
     # Check if standardized
@@ -267,7 +269,6 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
 
     EffSizes <- data.frame()
     for (varname in varnames) {
-
       if (varname == "R2") {
         values[[varname]]$EffSize <- NA
         values[[varname]]$EffSize_text <- NA
@@ -277,9 +278,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
         values[[varname]]$EffSize_S <- NA
         values[[varname]]$EffSize_VS <- NA
         values[[varname]]$EffSize_O <- NA
-
-      } else{
-
+      } else {
         EffSize <- interpret_d_posterior(posteriors[, varname])
 
         EffSize_table <- EffSize$table
@@ -300,26 +299,28 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
   }
 
 
-# Summary --------------------------------------------------------------------
-  if(R2==TRUE){
+  # Summary --------------------------------------------------------------------
+  if (R2 == TRUE) {
     varnames_for_summary <- varnames
-  } else{
+  } else {
     varnames_for_summary <- varnames[varnames != "R2"]
   }
 
   summary <- data.frame()
   for (varname in varnames_for_summary) {
-    summary <- rbind(summary,
-                     data.frame(Variable = varname,
-                                MPE = values[[varname]]$MPE,
-                                Median = values[[varname]]$median,
-                                MAD = values[[varname]]$mad,
-                                Mean = values[[varname]]$mean,
-                                SD = values[[varname]]$sd,
-                                CI_lower = values[[varname]]$CI_values[1],
-                                CI_higher = values[[varname]]$CI_values[2]
-                                )
-                     )
+    summary <- rbind(
+      summary,
+      data.frame(
+        Variable = varname,
+        MPE = values[[varname]]$MPE,
+        Median = values[[varname]]$median,
+        MAD = values[[varname]]$mad,
+        Mean = values[[varname]]$mean,
+        SD = values[[varname]]$sd,
+        CI_lower = values[[varname]]$CI_values[1],
+        CI_higher = values[[varname]]$CI_values[2]
+      )
+    )
   }
 
   if (effsize == T) {
@@ -340,7 +341,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
 
 
 
-# Text --------------------------------------------------------------------
+  # Text --------------------------------------------------------------------
 
   # Model
   if (effsize) {
@@ -398,7 +399,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
 
 
 
-# Plot --------------------------------------------------------------------
+  # Plot --------------------------------------------------------------------
 
   plot <- posteriors[varnames] %>%
     # select(-`(Intercept)`) %>%
