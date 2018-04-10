@@ -64,7 +64,14 @@ library(devtools)
 devtools::install_github("neuropsychology/psycho.R")
 ```
 
-Else, just put this at the beginning of every script:
+**In case of error**: Sometimes the installation fails, and you might find in the redish output the following lines:
+```r
+there is no package called ‘**thenameofapackage**’
+ERROR: lazy loading failed for package ‘psycho’
+```
+Try installing the missing packages (`install.packages("thenameofapackage")`) and try the installation of psycho again.
+
+Anyway, once you have `psycho`, just put this at the beginning of every script:
 ```{r}
 library(psycho)
 ```
@@ -364,7 +371,6 @@ This is possibly the most important function of the `psycho` package. Its goal i
 Let's start by creating a dataframe similar to those found in psychological science.
 
 ```{r, results='hide'}
-set.seed(666)
 df <- data.frame(
   Participant = as.factor(rep(1:25, each = 4)),
   Item = rep_len(c("i1", "i2", "i3", "i4"), 100),
@@ -448,7 +454,7 @@ library(rstanarm)
 fit <- rstanarm::stan_lmer(RT ~ Condition + (1 | Participant) + (1 | Item), data = df)
 
 # Traditional output
-results <- psycho::analyze(fit, effsize = T)
+results <- psycho::analyze(fit, effsize = TRUE)
 summary(results, round = 2)
 ```
 
@@ -480,3 +486,7 @@ You can cite `psycho` as follows:
 
 - Makowski, (2018). *The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470
 
+
+## Contribution
+
+Improve this vignette by modifying [this](https://github.com/neuropsychology/psycho.R/blob/master/vignettes/overview.Rmd) file!

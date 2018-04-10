@@ -1,8 +1,11 @@
 # Current Dev
 
 ### Breaking changes
+- Added `subset` parameter in `standardize`
 - Changed order of parameters in `dprime`
 ### New functions / parameters
+- Added prior info in `analyze.stanreg`
+- Added (exposed) `interpret_d_posterior` for Bayesian size effect interpretation
 - Added `find_combinations` function
 - Added `find_best_model` function
 - Added `is.standardized` function
@@ -11,6 +14,9 @@
 - Externalized the "mpe" function
 - Added `affective` dataset
 ### Changes
+- Added model selection chapter in Bayesian vignettes
+- Refactor the `analyze.stanreg` code
+- Improved `standardize` for vectors
 - Added random effects summary in `analyze.stanreg`
 - Improved `mellenbergh.test`
 - Improved `analyze.stanreg`

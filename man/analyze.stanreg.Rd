@@ -29,12 +29,14 @@ library(rstanarm)
 data <- standardize(attitude)
 fit <- rstanarm::stan_glm(rating ~ advance + privileges, data=data)
 
-results <- analyze(fit)
+results <- analyze(fit, effsize=TRUE)
 summary(results)
 plot(results)
 print(results)
 
 fit <- rstanarm::stan_glmer(Sepal.Length ~ Sepal.Width + (1|Species), data=iris)
+results <- analyze(fit)
+summary(results)
 }
 
 }

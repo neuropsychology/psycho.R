@@ -18,5 +18,4 @@ test_that("Correct", {
   # best <- find_best_model(fit, K=0)
   # best_formula <- best$formula
   # testthat::expect_equal(best_formula, "rating ~ privileges")
-
 })

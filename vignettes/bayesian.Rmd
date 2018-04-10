@@ -14,6 +14,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteDepends{dplyr}
   %\VignetteDepends{ggplot2}
+  %\VignetteDepends{plotly}
   \usepackage[utf8]{inputenc}
 ---
 
@@ -23,6 +24,7 @@ vignette: >
 
 ```{r, echo=F, message=FALSE, warning=FALSE}
 library(knitr)
+options(mc.cores=1)
 ```
 
 
@@ -50,7 +52,7 @@ Once we agreed that the Bayesian framework is the right way to go, you might won
 Omitting the maths behind it, let's just say that:
 
 - The frequentist guy tries to estimate "the real effect". The "real" value of the correlation between X and Y. It returns a "point-estimate" (*i.e.*, a single value) of the "real" correlation (*e.g.*, r = 0.42), considering that the data is sampled at random from a "parent", usually normal distribution of data.
-- **The Bayesian master assumes not such thing**. The data are what they are. Based on this observed data (and eventually from its expectations), the Bayesian sampling algorithm will return a probability distribution of the effect that is compatible with the observed data. For the correlation between X and Y, it will return a distribution that says "the most probable effect is 0.42, but this data is also compatible with correlations of 0.12 or 0.74".
+- **The Bayesian master assumes no such thing**. The data are what they are. Based on this observed data (and eventually from its expectations), the Bayesian sampling algorithm will return a probability distribution of the effect that is compatible with the observed data. For the correlation between X and Y, it will return a distribution that says "the most probable effect is 0.42, but this data is also compatible with correlations of 0.12 or 0.74".
 - To characterize our effects, **no need of p values** or other mysterious indices. We simply describe the posterior distribution (*i.e.*, the distribution of the effect). We can present the median (better than the mean, as it actually means that the effect has 50% of chance of being higher and 50% of chance of being lower), the MAD (a median-based, robust equivalent of SD) and other stuff such as the 90% HDI, called here *credible interval*.
 
 **Let's practice!**
@@ -75,11 +77,11 @@ summary(df)
 summary(df)
 ```
 
-The data includes **5 continuous variables** (age, life satisfaction and 3 affective styles) and **3 factors** (sex, salary and season of birth).
+The data include **5 continuous variables** (age, life satisfaction and 3 affective styles) and **3 factors** (sex, salary and season of birth).
 
 ## Simple Regression (*Correlation*)
 
-Let's start with something simple : a **correlation**. To simplify, a (Pearson's) correlation is pretty much nothing more than a simple linear regression (with standardized variables). Let's see if there's a linear relationship between **Life Satisfaction** and the tendency of **Tolerating** using a Bayesian linear regression model.
+Let's start with something simple : a **correlation**. To simplify, a (Pearson's) correlation is pretty much nothing more than a simple linear regression (with standardized variables). Let's see if there's a linear relationship between **Life Satisfaction** and the tendency of **Tolerating** our emotions using a Bayesian linear regression model.
 
 ### Model Exploration
 
@@ -108,10 +110,13 @@ And print it textually:
 print(results)
 ```
 
+
 ### Interpretation
 
 
-> Full Bayesian mixed linear models are fitted using the rstanarm R wrapper for the stan probabilistic language (Gabry & Goodrich, 2016). Bayesian inference was done using Markov Chain Monte Carlo (MCMC) sampling. The prior distributions of all effects were set as weakly informative, meaning that we did not expect effects different from null in any particular direction. For each model and each coefficient, we will present several characteristics of the posterior distribution, such as its median (a robust estimate comparable to the beta from frequentist linear models), MAD (median absolute deviation, a robust equivalent of standard deviation) and the 90% credible interval. Instead of the *p value* as an index of effect existence, we also computed the maximum probability of effect (MPE), *i.e.*, the maximum probability that the effect is different from 0 in the median’s direction. For our analyses, we will consider an effect as inconsistant (*i.e.*, not probable enough) if its MPE is lower than 90% (however, **beware not to fall in a *p* value-like obsession**).
+For now, omit the part dedicated to priors. We'll see it in the next chapters. Let's rather interpret the part related to effects.
+
+> Full Bayesian mixed linear models are fitted using the rstanarm R wrapper for the stan probabilistic language (Gabry & Goodrich, 2016). Bayesian inference was done using Markov Chain Monte Carlo (MCMC) sampling. The prior distributions of all effects were set as weakly informative (mean = 0, SD = `r psycho::format_digit(results$values$Tolerating$prior$adjusted_scale)`), meaning that we did not expect effects different from null in any particular direction. For each model and each coefficient, we will present several characteristics of the posterior distribution, such as its median (a robust estimate comparable to the beta from frequentist linear models), MAD (median absolute deviation, a robust equivalent of standard deviation) and the 90% credible interval. Instead of the *p value* as an index of effect existence, we also computed the maximum probability of effect (MPE), *i.e.*, the maximum probability that the effect is different from 0 in the median’s direction. For our analyses, we will consider an effect as inconsistant (*i.e.*, not probable enough) if its MPE is lower than 90% (however, **beware not to fall in a *p* value-like obsession**).
 
 
 The current model explains about `r psycho::format_digit(results$values$R2$median*100)`% of life satisfaction variance. Within this model, a positive linear relationship between life satisfaction and tolerating exists with high probability (Median = `r psycho::format_digit(results$values$Tolerating$median)`, MAD = `r psycho::format_digit(results$values$Tolerating$mad)`, 90% CI [`r paste(psycho::format_digit(results$values$Tolerating$CI_values), collapse = ', ')`], MPE = `r psycho::format_digit(results$values$Tolerating$MPE)`%).
@@ -202,7 +207,7 @@ As we can see, the only probable difference (MPE > 90%) is between **Salary <100
 ### Model Visualization
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA}
-ggplot(contrasts$means, aes(x=Contrast, y=Median, group=1)) +
+ggplot(contrasts$means, aes(x=Level, y=Median, group=1)) +
   geom_line() +
   geom_pointrange(aes(ymin=CI_lower, ymax=CI_higher)) +
   ylab("Life Satisfaction") +
@@ -485,6 +490,54 @@ ggplotly(p) # To transform a ggplot into an interactive plot
 
 **It's good to take a few steps back and look at the bigger picture :)**
 
+But which one, between these two models, is "objectively" better?
+
+## Model Comparison and Selection
+
+It is often interesting to know which model better fits the data. The frequentist approach provides several indices of goodness of fit (AIC, BIC, ...), for which the Bayesian framework has equivalents. These are obtained through **Leave-one-out cross-validation (LOO)** and are called **ELPD** (*expected log predictive density*) and **LOOIC** (*LOO information criterion*). The best model is the one with  the largest ELPD (smallest LOOIC). See the [official rstanarm documentation](https://CRAN.R-project.org/package=rstanarm/vignettes/rstanarm.html#step-3-criticize-the-model) as well as the [loo package](https://CRAN.R-project.org/package=loo/vignettes/loo-example.html) for details.
+
+```{r message=FALSE, warning=FALSE, include=FALSE, results="hide"}
+# Fit the models
+fit_intercept_only <- rstanarm::stan_glm(Concealing ~ 1, data=df, cores=1, chains=1, seed=666)
+fit_linear <- rstanarm::stan_glm(Concealing ~ Age, data=df, cores=1, chains=1, seed=666)
+fit_poly <- rstanarm::stan_glm(Concealing ~ poly(Age, 2, raw=TRUE), data=df, cores=1, chains=1, seed=666)
+
+# Compute the LOO validation
+loo_intercept_only <- rstanarm::loo(fit_intercept_only, cores=1, chains=1, seed=666)
+loo_linear <- rstanarm::loo(fit_linear, cores=1, chains=1, seed=666)
+loo_poly <- rstanarm::loo(fit_poly, cores=1, chains=1, seed=666)
+
+# Compare the models
+comparison <- rstanarm::compare_models(loo_intercept_only, 
+                                       loo_linear, 
+                                       loo_poly)
+print(comparison)
+```
+```{r, message=FALSE, results="hide", eval=FALSE, warning=FALSE}
+# Fit the models
+fit_intercept_only <- rstanarm::stan_glm(Concealing ~ 1, data=df)
+fit_linear <- rstanarm::stan_glm(Concealing ~ Age, data=df)
+fit_poly <- rstanarm::stan_glm(Concealing ~ poly(Age, 2, raw=TRUE), data=df)
+
+# Compute the LOO validation
+loo_intercept_only <- rstanarm::loo(fit_intercept_only)
+loo_linear <- rstanarm::loo(fit_linear)
+loo_poly <- rstanarm::loo(fit_poly)
+
+# Compare the models
+comparison <- rstanarm::compare_models(loo_intercept_only, 
+                                       loo_linear, 
+                                       loo_poly)
+print(comparison)
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+kable(comparison, digits=1)
+```
+
+As we can see, the best model (largest ELPD and smallest LOOIC) is the polynomial model, followed by the linear model. The worst model appears to be the constant (intercept-only) model.
+
+
+
 ## Piors Specification
 
 One of the interesting aspect of the Bayesian framework is the possibility of adding prior expectations about the effect, to help model fitting and increase accuracy in noisy data or small samples.
@@ -539,7 +592,7 @@ This plot is rather ugly, because our posterior is very precise (due to the larg
 
 Although the default priors tend to work well, prudent use of more informative priors is encouraged. It is important to underline that setting informative priors (**if realistic**), does not overbias the analysis. In other words, is only "directs" the sampling: if the data are highly informative about the parameter values (enough to overwhelm the prior), a prudent informative prior (even if oppositive to the observed effect) will yield similar results to a non-informative prior. **In other words, you can't change the results dramatically by tweaking the priors**. But as the amount of data and/or the signal-to-noise ratio decrease, using a more informative prior becomes increasingly important. Of course, if you see someone using a prior with mean = 42 and SD = 0.0001, you should look at his results with caution...
 
-
+Anyway, see the [official rstanarm documentation](https://CRAN.R-project.org/package=rstanarm/vignettes/priors.html) for details.
 
 ## Credits
 
@@ -548,3 +601,7 @@ This package helped you? Don't forget to cite the various packages you used :)
 You can cite `psycho` as follows:
 
 - Makowski, (2018). *The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470
+
+## Contribution
+
+Improve this vignette by modifying [this](https://github.com/neuropsychology/psycho.R/blob/master/vignettes/bayesian.Rmd) file!
