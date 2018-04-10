@@ -14,6 +14,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteDepends{dplyr}
   %\VignetteDepends{ggplot2}
+  %\VignetteDepends{plotly}
   \usepackage[utf8]{inputenc}
 ---
 
@@ -23,6 +24,7 @@ vignette: >
 
 ```{r, echo=F, message=FALSE, warning=FALSE}
 library(knitr)
+options(mc.cores=1)
 ```
 
 
@@ -205,7 +207,7 @@ As we can see, the only probable difference (MPE > 90%) is between **Salary <100
 ### Model Visualization
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA}
-ggplot(contrasts$means, aes(x=Contrast, y=Median, group=1)) +
+ggplot(contrasts$means, aes(x=Level, y=Median, group=1)) +
   geom_line() +
   geom_pointrange(aes(ymin=CI_lower, ymax=CI_higher)) +
   ylab("Life Satisfaction") +
@@ -494,7 +496,24 @@ But which one, between these two models, is "objectively" better?
 
 It is often interesting to know which model better fits the data. The frequentist approach provides several indices of goodness of fit (AIC, BIC, ...), for which the Bayesian framework has equivalents. These are obtained through **Leave-one-out cross-validation (LOO)** and are called **ELPD** (*expected log predictive density*) and **LOOIC** (*LOO information criterion*). The best model is the one with  the largest ELPD (smallest LOOIC). See the [official rstanarm documentation](https://CRAN.R-project.org/package=rstanarm/vignettes/rstanarm.html#step-3-criticize-the-model) as well as the [loo package](https://CRAN.R-project.org/package=loo/vignettes/loo-example.html) for details.
 
-```{r, message=FALSE, results="hide", warning=FALSE}
+```{r message=FALSE, warning=FALSE, include=FALSE, results="hide"}
+# Fit the models
+fit_intercept_only <- rstanarm::stan_glm(Concealing ~ 1, data=df, cores=1, chains=1, seed=666)
+fit_linear <- rstanarm::stan_glm(Concealing ~ Age, data=df, cores=1, chains=1, seed=666)
+fit_poly <- rstanarm::stan_glm(Concealing ~ poly(Age, 2, raw=TRUE), data=df, cores=1, chains=1, seed=666)
+
+# Compute the LOO validation
+loo_intercept_only <- rstanarm::loo(fit_intercept_only, cores=1, chains=1, seed=666)
+loo_linear <- rstanarm::loo(fit_linear, cores=1, chains=1, seed=666)
+loo_poly <- rstanarm::loo(fit_poly, cores=1, chains=1, seed=666)
+
+# Compare the models
+comparison <- rstanarm::compare_models(loo_intercept_only, 
+                                       loo_linear, 
+                                       loo_poly)
+print(comparison)
+```
+```{r, message=FALSE, results="hide", eval=FALSE, warning=FALSE}
 # Fit the models
 fit_intercept_only <- rstanarm::stan_glm(Concealing ~ 1, data=df)
 fit_linear <- rstanarm::stan_glm(Concealing ~ Age, data=df)
@@ -582,3 +601,7 @@ This package helped you? Don't forget to cite the various packages you used :)
 You can cite `psycho` as follows:
 
 - Makowski, (2018). *The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470
+
+## Contribution
+
+Improve this vignette by modifying [this](https://github.com/neuropsychology/psycho.R/blob/master/vignettes/bayesian.Rmd) file!

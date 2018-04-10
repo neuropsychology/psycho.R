@@ -486,3 +486,7 @@ You can cite `psycho` as follows:
 
 - Makowski, (2018). *The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470
 
+
+## Contribution
+
+Improve this vignette by modifying [this](https://github.com/neuropsychology/psycho.R/blob/master/vignettes/overview.Rmd) file!

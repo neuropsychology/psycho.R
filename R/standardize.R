@@ -3,7 +3,8 @@
 #' Select numeric variables and standardize (Z-score, "normalize") them.
 #'
 #' @param df Dataframe.
-#' @param except Character or list of characters of column names to be excluded from normalization.
+#' @param subset Character or list of characters of column names to be standardized.
+#' @param except Character or list of characters of column names to be excluded from standardized.
 #'
 #' @return Dataframe.
 #'
@@ -33,6 +34,11 @@
 #' @export
 standardize <- function(df, subset=NULL, except=NULL) {
 
+  # If vector
+  if(ncol(as.matrix(df))==1){
+    return(as.vector(scale(df)))
+  }
+
   # Variable order
   var_order <- names(df)
 
@@ -56,32 +62,27 @@ standardize <- function(df, subset=NULL, except=NULL) {
     df <- df[!names(df) %in% c(except)]
   }
 
-  # If dataframe
-  if(length(names(df)) > 1 | !is.null(subset)){
+  # Remove non-numerics
+  dfother <- purrr::discard(df, is.numeric)
+  dfnum <- purrr::keep(df, is.numeric)
 
-    # Remove non-numerics
-    dfother <- purrr::discard(df, is.numeric)
-    dfnum <- purrr::keep(df, is.numeric)
-    dfnum <- as.data.frame(scale(dfnum))
+  # Scale
+  dfnum <- as.data.frame(scale(dfnum))
 
-    # Add non-numerics
-    if (is.null(ncol(dfother))) {
-      df <- dfnum
-    } else {
-      df <- dplyr::bind_cols(dfother, dfnum)
-    }
-
-    # Add exceptions
-    if (!is.null(subset) | !is.null(except) && exists("to_keep")) {
-      df <- dplyr::bind_cols(df, to_keep)
-    }
-
-    # Reorder
-    df <- df[var_order]
-
-  } else{ # If vector
-    df <- as.vector(scale(df))
+  # Add non-numerics
+  if (is.null(ncol(dfother))) {
+    df <- dfnum
+  } else {
+    df <- dplyr::bind_cols(dfother, dfnum)
   }
+
+  # Add exceptions
+  if (!is.null(subset) | !is.null(except) && exists("to_keep")) {
+    df <- dplyr::bind_cols(df, to_keep)
+  }
+
+  # Reorder
+  df <- df[var_order]
 
   return(df)
 }

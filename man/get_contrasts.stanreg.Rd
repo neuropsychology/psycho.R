@@ -4,12 +4,12 @@
 \alias{get_contrasts.stanreg}
 \title{Compute estimated marginal means and contrasts from stanreg models.}
 \usage{
-\method{get_contrasts}{stanreg}(fit, specs, prob = 0.9, ...)
+\method{get_contrasts}{stanreg}(fit, formula, prob = 0.9, ...)
 }
 \arguments{
 \item{fit}{A stanreg model.}
 
-\item{specs}{A character vector specifying the names of the predictors over which EMMs are desired. specs may also be a formula or a list (optionally named) of valid specs. Use of formulas is described in the Details section below. See ?emmeans::emmeans.}
+\item{formula}{A character vector (formula like format, i.e., including interactions or nesting terms) specifying the names of the predictors over which EMMs are desired.}
 
 \item{prob}{A numeric scalar in the interval (0,1) giving the target probability content of the intervals. The nominal probability content of the intervals is the multiple of 1/nrow(obj) nearest to prob.}
 
@@ -25,9 +25,13 @@ Compute estimated marginal means and contrasts from a stanreg models.
 \dontrun{
 library(psycho)
 require(rstanarm)
-fit <- rstanarm::stan_glm(vs ~ mpg * cyl, data=mtcars)
+fit <- rstanarm::stan_glm(Adjusting ~ Birth_Season * Sex, data=affective)
 
-predicted <- get_predicted(fit)
+contrasts <- get_contrasts.stanreg(fit, formula="Birth_Season * Sex")
+contrasts$means
+
+contrasts <- get_contrasts.stanreg(fit, formula="Birth_Season")
+contrasts$contrasts
 }
 }
 \author{
