@@ -10,37 +10,40 @@ test_that("If it works.", {
     data = mtcars,
     family = binomial(link = "logit"),
     prior = NULL,
-    seed = 666
+    chains = 1, iter = 1000, seed = 666
   )
 
   model <- psycho::analyze(fit)
   values <- psycho::values(model)
-  testthat::expect_equal(round(values$mpg$median, 2), -0.64, tolerance = 0.10)
+  testthat::expect_equal(round(values$effects$mpg$median, 2), -0.64, tolerance = 0.10)
 
 
+  # Random
   fit <- rstanarm::stan_glmer(
     Sepal.Length ~ Sepal.Width + (1 | Species),
     data = iris,
-    seed = 666
+    chains = 1, iter = 1000, seed = 666
   )
 
   model <- psycho::analyze(fit, effsize = T)
   values <- psycho::values(model)
   testthat::expect_equal(
-    round(values$Sepal.Width$median, 2), 0.79,
+    round(values$effects$Sepal.Width$median, 2), 0.79,
     tolerance = 0.05
   )
 
 
+
+  # standardized
   data <- standardize(attitude)
   fit <- rstanarm::stan_glm(rating ~ advance + privileges,
     data = data,
     prior = rstanarm::normal(0, 1, autoscale = F),
-    seed = 666
+    chains = 1, iter = 1000, seed = 666
   )
   results <- analyze(fit)
   testthat::expect_equal(
-    round(results$values$advance$median), 0.01,
+    round(results$values$effects$advance$median), 0.01,
     tolerance = 0.025
   )
 
@@ -48,11 +51,11 @@ test_that("If it works.", {
   fit <- rstanarm::stan_glm(rating ~ advance + privileges,
     data = data,
     prior = rstanarm::normal(0, 1, autoscale = T),
-    seed = 666
+    chains = 1, iter = 1000, seed = 666
   )
   results <- analyze(fit)
   testthat::expect_equal(
-    round(results$values$advance$median), 0,
+    round(results$values$effects$advance$median), 0,
     tolerance = 0.025
   )
 
@@ -66,7 +69,7 @@ test_that("If it works.", {
   model <- psycho::analyze(fit, effsize = T)
   values <- psycho::values(model)
   testthat::expect_equal(
-    round(values$Sepal.Width$median, 2), -0.46,
+    round(values$effects$Sepal.Width$median, 2), -0.46,
     tolerance = 0.05
   )
 })

@@ -24,6 +24,8 @@ fit <- lme4::glmer(vs ~ mpg + (1|cyl), data=mtcars, family="binomial")
 
 results <- analyze(fit)
 summary(results)
+summary(results)
+print(results)
 
 }
 \author{

@@ -1,6 +1,7 @@
 # Current Dev
 
 ### Breaking changes
+- Changed organization of `values` in analyzed models
 - Added `subset` parameter in `standardize`
 - Changed order of parameters in `dprime`
 ### New functions / parameters

@@ -8,7 +8,7 @@ test_that("If it works.", {
 
   model <- psycho::analyze(fit)
   values <- psycho::values(model)
-  testthat::expect_equal(round(values$mpg$Coef, 2), 0.17, tolerance = 0.02)
+  testthat::expect_equal(round(values$effects$mpg$Coef, 2), 0.17, tolerance = 0.02)
 
   # test summary
   summa <- summary(model, round = 2)

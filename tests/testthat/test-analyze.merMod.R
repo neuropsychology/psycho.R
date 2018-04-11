@@ -9,7 +9,7 @@ test_that("If it works.", {
   model <- psycho::analyze(x)
   values <- values(model)
   testthat::expect_equal(
-    round(values$Sepal.Width$Coef, 2), 0.8,
+    round(values$effects$Sepal.Width$Coef, 2), 0.8,
     tolerance = 0.05
   )
 })
