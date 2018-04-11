@@ -24,11 +24,18 @@ vignette: >
 
 ```{r, echo=F, message=FALSE, warning=FALSE}
 library(knitr)
+library(rstanarm)
+library(emmeans)
+library(dplyr)
+library(ggplot2)
+library(psycho)
 options(mc.cores=1)
 ```
 
 
-## Why use the Bayesian Framework?
+## The Bayesian Framework
+
+### Why use the Bayesian Framework?
 
 In short, because it's:
 
@@ -43,9 +50,9 @@ In short, because it's:
 
 ##### **From Makowski et al. (*under review*):**
 
-> Reasons to prefer this approach is better accuracy in noisy data, the possibility of introducing prior knowledge into the analysis and, critically, results intuitiveness and their straightforward interpretation. Indeed, in the frequentist view, the effects are fixed (but unknown) and data are random, while the Bayesian inference calculates the probability of different effect values (called the **"posterior" distribution**) given the observed data. Bayesian’s uncertainty can be summarized by giving a range of values on the posterior distribution that includes 95% of the probability (the 95% *Credible Interval*). To illustrate the difference, the Bayesian framework allows to say "*given the observed data, the effect has 95% probability of falling within this range*", while the Frequentist less straightforward equivalent would be "*there is a 95% probability that when computing a confidence interval from data of this sort, the effect falls within this range*". In general, the frequentist approach has been associated with the focus on null hypothesis testing, and the misuse of *p* values has been shown to critically contribute to the reproducibility crisis of psychological science (Chambers, Feredoes, Muthukumaraswamy, Suresh, & Etchells, 2014; Szucs & Ioannidis, 2016). There is a general agreement that the generalization of the Bayesian approach is a way of overcoming these issues (Benjamin et al., 2018; Etz & Vandekerckhove, 2016).
+> Reasons to prefer this approach is better accuracy in noisy data, the possibility of introducing prior knowledge into the analysis and, critically, results intuitiveness and their straightforward interpretation. Indeed, in the frequentist view, the effects are fixed (but unknown) and data are random, while the Bayesian inference calculates the probability of different effect values (called the **"posterior" distribution**) given the observed data. Bayesian’s uncertainty can be summarized by giving a range of values on the posterior distribution that includes 95% of the probability (the 95% *Credible Interval*). To illustrate the difference, the Bayesian framework allows to say "*given the observed data, the effect has 92% probability of falling within this range*", while the Frequentist less straightforward equivalent would be "*there is a 95% probability that when computing a confidence interval from data of this sort, the effect falls within this range*". In general, the frequentist approach has been associated with the focus on null hypothesis testing, and the misuse of *p* values has been shown to critically contribute to the reproducibility crisis of psychological science (Chambers, Feredoes, Muthukumaraswamy, Suresh, & Etchells, 2014; Szucs & Ioannidis, 2016). There is a general agreement that the generalization of the Bayesian approach is a way of overcoming these issues (Benjamin et al., 2018; Etz & Vandekerckhove, 2016).
 
-## What is the Bayesian Framework?
+### What is the Bayesian Framework?
 
 Once we agreed that the Bayesian framework is the right way to go, you might wonder what is the Bayesian framework. **What's all the fuss about?**
 
@@ -55,7 +62,56 @@ Omitting the maths behind it, let's just say that:
 - **The Bayesian master assumes no such thing**. The data are what they are. Based on this observed data (and eventually from its expectations), the Bayesian sampling algorithm will return a probability distribution of the effect that is compatible with the observed data. For the correlation between X and Y, it will return a distribution that says "the most probable effect is 0.42, but this data is also compatible with correlations of 0.12 or 0.74".
 - To characterize our effects, **no need of p values** or other mysterious indices. We simply describe the posterior distribution (*i.e.*, the distribution of the effect). We can present the median (better than the mean, as it actually means that the effect has 50% of chance of being higher and 50% of chance of being lower), the MAD (a median-based, robust equivalent of SD) and other stuff such as the 90% HDI, called here *credible interval*.
 
-**Let's practice!**
+
+### The "Posterior" distribution
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+X <- psycho::standardize(psycho::affective$Concealing)
+Y <- psycho::standardize(psycho::affective$Life_Satisfaction)
+r <- cor.test(X, Y)$estimate
+p <- cor.test(X, Y)$p.value
+fit <- rstanarm::stan_glm(Y ~ X, seed=666)
+values <- values(analyze(fit))
+posterior <- values$effects$X$posterior
+density <- density(posterior, n = length(posterior))
+hdi <- hdi(posterior, 0.90)
+mpe <- mpe(posterior)$MPE
+```
+
+Let's imagine two numeric variables, Y and X. The correlation between them is r = `r psycho::format_digit(r)` (p < .05). A Bayesian analysis would return the probability of distribution of this effect (the **posterior**), that we can characterize using several indices (centrality (**median** or mean), dispersion (SD or Median Absolute Deviation - **MAD**), etc.). Let's plot the posterior distribution of the possible correlation values that are compatible with our data.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=7, fig.height=4.5, fig.align='center', fig.cap="Posterior probability distribution of the correlation between X and Y"}
+ggplot(data.frame(x = density$x, y = density$y), aes(x=x, y=y)) +
+  xlab("\nPosterior Distribution of Correlation") + 
+  ylab("Density") +
+  geom_segment(aes(xend = x, yend = 0, colour = x)) + 
+  scale_color_gradientn(colours = c("#E91E63", "#E91E63", "#4CAF50", "#4CAF50"),
+                         values=c(0, 0.4999, 0.5, 1),
+                         guide=F,
+                         limits = c(-1.5, 1.5)) +
+  # r
+  geom_vline(xintercept=r, color="#4CAF50") +
+  annotate("segment", x = r+0.03, xend = r, y = 10, yend = 10, size=0.1, arrow=arrow(type="closed", length = unit(0.10, "inches")), color="#4CAF50") +
+  annotate("text", x = r+0.035, y = 10, label = "Frequentist r Coefficient" , size=4 , fontface="bold", hjust = 0, color="#4CAF50") +
+  # median
+  geom_vline(xintercept=median(posterior)) +
+  annotate("segment", x = median(posterior)+0.03, xend = r, y = 8, yend = 8, colour = "black", size=0.1, arrow=arrow(type="closed", length = unit(0.10, "inches"))) +
+  annotate("text", x = median(posterior)+0.035, y = 8, label = "Median" , size=4 , fontface="bold", hjust = 0) +
+  # # mean
+  # geom_vline(xintercept=mean(posterior), color="#2196F3") +
+  # annotate("segment", x = mean(posterior)+0.03, xend = r, y = 6, yend = 6, size=0.1, arrow=arrow(type="closed", length = unit(0.10, "inches")), color="#2196F3") +
+  # annotate("text", x = mean(posterior)+0.035, y = 6, label = "mean" , size=4 , fontface="bold", hjust = 0, color="#2196F3")
+  annotate("segment", x = hdi$values$HDImin, xend = hdi$values$HDImax, y = 3, yend = 3, size=0.3, arrow=arrow(type="closed", ends="both", length = unit(0.10, "inches")), color="#2196F3") +
+  annotate("text", x = -0.01, y = 3, label = "90% Credible Interval" , size=4 , fontface="bold", hjust = 0, color="#2196F3")
+```
+
+In this example (based on real data):
+
+- The **median of the posterior distribution is really close to the *r* coefficient obtained through a "normal" correlation analysis**, appearing as a good point-estimate of the correlation. Moreover, and unlike the frequentist estimate, the median has an intuitive meaning (as it cuts the distribution in two equal parts): the "true" effect has 50% of chance of being higher and 50% of chance of being lower than the median. 
+- We can also compute the **90% credible interval**, which shows where the true effect can fall with a probability of 90%. 
+- Finally, we can also compute the **MPE**, *i.e.*, the maximum probability of effect, which is the probability that the effect is in the median's direction (*i.e.*, negative in this example): the area in red. It interesting to note that the probability that the effect is opposite ((100 - MPE) / 100, here (100-`r mpe`) / 100 = `r format_digit((100-mpe)/100)`) is relatively close to the actual **p value** obtained through frequentist correlation (p = `r format_digit(p)`).
+
+**Now that you're familiar with posterior distributions, the core difference of the Bayesian framework, let's practice!**
 
 ## The affective Dataset
 
@@ -66,7 +122,6 @@ library(rstanarm)
 library(emmeans)
 library(dplyr)
 library(ggplot2)
-library(coda)
 library(psycho)
 
 df <- psycho::affective
@@ -78,6 +133,8 @@ summary(df)
 ```
 
 The data include **5 continuous variables** (age, life satisfaction and 3 affective styles) and **3 factors** (sex, salary and season of birth).
+
+
 
 ## Simple Regression (*Correlation*)
 
@@ -574,7 +631,7 @@ Let's plot the prior (the expectation) against the posterior (the estimated effe
 results <- psycho::analyze(fit)
 
 # Extract the posterior
-posterior <- results$values$Tolerating$posterior
+posterior <- results$values$effects$Tolerating$posterior
 
 # Create a posterior with the prior and posterior distribution and plot them.
 data.frame(posterior = posterior,
