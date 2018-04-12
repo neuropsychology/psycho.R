@@ -2,6 +2,10 @@
 #'
 #' Returns the best model. See the
 #' documentation for your model's class:
+#' \itemize{
+#'  \item{\link[=find_best_model.stanreg]{find_best_model.stanreg}}
+#'  \item{\link[=find_best_model.merModLmerTest]{find_best_model.merModLmerTest}}
+#'  }
 #'
 #' @param fit Model
 #' @param ... Arguments passed to or from other methods.
