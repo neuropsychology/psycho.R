@@ -23,7 +23,7 @@ tags:
 
 The `standardize()` function allows you to easily scale and center all numeric variables of a dataframe. It is similar to the base function `scale()`, but presents some advantages: it is tidyverse-friendly, data-type friendly (*i.e.*, does not transform it into a matrix) and can handle dataframes with categorical data.
 
-```{r, out.width=8, eval = TRUE, fig.align='center', results='markup', comment=NA}
+```{r, eval = TRUE, fig.align='center', results='markup', comment=NA}
 library(psycho)
 library(tidyverse)
 

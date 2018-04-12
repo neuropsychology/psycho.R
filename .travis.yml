@@ -1,30 +1,6 @@
 language: r
 sudo: false
 
-r_binary_packages:
-  - methods,
-  - dplyr,
-  - ggplot2,
-  - tidyr,
-  - stringr,
-  - purrr,
-  - psych,
-  - MASS,
-  - nFactors,
-  - qgraph,
-  - ppcor,
-  - ggcorrplot,
-  - rstanarm,
-  - MuMIn,
-  - lmerTest,
-  - coda,
-  - emmeans,
-  - broom
-  - knitr,
-  - rmarkdown,
-  - testthat,
-  - lme4,
-  - plotly
 
 # Using the package cache to store R package dependencies can significantly
 # speed up build times and is recommended for most builds.
