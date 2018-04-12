@@ -2,15 +2,29 @@ language: r
 sudo: false
 
 r_binary_packages:
-  - methods
-  - psych
-  - MASS
-  - nFactors
-  - qgraph
-  - lmerTest
-  - MuMIn
-  - ggcorrplot
-  - ppcor
+  - methods,
+  - dplyr,
+  - ggplot2,
+  - tidyr,
+  - stringr,
+  - purrr,
+  - psych,
+  - MASS,
+  - nFactors,
+  - qgraph,
+  - ppcor,
+  - ggcorrplot,
+  - rstanarm,
+  - MuMIn,
+  - lmerTest,
+  - coda,
+  - emmeans,
+  - broom
+  - knitr,
+  - rmarkdown,
+  - testthat,
+  - lme4,
+  - plotly
 
 # Using the package cache to store R package dependencies can significantly
 # speed up build times and is recommended for most builds.
@@ -23,7 +37,8 @@ warnings_are_errors: true
 r_packages:
   - covr
   - lintr
-
+  
+  
 after_success:
   - Rscript -e 'library(covr); codecov()'
 #  - Rscript -e 'devtools::install();lintr::lint_package()'

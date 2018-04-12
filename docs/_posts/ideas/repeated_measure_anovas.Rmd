@@ -1,0 +1,103 @@
+---
+title: "How to do Repeated Measures ANOVA in R"
+layout: post
+output:
+  md_document:
+    variant: markdown_github
+author: "Dominique Makowski"
+date: "`r Sys.Date()`"
+tags:
+- r
+- psychology
+- neuroscience
+- neuropsychology
+- repeated measures ANOVA
+- rmANOVA
+- ANOVAs
+- Analysis of Variance
+- mixed models
+- contrasts
+- posthoc analysis
+- posthoc tests
+- multiple comparisons
+---
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(knitr)
+```
+
+# Don't do it
+
+**Ha! Got ya!** Trying to run some *old school* ANOVAs *mmh*? **I'll show you even better!**
+
+There is now a tremendous amount of data showing the inadequacy of ANOVAs as a statistical procedure ([Camilli, 1987](http://journals.sagepub.com/doi/abs/10.3102/10769986012001087); [Levy, 1978](https://www.tandfonline.com/doi/abs/10.1080/00949657808810247); [Vasey, 1987](https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1469-8986.1987.tb00324.x); [Chang, 2009](https://link.springer.com/article/10.1007/s00180-009-0162-z); ...). Instead, many papers suggest moving toward the mixed-modelling framework ([Kristensen, 2004](https://www.physiology.org/doi/abs/10.1152/advan.00042.2003); [Jaeger, 2008](https://www.sciencedirect.com/science/article/pii/S0749596X07001337)), which was shown to be more flexible, accurate, powerful and suited for psychological data.
+
+Using this framework, we will see how, very simply, we can answer our questions with R.
+
+# The Emotion Dataset
+
+Let's take the example dataset included in the `psycho` package.
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, out.width=8, results='markup'}
+library(psycho)
+library(tidyverse)
+
+df <- psycho::emotion %>% 
+  select(Participant_ID, 
+         Participant_Sex, 
+         Emotion_Condition, 
+         Subjective_Arousal,
+         Recall)
+
+summary(df)
+```
+
+Our dataframe (called `df`) contains data from several subjects, to which we presented neutral and negative pictures (the `Emotion_Condition` column). Each row corresponds here to a single trial, and there were 48 trials per participants. As such, there are 48 rows by participant. During each trial, the participant had to rate its emotional arousal experienced during the picture presentation. Moreover, 20min after this emotional rating task, the participant was asked to freely recall all the pictures he remembered.
+
+Our dataframe contains, for each trial, 5 variables: the name of the participant (`Participant_ID`), its sex (`Participant_Sex`), the emotion condition (`Emotion_Condition`), the arousal rating (`Subjective_Arousal`) and whether the participant recalled the picture (`Recall`).
+
+# The Effect of Emotion
+
+Does the emotion condition modulate the subjective arousal? How to answer?
+
+**Whith a repeated measures ANOVA of course!**
+
+Let's run it:
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, out.width=8, results='markup'}
+summary(aov(Subjective_Arousal ~ Emotion_Condition + Error(Participant_ID/Emotion_Condition), data=df))
+```
+
+Wow, we found that there is a significant effect of the emotional condition on arousal ratings. **Nature here we come!**
+
+As you know, an ANOVA is pretty much a *summary* of a linear model where the predictors are factors. Therefore, we can run an ANOVA on a linear mixed model (which includes the "error" term, or *random effect*).
+
+
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, out.width=8, results='markup'}
+library(lmerTest)
+fit <- lmer(Subjective_Arousal ~ Emotion_Condition + (1|Participant_ID), data=df)
+anova(fit)
+```
+
+The results are, for the important bits (the sum of squares, mean square and *p* value), almost identical to the *traditional* approach. However, it is much more powerful. 
+
+
+# Post-hoc / Contrast Analysis
+
+
+
+
+
+
+
+
+
+# Credits
+
+This package helped you? Don't forget to cite the various packages you used :)
+
+You can cite `psycho` as follows:
+
+- Makowski, (2018). *The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470

@@ -3,8 +3,10 @@
 #' Select numeric variables and standardize (Z-score, "normalize") them.
 #'
 #' @param df Dataframe.
-#' @param subset Character or list of characters of column names to be standardized.
-#' @param except Character or list of characters of column names to be excluded from standardized.
+#' @param subset Character or list of characters of column names to be
+#' standardized.
+#' @param except Character or list of characters of column names to be excluded
+#' from standardized.
 #'
 #' @return Dataframe.
 #'
@@ -22,9 +24,7 @@
 #' dfZ <- standardize(df, except=c("V1", "V2"))
 #' dfZ <- standardize(df, subset="V3")
 #' dfZ <- standardize(df, subset=c("V1", "V2"))
-#' dfZ <- standardize(df, subset=c("V1", "V2"), except="V3")
 #'
-#' summary(dfZ)
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
