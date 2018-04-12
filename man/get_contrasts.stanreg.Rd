@@ -27,10 +27,10 @@ library(psycho)
 require(rstanarm)
 fit <- rstanarm::stan_glm(Adjusting ~ Birth_Season * Sex, data=affective)
 
-contrasts <- get_contrasts.stanreg(fit, formula="Birth_Season * Sex")
+contrasts <- get_contrasts(fit, formula="Birth_Season * Sex")
 contrasts$means
 
-contrasts <- get_contrasts.stanreg(fit, formula="Birth_Season")
+contrasts <- get_contrasts(fit, formula="Birth_Season")
 contrasts$contrasts
 }
 }

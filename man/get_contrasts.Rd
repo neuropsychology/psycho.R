@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_contrasts.R
 \name{get_contrasts}
 \alias{get_contrasts}
-\title{Compute estimated marginal means and contrasts from models.}
+\title{Get Marginal Means and Contrasts.}
 \usage{
 get_contrasts(fit, ...)
 }
@@ -12,7 +12,14 @@ get_contrasts(fit, ...)
 \item{...}{Arguments passed to or from other methods.}
 }
 \description{
-Compute estimated marginal means and contrasts from models.
+Compute estimated marginal means and contrasts from models. See the
+documentation for your model's class:
+\itemize{
+ \item{\link[=get_contrasts.stanreg]{get_contrasts.stanreg}}
+ \item{\link[=get_contrasts.merModLmerTest]{get_contrasts.merModLmerTest}}
+ \item{\link[=get_contrasts.glmerMod]{get_contrasts.glmerMod}}
+ \item{\link[=get_contrasts.merMod]{get_contrasts.merMod}}
+ }
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

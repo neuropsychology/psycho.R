@@ -12,7 +12,11 @@ get_predicted(fit, ...)
 \item{...}{Arguments passed to or from other methods.}
 }
 \description{
-Compute predicted values from models.
+Compute predicted values from models. See the
+documentation for your model's class:
+\itemize{
+ \item{\link[=get_predicted.stanreg]{get_predicted.stanreg}}
+ }
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

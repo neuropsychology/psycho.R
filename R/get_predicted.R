@@ -1,6 +1,10 @@
 #' Compute predicted values from models.
 #'
-#' Compute predicted values from models.
+#' Compute predicted values from models. See the
+#' documentation for your model's class:
+#' \itemize{
+#'  \item{\link[=get_predicted.stanreg]{get_predicted.stanreg}}
+#'  }
 #'
 #' @param fit Model.
 #' @param ... Arguments passed to or from other methods.
