@@ -4,8 +4,7 @@ test_that("If it works.", {
   # Fit
   require(lmerTest)
 
-  df <- psycho::affective
-  fit <- lmerTest::lmer(Adjusting ~ Birth_Season + (1 | Salary), data = affective)
+  fit <- lmerTest::lmer(Adjusting ~ Birth_Season + (1 | Salary), data = psycho::affective)
 
   contrasts <- psycho::get_contrasts(fit, formula = "Birth_Season")
   means <- contrasts$means

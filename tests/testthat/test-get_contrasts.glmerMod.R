@@ -4,8 +4,7 @@ test_that("If it works.", {
   # Fit
   require(lme4)
 
-  df <- psycho::affective
-  fit <- lme4::glmer(Sex ~ Birth_Season + (1 | Salary), data = affective, family = "binomial")
+  fit <- lme4::glmer(Sex ~ Birth_Season + (1 | Salary), data = psycho::affective, family = "binomial")
 
   contrasts <- psycho::get_contrasts(fit, formula = "Birth_Season")
   means <- contrasts$means
