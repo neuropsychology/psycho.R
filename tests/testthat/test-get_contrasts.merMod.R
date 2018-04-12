@@ -2,7 +2,7 @@ context("get_contrasts.merMod")
 
 test_that("If it works.", {
   # Fit
-  require(rstanarm)
+  require(lme4)
 
   df <- psycho::affective
   fit <- lme4::lmer(Adjusting ~ Birth_Season + (1 | Salary), data = affective)

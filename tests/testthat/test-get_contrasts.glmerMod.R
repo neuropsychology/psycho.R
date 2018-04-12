@@ -2,7 +2,7 @@ context("get_contrasts.glmerMod")
 
 test_that("If it works.", {
   # Fit
-  require(rstanarm)
+  require(lme4)
 
   df <- psycho::affective
   fit <- lme4::glmer(Sex ~ Birth_Season + (1 | Salary), data = affective, family = "binomial")
