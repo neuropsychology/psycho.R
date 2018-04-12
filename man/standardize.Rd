@@ -9,9 +9,11 @@ standardize(df, subset = NULL, except = NULL)
 \arguments{
 \item{df}{Dataframe.}
 
-\item{subset}{Character or list of characters of column names to be standardized.}
+\item{subset}{Character or list of characters of column names to be
+standardized.}
 
-\item{except}{Character or list of characters of column names to be excluded from standardized.}
+\item{except}{Character or list of characters of column names to be excluded
+from standardized.}
 }
 \value{
 Dataframe.
@@ -33,9 +35,7 @@ dfZ <- standardize(df, except="V3")
 dfZ <- standardize(df, except=c("V1", "V2"))
 dfZ <- standardize(df, subset="V3")
 dfZ <- standardize(df, subset=c("V1", "V2"))
-dfZ <- standardize(df, subset=c("V1", "V2"), except="V3")
 
-summary(dfZ)
 
 }
 \author{

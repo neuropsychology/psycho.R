@@ -1,4 +1,4 @@
-context("get_contrasts.glmerMod")
+context("get_contrasts.merModLmerTest")
 
 test_that("If it works.", {
   # Fit

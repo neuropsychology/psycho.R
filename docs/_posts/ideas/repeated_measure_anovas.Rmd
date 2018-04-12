@@ -152,13 +152,20 @@ ggplot(results$means, aes(x=Emotion_Condition, y=Mean, color=Participant_Sex, gr
   xlab("Emotion Condition") +
   theme_bw()
 ```
+
+Let's investigate the contrasts:
+
 ```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, include=FALSE, results='markup'}
-results <- get_contrasts(fit, "Emotion_Condition * Participant_Sex")
 print(results$contrasts)
 ```
 ```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
 knitr::kable(results$contrasts, digits=2)
 ```
+
+
+# Note
+
+**This analysis is even simpler in the Bayesian framework. See [this](DUPA) tutorial.**
 
 
 # Credits
