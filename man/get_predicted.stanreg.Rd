@@ -4,8 +4,8 @@
 \alias{get_predicted.stanreg}
 \title{Compute predicted values of stanreg models.}
 \usage{
-\method{get_predicted}{stanreg}(fit, refgrid = NULL, posterior_predict = F,
-  prob = 0.9, draws = 1000, precision = 10, ...)
+\method{get_predicted}{stanreg}(fit, refgrid = NULL,
+  posterior_predict = FALSE, prob = 0.9, ...)
 }
 \arguments{
 \item{fit}{A stanreg model.}
@@ -16,10 +16,6 @@
 
 \item{prob}{Probability of credible intervals (0.9 (default) will compute
 5-95\% CI).}
-
-\item{draws}{Precision of the estimate.}
-
-\item{precision}{Precision of the new dataframe to be generated.}
 
 \item{...}{Arguments passed to or from other methods.}
 }
@@ -33,9 +29,22 @@ Compute predicted from a stanreg model.
 \dontrun{
 library(psycho)
 require(rstanarm)
-fit <- rstanarm::stan_glm(vs ~ mpg * cyl, data=mtcars)
 
-predicted <- get_predicted(fit)
+fit <- rstanarm::stan_glm(Tolerating ~ Adjusting, data=affective, iter=500)
+
+refgrid <- emmeans::ref_grid(fit, at=list(
+    Adjusting=seq(min(affective$Adjusting), max(affective$Adjusting), length.out=2)))
+
+predicted <- get_predicted(fit, refgrid)
+
+
+fit <- rstanarm::stan_glm(Sex ~ Adjusting, data=affective, family="binomial", iter=500)
+
+refgrid <- emmeans::ref_grid(fit, at=list(
+    Adjusting=seq(min(affective$Adjusting), max(affective$Adjusting), length.out=5)))
+
+predicted <- get_predicted(fit, refgrid, posterior_predict=FALSE)
+
 }
 }
 \author{

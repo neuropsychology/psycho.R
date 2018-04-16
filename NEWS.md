@@ -5,7 +5,7 @@
 - Added `subset` parameter in `standardize`
 - Changed order of parameters in `dprime`
 ### New functions / parameters
-- Added0`emotion` dataset
+- Added `emotion` dataset
 - Added get_contrasts methods for lme4 objects
 - Added prior info in `analyze.stanreg`
 - Added (exposed) `interpret_d_posterior` for Bayesian size effect interpretation

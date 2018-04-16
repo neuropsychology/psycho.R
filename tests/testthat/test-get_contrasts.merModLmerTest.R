@@ -1,8 +1,8 @@
 context("get_contrasts.merModLmerTest")
 
 test_that("If it works.", {
-  # # Fit
-  # library(psycho)
+  # Fit
+  library(psycho)
   # require(lmerTest)
   #
   # fit <- lmerTest::lmer(Adjusting ~ Birth_Season + (1 | Salary), data = psycho::affective)

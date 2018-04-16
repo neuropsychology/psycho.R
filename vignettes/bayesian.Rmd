@@ -208,8 +208,8 @@ Our refgrid is made of equally spaced (balanced) predictor values. It also inclu
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA}
 ggplot(predicted, aes(x=Tolerating, y=pred_Life_Satisfaction)) +
   geom_line() +
-  geom_ribbon(aes(ymin=`pred_Life_Satisfaction_5%`, 
-                  ymax=`pred_Life_Satisfaction_95%`), 
+  geom_ribbon(aes(ymin=pred_Life_Satisfaction_5, 
+                  ymax=pred_Life_Satisfaction_95), 
               alpha=0.1)
 
 ```
@@ -322,8 +322,8 @@ However, as the predicted values is expressed in log odds, it's better to conver
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 predicted$pred_Sex_proba <- psycho::odds_to_probs(predicted$pred_Sex)
-predicted$`pred_Sex_5%_proba` <- psycho::odds_to_probs(predicted$`pred_Sex_5%`)
-predicted$`pred_Sex_95%_proba` <- psycho::odds_to_probs(predicted$`pred_Sex_95%`)
+predicted$pred_Sex_5_proba <- psycho::odds_to_probs(predicted$pred_Sex_5)
+predicted$pred_Sex_95_proba <- psycho::odds_to_probs(predicted$pred_Sex_95)
 ```
 
 Now we can plot it.
@@ -331,8 +331,8 @@ Now we can plot it.
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA}
 ggplot(predicted, aes(x=Adjusting, y=pred_Sex_proba)) +
   geom_line() +
-  geom_ribbon(aes(ymin=`pred_Sex_5%_proba`, 
-                  ymax=`pred_Sex_95%_proba`), 
+  geom_ribbon(aes(ymin=pred_Sex_5_proba, 
+                  ymax=pred_Sex_95_proba), 
               alpha=0.1) +
   ylab("Probability of being a male")
 ```
@@ -388,8 +388,8 @@ As we can see, the reference grid is balanced in terms of factors and numeric pr
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA}
 ggplot(predicted, aes(x=Concealing, y=pred_Life_Satisfaction, colour=Sex, fill=Sex)) +
   geom_line() +
-  geom_ribbon(aes(ymin=`pred_Life_Satisfaction_5%`, 
-                  ymax=`pred_Life_Satisfaction_95%`), 
+  geom_ribbon(aes(ymin=pred_Life_Satisfaction_5, 
+                  ymax=pred_Life_Satisfaction_95), 
               alpha=0.1)
 ```
 
@@ -405,8 +405,8 @@ predicted <- psycho::get_predicted(fit, refgrid=ref_grid)
 
 ggplot(predicted, aes(x=Concealing, y=pred_Life_Satisfaction)) +
   geom_line(aes(colour=Sex), size=2) +
-  geom_ribbon(aes(ymin=`pred_Life_Satisfaction_5%`, 
-                  ymax=`pred_Life_Satisfaction_95%`,
+  geom_ribbon(aes(ymin=pred_Life_Satisfaction_5, 
+                  ymax=pred_Life_Satisfaction_95,
                   fill=Sex), 
               alpha=0.2) +
   ylab("Life Satisfaction")
@@ -461,8 +461,8 @@ predicted_linear <- psycho::get_predicted(fit, refgrid=ref_grid)
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA}
 ggplot(predicted_linear, aes(x=Age, y=pred_Concealing)) +
   geom_line() +
-  geom_ribbon(aes(ymin=`pred_Concealing_5%`, 
-                  ymax=`pred_Concealing_95%`), 
+  geom_ribbon(aes(ymin=pred_Concealing_5, 
+                  ymax=pred_Concealing_95), 
               alpha=0.1)
 ```
 
@@ -506,8 +506,8 @@ predicted_poly <- psycho::get_predicted(fit, refgrid=ref_grid)
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA}
 ggplot(predicted_poly, aes(x=Age, y=pred_Concealing)) +
   geom_line() +
-  geom_ribbon(aes(ymin=`pred_Concealing_5%`, 
-                  ymax=`pred_Concealing_95%`), 
+  geom_ribbon(aes(ymin=pred_Concealing_5, 
+                  ymax=pred_Concealing_95), 
               alpha=0.1)
 ```
 
@@ -522,8 +522,8 @@ p <- ggplot() +
             size=1) +
   geom_ribbon(data=predicted_linear, 
               aes(x=Age,
-                  ymin=`pred_Concealing_5%`,
-                  ymax=`pred_Concealing_95%`), 
+                  ymin=pred_Concealing_5,
+                  ymax=pred_Concealing_95), 
               alpha=0.1,
               fill="blue") +
   # Polynormial Model
@@ -533,8 +533,8 @@ p <- ggplot() +
             size=1) +
   geom_ribbon(data=predicted_poly, 
               aes(x=Age,
-                  ymin=`pred_Concealing_5%`, 
-                  ymax=`pred_Concealing_95%`), 
+                  ymin=pred_Concealing_5, 
+                  ymax=pred_Concealing_95), 
               fill="red",
               alpha=0.1) +
   # Actual data
@@ -551,7 +551,7 @@ But which one, between these two models, is "objectively" better?
 
 ## Model Comparison and Selection
 
-It is often interesting to know which model better fits the data. The frequentist approach provides several indices of goodness of fit (AIC, BIC, ...), for which the Bayesian framework has equivalents. These are obtained through **Leave-one-out cross-validation (LOO)** and are called **ELPD** (*expected log predictive density*) and **LOOIC** (*LOO information criterion*). The best model is the one with  the largest ELPD (smallest LOOIC). See the [official rstanarm documentation](https://CRAN.R-project.org/package=rstanarm/vignettes/rstanarm.html#step-3-criticize-the-model) as well as the [loo package](https://CRAN.R-project.org/package=loo/vignettes/loo-example.html) for details.
+It is often interesting to know which model better fits the data. The frequentist approach provides several indices of goodness of fit (AIC, BIC, ...), for which the Bayesian framework has equivalents. These are obtained through **Leave-one-out cross-validation (LOO)** and are called **ELPD** (*expected log predictive density*) and **LOOIC** (*LOO information criterion*). The best model is the one with  the largest ELPD (smallest LOOIC). See the [official rstanarm documentation](https://CRAN.R-project.org/package=rstanarm/vignettes/rstanarm.html#step-3-criticize-the-model) as well as the [loo package](https://CRAN.R-project.org/package=loo/vignettes/loo2-example.html) for details.
 
 ```{r message=FALSE, warning=FALSE, include=FALSE, results="hide"}
 # Fit the models
@@ -560,9 +560,9 @@ fit_linear <- rstanarm::stan_glm(Concealing ~ Age, data=df, cores=1, chains=1, s
 fit_poly <- rstanarm::stan_glm(Concealing ~ poly(Age, 2, raw=TRUE), data=df, cores=1, chains=1, seed=666)
 
 # Compute the LOO validation
-loo_intercept_only <- rstanarm::loo(fit_intercept_only, cores=1, chains=1, seed=666)
-loo_linear <- rstanarm::loo(fit_linear, cores=1, chains=1, seed=666)
-loo_poly <- rstanarm::loo(fit_poly, cores=1, chains=1, seed=666)
+loo_intercept_only <- rstanarm::loo(fit_intercept_only, cores=1)
+loo_linear <- rstanarm::loo(fit_linear, cores=1)
+loo_poly <- rstanarm::loo(fit_poly, cores=1)
 
 # Compare the models
 comparison <- rstanarm::compare_models(loo_intercept_only, 
@@ -576,7 +576,7 @@ fit_intercept_only <- rstanarm::stan_glm(Concealing ~ 1, data=df)
 fit_linear <- rstanarm::stan_glm(Concealing ~ Age, data=df)
 fit_poly <- rstanarm::stan_glm(Concealing ~ poly(Age, 2, raw=TRUE), data=df)
 
-# Compute the LOO validation
+# Compute the LOO cross-validation
 loo_intercept_only <- rstanarm::loo(fit_intercept_only)
 loo_linear <- rstanarm::loo(fit_linear)
 loo_poly <- rstanarm::loo(fit_poly)

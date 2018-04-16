@@ -326,7 +326,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
     )
   }
 
-  if (effsize == T) {
+  if (effsize == TRUE) {
     EffSizes <- data.frame()
     for (varname in varnames_for_summary) {
       Current <- data.frame(
