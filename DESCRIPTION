@@ -42,7 +42,7 @@ Imports:
     qgraph,
     ppcor,
     ggcorrplot,
-    rstanarm,
+    rstanarm (>= 2.17.4),
     MuMIn,
     lmerTest,
     coda,
@@ -54,5 +54,6 @@ Suggests:
     testthat,
     covr,
     lme4,
-    plotly
+    plotly,
+    loo (>= 2.0.0),
 VignetteBuilder: knitr
