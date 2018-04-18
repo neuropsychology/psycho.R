@@ -420,20 +420,20 @@ summary(fit)
 As the output is a bit messy, the `analyze()` function will munge this into something nicely formatted.
 
 ```{r, message=FALSE, results="hide"}
-results <- psycho::analyze(fit)
+analyzed <- psycho::analyze(fit)
 
 # We can extract a formatted summary table
-summary(results, round = 2)
+summary(analyzed, round = 2)
 ```
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-knitr::kable(summary(results, round = 2))
+knitr::kable(summary(analyzed, round = 2))
 ```
 
 
 We can also print it in a text format!
 
 ```{r, results='markup', comment=NA}
-print(results)
+print(analyzed)
 ```
 
 
@@ -447,21 +447,21 @@ library(rstanarm)
 fit <- rstanarm::stan_lmer(Subjective_Arousal ~ Emotion_Condition + (1|Participant_ID) + (1|Item_Name), data = df)
 
 # Traditional output
-results <- psycho::analyze(fit, effsize = TRUE)
-summary(results, round = 2)
+analyzed <- psycho::analyze(fit, effsize = TRUE)
+summary(analyzed, round = 2)
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-kable(summary(results, round = 2))
+kable(summary(analyzed, round = 2))
 ```
 
 ```{r, results='markup', comment=NA}
-print(results)
+print(analyzed)
 ```
 
 We can also plot the effects:
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center'}
-plot(results)
+plot(analyzed)
 ```
 
 Obviously, you need to learn more about Bayesian analyses before running them. You can find more information in the rstanarm's [vignettes](https://CRAN.R-project.org/package=rstanarm/vignettes/rstanarm.html).
