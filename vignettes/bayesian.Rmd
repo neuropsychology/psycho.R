@@ -547,51 +547,51 @@ ggplotly(p) # To transform a ggplot into an interactive plot
 
 **It's good to take a few steps back and look at the bigger picture :)**
 
-But which one, between these two models, is "objectively" better?
+<!-- But which one, between these two models, is "objectively" better? -->
 
-## Model Comparison and Selection
+<!-- ## Model Comparison and Selection -->
 
-It is often interesting to know which model better fits the data. The frequentist approach provides several indices of goodness of fit (AIC, BIC, ...), for which the Bayesian framework has equivalents. These are obtained through **Leave-one-out cross-validation (LOO)** and are called **ELPD** (*expected log predictive density*) and **LOOIC** (*LOO information criterion*). The best model is the one with  the largest ELPD (smallest LOOIC). See the [official rstanarm documentation](https://CRAN.R-project.org/package=rstanarm/vignettes/rstanarm.html#step-3-criticize-the-model) as well as the [loo package](https://CRAN.R-project.org/package=loo/vignettes/loo2-example.html) for details.
+<!-- It is often interesting to know which model better fits the data. The frequentist approach provides several indices of goodness of fit (AIC, BIC, ...), for which the Bayesian framework has equivalents. These are obtained through **Leave-one-out cross-validation (LOO)** and are called **ELPD** (*expected log predictive density*) and **LOOIC** (*LOO information criterion*). The best model is the one with  the largest ELPD (smallest LOOIC). See the [official rstanarm documentation](https://CRAN.R-project.org/package=rstanarm/vignettes/rstanarm.html#step-3-criticize-the-model) as well as the [loo package](https://CRAN.R-project.org/package=loo/vignettes/loo2-example.html) for details. -->
 
-```{r message=FALSE, warning=FALSE, include=FALSE, results="hide"}
-# Fit the models
-fit_intercept_only <- rstanarm::stan_glm(Concealing ~ 1, data=df, cores=1, chains=1, seed=666)
-fit_linear <- rstanarm::stan_glm(Concealing ~ Age, data=df, cores=1, chains=1, seed=666)
-fit_poly <- rstanarm::stan_glm(Concealing ~ poly(Age, 2, raw=TRUE), data=df, cores=1, chains=1, seed=666)
+<!-- ```{r message=FALSE, warning=FALSE, include=FALSE, results="hide"} -->
+<!-- # Fit the models -->
+<!-- fit_intercept_only <- rstanarm::stan_glm(Concealing ~ 1, data=df, cores=1, chains=1, seed=666) -->
+<!-- fit_linear <- rstanarm::stan_glm(Concealing ~ Age, data=df, cores=1, chains=1, seed=666) -->
+<!-- fit_poly <- rstanarm::stan_glm(Concealing ~ poly(Age, 2, raw=TRUE), data=df, cores=1, chains=1, seed=666) -->
 
-# Compute the LOO validation
-loo_intercept_only <- rstanarm::loo(fit_intercept_only, cores=1)
-loo_linear <- rstanarm::loo(fit_linear, cores=1)
-loo_poly <- rstanarm::loo(fit_poly, cores=1)
+<!-- # Compute the LOO validation -->
+<!-- loo_intercept_only <- rstanarm::loo(fit_intercept_only, cores=1) -->
+<!-- loo_linear <- rstanarm::loo(fit_linear, cores=1) -->
+<!-- loo_poly <- rstanarm::loo(fit_poly, cores=1) -->
 
-# Compare the models
-comparison <- rstanarm::compare_models(loo_intercept_only, 
-                                       loo_linear, 
-                                       loo_poly)
-print(comparison)
-```
-```{r, message=FALSE, results="hide", eval=FALSE, warning=FALSE}
-# Fit the models
-fit_intercept_only <- rstanarm::stan_glm(Concealing ~ 1, data=df)
-fit_linear <- rstanarm::stan_glm(Concealing ~ Age, data=df)
-fit_poly <- rstanarm::stan_glm(Concealing ~ poly(Age, 2, raw=TRUE), data=df)
+<!-- # Compare the models -->
+<!-- comparison <- rstanarm::compare_models(loo_intercept_only,  -->
+<!--                                        loo_linear,  -->
+<!--                                        loo_poly) -->
+<!-- print(comparison) -->
+<!-- ``` -->
+<!-- ```{r, message=FALSE, results="hide", eval=FALSE, warning=FALSE} -->
+<!-- # Fit the models -->
+<!-- fit_intercept_only <- rstanarm::stan_glm(Concealing ~ 1, data=df) -->
+<!-- fit_linear <- rstanarm::stan_glm(Concealing ~ Age, data=df) -->
+<!-- fit_poly <- rstanarm::stan_glm(Concealing ~ poly(Age, 2, raw=TRUE), data=df) -->
 
-# Compute the LOO cross-validation
-loo_intercept_only <- rstanarm::loo(fit_intercept_only)
-loo_linear <- rstanarm::loo(fit_linear)
-loo_poly <- rstanarm::loo(fit_poly)
+<!-- # Compute the LOO cross-validation -->
+<!-- loo_intercept_only <- rstanarm::loo(fit_intercept_only) -->
+<!-- loo_linear <- rstanarm::loo(fit_linear) -->
+<!-- loo_poly <- rstanarm::loo(fit_poly) -->
 
-# Compare the models
-comparison <- rstanarm::compare_models(loo_intercept_only, 
-                                       loo_linear, 
-                                       loo_poly)
-print(comparison)
-```
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-kable(comparison, digits=1)
-```
+<!-- # Compare the models -->
+<!-- comparison <- rstanarm::compare_models(loo_intercept_only,  -->
+<!--                                        loo_linear,  -->
+<!--                                        loo_poly) -->
+<!-- print(comparison) -->
+<!-- ``` -->
+<!-- ```{r echo=FALSE, message=FALSE, warning=FALSE} -->
+<!-- kable(comparison, digits=1) -->
+<!-- ``` -->
 
-As we can see, the best model (largest ELPD and smallest LOOIC) is the polynomial model, followed by the linear model. The worst model appears to be the constant (intercept-only) model.
+<!-- As we can see, the best model (largest ELPD and smallest LOOIC) is the polynomial model, followed by the linear model. The worst model appears to be the constant (intercept-only) model. -->
 
 
 
