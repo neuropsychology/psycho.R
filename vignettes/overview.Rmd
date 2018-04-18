@@ -426,7 +426,7 @@ results <- psycho::analyze(fit)
 summary(results, round = 2)
 ```
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-kable(summary(results, round = 2))
+knitr::kable(summary(results, round = 2))
 ```
 
 

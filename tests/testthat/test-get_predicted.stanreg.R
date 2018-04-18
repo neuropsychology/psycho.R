@@ -11,9 +11,9 @@ test_that("If it works.", {
     family = binomial(link = "logit"),
     seed = 666
   )
-  data <- get_predicted(fit, posterior_predict = T)
-  r <- as.numeric(cor.test(data$vs, data$pred_vs)$estimate)
-  testthat::expect_equal(r, 0.6, tolerance = 0.2)
+  data <- get_predicted(fit)
+  r <- as.numeric(cor.test(data$vs, data$vs_Median)$estimate)
+  testthat::expect_equal(r, 0.68, tolerance = 0.2)
 
 
 
@@ -23,8 +23,8 @@ test_that("If it works.", {
     data = mtcars,
     seed = 666
   )
-  data <- get_predicted(fit, posterior_predict = T)
-  r <- as.numeric(cor.test(data$cyl, data$pred_cyl)$estimate)
+  data <- get_predicted(fit)
+  r <- as.numeric(cor.test(data$cyl, data$cyl_Median)$estimate)
   testthat::expect_equal(r, 0.85, tolerance = 0.02)
 
 
@@ -35,7 +35,7 @@ test_that("If it works.", {
     seed = 666
   )
   data <- get_predicted(fit, posterior_predict = TRUE)
-  r <- as.numeric(cor.test(data$Sepal.Length, data$pred_Sepal.Length)$estimate)
+  r <- as.numeric(cor.test(data$Sepal.Length, data$Sepal.Length_Median)$estimate)
   testthat::expect_equal(r, 0.84, tolerance = 0.02)
 
 
@@ -50,9 +50,9 @@ test_that("If it works.", {
     )
   ))
 
-  predicted <- psycho::get_predicted(fit, refgrid = ref_grid)
-  testthat::expect_equal(mean(predicted$pred_Life_Satisfaction), 4.77, tolerance = 0.05)
+  predicted <- psycho::get_predicted(fit, newdata = ref_grid)
+  testthat::expect_equal(mean(predicted$Life_Satisfaction_Median), 4.77, tolerance = 0.05)
 
-  predicted <- psycho::get_predicted(fit, refgrid = ref_grid, keep_iterations=TRUE)
+  predicted <- psycho::get_predicted(fit, newdata = ref_grid, keep_iterations=TRUE)
   testthat::expect_equal(length(predicted), 4004)
 })

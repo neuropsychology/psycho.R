@@ -1,4 +1,4 @@
-context("standardize")
+context("is.standardized")
 
 test_that("Correct Value", {
   df <- psycho::affective

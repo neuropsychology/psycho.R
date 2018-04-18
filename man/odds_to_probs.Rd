@@ -4,15 +4,27 @@
 \alias{odds_to_probs}
 \title{Convert (log)odds to probabilies.}
 \usage{
-odds_to_probs(odds, log = TRUE)
+odds_to_probs(odds, subset = NULL, except = NULL, log = TRUE)
 }
 \arguments{
-\item{odds}{Odds value(s).}
+\item{odds}{Odds values in vector or dataframe.}
+
+\item{subset}{Character or list of characters of column names to be
+transformed.}
+
+\item{except}{Character or list of characters of column names to be excluded
+from transformation.}
 
 \item{log}{Are these Log odds (such as in logistic models)?}
 }
 \description{
 Convert (log)odds to probabilies.
+}
+\examples{
+library(psycho)
+odds_to_probs(-1.45)
+
+
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

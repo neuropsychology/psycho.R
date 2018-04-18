@@ -47,7 +47,8 @@ Imports:
     lmerTest,
     coda,
     emmeans,
-    broom
+    broom,
+    tibble
 Suggests:
     knitr,
     rmarkdown,

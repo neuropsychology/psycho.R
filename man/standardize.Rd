@@ -13,7 +13,7 @@ standardize(df, subset = NULL, except = NULL)
 standardized.}
 
 \item{except}{Character or list of characters of column names to be excluded
-from standardized.}
+from standardization.}
 }
 \value{
 Dataframe.

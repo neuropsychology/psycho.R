@@ -1,10 +1,13 @@
 # Current Dev
 
 ### Breaking changes
+- Refactored get_predicted.stanreg
 - Changed organization of `values` in analyzed models
 - Added `subset` parameter in `standardize`
 - Changed order of parameters in `dprime`
 ### New functions / parameters
+- Refactored `odds_to_probs`
+- Added ìs.mixed.stanreg`
 - Added `keep_iterations` in `get_predicted.stanreg` (and demonstration of how to plot them in vignettes)
 - Added `emotion` dataset
 - Added get_contrasts methods for lme4 objects

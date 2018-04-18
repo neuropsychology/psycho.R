@@ -6,7 +6,7 @@
 #' @param subset Character or list of characters of column names to be
 #' standardized.
 #' @param except Character or list of characters of column names to be excluded
-#' from standardized.
+#' from standardization.
 #'
 #' @return Dataframe.
 #'
@@ -29,7 +29,7 @@
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #'
-#' @import purrr
+#' @importFrom purrr keep discard
 #' @import dplyr
 #' @export
 standardize <- function(df, subset=NULL, except=NULL) {

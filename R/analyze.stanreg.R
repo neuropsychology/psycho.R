@@ -87,14 +87,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
 
 
   # Random effect info --------------------------------------------
-  mixed <- tryCatch({
-    broom::tidy(fit, parameters = "varying")
-    TRUE
-  }, error = function(e) {
-    FALSE
-  })
-
-  if (mixed == TRUE) {
+  if (is.mixed(fit)) {
     random_info <- broom::tidy(fit, parameters = "varying") %>%
       dplyr::rename_(
         "Median" = "estimate",
