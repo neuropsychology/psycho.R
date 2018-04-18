@@ -34,7 +34,7 @@ test_that("If it works.", {
     data = iris,
     seed = 666
   )
-  data <- get_predicted(fit, posterior_predict = T)
+  data <- get_predicted(fit, posterior_predict = TRUE)
   r <- as.numeric(cor.test(data$Sepal.Length, data$pred_Sepal.Length)$estimate)
   testthat::expect_equal(r, 0.84, tolerance = 0.02)
 
@@ -52,4 +52,7 @@ test_that("If it works.", {
 
   predicted <- psycho::get_predicted(fit, refgrid = ref_grid)
   testthat::expect_equal(mean(predicted$pred_Life_Satisfaction), 4.77, tolerance = 0.05)
+
+  predicted <- psycho::get_predicted(fit, refgrid = ref_grid, keep_iterations=TRUE)
+  testthat::expect_equal(length(predicted), 4004)
 })

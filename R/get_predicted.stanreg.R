@@ -7,6 +7,8 @@
 #' @param posterior_predict Should the prediction be based on the posterior draws or not.
 #' @param prob Probability of credible intervals (0.9 (default) will compute
 #' 5-95\% CI).
+#' @param keep_iterations Keep all prediction iterations.
+#' @param draws An integer indicating the number of draws to return. The default and maximum number of draws is the size of the posterior sample.
 #' @param ... Arguments passed to or from other methods.
 #'
 #'
@@ -41,7 +43,7 @@
 #' @importFrom stats median family
 #'
 #' @export
-get_predicted.stanreg <- function(fit, refgrid=NULL, posterior_predict=FALSE, prob=0.9, ...) {
+get_predicted.stanreg <- function(fit, refgrid=NULL, posterior_predict=FALSE, prob=0.9, keep_iterations=FALSE, draws=NULL, ...) {
 
   # Info
   data <- fit$data
@@ -117,10 +119,17 @@ get_predicted.stanreg <- function(fit, refgrid=NULL, posterior_predict=FALSE, pr
       names(pred_y_proba) <- paste0("pred_", outcome, "_probability")
       pred_y <- cbind(pred_y, pred_y_proba)
     }
+
   }
 
 
+  # Keep iterations ---------------------------------------------------------
 
+  if(keep_iterations == TRUE){
+    iterations <- as.data.frame(t(as.matrix(rstanarm::posterior_predict(fit, newdata = newdata, draws=draws))))
+    names(iterations) <- paste0("iter_", 1:length(names(iterations)))
+    pred_y <- cbind(pred_y, iterations)
+  }
 
 # Add predictors ----------------------------------------------------------
 
@@ -130,6 +139,8 @@ get_predicted.stanreg <- function(fit, refgrid=NULL, posterior_predict=FALSE, pr
     predicted <- cbind(newdata, pred_y)
     predicted[".wgt."] <- NULL
   }
+
+
 
 
   return(predicted)

@@ -5,7 +5,8 @@
 \title{Compute predicted values of stanreg models.}
 \usage{
 \method{get_predicted}{stanreg}(fit, refgrid = NULL,
-  posterior_predict = FALSE, prob = 0.9, ...)
+  posterior_predict = FALSE, prob = 0.9, keep_iterations = FALSE,
+  draws = NULL, ...)
 }
 \arguments{
 \item{fit}{A stanreg model.}
@@ -16,6 +17,10 @@
 
 \item{prob}{Probability of credible intervals (0.9 (default) will compute
 5-95\% CI).}
+
+\item{keep_iterations}{Keep all prediction iterations.}
+
+\item{draws}{An integer indicating the number of draws to return. The default and maximum number of draws is the size of the posterior sample.}
 
 \item{...}{Arguments passed to or from other methods.}
 }

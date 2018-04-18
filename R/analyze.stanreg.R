@@ -361,7 +361,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
     fit$family$link,
     ") model to predict ",
     outcome,
-    " (formula = ", format(fit$formula),
+    " (formula = ", paste0(format(fit$formula), collapse=""),
     ").",
     info_effsize,
     " Priors were set as follows: "

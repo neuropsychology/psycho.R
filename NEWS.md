@@ -5,6 +5,7 @@
 - Added `subset` parameter in `standardize`
 - Changed order of parameters in `dprime`
 ### New functions / parameters
+- Added `keep_iterations` in `get_predicted.stanreg` (and demonstration of how to plot them in vignettes)
 - Added `emotion` dataset
 - Added get_contrasts methods for lme4 objects
 - Added prior info in `analyze.stanreg`

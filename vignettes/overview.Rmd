@@ -368,20 +368,13 @@ This is possibly the most important function of the `psycho` package. Its goal i
 
 ### Data Creation
 
-Let's start by creating a dataframe similar to those found in psychological science.
+Let's start by selecting a dataframe similar to those found in psychological science, included in the `psycho` package.
 
 ```{r, results='hide'}
-df <- data.frame(
-  Participant = as.factor(rep(1:25, each = 4)),
-  Item = rep_len(c("i1", "i2", "i3", "i4"), 100),
-  Condition = rep_len(c("A", "B", "A", "B", "B"), 20),
-  Error = as.factor(sample(c(0, 1), 100, replace = T)),
-  RT = rnorm(100, 30, .2),
-  Stress = runif(100, 3, 5)
-)
+df <- psycho::emotion
 
-# Standardize the numeric variables.
-df <- psycho::standardize(df)
+# Stabdardize the outcome
+df$Subjective_Arousal <- psycho::standardize(df$Subjective_Arousal)
 
 # Take a look  at the first 10 rows
 head(df)
@@ -391,34 +384,34 @@ head(df)
 kable(head(df))
 ```
 
-This dataframe contains the data of 25 participants (labelled from 1 to 25). Each saw 4 different items (i1-i4) in two conditions (A and B). We measured, for each item, if the response was correct or not (Error), its reaction time (RT) and the stress associated with the trial.
+This dataframe contains the data of 19 participants. Each participant underwent 48 trials (therefore, there are 48 lines per participant), consisting in viewing negative and neutral pictures. We measured, for each item, the emotional arousal felt by the participant.
 
 ### Ancient Approach
 
-In order to investigate the effect of the condition on the reaction time RT, the traditional, ancient and obsolete routine is 1) to compute the mean for each participant, and 2) run an ANOVA.
+In order to investigate the effect of the emotional condition on the subjective arousal, the traditional, ancient and obsolete routine is 1) to compute the mean for each participant, and 2) run an ANOVA.
 
 ```{r message=FALSE, warning=FALSE, results='markup', comment=NA}
 # Format data
 df_for_anova <- df %>%
-  dplyr::group_by(Participant, Condition) %>%
-  dplyr::summarise(RT = mean(RT))
+  dplyr::group_by(Participant_ID, Emotion_Condition) %>%
+  dplyr::summarise(Subjective_Arousal = mean(Subjective_Arousal))
 
 # Run the anova
-anova <- aov(RT ~ Condition + Error(Participant), df_for_anova)
+anova <- aov(Subjective_Arousal ~ Emotion_Condition + Error(Participant_ID), df_for_anova)
 summary(anova)
 ```
 
-As we can see, the effect of the condition is not significant (unsuprisingly, as data was generated randomly). One of the many flaws of this approach is that we lose information about intra-individual and item-related variability.
+As we can see, the effect of the condition is significant. One of the many flaws of this approach is that we lose information about intra-individual and item-related variability.
 
 
 ### Mixed Linear Regressions (lme4, lmerTest)
 
-The use of the mixed-modelling framework allows us to add the items as random factors.
+The use of the mixed-modelling framework allows us to add the items as random factors to account for the variance they induce.
 
 ```{r fig.align='center', message=FALSE, warning=FALSE, val=TRUE, results='markup', comment=NA}
 library(lme4)
 
-fit <- lme4::lmer(RT ~ Condition + (1 | Participant) + (1 | Item), data = df)
+fit <- lme4::lmer(Subjective_Arousal ~ Emotion_Condition + (1|Participant_ID) + (1|Item_Name), data = df)
 
 # Traditional output
 summary(fit)
@@ -446,12 +439,12 @@ print(results)
 
 ### Bayesian Mixed Linear Regressions (rstanarm)
 
-However, as the frequentist framework is criticized, it is advised to switch to the Bayesian framework. Unfortunately, interpretation of these models remain unfamiliar to regular psychologists. But stay calm, because `analyze()` handles this for you. 
+However, as the frequentist framework is criticized, it is advised to switch to the Bayesian framework. Unfortunately, interpretation of these models remain unfamiliar to regular psychologists. But don't worry, because `analyze()` handles this for you. 
 
 ```{r fig.align='center', message=FALSE, warning=FALSE, val=TRUE, results='hide'}
 library(rstanarm)
 
-fit <- rstanarm::stan_lmer(RT ~ Condition + (1 | Participant) + (1 | Item), data = df)
+fit <- rstanarm::stan_lmer(Subjective_Arousal ~ Emotion_Condition + (1|Participant_ID) + (1|Item_Name), data = df)
 
 # Traditional output
 results <- psycho::analyze(fit, effsize = TRUE)

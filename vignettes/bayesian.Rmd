@@ -13,6 +13,7 @@ vignette: >
   %\VignetteIndexEntry{BayesianPsychology}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteDepends{dplyr}
+  %\VignetteDepends{tidyr}
   %\VignetteDepends{ggplot2}
   %\VignetteDepends{plotly}
   \usepackage[utf8]{inputenc}
@@ -27,6 +28,7 @@ library(knitr)
 library(rstanarm)
 library(emmeans)
 library(dplyr)
+library(tidyr)
 library(ggplot2)
 library(psycho)
 options(mc.cores=1)
@@ -211,9 +213,30 @@ ggplot(predicted, aes(x=Tolerating, y=pred_Life_Satisfaction)) +
   geom_ribbon(aes(ymin=pred_Life_Satisfaction_5, 
                   ymax=pred_Life_Satisfaction_95), 
               alpha=0.1)
-
 ```
 
+### Visualize all iterations
+
+As Bayesian models usually generate a lot of samples (*iterations*), one could want to plot them as well, instead (or along) the posterior "summary". This can be done quite easily by extracting all the iterations in `get_predicted`.
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+# Generate a new refgrid with fewer observations
+ref_grid <- emmeans::ref_grid(fit, at = list(
+  Tolerating = seq(2)))  
+
+# Get predictions and keep iterations
+predicted <- psycho::get_predicted(fit, refgrid=ref_grid, posterior_predict=FALSE, keep_iterations=TRUE)
+
+# Reshape this dataframe to have iterations as factor
+predicted <- predicted %>% 
+  tidyr::gather(Iteration, Iteration_Value, starts_with("iter"))
+
+# Plot iterations as well as the median prediction
+ggplot(predicted, aes(x=Tolerating)) +
+  geom_line(aes(y=Iteration_Value, group=Iteration), size=0.3, alpha=0.02) +
+  geom_line(aes(y=pred_Life_Satisfaction), size=2) + 
+  ylab("Life Satisfaction")
+```
 
 ## Regression with Categorical Predictor (*ANOVA*)
 
@@ -382,7 +405,7 @@ predicted
 kable(predicted)
 ```
 
-As we can see, the reference grid is balanced in terms of factors and numeric predictors. Now, to plot this becomes very easy !
+As we can see, the reference grid is balanced in terms of factors and numeric predictors. Now, to plot this becomes very easy!
 
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA}
@@ -411,6 +434,9 @@ ggplot(predicted, aes(x=Concealing, y=pred_Life_Satisfaction)) +
               alpha=0.2) +
   ylab("Life Satisfaction")
 ```
+
+
+
 
 
 

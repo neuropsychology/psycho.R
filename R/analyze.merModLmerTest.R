@@ -131,7 +131,7 @@ analyze.merModLmerTest <- function(x, ...) {
     "The overall model predicting ",
     outcome,
     " (formula = ",
-    format(fit@call$formula),
+    paste0(format(fit@call$formula), collapse=""),
     ") successfully converged",
     " and explained ",
     format_digit(R2c * 100, 2),
