@@ -49,7 +49,7 @@ analyze.merModLmerTest <- function(x, ...) {
 
   # Summary
   # -------------
-  fitsum <- data.frame(lmerTest::summary(fit)$coefficients)
+  fitsum <- data.frame(summary(fit)$coefficients)
 
   fitsum$Variable <- rownames(fitsum)
   fitsum$Coef <- fitsum$Estimate
