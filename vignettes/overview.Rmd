@@ -409,9 +409,9 @@ As we can see, the effect of the condition is significant. One of the many flaws
 The use of the mixed-modelling framework allows us to add the items as random factors to account for the variance they induce.
 
 ```{r fig.align='center', message=FALSE, warning=FALSE, val=TRUE, results='markup', comment=NA}
-library(lme4)
+library(lmerTest)
 
-fit <- lme4::lmer(Subjective_Arousal ~ Emotion_Condition + (1|Participant_ID) + (1|Item_Name), data = df)
+fit <- lmerTest::lmer(Subjective_Arousal ~ Emotion_Condition + (1|Participant_ID) + (1|Item_Name), data = df)
 
 # Traditional output
 summary(fit)
