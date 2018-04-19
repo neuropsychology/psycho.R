@@ -26,7 +26,7 @@
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @method get_contrasts lmerModLmerTest
-#' @import coda
+#' @import dplyr
 #' @importFrom emmeans emmeans
 #' @importFrom graphics pairs
 #' @importFrom stats confint mad
@@ -40,7 +40,7 @@ get_contrasts.lmerModLmerTest <- function(fit, formula, adjust="tukey", ...) {
   means <- fit %>%
     emmeans::emmeans(formula) %>%
     as.data.frame() %>%
-    rename_(
+    dplyr::rename_(
       "Mean" = "emmean",
       "CI_lower" = "lower.CL",
       "CI_higher" = "upper.CL"
@@ -52,7 +52,7 @@ get_contrasts.lmerModLmerTest <- function(fit, formula, adjust="tukey", ...) {
     emmeans::emmeans(formula) %>%
     graphics::pairs(adjust = adjust) %>%
     as.data.frame() %>%
-    rename_(
+    dplyr::rename_(
       "Contrast" = "contrast",
       "Difference" = "estimate"
     )
