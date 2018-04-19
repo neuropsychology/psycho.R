@@ -1,6 +1,7 @@
 # Current Dev
 
 ### Breaking changes
+- Remove support of lmerMod objects (linear mixed models must be fitted with lmerTest)
 - Refactored get_predicted.stanreg
 - Changed organization of `values` in analyzed models
 - Added `subset` parameter in `standardize`

@@ -1,6 +1,6 @@
-#' Compute estimated marginal means and contrasts from merModLmerTest models.
+#' Compute estimated marginal means and contrasts from lmerModLmerTest models.
 #'
-#' Compute estimated marginal means and contrasts from a merModLmerTest models.
+#' Compute estimated marginal means and contrasts from a lmerModLmerTest models.
 #'
 #' @param fit A merModLmerTest model.
 #' @param formula A character vector (formula like format, i.e., including
@@ -25,14 +25,14 @@
 #' }
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
-#' @method get_contrasts merModLmerTest
+#' @method get_contrasts lmerModLmerTest
 #' @import coda
 #' @importFrom emmeans emmeans
 #' @importFrom graphics pairs
 #' @importFrom stats confint mad
 #'
 #' @export
-get_contrasts.merModLmerTest <- function(fit, formula, adjust="tukey", ...) {
+get_contrasts.lmerModLmerTest <- function(fit, formula, adjust="tukey", ...) {
   formula <- as.formula(paste0("~", formula))
 
 

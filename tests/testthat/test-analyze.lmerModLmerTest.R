@@ -1,12 +1,12 @@
-context("analyze.merMod")
+context("analyze.lmerModLmerTest")
 
 test_that("If it works.", {
   # Fit
-  require(lme4)
+  require(lmerTest)
 
-  x <- lme4::lmer(Sepal.Length ~ Sepal.Width + (1 | Species), data = iris)
+  fit <- lmerTest::lmer(Sepal.Length ~ Sepal.Width + (1 | Species), data = iris)
 
-  model <- psycho::analyze(x)
+  model <- psycho::analyze(fit)
   values <- values(model)
   testthat::expect_equal(
     round(values$effects$Sepal.Width$Coef, 2), 0.8,

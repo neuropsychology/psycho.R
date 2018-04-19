@@ -1,8 +1,8 @@
-#' Analyze merModLmerTest objects.
+#' Analyze lmerModLmerTest objects.
 #'
-#' Analyze merModLmerTest objects.
+#' Analyze lmerModLmerTest objects.
 #'
-#' @param x merModLmerTest object.
+#' @param x lmerModLmerTest object.
 #' @param ... Arguments passed to or from other methods.
 #'
 #' @return output
@@ -23,14 +23,14 @@
 #' @import lmerTest
 #' @import dplyr
 #' @export
-analyze.merModLmerTest <- function(x, ...) {
+analyze.lmerModLmerTest <- function(x, ...) {
 
 
   # Processing
   # -------------
   fit <- x
 
-  predictors <- all.vars(as.formula(fit@call$formula))
+  predictors <- all.vars(as.formula(eval(fit@call$formula)))
   outcome <- predictors[[1]]
   predictors <- tail(predictors, -1)
 
@@ -64,7 +64,7 @@ analyze.merModLmerTest <- function(x, ...) {
   fitsum$SE.std <- stdz$`Std. Error`
   fitsum$Effect_Size <- interpret_d(fitsum$Coef.std)
 
-  fitsum <- select_(
+  fitsum <- dplyr::select_(
     fitsum, "Coef", "SE", "t", "df", "Coef.std", "SE.std",
     "p", "Effect_Size"
   )
@@ -131,7 +131,7 @@ analyze.merModLmerTest <- function(x, ...) {
     "The overall model predicting ",
     outcome,
     " (formula = ",
-    paste0(format(fit@call$formula), collapse=""),
+    paste0(format(eval(fit@call$formula)), collapse=""),
     ") successfully converged",
     " and explained ",
     format_digit(R2c * 100, 2),
