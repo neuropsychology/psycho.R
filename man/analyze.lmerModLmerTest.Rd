@@ -4,10 +4,12 @@
 \alias{analyze.lmerModLmerTest}
 \title{Analyze lmerModLmerTest objects.}
 \usage{
-\method{analyze}{lmerModLmerTest}(x, ...)
+\method{analyze}{lmerModLmerTest}(x, CI = 95, ...)
 }
 \arguments{
 \item{x}{lmerModLmerTest object.}
+
+\item{CI}{Bootsrapped confidence interval bounds (slow). Set to NULL turn off their computation.}
 
 \item{...}{Arguments passed to or from other methods.}
 }

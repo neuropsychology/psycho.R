@@ -73,7 +73,7 @@ get_predicted.stanreg <- function(fit, newdata="model", prob=0.9, keep_iteration
   # Deal with potential random
   re.form = NULL
   if(!is.null(newdata)){
-    if(newdata != "model" & is.mixed(fit)){
+    if(!is.character(newdata) & is.mixed(fit)){
       re.form = NA
     }
   }
@@ -81,10 +81,12 @@ get_predicted.stanreg <- function(fit, newdata="model", prob=0.9, keep_iteration
   # Set newdata to actual data
   original_data <- FALSE
   if(!is.null(newdata)){
-    if(newdata == "model"){
-      original_data <- TRUE
-      newdata <- fit$data[predictors]
-      newdata <- na.omit(fit$data[predictors])
+    if(is.character(newdata)){
+      if(newdata == "model"){
+        original_data <- TRUE
+        newdata <- fit$data[predictors]
+        newdata <- na.omit(fit$data[predictors])
+      }
     }
   }
 

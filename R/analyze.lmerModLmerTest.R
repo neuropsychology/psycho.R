@@ -3,6 +3,7 @@
 #' Analyze lmerModLmerTest objects.
 #'
 #' @param x lmerModLmerTest object.
+#' @param CI Bootsrapped confidence interval bounds (slow). Set to NULL turn off their computation.
 #' @param ... Arguments passed to or from other methods.
 #'
 #' @return output
@@ -23,7 +24,7 @@
 #' @import lmerTest
 #' @import dplyr
 #' @export
-analyze.lmerModLmerTest <- function(x, ...) {
+analyze.lmerModLmerTest <- function(x, CI=95, ...) {
 
 
   # Processing
@@ -69,6 +70,13 @@ analyze.lmerModLmerTest <- function(x, ...) {
     "p", "Effect_Size"
   )
 
+  if(!is.null(CI)){
+    CI_values <- confint(fit, level=CI/100)
+    CI_values <- tail(CI_values, n=2)
+    fitsum$CI_lower <- CI_values[,1]
+    fitsum$CI_higher <- CI_values[,2]
+  }
+
 
   # Varnames
   varnames <- rownames(fitsum)
@@ -91,6 +99,19 @@ analyze.lmerModLmerTest <- function(x, ...) {
       significance <- "not"
     }
 
+    if(!is.null(CI)){
+      CI_text <- paste0(", ",
+                        CI, "% CI [",
+                        format_digit(fitsum[varname, "CI_lower"], null_treshold = 0.0001),
+                        ", ",
+                        format_digit(fitsum[varname, "CI_higher"], null_treshold = 0.0001),
+                        "])")
+    } else{
+      CI_text <- ""
+    }
+
+
+
     text <- paste0(
       "The effect of ",
       varname,
@@ -98,7 +119,9 @@ analyze.lmerModLmerTest <- function(x, ...) {
       significance,
       " significant (beta = ",
       format_digit(fitsum[varname, "Coef"], 2), ", SE = ",
-      format_digit(fitsum[varname, "SE"], 2), ", t(",
+      format_digit(fitsum[varname, "SE"], 2),
+      CI_text,
+      ", t(",
       format_digit(fitsum[varname, "df"], 2), ") = ",
       format_digit(fitsum[varname, "t"], 2), ", p ",
       format_p(fitsum[varname, "p"]),
@@ -113,6 +136,8 @@ analyze.lmerModLmerTest <- function(x, ...) {
     values$effects[[varname]] <- list(
       Coef = fitsum[varname, "Coef"],
       SE = fitsum[varname, "SE"],
+      CI_lower = fitsum[varname, "CI_lower"],
+      CI_higher = fitsum[varname, "CI_higher"],
       t = fitsum[varname, "t"],
       df = fitsum[varname, "df"],
       Coef.std = fitsum[varname, "Coef.std"],

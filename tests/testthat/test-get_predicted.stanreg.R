@@ -2,6 +2,7 @@ context("get_predicted.stanreg")
 
 test_that("If it works.", {
   # Fit
+  library(psycho)
   require(rstanarm)
 
 
@@ -11,7 +12,7 @@ test_that("If it works.", {
     family = binomial(link = "logit"),
     seed = 666
   )
-  data <- get_predicted(fit)
+  data <- psycho::get_predicted(fit)
   r <- as.numeric(cor.test(data$vs, data$vs_Median)$estimate)
   testthat::expect_equal(r, 0.68, tolerance = 0.2)
 
@@ -23,7 +24,7 @@ test_that("If it works.", {
     data = mtcars,
     seed = 666
   )
-  data <- get_predicted(fit)
+  data <- psycho::get_predicted(fit)
   r <- as.numeric(cor.test(data$cyl, data$cyl_Median)$estimate)
   testthat::expect_equal(r, 0.85, tolerance = 0.02)
 
@@ -34,7 +35,7 @@ test_that("If it works.", {
     data = iris,
     seed = 666
   )
-  data <- get_predicted(fit, posterior_predict = TRUE)
+  data <- psycho::get_predicted(fit, posterior_predict = TRUE)
   r <- as.numeric(cor.test(data$Sepal.Length, data$Sepal.Length_Median)$estimate)
   testthat::expect_equal(r, 0.84, tolerance = 0.02)
 

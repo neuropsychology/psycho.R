@@ -7,6 +7,7 @@
 - Added `subset` parameter in `standardize`
 - Changed order of parameters in `dprime`
 ### New functions / parameters
+- Added confidence intervals (CI) to analyze for lmerTest models
 - Refactored `odds_to_probs`
 - Added ìs.mixed.stanreg`
 - Added `keep_iterations` in `get_predicted.stanreg` (and demonstration of how to plot them in vignettes)
