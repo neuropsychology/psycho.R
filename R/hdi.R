@@ -6,6 +6,8 @@
 #' @param prob Scalar between 0 and 1, indicating the mass within the credible interval that is to be estimated.
 #'
 #' @examples
+#' library(psycho)
+#'
 #' distribution <- rnorm(1000, 0, 1)
 #' hdi_values <- hdi(distribution)
 #' print(hdi_values)

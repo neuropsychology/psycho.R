@@ -15,6 +15,8 @@ hdi(x, prob = 0.95)
 Compute the Highest Density Intervals (HDI) of a distribution.
 }
 \examples{
+library(psycho)
+
 distribution <- rnorm(1000, 0, 1)
 hdi_values <- hdi(distribution)
 print(hdi_values)

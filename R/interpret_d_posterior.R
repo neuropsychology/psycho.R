@@ -87,7 +87,7 @@ interpret_d_posterior <- function(posterior) {
   }
 
   EffSize_text <- paste0(
-    "   - There is a probability of ",
+    "    - There is a probability of ",
     format_digit(verylarge * 100),
     "% that this effect size is very large, ",
     format_digit(large * 100),

@@ -4,7 +4,8 @@
 \alias{analyze.stanreg}
 \title{Analyze stanreg objects.}
 \usage{
-\method{analyze}{stanreg}(x, CI = 90, effsize = FALSE, ...)
+\method{analyze}{stanreg}(x, CI = 90, effsize = FALSE,
+  bayes_factor = FALSE, ...)
 }
 \arguments{
 \item{x}{A stanreg model.}
@@ -12,6 +13,8 @@
 \item{CI}{Credible interval bounds.}
 
 \item{effsize}{Compute Effect Sizes according to Cohen (1988)? Your outcome variable must be standardized.}
+
+\item{bayes_factor}{Compute a Bayesian t-test to quantify the probability that each effect is different from 0.}
 
 \item{...}{Arguments passed to or from other methods.}
 }
@@ -29,7 +32,7 @@ library(rstanarm)
 data <- standardize(attitude)
 fit <- rstanarm::stan_glm(rating ~ advance + privileges, data=data)
 
-results <- analyze(fit, effsize=TRUE)
+results <- analyze(fit, effsize=TRUE, bayes_factor=TRUE)
 summary(results)
 plot(results)
 print(results)

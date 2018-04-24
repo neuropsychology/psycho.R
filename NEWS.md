@@ -7,6 +7,9 @@
 - Added `subset` parameter in `standardize`
 - Changed order of parameters in `dprime`
 ### New functions / parameters
+- Added `Bayes Factor` (experimental) parameter to analyze.stanreg as a different index of effect existence
+- Added `interpret_bf` for bayes factor interpretation
+- Added `probs_to_odds`
 - Added confidence intervals (CI) to analyze for lmerTest models
 - Refactored `odds_to_probs`
 - Added ìs.mixed.stanreg`

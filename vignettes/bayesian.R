@@ -84,7 +84,6 @@ ref_grid <- emmeans::ref_grid(fit, at = list(
                               
 predicted <- psycho::get_predicted(fit, newdata=ref_grid)
 
-
 ## ----echo=T, message=FALSE, warning=FALSE, results='hide'----------------
 predicted
 

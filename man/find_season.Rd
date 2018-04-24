@@ -16,6 +16,8 @@ season
 Returns the season of an array of dates.
 }
 \examples{
+library(psycho)
+
 dates <- c("2017-02-15", "2017-05-15", "2017-08-15", "2017-11-15")
 find_season(dates)
 

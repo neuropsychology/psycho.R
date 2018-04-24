@@ -5,6 +5,7 @@
 #' @param x A stanreg model.
 #' @param CI Credible interval bounds.
 #' @param effsize Compute Effect Sizes according to Cohen (1988)? Your outcome variable must be standardized.
+#' @param bayes_factor Compute a Bayesian t-test to quantify the probability that each effect is different from 0.
 #' @param ... Arguments passed to or from other methods.
 #'
 #' @return output
@@ -17,7 +18,7 @@
 #' data <- standardize(attitude)
 #' fit <- rstanarm::stan_glm(rating ~ advance + privileges, data=data)
 #'
-#' results <- analyze(fit, effsize=TRUE)
+#' results <- analyze(fit, effsize=TRUE, bayes_factor=TRUE)
 #' summary(results)
 #' plot(results)
 #' print(results)
@@ -36,8 +37,9 @@
 #' @importFrom stats quantile as.formula
 #' @importFrom utils head tail
 #' @importFrom broom tidy
+#' @importFrom BayesFactor ttestBF
 #' @export
-analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
+analyze.stanreg <- function(x, CI=90, effsize=FALSE, bayes_factor=FALSE, ...) {
   fit <- x
 
   # Info --------------------------------------------------------------------
@@ -176,7 +178,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
       }
 
       text <- paste0(
-        "   - The ", name, " has a probability of ",
+        "  - The ", name, " has a probability of ",
         format_digit(MPE), "% that its coefficient is between ",
         format_digit(MPE_values[1], null_treshold = 0.0001), " and ",
         format_digit(MPE_values[2], null_treshold = 0.0001),
@@ -293,6 +295,35 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
     }
   }
 
+  # Bayes Factors ------------------------------------------------------------
+  # -------------------------------------------------------------------------
+  if (bayes_factor == TRUE) {
+    for (varname in varnames) {
+
+      bf <- suppressMessages(BayesFactor::ttestBF(posteriors[, varname], mu=0))
+      bf <- bf@bayesFactor$bf
+      bf_intepretation <- interpret_bf(bf, label_only=TRUE)
+      if(bf >= 1){
+        bf_direction <- "alternative"
+      } else{
+        bf_direction <- "null"
+      }
+
+      bf_text <- paste0("    - The estimated Bayes factor suggested that the data were ",
+                        format_digit(bf),
+                        " (",
+                        bf_intepretation,
+                        ") times more likely to occur under the ",
+                        bf_direction,
+                        " hypothesis.")
+
+      values$effects[[varname]]$bayes_factor <- bf
+      values$effects[[varname]]$bayes_factor_interpretation <- bf_intepretation
+      values$effects[[varname]]$bayes_factor_text <- bf_text
+    }
+
+  }
+
 
   # Summary --------------------------------------------------------------------
   # ----------------------------------------------------------------------------
@@ -335,16 +366,27 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
     summary <- cbind(summary, EffSizes)
   }
 
-
+  if (bayes_factor == TRUE) {
+    summary$Bayes_Factor <- NA
+    for (varname in varnames_for_summary) {
+      summary[summary$Variable == varname, ]$Bayes_Factor <- values$effects[[varname]]$bayes_factor
+    }
+  }
 
   # Text --------------------------------------------------------------------
   # -------------------------------------------------------------------------
 
   # Model
-  if (effsize) {
+  if (effsize==TRUE) {
     info_effsize <- " Effect sizes are based on Cohen (1988) recommandations."
   } else {
     info_effsize <- ""
+  }
+
+  if (bayes_factor==TRUE) {
+    info_bf <- " Additionally, Bayesian JZS t-tests (with prior scaling factor r = 0.707; Rouder, 2015) were performed to quantify how much more likely the effects are under the alternative (effect existence) versus the null hypothesis. The Bayes factors labelling was done following Jeffreys (1961)."
+  } else {
+    info_bf <- ""
   }
 
   info <- paste0(
@@ -357,7 +399,8 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
     " (formula = ", paste0(format(fit$formula), collapse=""),
     ").",
     info_effsize,
-    " Priors were set as follows: "
+    info_bf,
+    " The model's priors were set as follows: "
   )
 
   # Priors
@@ -389,7 +432,15 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
     coefs_text <- c(coefs_text, values$effects[[varname]]$text)
     if (effsize == TRUE) {
       if (!varname %in% c("(Intercept)", "R2")) {
-        coefs_text <- c(coefs_text, values$effects[[varname]]$EffSize_text, "")
+        coefs_text <- c(coefs_text, values$effects[[varname]]$EffSize_text)
+        if (bayes_factor == FALSE) {
+          coefs_text <- c(coefs_text, "")
+        }
+      }
+    }
+    if (bayes_factor == TRUE) {
+      if (!varname %in% c("(Intercept)", "R2")) {
+        coefs_text <- c(coefs_text, values$effects[[varname]]$bayes_factor_text, "")
       }
     }
   }

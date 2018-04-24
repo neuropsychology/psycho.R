@@ -2,7 +2,7 @@
 #'
 #' @param x Cohen's d value of standardized coefficient.
 #'
-#' @return The interpretation according to Cohen (1988)
+#' @return The interpretation according to Cohen (1988).
 #'
 #' @examples
 #' library(psycho)

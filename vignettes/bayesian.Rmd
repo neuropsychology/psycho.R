@@ -193,7 +193,6 @@ ref_grid <- emmeans::ref_grid(fit, at = list(
                    length.out = 10)))
                               
 predicted <- psycho::get_predicted(fit, newdata=ref_grid)
-
 ```
 ```{r echo=T, message=FALSE, warning=FALSE, results='hide'}
 predicted
