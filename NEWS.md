@@ -7,6 +7,8 @@
 - Added `subset` parameter in `standardize`
 - Changed order of parameters in `dprime`
 ### New functions / parameters
+- Added `power_analysis` function.
+- Added `analyze.lm` for lm objects.
 - Added `Bayes Factor` (experimental) parameter to analyze.stanreg as a different index of effect existence
 - Added `interpret_bf` for bayes factor interpretation
 - Added `probs_to_odds`

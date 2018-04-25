@@ -1,17 +1,16 @@
-#' Analyze lmerModLmerTest objects.
+#' Analyze lm objects.
 #'
-#' Analyze lmerModLmerTest objects.
+#' Analyze lm objects.
 #'
-#' @param x lmerModLmerTest object.
-#' @param CI Bootsrapped confidence interval bounds (slow). Set to NULL turn off their computation.
+#' @param x lm object.
+#' @param CI Confidence interval bounds. Set to NULL turn off their computation.
 #' @param ... Arguments passed to or from other methods.
 #'
 #' @return output
 #'
 #' @examples
 #' library(psycho)
-#' require(lmerTest)
-#' fit <- lmerTest::lmer(Sepal.Length ~ Sepal.Width + (1|Species), data=iris)
+#' fit <- lm(Sepal.Length ~ Sepal.Width, data=iris)
 #'
 #' results <- analyze(fit)
 #' summary(results)
@@ -19,34 +18,22 @@
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
-#' @importFrom MuMIn r.squaredGLMM
-#' @importFrom MuMIn std.coef
-#' @import lmerTest
 #' @import dplyr
+#' @importFrom stats formula
 #' @export
-analyze.lmerModLmerTest <- function(x, CI=95, ...) {
+analyze.lm <- function(x, CI=95, ...) {
 
 
   # Processing
   # -------------
   fit <- x
 
-  predictors <- all.vars(as.formula(eval(fit@call$formula)))
+  predictors <- all.vars(stats::formula(fit))
   outcome <- predictors[[1]]
   predictors <- tail(predictors, -1)
 
-  R2m <- MuMIn::r.squaredGLMM(fit)["R2m"]
-  R2c <- MuMIn::r.squaredGLMM(fit)["R2c"]
-
-
-  # TODO: Bootstrapped p values
-  # boot.out = lme4::bootMer(fit, lme4::fixef, nsim=1000) #nsim determines p-value decimal places
-  # p = rbind(
-  #   (1-apply(boot.out$t<0, 2, mean))*2,
-  #   (1-apply(boot.out$t>0, 2, mean))*2)
-  # p = apply(p, 2, min)
-
-
+  R2 <- summary(fit)$r.squared
+  R2adj <- summary(fit)$adj.r.squared
 
   # Summary
   # -------------
@@ -55,7 +42,6 @@ analyze.lmerModLmerTest <- function(x, CI=95, ...) {
   fitsum$Variable <- rownames(fitsum)
   fitsum$Coef <- fitsum$Estimate
   fitsum$SE <- fitsum$`Std..Error`
-  fitsum$df <- as.numeric(fitsum$df)
   fitsum$t <- fitsum$`t.value`
   fitsum$p <- fitsum$`Pr...t..`
 
@@ -66,7 +52,7 @@ analyze.lmerModLmerTest <- function(x, CI=95, ...) {
   fitsum$Effect_Size <- interpret_d(fitsum$Coef.std)
 
   fitsum <- dplyr::select_(
-    fitsum, "Variable", "Coef", "SE", "t", "df", "Coef.std", "SE.std",
+    fitsum, "Variable", "Coef", "SE", "t","Coef.std", "SE.std",
     "p", "Effect_Size"
   )
 
@@ -87,8 +73,8 @@ analyze.lmerModLmerTest <- function(x, CI=95, ...) {
   # -------------
   # Initialize empty values
   values <- list(model = list(), effects = list())
-  values$model$R2m <- R2m
-  values$model$R2c <- R2c
+  values$model$R2 <- R2
+  values$model$R2adj <- R2adj
 
 
   # Loop over all variables
@@ -121,8 +107,7 @@ analyze.lmerModLmerTest <- function(x, CI=95, ...) {
       format_digit(fitsum[varname, "Coef"], 2), ", SE = ",
       format_digit(fitsum[varname, "SE"], 2),
       CI_text,
-      ", t(",
-      format_digit(fitsum[varname, "df"], 2), ") = ",
+      ", t = ",
       format_digit(fitsum[varname, "t"], 2), ", p ",
       format_p(fitsum[varname, "p"]),
       ") and can be considered as ",
@@ -139,7 +124,6 @@ analyze.lmerModLmerTest <- function(x, CI=95, ...) {
       CI_lower = fitsum[varname, "CI_lower"],
       CI_higher = fitsum[varname, "CI_higher"],
       t = fitsum[varname, "t"],
-      df = fitsum[varname, "df"],
       Coef.std = fitsum[varname, "Coef.std"],
       SE.std = fitsum[varname, "SE.std"],
       p = fitsum[varname, "p"],
@@ -156,16 +140,13 @@ analyze.lmerModLmerTest <- function(x, CI=95, ...) {
     "The overall model predicting ",
     outcome,
     " (formula = ",
-    paste0(format(eval(fit@call$formula)), collapse=""),
+    paste0(format(stats::formula(fit)), collapse=""),
     ") successfully converged",
     " and explained ",
-    format_digit(R2c * 100, 2),
-    "% of the variance of the endogen (the conditional R2). ",
-    "The variance explained by the fixed effects was of ",
-    format_digit(R2m * 100, 2),
-    "% (the marginal R2) and the one explained by the random",
-    " effects of ",
-    format_digit((R2c - R2m) * 100, 2), "%. Within this model:"
+    format_digit(R2 * 100, 2),
+    "% of the variance of the endogen (adjusted R2 = ",
+    format_digit(R2adj * 100, 2),
+    "). Within this model:"
   ))
 
   for (varname in varnames) {
