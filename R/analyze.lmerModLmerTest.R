@@ -60,7 +60,7 @@ analyze.lmerModLmerTest <- function(x, CI=95, ...) {
   fitsum$p <- fitsum$`Pr...t..`
 
   # standardized coefficients
-  stdz <- as.data.frame(MuMIn::std.coef(fit, partial.sd=FALSE))
+  stdz <- as.data.frame(MuMIn::std.coef(fit, partial.sd = FALSE))
   fitsum$Coef.std <- stdz$Estimate
   fitsum$SE.std <- stdz$`Std. Error`
   fitsum$Effect_Size <- interpret_d(fitsum$Coef.std)
@@ -70,11 +70,11 @@ analyze.lmerModLmerTest <- function(x, CI=95, ...) {
     "p", "Effect_Size"
   )
 
-  if(!is.null(CI)){
-    CI_values <- confint(fit, level=CI/100)
-    CI_values <- tail(CI_values, n=2)
-    fitsum$CI_lower <- CI_values[,1]
-    fitsum$CI_higher <- CI_values[,2]
+  if (!is.null(CI)) {
+    CI_values <- suppressMessages(confint(fit, level = CI / 100))
+    CI_values <- tail(CI_values, n = 2)
+    fitsum$CI_lower <- CI_values[, 1]
+    fitsum$CI_higher <- CI_values[, 2]
   }
 
 
@@ -99,14 +99,16 @@ analyze.lmerModLmerTest <- function(x, CI=95, ...) {
       significance <- "not"
     }
 
-    if(!is.null(CI)){
-      CI_text <- paste0(", ",
-                        CI, "% CI [",
-                        format_digit(fitsum[varname, "CI_lower"], null_treshold = 0.0001),
-                        ", ",
-                        format_digit(fitsum[varname, "CI_higher"], null_treshold = 0.0001),
-                        "])")
-    } else{
+    if (!is.null(CI)) {
+      CI_text <- paste0(
+        ", ",
+        CI, "% CI [",
+        format_digit(fitsum[varname, "CI_lower"], null_treshold = 0.0001),
+        ", ",
+        format_digit(fitsum[varname, "CI_higher"], null_treshold = 0.0001),
+        "]"
+      )
+    } else {
       CI_text <- ""
     }
 
@@ -133,6 +135,17 @@ analyze.lmerModLmerTest <- function(x, CI=95, ...) {
       format_digit(fitsum[varname, "SE.std"], 2), ")."
     )
 
+    if (varname == "(Intercept)") {
+      text <- paste0(
+        "The model's intercept is at ",
+        format_digit(fitsum[varname, "Coef"], 2),
+        " (SE = ",
+        format_digit(fitsum[varname, "SE"], 2),
+        CI_text,
+        "). Within this model:"
+      )
+    }
+
     values$effects[[varname]] <- list(
       Coef = fitsum[varname, "Coef"],
       SE = fitsum[varname, "SE"],
@@ -156,7 +169,7 @@ analyze.lmerModLmerTest <- function(x, CI=95, ...) {
     "The overall model predicting ",
     outcome,
     " (formula = ",
-    paste0(format(eval(fit@call$formula)), collapse=""),
+    paste0(format(eval(fit@call$formula)), collapse = ""),
     ") successfully converged",
     " and explained ",
     format_digit(R2c * 100, 2),
@@ -165,11 +178,14 @@ analyze.lmerModLmerTest <- function(x, CI=95, ...) {
     format_digit(R2m * 100, 2),
     "% (the marginal R2) and the one explained by the random",
     " effects of ",
-    format_digit((R2c - R2m) * 100, 2), "%. Within this model:"
+    format_digit((R2c - R2m) * 100, 2), "%. ",
+    values$effects[["(Intercept)"]]$Text
   ))
 
   for (varname in varnames) {
-    text <- c(text, paste("   -", values$effects[[varname]]$Text))
+    if (varname != "(Intercept)") {
+      text <- c(text, paste("   -", values$effects[[varname]]$Text))
+    }
   }
 
 

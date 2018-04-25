@@ -15,7 +15,6 @@
 #' @examples
 #' \dontrun{
 #' library(dplyr)
-#' library(ggplot2)
 #' library(psycho)
 #'
 #' fit <- lm(Sepal.Length ~ Sepal.Width, data=iris)
@@ -27,12 +26,7 @@
 #'   select(n, p) %>%
 #'   group_by(n) %>%
 #'   summarise(p_median = median(p),
-#'             p_mad = mad(p)) %>%
-#'   ggplot(aes(x=n, y=p_median)) +
-#'   geom_hline(aes(yintercept=0.05), color="red", linetype="dashed") +
-#'    geom_line() +
-#'    geom_ribbon(aes(ymin=p_median-p_mad, ymax=p_median+p_mad), alpha=0.2) +
-#'    geom_smooth(method="lm", formula = y ~ poly(x, 2))
+#'             p_mad = mad(p))
 #'  }
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
@@ -40,39 +34,38 @@
 #' @importFrom stats model.frame
 #' @import dplyr
 #' @export
-power_analysis <- function(fit, n_max, n_min=NULL, step=1, n_batch=1, groups=NULL, verbose=TRUE){
+power_analysis <- function(fit, n_max, n_min=NULL, step=1, n_batch=1, groups=NULL, verbose=TRUE) {
 
   # Parameters
   df <- model.frame(fit)
 
-  if(is.null(n_min)){
+  if (is.null(n_min)) {
     n_min <- nrow(df)
   }
 
 
   results <- data.frame()
-  for(n in seq(n_min, n_max, step)){
-
-    for(batch in 1:n_batch){
+  for (n in seq(n_min, n_max, step)) {
+    for (batch in 1:n_batch) {
 
       # Progress
-      if(verbose==TRUE){
+      if (verbose == TRUE) {
         cat(".")
       }
 
 
       # Sample data.frame
-      if(!is.null(groups)){
+      if (!is.null(groups)) {
         newdf <- df %>%
           group_by_(groups) %>%
-          dplyr::sample_frac(n/nrow(df), replace=TRUE)
-      }else{
-        newdf <- dplyr::sample_frac(df, n/nrow(df), replace=TRUE)
+          dplyr::sample_frac(n / nrow(df), replace = TRUE)
+      } else {
+        newdf <- dplyr::sample_frac(df, n / nrow(df), replace = TRUE)
       }
 
       # Fit new model
-      newfit <- update(fit, data=newdf)
-      newfit <- analyze(newfit, CI=90)
+      newfit <- update(fit, data = newdf)
+      newfit <- analyze(newfit, CI = 90)
 
       # Store results
       newresults <- summary(newfit)
@@ -82,13 +75,10 @@ power_analysis <- function(fit, n_max, n_min=NULL, step=1, n_batch=1, groups=NUL
     }
 
     # Progress
-    if(verbose==TRUE){
-      n_iterations <- (n_max-n_min)*n_batch
-      cat(paste0(format_digit(round((n-n_min)/(n_max-n_min)*100)), "%\n"))
+    if (verbose == TRUE) {
+      n_iterations <- (n_max - n_min) * n_batch
+      cat(paste0(format_digit(round((n - n_min) / (n_max - n_min) * 100)), "%\n"))
     }
-
-
   }
   return(results)
 }
-

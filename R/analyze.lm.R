@@ -46,21 +46,21 @@ analyze.lm <- function(x, CI=95, ...) {
   fitsum$p <- fitsum$`Pr...t..`
 
   # standardized coefficients
-  stdz <- as.data.frame(MuMIn::std.coef(fit, partial.sd=FALSE))
+  stdz <- as.data.frame(MuMIn::std.coef(fit, partial.sd = FALSE))
   fitsum$Coef.std <- stdz$Estimate
   fitsum$SE.std <- stdz$`Std. Error`
   fitsum$Effect_Size <- interpret_d(fitsum$Coef.std)
 
   fitsum <- dplyr::select_(
-    fitsum, "Variable", "Coef", "SE", "t","Coef.std", "SE.std",
+    fitsum, "Variable", "Coef", "SE", "t", "Coef.std", "SE.std",
     "p", "Effect_Size"
   )
 
-  if(!is.null(CI)){
-    CI_values <- confint(fit, level=CI/100)
-    CI_values <- tail(CI_values, n=2)
-    fitsum$CI_lower <- CI_values[,1]
-    fitsum$CI_higher <- CI_values[,2]
+  if (!is.null(CI)) {
+    CI_values <- confint(fit, level = CI / 100)
+    CI_values <- tail(CI_values, n = 2)
+    fitsum$CI_lower <- CI_values[, 1]
+    fitsum$CI_higher <- CI_values[, 2]
   }
 
 
@@ -85,14 +85,16 @@ analyze.lm <- function(x, CI=95, ...) {
       significance <- "not"
     }
 
-    if(!is.null(CI)){
-      CI_text <- paste0(", ",
-                        CI, "% CI [",
-                        format_digit(fitsum[varname, "CI_lower"], null_treshold = 0.0001),
-                        ", ",
-                        format_digit(fitsum[varname, "CI_higher"], null_treshold = 0.0001),
-                        "])")
-    } else{
+    if (!is.null(CI)) {
+      CI_text <- paste0(
+        ", ",
+        CI, "% CI [",
+        format_digit(fitsum[varname, "CI_lower"], null_treshold = 0.0001),
+        ", ",
+        format_digit(fitsum[varname, "CI_higher"], null_treshold = 0.0001),
+        "]"
+      )
+    } else {
       CI_text <- ""
     }
 
@@ -118,6 +120,17 @@ analyze.lm <- function(x, CI=95, ...) {
       format_digit(fitsum[varname, "SE.std"], 2), ")."
     )
 
+    if (varname == "(Intercept)") {
+      text <- paste0(
+        "The model's intercept is at ",
+        format_digit(fitsum[varname, "Coef"], 2),
+        " (SE = ",
+        format_digit(fitsum[varname, "SE"], 2),
+        CI_text,
+        "). Within this model:"
+      )
+    }
+
     values$effects[[varname]] <- list(
       Coef = fitsum[varname, "Coef"],
       SE = fitsum[varname, "SE"],
@@ -140,17 +153,20 @@ analyze.lm <- function(x, CI=95, ...) {
     "The overall model predicting ",
     outcome,
     " (formula = ",
-    paste0(format(stats::formula(fit)), collapse=""),
+    paste0(format(stats::formula(fit)), collapse = ""),
     ") successfully converged",
     " and explained ",
     format_digit(R2 * 100, 2),
     "% of the variance of the endogen (adjusted R2 = ",
     format_digit(R2adj * 100, 2),
-    "). Within this model:"
+    "). ",
+    values$effects[["(Intercept)"]]$Text
   ))
 
   for (varname in varnames) {
-    text <- c(text, paste("   -", values$effects[[varname]]$Text))
+    if (varname != "(Intercept)") {
+      text <- c(text, paste("   -", values$effects[[varname]]$Text))
+    }
   }
 
 

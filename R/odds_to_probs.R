@@ -20,8 +20,8 @@ odds_to_probs <- function(odds, subset=NULL, except=NULL, log=TRUE) {
 
   # If vector
   if (ncol(as.matrix(odds)) == 1) {
-    return(.odds_to_probs(odds, log=log))
-  } else{
+    return(.odds_to_probs(odds, log = log))
+  } else {
     df <- odds
   }
 
@@ -52,7 +52,7 @@ odds_to_probs <- function(odds, subset=NULL, except=NULL, log=TRUE) {
   dfnum <- purrr::keep(df, is.numeric)
 
   # Tranform
-  dfnum <- .odds_to_probs(dfnum, log=log)
+  dfnum <- .odds_to_probs(dfnum, log = log)
 
   # Add non-numerics
   if (is.null(ncol(dfother))) {
@@ -74,10 +74,10 @@ odds_to_probs <- function(odds, subset=NULL, except=NULL, log=TRUE) {
 
 
 #' @keywords internal
-.odds_to_probs <- function(odds, log=TRUE){
+.odds_to_probs <- function(odds, log=TRUE) {
   if (log == TRUE) {
     odds <- exp(odds)
   }
   probs <- odds / (1 + odds)
-return(probs)
+  return(probs)
 }

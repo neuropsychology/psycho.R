@@ -31,7 +31,6 @@ Compute the n models based on n sampling of data.
 \examples{
 \dontrun{
 library(dplyr)
-library(ggplot2)
 library(psycho)
 
 fit <- lm(Sepal.Length ~ Sepal.Width, data=iris)
@@ -43,12 +42,7 @@ results \%>\%
   select(n, p) \%>\%
   group_by(n) \%>\%
   summarise(p_median = median(p),
-            p_mad = mad(p)) \%>\%
-  ggplot(aes(x=n, y=p_median)) +
-  geom_hline(aes(yintercept=0.05), color="red", linetype="dashed") +
-   geom_line() +
-   geom_ribbon(aes(ymin=p_median-p_mad, ymax=p_median+p_mad), alpha=0.2) +
-   geom_smooth(method="lm", formula = y ~ poly(x, 2))
+            p_mad = mad(p))
  }
 
 }

@@ -13,10 +13,10 @@
 #'
 #' @export
 interpret_bf <- function(x, label_only=FALSE) {
-  if (x < 1){
-    x <- 1/x
+  if (x < 1) {
+    x <- 1 / x
     direction <- "against"
-  } else{
+  } else {
     direction <- "in favor of"
   }
 
@@ -30,7 +30,7 @@ interpret_bf <- function(x, label_only=FALSE) {
     )
   )
 
-  if (label_only == FALSE){
+  if (label_only == FALSE) {
     interpretation <- paste(interpretation, direction)
   }
   return(interpretation)

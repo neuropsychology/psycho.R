@@ -1,6 +1,9 @@
 language: r
 sudo: false
 
+r_build_args: '--no-build-vignettes'
+r_check_args: '--ignore-vignettes'
+
 
 # Using the package cache to store R package dependencies can significantly
 # speed up build times and is recommended for most builds.

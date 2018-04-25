@@ -1,25 +1,24 @@
 ---
-title: "How to do Repeated Measures ANOVA in R"
-layout: post
-output:
-  md_document:
-    variant: markdown_github
+title: "Bayesian and Frequentist Power Analysis"
 author: "Dominique Makowski"
 date: "`r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+  md_document:
+    toc: yes
+    variant: markdown_github
+  pdf_document:
+    toc: yes
 tags:
 - r
 - psychology
 - neuroscience
 - neuropsychology
-- repeated measures ANOVA
-- rmANOVA
-- ANOVAs
-- Analysis of Variance
-- mixed models
-- contrasts
-- posthoc analysis
-- posthoc tests
-- multiple comparisons
+- power analysis
+- poweranalysis
+layout: post
 ---
 
 
@@ -27,145 +26,132 @@ tags:
 library(knitr)
 ```
 
-# Don't do it
 
-**Ha! Got ya!** Trying to run some *old school* ANOVAs *mmh*? **I'll show you even better!**
 
-There is now a tremendous amount of data showing the inadequacy of ANOVAs as a statistical procedure ([Camilli, 1987](http://journals.sagepub.com/doi/abs/10.3102/10769986012001087); [Levy, 1978](https://www.tandfonline.com/doi/abs/10.1080/00949657808810247); [Vasey, 1987](https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1469-8986.1987.tb00324.x); [Chang, 2009](https://link.springer.com/article/10.1007/s00180-009-0162-z); ...). Instead, many papers suggest moving toward the mixed-modelling framework ([Kristensen, 2004](https://www.physiology.org/doi/abs/10.1152/advan.00042.2003); [Jaeger, 2008](https://www.sciencedirect.com/science/article/pii/S0749596X07001337)), which was shown to be more flexible, accurate, powerful and suited for psychological data.
+# The data
 
-Using this framework, we will see how, very simply, we can answer our questions with R.
+Let's start by saying you did a pilot study. However, you'd like to know how many participants you should include in your final study to avoid a type II error (false negative, concluding to an absence of effect when in fact the effect exist).
 
-# The Emotion Dataset
+An an example, let's say we are interested in the amount of memories (the *autobiographical link*) associated with negative and neutral pictures. More specifically, we are interested to see if this **autobiographical link is related to the age of the participants**. Let's start by generating the correct dataframe.
 
-Let's take the example dataset included in the `psycho` package.
 
-```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='hide'}
+library(dplyr)
+library(ggplot2)
 library(psycho)
-library(tidyverse)
 
 df <- psycho::emotion %>% 
-  select(Participant_ID, 
-         Participant_Sex, 
-         Emotion_Condition, 
-         Subjective_Valence,
-         Recall)
+  group_by(Participant_ID) %>% 
+  select_if(is.numeric) %>% 
+  summarise_all(mean)
 
-summary(df)
+head(df)
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE, results='markup'}
+knitr::kable(head(df))
 ```
 
-Our dataframe (called `df`) contains data from several subjects, to which we presented neutral and negative pictures (the `Emotion_Condition` column). Each row corresponds here to a single trial, and there were 48 trials per participants. As such, there are 48 rows by participant. During each trial, the participant had to rate its emotional valence (positive - negative) experienced during the picture presentation. Moreover, 20min after this emotional rating task, the participant was asked to freely recall all the pictures he remembered.
-
-Our dataframe contains, for each trial, 5 variables: the name of the participant (`Participant_ID`), its sex (`Participant_Sex`), the emotion condition (`Emotion_Condition`), the valence rating (`Subjective_Valence`) and whether the participant recalled the picture (`Recall`).
-
-# The Effect of Emotion
-
-Does the emotion condition modulate the subjective valence? How to answer?
-
-**Whith a repeated measures ANOVA of course!**
-
-Let's run it:
-
-```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
-summary(aov(Subjective_Valence ~ Emotion_Condition + Error(Participant_ID/Emotion_Condition), data=df))
-```
-
-Wow, we found that there is a significant effect of the emotional condition on valence ratings. **Nature here we come!**
-
-As you know, an ANOVA is pretty much a *summary* of a linear model where the predictors are factors. Therefore, we can run an ANOVA on a linear mixed model (which includes the "error" term, or *random effect*).
-
+Our dataframe is made of 19 rows (one row per participant) and includes the participant's age and average amount of autobiographical link (assessed by a scale after each picture they saw). Let's check the linear link between these two variables.
 
 
 ```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
-library(lmerTest)
-fit <- lmer(Subjective_Valence ~ Emotion_Condition + (1|Participant_ID), data=df)
-anova(fit)
+fit <- lm(Autobiographical_Link~Participant_Age, data=df)
+results <- psycho::analyze(fit)
+print(results)
 ```
 
-The results are, for the important bits (the sum of squares, mean square and *p* value), almost identical to the *traditional* approach. However, it is much more powerful. 
+
+It seems that **there is a trend**: the more a participant is old and the less autobiographical link he has. That might sound counter-intuitive but as many of the pictures had violent content, we could imagine that the younger participants are more exposed to that type of stimuli through video games and media. 
+
+We would like, then, to confirm this trend by running a new study. First we would like to estimate the number of participants needed to detect this effect.
 
 
-# Post-hoc / Contrast Analysis
+# Frequentist 
 
-Then, we wou'd like to see how the levels are different. To do this, we have to run a "contrast" analysis, comparing the estimated means of each level.
+There are many ways of doing a power analysis. Here, we will use an estimation based on data simulation through sampling. That means that we will extract different sample sizes of our data and fit the model. Then, we will compute the evolution of the **p value** in relationship to this sample size.
 
-```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, include=FALSE, results='markup'}
-# We have to provide the model (here called fit and the formula of the factors we want to contrast
-results <- get_contrasts(fit, "Emotion_Condition")
-print(results$contrasts)
-```
-```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
-knitr::kable(results$contrasts, digits=2)
-```
-It appears that the negative condition yields a significantly lower valence (*i.e.*, more negative) than the neutral (-74.9 points of difference). At this point, we usually also want to add the means of each conditions. However, we often do it by directly computing the means and SDs of our observed data. But that's not the cleanest way, as our data might be unbalanced or biased. 
+Let's do it 50 times on a data from current sample size (n = 19) to a sample size of 60 (through random sampling with replacement). 
 
-The best way to do it is to estimate means based on the fitted model (marginal means). Those were automatically computed when running the `get_contrasts` function.
 
-```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, include=FALSE,results='markup'}
-print(results$means)
-```
-```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
-knitr::kable(results$means, digits=2)
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='hide'}
+results <- psycho::power_analysis(fit, n_max=60, n_batch=50)  # This might take a long time
 ```
 
-Finally, we can plot these means:
 
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center'}
-library(ggplot2)
+Now that we have our results, we can extract all the lines corresponding to our effect (where `variable == "Participant_Age"`), and summarise by sample size (group by `n`). We will then compute the median, as well as the 80% Highest Density Intervals (HDI, as an index of the 80% probability p value interval) of the p value.
 
-ggplot(results$means, aes(x=Emotion_Condition, y=Mean, group=1)) +
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+pvalues <- results %>%
+  filter(Variable=="Participant_Age") %>%
+  select(n, p) %>%
+  group_by(n) %>%
+  summarise(p_median = median(p),
+            CI_lower = psycho::hdi(p, prob = 0.8)$values$HDImin,
+            CI_higher = psycho::hdi(p, prob = 0.8)$values$HDImax)
+
+```
+
+We can finally plot the data.
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+ggplot(pvalues, aes(x=n, y=p_median)) +
+  geom_hline(aes(yintercept=0.05), color="red", alpha=1) +
+  geom_hline(aes(yintercept=0.01), color="red", linetype="dashed", alpha=0.8) +
+  geom_hline(aes(yintercept=0.001), color="red", linetype="dotted", alpha=0.6) +
   geom_line() +
-  geom_pointrange(aes(ymin=CI_lower, ymax=CI_higher)) +
-  ylab("Subjective Valence") +
-  xlab("Emotion Condition") +
-  theme_bw()
+  geom_ribbon(aes(ymin=CI_lower, ymax=CI_higher), alpha=0.2) +
+  theme_bw() +
+  ylab("p value") +
+  xlab("Sample size")
 ```
 
+**Based on this plot, it seems that a sample size of > 40 seems reasonable to reliably (with 80% of probability) detect (with a p < .05 treshold) the effect.** Note that this power analysis approach presents serious limitations has it based on multiple testing and data sampling. 
+
+# Bayesian
+
+You can possibly do a quite similar analysis in the Bayesian framework, altough it will take much more time to compute.
 
 
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='hide', include=FALSE}
+library(rstanarm)
+fit <- stan_glm(Autobiographical_Link~Participant_Age, data=df)
+results <- psycho::power_analysis(fit, n_max=60, n_batch=30)  # This takes a VERY long time
+```
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+library(rstanarm)
+fit <- stan_glm(Autobiographical_Link~Participant_Age, data=df, chains=2, iter=1000)
+results <- psycho::power_analysis(fit, n_max=60, n_batch=30)  # This takes a VERY long time
+```
 
-# Interaction
-
-Let's repeat the previous steps with adding the participant's **sex** as a predictor.
+We can then decide on a treshold, let's say the Maximum Probability of Effect (MPE, *i.e.*, the maximum probability that the effect is different from 0 in the median’s direction).
 
 ```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
-fit <- lmer(Subjective_Valence ~ Emotion_Condition * Participant_Sex + (1|Participant_ID), data=emotion)
-anova(fit)
+pvalues <- results %>%
+  filter(Variable=="Participant_Age") %>%
+  select(n, MPE) %>%
+  group_by(n) %>%
+  summarise(MPE_median = median(MPE),
+            CI_lower = psycho::hdi(MPE, prob = 0.8)$values$HDImin,
+            CI_higher = psycho::hdi(MPE, prob = 0.8)$values$HDImax)
+
 ```
 
-It seems that there is a significant main effect of the emotion condition, as well as an interaction with the participant's sex. Let's start by plotting the estimated means.
+We can finally plot the data.
 
-
-```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, include=FALSE,results='markup'}
-results <- get_contrasts(fit, "Emotion_Condition * Participant_Sex")
-print(results$means)
-```
-```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
-knitr::kable(results$means, digits=2)
-```
-
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center'}
-ggplot(results$means, aes(x=Emotion_Condition, y=Mean, color=Participant_Sex, group=Participant_Sex)) +
-  geom_line(position = position_dodge(.3)) +
-  geom_pointrange(aes(ymin=CI_lower, ymax=CI_higher), 
-                  position = position_dodge(.3)) +
-  ylab("Subjective Valence") +
-  xlab("Emotion Condition") +
-  theme_bw()
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+ggplot(pvalues, aes(x=n, y=MPE_median)) +
+  geom_hline(aes(yintercept=95), color="red", alpha=1) +
+  geom_hline(aes(yintercept=99), color="red", linetype="dashed", alpha=0.8) +
+  geom_hline(aes(yintercept=99.9), color="red", linetype="dotted", alpha=0.6) +
+  geom_line() +
+  geom_ribbon(aes(ymin=CI_lower, ymax=CI_higher), alpha=0.2) +
+  theme_bw() +
+  ylab("MPE") +
+  xlab("Sample size")
 ```
 
-Let's investigate the contrasts:
-
-```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, include=FALSE, results='markup'}
-print(results$contrasts)
-```
-```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
-knitr::kable(results$contrasts, digits=2)
-```
-
-
-# Note
-
-**This analysis is even simpler in the Bayesian framework. See [this](DUPA) tutorial.**
+The results appear as highly similar. The MPE consistently reaches the 95% treshold with a > 40 sample size.
 
 
 # Credits

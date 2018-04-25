@@ -23,22 +23,22 @@
 hdi <- function(x, prob = .95) {
 
   # If x is a matrix
-  if(ncol(as.matrix(x)) > 1){
+  if (ncol(as.matrix(x)) > 1) {
     HDImin <- c()
     HDImax <- c()
     for (col in 1:ncol(x)) {
-      HDI <- .hdi(x[, col], prob=prob)
+      HDI <- .hdi(x[, col], prob = prob)
       HDImin <- c(HDImin, HDI[1])
       HDImax <- c(HDImax, HDI[2])
     }
-    return(data.frame(HDImin=HDImin, HDImax=HDImax))
+    return(data.frame(HDImin = HDImin, HDImax = HDImax))
 
 
     # If x is a vector
   } else {
     # Process
     # -------------
-    HDI <- .hdi(x, prob=prob)
+    HDI <- .hdi(x, prob = prob)
     HDImin <- HDI[1]
     HDImax <- HDI[2]
 
@@ -83,7 +83,7 @@ hdi <- function(x, prob = .95) {
 }
 
 #' @keywords internal
-.hdi <- function(x, prob){
+.hdi <- function(x, prob) {
   x <- sort(x)
   ci.index <- ceiling(prob * length(x))
   nCIs <- length(x) - ci.index

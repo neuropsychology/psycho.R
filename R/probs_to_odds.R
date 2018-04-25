@@ -15,19 +15,18 @@ probs_to_odds <- function(probs, log=FALSE) {
 
   # If vector
   if (ncol(as.matrix(probs)) == 1) {
-    return(.probs_to_odds(probs, log=log))
-  } else{
+    return(.probs_to_odds(probs, log = log))
+  } else {
     warning("Provide single value or vector.")
   }
-
 }
 
 
 #' @keywords internal
-.probs_to_odds <- function(probs, log=FALSE){
+.probs_to_odds <- function(probs, log=FALSE) {
   odds <- probs / (1 - probs)
   if (log == TRUE) {
     odds <- log(odds)
   }
-return(odds)
+  return(odds)
 }

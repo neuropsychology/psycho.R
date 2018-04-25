@@ -299,29 +299,29 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, bayes_factor=FALSE, ...) {
   # -------------------------------------------------------------------------
   if (bayes_factor == TRUE) {
     for (varname in varnames) {
-
-      bf <- suppressMessages(BayesFactor::ttestBF(posteriors[, varname], mu=0))
+      bf <- suppressMessages(BayesFactor::ttestBF(posteriors[, varname], mu = 0))
       bf <- bf@bayesFactor$bf
-      bf_intepretation <- interpret_bf(bf, label_only=TRUE)
-      if(bf >= 1){
+      bf_intepretation <- interpret_bf(bf, label_only = TRUE)
+      if (bf >= 1) {
         bf_direction <- "alternative"
-      } else{
+      } else {
         bf_direction <- "null"
       }
 
-      bf_text <- paste0("    - The estimated Bayes factor suggested that the data were ",
-                        format_digit(bf),
-                        " (",
-                        bf_intepretation,
-                        ") times more likely to occur under the ",
-                        bf_direction,
-                        " hypothesis.")
+      bf_text <- paste0(
+        "    - The estimated Bayes factor suggested that the data were ",
+        format_digit(bf),
+        " (",
+        bf_intepretation,
+        ") times more likely to occur under the ",
+        bf_direction,
+        " hypothesis."
+      )
 
       values$effects[[varname]]$bayes_factor <- bf
       values$effects[[varname]]$bayes_factor_interpretation <- bf_intepretation
       values$effects[[varname]]$bayes_factor_text <- bf_text
     }
-
   }
 
 
@@ -377,13 +377,13 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, bayes_factor=FALSE, ...) {
   # -------------------------------------------------------------------------
 
   # Model
-  if (effsize==TRUE) {
+  if (effsize == TRUE) {
     info_effsize <- " Effect sizes are based on Cohen (1988) recommandations."
   } else {
     info_effsize <- ""
   }
 
-  if (bayes_factor==TRUE) {
+  if (bayes_factor == TRUE) {
     info_bf <- " Additionally, Bayesian JZS t-tests (with prior scaling factor r = 0.707; Rouder, 2015) were performed to quantify how much more likely the effects are under the alternative (effect existence) versus the null hypothesis. The Bayes factors labelling was done following Jeffreys (1961)."
   } else {
     info_bf <- ""
@@ -396,7 +396,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, bayes_factor=FALSE, ...) {
     fit$family$link,
     ") model to predict ",
     outcome,
-    " (formula = ", paste0(format(fit$formula), collapse=""),
+    " (formula = ", paste0(format(fit$formula), collapse = ""),
     ").",
     info_effsize,
     info_bf,

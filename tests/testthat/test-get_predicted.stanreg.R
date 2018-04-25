@@ -54,6 +54,6 @@ test_that("If it works.", {
   predicted <- psycho::get_predicted(fit, newdata = ref_grid)
   testthat::expect_equal(mean(predicted$Life_Satisfaction_Median), 4.77, tolerance = 0.05)
 
-  predicted <- psycho::get_predicted(fit, newdata = ref_grid, keep_iterations=TRUE)
+  predicted <- psycho::get_predicted(fit, newdata = ref_grid, keep_iterations = TRUE)
   testthat::expect_equal(length(predicted), 4004)
 })
