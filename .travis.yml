@@ -7,9 +7,13 @@ r_check_args: '--ignore-vignettes'
 
 # Using the package cache to store R package dependencies can significantly
 # speed up build times and is recommended for most builds.
-cache:
-  - apt
-  - packages
+cache: packages
+
+r:
+- oldrel
+- release
+- devel
+
 
 warnings_are_errors: true
 
