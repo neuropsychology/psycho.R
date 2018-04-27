@@ -6,6 +6,7 @@
 #' @param CI Credible interval bounds.
 #' @param effsize Compute Effect Sizes according to Cohen (1988)? Your outcome variable must be standardized.
 #' @param bayes_factor Compute a Bayesian t-test to quantify the probability that each effect is different from 0.
+#' @param overlap Compute the overlapping coefficient between the posterior and a normal distribution of mean 0 and same SD.
 #' @param ... Arguments passed to or from other methods.
 #'
 #' @return output
@@ -18,7 +19,7 @@
 #' data <- standardize(attitude)
 #' fit <- rstanarm::stan_glm(rating ~ advance + privileges, data=data)
 #'
-#' results <- analyze(fit, effsize=TRUE, bayes_factor=TRUE)
+#' results <- analyze(fit, effsize=TRUE)
 #' summary(results)
 #' plot(results)
 #' print(results)
@@ -34,12 +35,12 @@
 #' @import tidyr
 #' @import dplyr
 #' @import ggplot2
-#' @importFrom stats quantile as.formula
+#' @importFrom stats quantile as.formula rnorm
 #' @importFrom utils head tail
 #' @importFrom broom tidy
 #' @importFrom BayesFactor ttestBF
 #' @export
-analyze.stanreg <- function(x, CI=90, effsize=FALSE, bayes_factor=FALSE, ...) {
+analyze.stanreg <- function(x, CI=90, effsize=FALSE, bayes_factor=FALSE, overlap=FALSE, ...) {
   fit <- x
 
   # Info --------------------------------------------------------------------
@@ -299,8 +300,8 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, bayes_factor=FALSE, ...) {
   # -------------------------------------------------------------------------
   if (bayes_factor == TRUE) {
     for (varname in varnames) {
-      bf <- suppressMessages(BayesFactor::ttestBF(posteriors[, varname], mu = 0))
-      bf <- bf@bayesFactor$bf
+      bf <- suppressMessages(BayesFactor::ttestBF(posteriors[, varname], mu = 0, rscale = "wide"))
+      bf <- as.vector(bf)
       bf_intepretation <- interpret_bf(bf, label_only = TRUE)
       if (bf >= 1) {
         bf_direction <- "alternative"
@@ -308,9 +309,10 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, bayes_factor=FALSE, ...) {
         bf_direction <- "null"
       }
 
+      bf_formated <- ifelse(bf > 1000, "more than 1000", format_digit(bf))
       bf_text <- paste0(
         "    - The estimated Bayes factor suggested that the data were ",
-        format_digit(bf),
+        bf_formated,
         " (",
         bf_intepretation,
         ") times more likely to occur under the ",
@@ -321,6 +323,19 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, bayes_factor=FALSE, ...) {
       values$effects[[varname]]$bayes_factor <- bf
       values$effects[[varname]]$bayes_factor_interpretation <- bf_intepretation
       values$effects[[varname]]$bayes_factor_text <- bf_text
+    }
+  }
+
+  # Overlap coef ------------------------------------------------------------
+  # -------------------------------------------------------------------------
+  if (overlap == TRUE) {
+    for (varname in varnames) {
+      posterior <- posteriors[, varname]
+      norm <- rnorm(length(posterior), 0, sd(posterior))
+
+      overlap_coef <- overlap(posterior, norm)*100
+
+      values$effects[[varname]]$overlap_coef <- overlap_coef
     }
   }
 
@@ -370,6 +385,13 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, bayes_factor=FALSE, ...) {
     summary$Bayes_Factor <- NA
     for (varname in varnames_for_summary) {
       summary[summary$Variable == varname, ]$Bayes_Factor <- values$effects[[varname]]$bayes_factor
+    }
+  }
+
+  if (overlap == TRUE) {
+    summary$Overlap <- NA
+    for (varname in varnames_for_summary) {
+      summary[summary$Variable == varname, ]$Overlap <- values$effects[[varname]]$overlap_coef
     }
   }
 

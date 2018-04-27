@@ -72,7 +72,7 @@ analyze.lmerModLmerTest <- function(x, CI=95, ...) {
 
   if (!is.null(CI)) {
     CI_values <- suppressMessages(confint(fit, level = CI / 100))
-    CI_values <- tail(CI_values, n = 2)
+    CI_values <- tail(CI_values, n = length(rownames(fitsum)))
     fitsum$CI_lower <- CI_values[, 1]
     fitsum$CI_higher <- CI_values[, 2]
   }

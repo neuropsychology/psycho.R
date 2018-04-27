@@ -22,6 +22,12 @@ library(psycho)
 interpret_bf(10)
 
 }
+\references{
+\itemize{
+ \item{Jeffreys, H. (1961), Theory of Probability, 3rd ed., Oxford University Press, Oxford.}
+ \item{Jarosz, A. F., & Wiley, J. (2014). What are the odds? A practical guide to computing and reporting Bayes factors. The Journal of Problem Solving, 7(1), 2.}
+ }
+}
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 }

@@ -9,6 +9,10 @@
 #' @param n_batch Number of iterations at each sample size.
 #' @param groups Grouping variable name (string) to preserve proportions. Can be a list of strings.
 #' @param verbose Print progress.
+#' @param CI Argument for \link[=analyze]{analyze}.
+#' @param effsize Argument for \link[=analyze]{analyze}.
+#' @param bayes_factor Argument for \link[=analyze]{analyze}.
+#' @param overlap rgument for \link[=analyze]{analyze}.
 #'
 #' @return A dataframe containing the summary of all models for all iterations.
 #'
@@ -34,7 +38,7 @@
 #' @importFrom stats model.frame
 #' @import dplyr
 #' @export
-power_analysis <- function(fit, n_max, n_min=NULL, step=1, n_batch=1, groups=NULL, verbose=TRUE) {
+power_analysis <- function(fit, n_max, n_min=NULL, step=1, n_batch=1, groups=NULL, verbose=TRUE, CI=90, effsize=FALSE, bayes_factor=FALSE, overlap=FALSE) {
 
   # Parameters
   df <- model.frame(fit)
@@ -65,18 +69,17 @@ power_analysis <- function(fit, n_max, n_min=NULL, step=1, n_batch=1, groups=NUL
 
       # Fit new model
       newfit <- update(fit, data = newdf)
-      newfit <- analyze(newfit, CI = 90)
+      newfit <- analyze(newfit, CI=CI, effsize=effsize, bayes_factor=bayes_factor, overlap=overlap)
 
       # Store results
       newresults <- summary(newfit)
       newresults$n <- n
       newresults$batch <- batch
       results <- rbind(results, newresults)
-    }
 
+    }
     # Progress
     if (verbose == TRUE) {
-      n_iterations <- (n_max - n_min) * n_batch
       cat(paste0(format_digit(round((n - n_min) / (n_max - n_min) * 100)), "%\n"))
     }
   }

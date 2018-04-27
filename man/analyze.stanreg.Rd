@@ -5,7 +5,7 @@
 \title{Analyze stanreg objects.}
 \usage{
 \method{analyze}{stanreg}(x, CI = 90, effsize = FALSE,
-  bayes_factor = FALSE, ...)
+  bayes_factor = FALSE, overlap = FALSE, ...)
 }
 \arguments{
 \item{x}{A stanreg model.}

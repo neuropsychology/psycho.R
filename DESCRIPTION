@@ -49,7 +49,8 @@ Imports:
     emmeans,
     broom,
     tibble,
-    BayesFactor
+    BayesFactor,
+    DescTools
 Suggests:
     knitr,
     rmarkdown,

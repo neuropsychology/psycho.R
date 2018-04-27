@@ -11,10 +11,15 @@
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
+#' @references
+#' \itemize{
+#'  \item{Jeffreys, H. (1961), Theory of Probability, 3rd ed., Oxford University Press, Oxford.}
+#'  \item{Jarosz, A. F., & Wiley, J. (2014). What are the odds? A practical guide to computing and reporting Bayes factors. The Journal of Problem Solving, 7(1), 2.}
+#'  }
 #' @export
 interpret_bf <- function(x, label_only=FALSE) {
   if (x < 1) {
-    x <- 1 / x
+    x <- 1 / abs(x)
     direction <- "against"
   } else {
     direction <- "in favor of"

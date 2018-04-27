@@ -127,7 +127,7 @@ results <- psycho::power_analysis(fit, n_max=60, n_batch=30)  # This takes a VER
 We can then decide on a treshold, let's say the Maximum Probability of Effect (MPE, *i.e.*, the maximum probability that the effect is different from 0 in the median’s direction).
 
 ```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
-pvalues <- results %>%
+MPEs <- results %>%
   filter(Variable=="Participant_Age") %>%
   select(n, MPE) %>%
   group_by(n) %>%
@@ -140,7 +140,7 @@ pvalues <- results %>%
 We can finally plot the data.
 
 ```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
-ggplot(pvalues, aes(x=n, y=MPE_median)) +
+ggplot(MPEs, aes(x=n, y=MPE_median)) +
   geom_hline(aes(yintercept=95), color="red", alpha=1) +
   geom_hline(aes(yintercept=99), color="red", linetype="dashed", alpha=0.8) +
   geom_hline(aes(yintercept=99.9), color="red", linetype="dotted", alpha=0.6) +
