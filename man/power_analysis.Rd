@@ -23,11 +23,13 @@ power_analysis(fit, n_max, n_min = NULL, step = 1, n_batch = 1,
 
 \item{verbose}{Print progress.}
 
-\item{CI}{Argument for \link[=analyze]{analyze}}
+\item{CI}{Argument for \link[=analyze]{analyze}.}
 
-\item{effsize}{Argument for \link[=analyze]{analyze}}
+\item{effsize}{Argument for \link[=analyze]{analyze}.}
 
-\item{bayes_factor}{Argument for \link[=analyze]{analyze}}
+\item{bayes_factor}{Argument for \link[=analyze]{analyze}.}
+
+\item{overlap}{rgument for \link[=analyze]{analyze}.}
 }
 \value{
 A dataframe containing the summary of all models for all iterations.

@@ -13,7 +13,7 @@
 interactions or nesting terms) specifying the names of the predictors over which EMMs are desired.}
 
 \item{adjust}{P value adjustment method. Default is "tukey". Can be "holm",
-"hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none".}
+"hochberg", "hommel", "bonferroni", "BH", "BY", "fdr" or "none".}
 
 \item{...}{Arguments passed to or from other methods.}
 }

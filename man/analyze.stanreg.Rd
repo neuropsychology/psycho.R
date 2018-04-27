@@ -16,6 +16,8 @@
 
 \item{bayes_factor}{Compute a Bayesian t-test to quantify the probability that each effect is different from 0.}
 
+\item{overlap}{Compute the overlapping coefficient between the posterior and a normal distribution of mean 0 and same SD.}
+
 \item{...}{Arguments passed to or from other methods.}
 }
 \value{
@@ -32,7 +34,7 @@ library(rstanarm)
 data <- standardize(attitude)
 fit <- rstanarm::stan_glm(rating ~ advance + privileges, data=data)
 
-results <- analyze(fit, effsize=TRUE, bayes_factor=TRUE)
+results <- analyze(fit, effsize=TRUE)
 summary(results)
 plot(results)
 print(results)
