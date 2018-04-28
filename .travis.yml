@@ -10,7 +10,6 @@ r_check_args: '--ignore-vignettes'
 cache: packages
 
 r:
-  - oldrel
   - release
   - devel
 
