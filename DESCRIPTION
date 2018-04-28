@@ -50,7 +50,8 @@ Imports:
     broom,
     tibble,
     BayesFactor,
-    DescTools
+    DescTools,
+    pbkrtest
 Suggests:
     knitr,
     rmarkdown,
@@ -58,6 +59,5 @@ Suggests:
     covr,
     lme4,
     plotly,
-    loo (>= 2.0.0),
-    pbkrtest
+    loo (>= 2.0.0)
 VignetteBuilder: knitr
