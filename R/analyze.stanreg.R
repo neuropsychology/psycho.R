@@ -381,7 +381,6 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, overlap=TRUE, ...) {
     " (formula = ", paste0(format(fit$formula), collapse = ""),
     ").",
     info_effsize,
-    info_bf,
     " The model's priors were set as follows: "
   )
 

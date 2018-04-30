@@ -4,8 +4,8 @@
 \alias{analyze.stanreg}
 \title{Analyze stanreg objects.}
 \usage{
-\method{analyze}{stanreg}(x, CI = 90, effsize = FALSE,
-  bayes_factor = FALSE, overlap = FALSE, ...)
+\method{analyze}{stanreg}(x, CI = 90, effsize = FALSE, overlap = TRUE,
+  ...)
 }
 \arguments{
 \item{x}{A stanreg model.}
@@ -13,8 +13,6 @@
 \item{CI}{Credible interval bounds.}
 
 \item{effsize}{Compute Effect Sizes according to Cohen (1988)? Your outcome variable must be standardized.}
-
-\item{bayes_factor}{Compute a Bayesian t-test to quantify the probability that each effect is different from 0.}
 
 \item{overlap}{Compute the overlapping coefficient between the posterior and a normal distribution of mean 0 and same SD.}
 
