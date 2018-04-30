@@ -50,7 +50,8 @@ Imports:
     broom,
     tibble,
     DescTools,
-    pbkrtest
+    pbkrtest,
+    BayesFactor
 Suggests:
     knitr,
     rmarkdown,
