@@ -65,24 +65,24 @@ get_predicted.stanreg <- function(fit, newdata="model", prob=0.9, keep_iteration
   predictors <- tail(predictors, -1)
 
   # Set newdata if refgrid
-  if("emmGrid" %in% class(newdata)) {
+  if ("emmGrid" %in% class(newdata)) {
     newdata <- newdata@grid
     newdata[".wgt."] <- NULL
   }
 
   # Deal with potential random
-  re.form = NULL
-  if(!is.null(newdata)){
-    if(!is.character(newdata) & is.mixed(fit)){
-      re.form = NA
+  re.form <- NULL
+  if (!is.null(newdata)) {
+    if (!is.character(newdata) & is.mixed(fit)) {
+      re.form <- NA
     }
   }
 
   # Set newdata to actual data
   original_data <- FALSE
-  if(!is.null(newdata)){
-    if(is.character(newdata)){
-      if(newdata == "model"){
+  if (!is.null(newdata)) {
+    if (is.character(newdata)) {
+      if (newdata == "model") {
         original_data <- TRUE
         newdata <- fit$data[predictors]
         newdata <- na.omit(fit$data[predictors])
@@ -90,63 +90,62 @@ get_predicted.stanreg <- function(fit, newdata="model", prob=0.9, keep_iteration
     }
   }
 
-# Generate draws -------------------------------------------------------
+  # Generate draws -------------------------------------------------------
   if (posterior_predict == F) {
-    posterior <- rstanarm::posterior_linpred(fit, newdata = newdata, re.form=re.form, seed=seed)
-  } else{
-    posterior <- rstanarm::posterior_predict(fit, newdata = newdata, re.form=re.form, seed=seed)
+    posterior <- rstanarm::posterior_linpred(fit, newdata = newdata, re.form = re.form, seed = seed)
+  } else {
+    posterior <- rstanarm::posterior_predict(fit, newdata = newdata, re.form = re.form, seed = seed)
   }
 
-# Format -------------------------------------------------------
+  # Format -------------------------------------------------------
 
   # Predicted Y
   pred_y <- as.data.frame(apply(posterior, 2, median))
   names(pred_y) <- paste0(outcome, "_Median")
 
   # Credible Interval
-  for(CI in c(prob)){
-    pred_y_interval <- hdi(posterior, prob=CI)
-    names(pred_y_interval) <- paste(outcome, "CI", c((1 - CI) / 2 * 100, 100 - ((1 - CI) / 2 * 100)), sep="_")
+  for (CI in c(prob)) {
+    pred_y_interval <- hdi(posterior, prob = CI)
+    names(pred_y_interval) <- paste(outcome, "CI", c((1 - CI) / 2 * 100, 100 - ((1 - CI) / 2 * 100)), sep = "_")
     pred_y <- cbind(pred_y, pred_y_interval)
   }
 
 
-# Keep iterations ---------------------------------------------------------
+  # Keep iterations ---------------------------------------------------------
 
-  if(keep_iterations == TRUE){
+  if (keep_iterations == TRUE) {
     iterations <- as.data.frame(t(posterior))
     names(iterations) <- paste0("iter_", 1:length(names(iterations)))
     pred_y <- cbind(pred_y, iterations)
   }
 
-# Transform odds to probs ----------------------------------------------------------
+  # Transform odds to probs ----------------------------------------------------------
 
   if (family(fit)$family == "binomial" & family(fit)$link == "logit") {
     pred_y <- odds_to_probs(pred_y)
   }
 
 
-# Add predictors ----------------------------------------------------------
+  # Add predictors ----------------------------------------------------------
 
 
-  if(!is.null(newdata)){
-    if(original_data){
+  if (!is.null(newdata)) {
+    if (original_data) {
       predicted <- newdata %>%
         tibble::rownames_to_column() %>%
         dplyr::bind_cols(pred_y) %>%
         dplyr::right_join(fit$data[!names(fit$data) %in% predictors] %>%
-                           tibble::rownames_to_column(),
-                         by="rowname") %>%
+          tibble::rownames_to_column(),
+        by = "rowname"
+        ) %>%
         select_("-rowname")
-    } else{
+    } else {
       predicted <- dplyr::bind_cols(newdata, pred_y)
     }
-  } else{
+  } else {
     predicted <- dplyr::bind_cols(as.data.frame(model.matrix(fit)), pred_y)
   }
 
 
   return(predicted)
 }
-
-

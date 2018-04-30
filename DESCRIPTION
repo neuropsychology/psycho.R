@@ -49,7 +49,6 @@ Imports:
     emmeans,
     broom,
     tibble,
-    BayesFactor,
     DescTools,
     pbkrtest
 Suggests:

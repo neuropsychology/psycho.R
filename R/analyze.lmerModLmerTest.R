@@ -10,7 +10,7 @@
 #'
 #' @examples
 #' library(psycho)
-#' require(lmerTest)
+#' library(lmerTest)
 #' fit <- lmerTest::lmer(Sepal.Length ~ Sepal.Width + (1|Species), data=iris)
 #'
 #' results <- analyze(fit)
@@ -21,7 +21,6 @@
 #'
 #' @importFrom MuMIn r.squaredGLMM
 #' @importFrom MuMIn std.coef
-#' @import lmerTest
 #' @import dplyr
 #' @export
 analyze.lmerModLmerTest <- function(x, CI=95, ...) {

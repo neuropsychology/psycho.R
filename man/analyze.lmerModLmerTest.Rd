@@ -21,7 +21,7 @@ Analyze lmerModLmerTest objects.
 }
 \examples{
 library(psycho)
-require(lmerTest)
+library(lmerTest)
 fit <- lmerTest::lmer(Sepal.Length ~ Sepal.Width + (1|Species), data=iris)
 
 results <- analyze(fit)

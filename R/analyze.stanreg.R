@@ -5,7 +5,6 @@
 #' @param x A stanreg model.
 #' @param CI Credible interval bounds.
 #' @param effsize Compute Effect Sizes according to Cohen (1988)? Your outcome variable must be standardized.
-#' @param bayes_factor Compute a Bayesian t-test to quantify the probability that each effect is different from 0.
 #' @param overlap Compute the overlapping coefficient between the posterior and a normal distribution of mean 0 and same SD.
 #' @param ... Arguments passed to or from other methods.
 #'
@@ -38,9 +37,8 @@
 #' @importFrom stats quantile as.formula rnorm
 #' @importFrom utils head tail
 #' @importFrom broom tidy
-#' @importFrom BayesFactor ttestBF
 #' @export
-analyze.stanreg <- function(x, CI=90, effsize=FALSE, bayes_factor=FALSE, overlap=FALSE, ...) {
+analyze.stanreg <- function(x, CI=90, effsize=FALSE, overlap=TRUE, ...) {
   fit <- x
 
   # Info --------------------------------------------------------------------
@@ -296,35 +294,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, bayes_factor=FALSE, overlap
     }
   }
 
-  # Bayes Factors ------------------------------------------------------------
-  # -------------------------------------------------------------------------
-  if (bayes_factor == TRUE) {
-    for (varname in varnames) {
-      bf <- suppressMessages(BayesFactor::ttestBF(posteriors[, varname], mu = 0, rscale = "wide"))
-      bf <- as.vector(bf)
-      bf_intepretation <- interpret_bf(bf, label_only = TRUE)
-      if (bf >= 1) {
-        bf_direction <- "alternative"
-      } else {
-        bf_direction <- "null"
-      }
 
-      bf_formated <- ifelse(bf > 1000, "more than 1000", format_digit(bf))
-      bf_text <- paste0(
-        "    - The estimated Bayes factor suggested that the data were ",
-        bf_formated,
-        " (",
-        bf_intepretation,
-        ") times more likely to occur under the ",
-        bf_direction,
-        " hypothesis."
-      )
-
-      values$effects[[varname]]$bayes_factor <- bf
-      values$effects[[varname]]$bayes_factor_interpretation <- bf_intepretation
-      values$effects[[varname]]$bayes_factor_text <- bf_text
-    }
-  }
 
   # Overlap coef ------------------------------------------------------------
   # -------------------------------------------------------------------------
@@ -333,7 +303,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, bayes_factor=FALSE, overlap
       posterior <- posteriors[, varname]
       norm <- rnorm(length(posterior), 0, sd(posterior))
 
-      overlap_coef <- overlap(posterior, norm)*100
+      overlap_coef <- overlap(posterior, norm) * 100
 
       values$effects[[varname]]$overlap_coef <- overlap_coef
     }
@@ -381,12 +351,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, bayes_factor=FALSE, overlap
     summary <- cbind(summary, EffSizes)
   }
 
-  if (bayes_factor == TRUE) {
-    summary$Bayes_Factor <- NA
-    for (varname in varnames_for_summary) {
-      summary[summary$Variable == varname, ]$Bayes_Factor <- values$effects[[varname]]$bayes_factor
-    }
-  }
+
 
   if (overlap == TRUE) {
     summary$Overlap <- NA
@@ -405,11 +370,6 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, bayes_factor=FALSE, overlap
     info_effsize <- ""
   }
 
-  if (bayes_factor == TRUE) {
-    info_bf <- " Additionally, Bayesian JZS t-tests (with prior scaling factor r = 0.707; Rouder, 2015) were performed to quantify how much more likely the effects are under the alternative (effect existence) versus the null hypothesis. The Bayes factors labelling was done following Jeffreys (1961)."
-  } else {
-    info_bf <- ""
-  }
 
   info <- paste0(
     "We fitted a Markov Chain Monte Carlo ",
@@ -455,14 +415,6 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, bayes_factor=FALSE, overlap
     if (effsize == TRUE) {
       if (!varname %in% c("(Intercept)", "R2")) {
         coefs_text <- c(coefs_text, values$effects[[varname]]$EffSize_text)
-        if (bayes_factor == FALSE) {
-          coefs_text <- c(coefs_text, "")
-        }
-      }
-    }
-    if (bayes_factor == TRUE) {
-      if (!varname %in% c("(Intercept)", "R2")) {
-        coefs_text <- c(coefs_text, values$effects[[varname]]$bayes_factor_text, "")
       }
     }
   }

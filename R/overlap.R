@@ -24,16 +24,16 @@ overlap <- function(x, y, method = "trapezoid") {
   upper <- max(c(x, y)) + 1
 
   # generate kernel densities
-  da <- stats::density(x, from=lower, to=upper)
-  db <- stats::density(y, from=lower, to=upper)
-  d <- data.frame(x=da$x, a=da$y, b=db$y)
+  da <- stats::density(x, from = lower, to = upper)
+  db <- stats::density(y, from = lower, to = upper)
+  d <- data.frame(x = da$x, a = da$y, b = db$y)
 
   # calculate intersection densities
   d$w <- pmin(d$a, d$b)
 
   # integrate areas under curves
-  total <- DescTools::AUC(d$x, d$a, method=method) + DescTools::AUC(d$x, d$b, method=method)
-  intersection <- DescTools::AUC(d$x, d$w, method=method)
+  total <- DescTools::AUC(d$x, d$a, method = method) + DescTools::AUC(d$x, d$b, method = method)
+  intersection <- DescTools::AUC(d$x, d$w, method = method)
 
   # compute overlap coefficient
   overlap <- 2 * intersection / total

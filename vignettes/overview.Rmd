@@ -397,8 +397,8 @@ df_for_anova <- df %>%
   dplyr::summarise(Subjective_Arousal = mean(Subjective_Arousal))
 
 # Run the anova
-anova <- aov(Subjective_Arousal ~ Emotion_Condition + Error(Participant_ID), df_for_anova)
-summary(anova)
+aov_results <- aov(Subjective_Arousal ~ Emotion_Condition + Error(Participant_ID), df_for_anova)
+summary(aov_results)
 ```
 
 As we can see, the effect of the condition is significant. One of the many flaws of this approach is that we lose information about intra-individual and item-related variability.
