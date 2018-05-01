@@ -1,29 +1,26 @@
 language: r
 sudo: false
 
-r_binary_packages:
-  - methods
-  - psych
-  - MASS
-  - nFactors
-  - qgraph
-  - lmerTest
-  - MuMIn
-  - ggcorrplot
-  - ppcor
+r_build_args: '--no-build-vignettes'
+r_check_args: '--ignore-vignettes'
+
 
 # Using the package cache to store R package dependencies can significantly
 # speed up build times and is recommended for most builds.
-cache:
-  - apt
-  - packages
+cache: packages
+
+r:
+  - release
+  - devel
+
 
 warnings_are_errors: true
 
 r_packages:
   - covr
   - lintr
-
+  
+  
 after_success:
   - Rscript -e 'library(covr); codecov()'
 #  - Rscript -e 'devtools::install();lintr::lint_package()'

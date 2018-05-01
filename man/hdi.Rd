@@ -14,6 +14,19 @@ hdi(x, prob = 0.95)
 \description{
 Compute the Highest Density Intervals (HDI) of a distribution.
 }
+\examples{
+library(psycho)
+
+distribution <- rnorm(1000, 0, 1)
+hdi_values <- hdi(distribution)
+print(hdi_values)
+plot(hdi_values)
+summary(hdi_values)
+
+x <- matrix(rexp(200), 100)
+hdi_values <- hdi(x)
+
+}
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 }

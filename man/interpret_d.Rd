@@ -10,7 +10,7 @@ interpret_d(x)
 \item{x}{Cohen's d value of standardized coefficient.}
 }
 \value{
-The interpretation according to Cohen (1988)
+The interpretation according to Cohen (1988).
 }
 \description{
 Return the interpretation of a Cohen's d or a standardized coefficient following Cohen (1988).

@@ -1,7 +1,7 @@
 Package: psycho
 Type: Package
 Title: Efficient and Publishing-Oriented Workflow for Psychological Science
-Version: 0.1.9
+Version: 0.2.0
 Authors@R: c(
     person("Dominique", 
         "Makowski", 
@@ -28,11 +28,11 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
 Depends: 
-    R (>= 3.1.0)
+    R (>= 3.4.0)
 Imports:
     methods,
-    ggplot2,
     dplyr,
+    ggplot2,
     tidyr,
     stringr,
     purrr,
@@ -47,12 +47,17 @@ Imports:
     lmerTest,
     coda,
     emmeans,
-    broom
+    broom,
+    tibble,
+    DescTools,
+    pbkrtest,
+    BayesFactor
 Suggests:
     knitr,
     rmarkdown,
     testthat,
     covr,
     lme4,
-    plotly
+    plotly,
+    loo (>= 2.0.0)
 VignetteBuilder: knitr

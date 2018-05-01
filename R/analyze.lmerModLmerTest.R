@@ -1,36 +1,42 @@
-#' Analyze merModLmerTest objects.
+#' Analyze lmerModLmerTest objects.
 #'
-#' Analyze merModLmerTest objects.
+#' Analyze lmerModLmerTest objects.
 #'
-#' @param x merModLmerTest object.
+#' @param x lmerModLmerTest object.
+#' @param CI Bootsrapped confidence interval bounds (slow). Set to NULL turn off their computation.
 #' @param ... Arguments passed to or from other methods.
 #'
 #' @return output
 #'
 #' @examples
 #' library(psycho)
-#' require(lmerTest)
+#' library(lmerTest)
 #' fit <- lmerTest::lmer(Sepal.Length ~ Sepal.Width + (1|Species), data=iris)
 #'
 #' results <- analyze(fit)
 #' summary(results)
+#' print(results)
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @importFrom MuMIn r.squaredGLMM
 #' @importFrom MuMIn std.coef
-#' @import lmerTest
 #' @import dplyr
 #' @export
-analyze.merModLmerTest <- function(x, ...) {
+analyze.lmerModLmerTest <- function(x, CI=95, ...) {
 
 
   # Processing
   # -------------
   fit <- x
 
+  predictors <- all.vars(as.formula(eval(fit@call$formula)))
+  outcome <- predictors[[1]]
+  predictors <- tail(predictors, -1)
+
   R2m <- MuMIn::r.squaredGLMM(fit)["R2m"]
   R2c <- MuMIn::r.squaredGLMM(fit)["R2c"]
+
 
   # TODO: Bootstrapped p values
   # boot.out = lme4::bootMer(fit, lme4::fixef, nsim=1000) #nsim determines p-value decimal places
@@ -41,10 +47,9 @@ analyze.merModLmerTest <- function(x, ...) {
 
 
 
-
   # Summary
   # -------------
-  fitsum <- data.frame(lmerTest::summary(fit)$coefficients)
+  fitsum <- data.frame(summary(fit)$coefficients)
 
   fitsum$Variable <- rownames(fitsum)
   fitsum$Coef <- fitsum$Estimate
@@ -54,15 +59,22 @@ analyze.merModLmerTest <- function(x, ...) {
   fitsum$p <- fitsum$`Pr...t..`
 
   # standardized coefficients
-  stdz <- as.data.frame(MuMIn::std.coef(fit, F))
+  stdz <- as.data.frame(MuMIn::std.coef(fit, partial.sd = FALSE))
   fitsum$Coef.std <- stdz$Estimate
   fitsum$SE.std <- stdz$`Std. Error`
   fitsum$Effect_Size <- interpret_d(fitsum$Coef.std)
 
-  fitsum <- select_(
-    fitsum, "Coef", "SE", "t", "df", "Coef.std", "SE.std",
+  fitsum <- dplyr::select_(
+    fitsum, "Variable", "Coef", "SE", "t", "df", "Coef.std", "SE.std",
     "p", "Effect_Size"
   )
+
+  if (!is.null(CI)) {
+    CI_values <- suppressMessages(confint(fit, level = CI / 100))
+    CI_values <- tail(CI_values, n = length(rownames(fitsum)))
+    fitsum$CI_lower <- CI_values[, 1]
+    fitsum$CI_higher <- CI_values[, 2]
+  }
 
 
   # Varnames
@@ -70,21 +82,47 @@ analyze.merModLmerTest <- function(x, ...) {
 
 
 
-
-
   # Values
   # -------------
   # Initialize empty values
-  values <- list()
-  values$R2m <- R2m
-  values$R2c <- R2c
+  values <- list(model = list(), effects = list())
+  values$model$R2m <- R2m
+  values$model$R2c <- R2c
+
 
   # Loop over all variables
   for (varname in varnames) {
-    text <- paste(
-      "The effect of ", varname, " was [NOT] significant (beta = ",
+    if (fitsum[varname, "p"] < .1) {
+      significance <- ""
+    } else {
+      significance <- "not"
+    }
+
+    if (!is.null(CI)) {
+      CI_text <- paste0(
+        ", ",
+        CI, "% CI [",
+        format_digit(fitsum[varname, "CI_lower"], null_treshold = 0.0001),
+        ", ",
+        format_digit(fitsum[varname, "CI_higher"], null_treshold = 0.0001),
+        "]"
+      )
+    } else {
+      CI_text <- ""
+    }
+
+
+
+    text <- paste0(
+      "The effect of ",
+      varname,
+      " is ",
+      significance,
+      " significant (beta = ",
       format_digit(fitsum[varname, "Coef"], 2), ", SE = ",
-      format_digit(fitsum[varname, "SE"], 2), ", t(",
+      format_digit(fitsum[varname, "SE"], 2),
+      CI_text,
+      ", t(",
       format_digit(fitsum[varname, "df"], 2), ") = ",
       format_digit(fitsum[varname, "t"], 2), ", p ",
       format_p(fitsum[varname, "p"]),
@@ -93,13 +131,25 @@ analyze.merModLmerTest <- function(x, ...) {
       " (std. beta = ",
       format_digit(fitsum[varname, "Coef.std"], 2),
       ", std. SE = ",
-      format_digit(fitsum[varname, "SE.std"], 2), ").",
-      sep = ""
+      format_digit(fitsum[varname, "SE.std"], 2), ")."
     )
 
-    values[[varname]] <- list(
+    if (varname == "(Intercept)") {
+      text <- paste0(
+        "The model's intercept is at ",
+        format_digit(fitsum[varname, "Coef"], 2),
+        " (SE = ",
+        format_digit(fitsum[varname, "SE"], 2),
+        CI_text,
+        "). Within this model:"
+      )
+    }
+
+    values$effects[[varname]] <- list(
       Coef = fitsum[varname, "Coef"],
       SE = fitsum[varname, "SE"],
+      CI_lower = fitsum[varname, "CI_lower"],
+      CI_higher = fitsum[varname, "CI_higher"],
       t = fitsum[varname, "t"],
       df = fitsum[varname, "df"],
       Coef.std = fitsum[varname, "Coef.std"],
@@ -114,20 +164,27 @@ analyze.merModLmerTest <- function(x, ...) {
 
   # Text
   # -------------
-  text <- c(paste(
-    "The overall model predicting ... successfully converged",
-    " and explained ", format_digit(R2c * 100, 2),
+  text <- c(paste0(
+    "The overall model predicting ",
+    outcome,
+    " (formula = ",
+    paste0(format(eval(fit@call$formula)), collapse = ""),
+    ") successfully converged",
+    " and explained ",
+    format_digit(R2c * 100, 2),
     "% of the variance of the endogen (the conditional R2). ",
     "The variance explained by the fixed effects was of ",
     format_digit(R2m * 100, 2),
     "% (the marginal R2) and the one explained by the random",
     " effects of ",
-    format_digit((R2c - R2m) * 100, 2), "%.",
-    sep = ""
+    format_digit((R2c - R2m) * 100, 2), "%. ",
+    values$effects[["(Intercept)"]]$Text
   ))
 
   for (varname in varnames) {
-    text <- c(text, paste("   -", values[[varname]]$Text))
+    if (varname != "(Intercept)") {
+      text <- c(text, paste("   -", values$effects[[varname]]$Text))
+    }
   }
 
 

@@ -19,11 +19,12 @@ Analyze glmerMod objects.
 }
 \examples{
 library(psycho)
-require(lme4)
+library(lme4)
 fit <- lme4::glmer(vs ~ mpg + (1|cyl), data=mtcars, family="binomial")
 
 results <- analyze(fit)
 summary(results)
+print(results)
 
 }
 \author{

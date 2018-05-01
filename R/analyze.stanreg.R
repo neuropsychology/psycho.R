@@ -5,6 +5,7 @@
 #' @param x A stanreg model.
 #' @param CI Credible interval bounds.
 #' @param effsize Compute Effect Sizes according to Cohen (1988)? Your outcome variable must be standardized.
+#' @param overlap Compute the overlapping coefficient between the posterior and a normal distribution of mean 0 and same SD.
 #' @param ... Arguments passed to or from other methods.
 #'
 #' @return output
@@ -33,16 +34,15 @@
 #' @import tidyr
 #' @import dplyr
 #' @import ggplot2
-#' @importFrom stats quantile as.formula
+#' @importFrom stats quantile as.formula rnorm
 #' @importFrom utils head tail
 #' @importFrom broom tidy
 #' @export
-analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
-
-
-  # Processing
-  # -------------
+analyze.stanreg <- function(x, CI=90, effsize=FALSE, overlap=TRUE, ...) {
   fit <- x
+
+  # Info --------------------------------------------------------------------
+  # -------------------------------------------------------------------------
 
   predictors <- all.vars(as.formula(fit$formula))
   outcome <- predictors[[1]]
@@ -55,9 +55,16 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
   varnames <- names(fit$coefficients)
   varnames <- varnames[grepl("b\\[", varnames) == FALSE]
 
+  # Initialize empty values
+  values <- list(model = list(), effects = list())
+
+  values$model$formula <- fit$formula
+  values$model$outcome <- outcome
+  values$model$predictors <- predictors
+
   # Priors
   info_priors <- rstanarm::prior_summary(fit)
-
+  values$priors <- info_priors
 
   # R2 ----------------------------------------------------------------------
   if ("R2" %in% names(posteriors)) {
@@ -80,35 +87,23 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
   }
 
 
-
-
   # Random effect info --------------------------------------------
-  mixed <- tryCatch({
-    broom::tidy(fit, parameters = "varying")
-    TRUE
-  }, error = function(e) {
-    FALSE
-  })
-
-  if (mixed == TRUE) {
+  if (is.mixed(fit)) {
     random_info <- broom::tidy(fit, parameters = "varying") %>%
       dplyr::rename_(
         "Median" = "estimate",
         "MAD" = "std.error"
       )
+    values$random <- random_info
   }
 
 
 
   # Get indices of each variable --------------------------------------------
+  # -------------------------------------------------------------------------
 
-  # Initialize empty values
-  values <- list()
   # Loop over all variables
   for (varname in varnames) {
-
-
-
 
     # Prior
     # TBD: this doesn't work with categorical predictors :(
@@ -182,7 +177,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
       }
 
       text <- paste0(
-        "   - The ", name, " has a probability of ",
+        "  - The ", name, " has a probability of ",
         format_digit(MPE), "% that its coefficient is between ",
         format_digit(MPE_values[1], null_treshold = 0.0001), " and ",
         format_digit(MPE_values[2], null_treshold = 0.0001),
@@ -235,7 +230,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
 
 
     # Store all indices
-    values[[varname]] <- list(
+    values$effects[[varname]] <- list(
       name = varname,
       median = median,
       mad = mad,
@@ -256,7 +251,8 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
 
 
   # Effect Sizes ------------------------------------------------------------
-  if (effsize == T) {
+  # -------------------------------------------------------------------------
+  if (effsize == TRUE) {
 
     # Check if standardized
     model_data <- fit$data
@@ -270,14 +266,14 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
     EffSizes <- data.frame()
     for (varname in varnames) {
       if (varname == "R2") {
-        values[[varname]]$EffSize <- NA
-        values[[varname]]$EffSize_text <- NA
-        values[[varname]]$EffSize_VL <- NA
-        values[[varname]]$EffSize_L <- NA
-        values[[varname]]$EffSize_M <- NA
-        values[[varname]]$EffSize_S <- NA
-        values[[varname]]$EffSize_VS <- NA
-        values[[varname]]$EffSize_O <- NA
+        values$effects[[varname]]$EffSize <- NA
+        values$effects[[varname]]$EffSize_text <- NA
+        values$effects[[varname]]$EffSize_VL <- NA
+        values$effects[[varname]]$EffSize_L <- NA
+        values$effects[[varname]]$EffSize_M <- NA
+        values$effects[[varname]]$EffSize_S <- NA
+        values$effects[[varname]]$EffSize_VS <- NA
+        values$effects[[varname]]$EffSize_O <- NA
       } else {
         EffSize <- interpret_d_posterior(posteriors[, varname])
 
@@ -285,21 +281,37 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
         EffSize_table$Variable <- varname
         EffSizes <- rbind(EffSizes, EffSize_table)
 
-        values[[varname]]$EffSize <- EffSize_table
-        values[[varname]]$EffSize_text <- EffSize$text
+        values$effects[[varname]]$EffSize <- EffSize_table
+        values$effects[[varname]]$EffSize_text <- EffSize$text
 
-        values[[varname]]$EffSize_VL <- EffSize$probs$VeryLarge
-        values[[varname]]$EffSize_L <- EffSize$probs$Large
-        values[[varname]]$EffSize_M <- EffSize$probs$Medium
-        values[[varname]]$EffSize_S <- EffSize$probs$Small
-        values[[varname]]$EffSize_VS <- EffSize$probs$VerySmall
-        values[[varname]]$EffSize_O <- EffSize$probs$Opposite
+        values$effects[[varname]]$EffSize_VL <- EffSize$probs$VeryLarge
+        values$effects[[varname]]$EffSize_L <- EffSize$probs$Large
+        values$effects[[varname]]$EffSize_M <- EffSize$probs$Medium
+        values$effects[[varname]]$EffSize_S <- EffSize$probs$Small
+        values$effects[[varname]]$EffSize_VS <- EffSize$probs$VerySmall
+        values$effects[[varname]]$EffSize_O <- EffSize$probs$Opposite
       }
     }
   }
 
 
+
+  # Overlap coef ------------------------------------------------------------
+  # -------------------------------------------------------------------------
+  if (overlap == TRUE) {
+    for (varname in varnames) {
+      posterior <- posteriors[, varname]
+      norm <- rnorm(length(posterior), 0, sd(posterior))
+
+      overlap_coef <- overlap(posterior, norm) * 100
+
+      values$effects[[varname]]$overlap_coef <- overlap_coef
+    }
+  }
+
+
   # Summary --------------------------------------------------------------------
+  # ----------------------------------------------------------------------------
   if (R2 == TRUE) {
     varnames_for_summary <- varnames
   } else {
@@ -312,27 +324,27 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
       summary,
       data.frame(
         Variable = varname,
-        MPE = values[[varname]]$MPE,
-        Median = values[[varname]]$median,
-        MAD = values[[varname]]$mad,
-        Mean = values[[varname]]$mean,
-        SD = values[[varname]]$sd,
-        CI_lower = values[[varname]]$CI_values[1],
-        CI_higher = values[[varname]]$CI_values[2]
+        MPE = values$effects[[varname]]$MPE,
+        Median = values$effects[[varname]]$median,
+        MAD = values$effects[[varname]]$mad,
+        Mean = values$effects[[varname]]$mean,
+        SD = values$effects[[varname]]$sd,
+        CI_lower = values$effects[[varname]]$CI_values[1],
+        CI_higher = values$effects[[varname]]$CI_values[2]
       )
     )
   }
 
-  if (effsize == T) {
+  if (effsize == TRUE) {
     EffSizes <- data.frame()
     for (varname in varnames_for_summary) {
       Current <- data.frame(
-        Very_Large = values[[varname]]$EffSize_VL,
-        Large = values[[varname]]$EffSize_L,
-        Medium = values[[varname]]$EffSize_M,
-        Small = values[[varname]]$EffSize_S,
-        Very_Small = values[[varname]]$EffSize_VS,
-        Opposite = values[[varname]]$EffSize_O
+        Very_Large = values$effects[[varname]]$EffSize_VL,
+        Large = values$effects[[varname]]$EffSize_L,
+        Medium = values$effects[[varname]]$EffSize_M,
+        Small = values$effects[[varname]]$EffSize_S,
+        Very_Small = values$effects[[varname]]$EffSize_VS,
+        Opposite = values$effects[[varname]]$EffSize_O
       )
       EffSizes <- rbind(EffSizes, Current)
     }
@@ -341,14 +353,23 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
 
 
 
+  if (overlap == TRUE) {
+    summary$Overlap <- NA
+    for (varname in varnames_for_summary) {
+      summary[summary$Variable == varname, ]$Overlap <- values$effects[[varname]]$overlap_coef
+    }
+  }
+
   # Text --------------------------------------------------------------------
+  # -------------------------------------------------------------------------
 
   # Model
-  if (effsize) {
+  if (effsize == TRUE) {
     info_effsize <- " Effect sizes are based on Cohen (1988) recommandations."
   } else {
     info_effsize <- ""
   }
+
 
   info <- paste0(
     "We fitted a Markov Chain Monte Carlo ",
@@ -357,41 +378,42 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
     fit$family$link,
     ") model to predict ",
     outcome,
-    " (formula = ", format(fit$formula),
+    " (formula = ", paste0(format(fit$formula), collapse = ""),
     ").",
     info_effsize,
-    " Priors were set as follows: "
+    " The model's priors were set as follows: "
   )
 
   # Priors
-  if ("adjusted_scale" %in% names(info_priors$prior) & !is.null(info_priors$prior$adjusted_scale)) {
+  text_priors <- rstanarm::prior_summary(fit)
+  if ("adjusted_scale" %in% names(text_priors$prior) & !is.null(text_priors$prior$adjusted_scale)) {
     scale <- paste0(
       "), scale = (",
-      paste(sapply(info_priors$prior$adjusted_scale, format_digit), collapse = ", ")
+      paste(sapply(text_priors$prior$adjusted_scale, format_digit), collapse = ", ")
     )
   } else {
     scale <- paste0(
       "), scale = (",
-      paste(sapply(info_priors$prior$scale, format_digit), collapse = ", ")
+      paste(sapply(text_priors$prior$scale, format_digit), collapse = ", ")
     )
   }
 
   info_priors_text <- paste0(
     "  ~ ",
-    info_priors$prior$dist,
+    text_priors$prior$dist,
     " (location = (",
-    paste(info_priors$prior$location, collapse = ", "),
+    paste(text_priors$prior$location, collapse = ", "),
     scale,
     "))"
   )
 
   # Coefs
   coefs_text <- c()
-  for (varname in names(values)) {
-    coefs_text <- c(coefs_text, values[[varname]]$text)
+  for (varname in varnames) {
+    coefs_text <- c(coefs_text, values$effects[[varname]]$text)
     if (effsize == TRUE) {
       if (!varname %in% c("(Intercept)", "R2")) {
-        coefs_text <- c(coefs_text, values[[varname]]$EffSize_text, "")
+        coefs_text <- c(coefs_text, values$effects[[varname]]$EffSize_text)
       }
     }
   }
@@ -400,6 +422,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
 
 
   # Plot --------------------------------------------------------------------
+  # -------------------------------------------------------------------------
 
   plot <- posteriors[varnames] %>%
     # select(-`(Intercept)`) %>%
@@ -421,12 +444,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, ...) {
 
 
 
-
-  if (mixed == TRUE) {
-    output <- list(text = text, plot = plot, summary = summary, values = values, random = random_info)
-  } else {
-    output <- list(text = text, plot = plot, summary = summary, values = values)
-  }
+  output <- list(text = text, plot = plot, summary = summary, values = values)
 
   class(output) <- c("psychobject", "list")
   return(output)

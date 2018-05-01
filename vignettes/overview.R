@@ -173,38 +173,31 @@ kable(psycho::values(results)$methods)
 plot(results)
 
 ## ---- results='hide'-----------------------------------------------------
-df <- data.frame(
-  Participant = as.factor(rep(1:25, each = 4)),
-  Item = rep_len(c("i1", "i2", "i3", "i4"), 100),
-  Condition = rep_len(c("A", "B", "A", "B", "B"), 20),
-  Error = as.factor(sample(c(0, 1), 100, replace = T)),
-  RT = rnorm(100, 30, .2),
-  Stress = runif(100, 3, 5)
-)
+df <- psycho::emotion
 
-# Standardize the numeric variables.
-df <- psycho::standardize(df)
+# Stabdardize the outcome
+df$Subjective_Arousal <- psycho::standardize(df$Subjective_Arousal)
 
 # Take a look  at the first 10 rows
 head(df)
 
 ## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
-kable(head(df))
+knitr::kable(head(df))
 
 ## ----message=FALSE, warning=FALSE, results='markup', comment=NA----------
 # Format data
 df_for_anova <- df %>%
-  dplyr::group_by(Participant, Condition) %>%
-  dplyr::summarise(RT = mean(RT))
+  dplyr::group_by(Participant_ID, Emotion_Condition) %>%
+  dplyr::summarise(Subjective_Arousal = mean(Subjective_Arousal))
 
 # Run the anova
-anova <- aov(RT ~ Condition + Error(Participant), df_for_anova)
-summary(anova)
+aov_results <- aov(Subjective_Arousal ~ Emotion_Condition + Error(Participant_ID), df_for_anova)
+summary(aov_results)
 
 ## ----fig.align='center', message=FALSE, warning=FALSE, val=TRUE, results='markup', comment=NA----
-library(lme4)
+library(lmerTest)
 
-fit <- lme4::lmer(RT ~ Condition + (1 | Participant) + (1 | Item), data = df)
+fit <- lmerTest::lmer(Subjective_Arousal ~ Emotion_Condition + (1|Participant_ID) + (1|Item_Name), data = df)
 
 # Traditional output
 summary(fit)
@@ -216,7 +209,7 @@ results <- psycho::analyze(fit)
 summary(results, round = 2)
 
 ## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
-kable(summary(results, round = 2))
+knitr::kable(summary(results, round = 2))
 
 ## ---- results='markup', comment=NA---------------------------------------
 print(results)
@@ -224,14 +217,14 @@ print(results)
 ## ----fig.align='center', message=FALSE, warning=FALSE, val=TRUE, results='hide'----
 library(rstanarm)
 
-fit <- rstanarm::stan_lmer(RT ~ Condition + (1 | Participant) + (1 | Item), data = df)
+fit <- rstanarm::stan_lmer(Subjective_Arousal ~ Emotion_Condition + (1|Participant_ID) + (1|Item_Name), data = df)
 
 # Traditional output
 results <- psycho::analyze(fit, effsize = TRUE)
 summary(results, round = 2)
 
 ## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
-kable(summary(results, round = 2))
+knitr::kable(summary(results, round = 2))
 
 ## ---- results='markup', comment=NA---------------------------------------
 print(results)

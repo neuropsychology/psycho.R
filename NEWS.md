@@ -1,9 +1,26 @@
 # Current Dev
 
 ### Breaking changes
+- Set default overlap parameter to TRUE in `analyze.stanreg` 
+- Remove support of lmerMod objects (linear mixed models must be fitted with lmerTest)
+- Refactored get_predicted.stanreg
+- Changed organization of `values` in analyzed models
 - Added `subset` parameter in `standardize`
 - Changed order of parameters in `dprime`
 ### New functions / parameters
+- Added `print` for `n_factors`
+- Added `overlap` (experimental) parameter to analyze.stanreg as a different index of effect existence
+- Added `overlap` function
+- Added `power_analysis` function.
+- Added `analyze.lm` for lm objects.
+- Added `interpret_bf` for bayes factor interpretation
+- Added `probs_to_odds`
+- Added confidence intervals (CI) to analyze for lmerTest models
+- Refactored `odds_to_probs`
+- Added ìs.mixed.stanreg`
+- Added `keep_iterations` in `get_predicted.stanreg` (and demonstration of how to plot them in vignettes)
+- Added `emotion` dataset
+- Added get_contrasts methods for lme4 objects
 - Added prior info in `analyze.stanreg`
 - Added (exposed) `interpret_d_posterior` for Bayesian size effect interpretation
 - Added `find_combinations` function

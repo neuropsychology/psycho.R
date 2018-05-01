@@ -79,8 +79,13 @@ n_factors <- function(df, rotate="varimax", fm="minres", n_max=8) {
     return(result)
   }
 
+  # Detect if df us a correlation matrix
+  if(length(setdiff(names(df),rownames(df))) != 0){
+    cor <- qgraph::cor_auto(df, forcePD = FALSE)
+  } else{
+    cor <- df
+  }
 
-  cor <- qgraph::cor_auto(df, forcePD = FALSE)
 
   ap <- parallel(subject = nrow(df), var = ncol(df))
   nS <- nFactors::nScree(x = eigen(cor)$values, aparallel = ap$eigen$qevpea)
@@ -191,25 +196,53 @@ n_factors <- function(df, rotate="varimax", fm="minres", n_max=8) {
       "n.Methods" = "n_method"
     ) %>%
     mutate_("n.Factors" = ~ as.integer(n.Factors)) %>%
-    left_join(eigenvalues, by = "n.Factors")
+    left_join(eigenvalues, by = "n.Factors") %>%
+    select_("-Exp.Variance")
 
-
-  # Values
-  # -------------
-  values <- list(eigenvalues = eigenvalues, methods = results)
 
   # Summary
   # -------------
   summary <- eigenvalues
 
+  # Values
+  # -------------
+
+  best_n_df <- filter_(summary, "n.Methods == max(n.Methods)")
+  best_n <- best_n_df$n.Factors
+
+  best_n_methods <- list()
+  for(i in as.list(best_n)){
+    methods_list <- results[results$n_optimal %in% as.list(i), ]
+    methods_list <- as.character(methods_list$Method)
+    best_n_methods[[paste0("n_", i)]] <- paste(methods_list, collapse = ", ")
+  }
+
+
+
+  values <- list(summary = summary, methods = results, best_n_df=best_n)
+
+
+
   # Text
   # -------------
-  text <- "Not implemented yet :("
+  text <- paste0("The choice of ",
+                 best_n,
+                 " factors is supported by ",
+                 best_n_df$n.Methods,
+                 " (out of ",
+                 round(nrow(results)),
+                 "; ",
+                 round(best_n_df$n.Methods/nrow(results)*100, 2),
+                 "%) methods (",
+                 best_n_methods,
+                 ")")
+
+  # text <- c(text, as.character(head(arrange_(summary, "n.Methods"))))
 
 
   # Plot
   # -------------
-  plot_data <- eigenvalues
+  plot_data <- summary
   plot_data$n.Methods.Ratio <- plot_data$n.Methods / sum(plot_data$n.Methods)
   plot_data$n.Methods.Ratio <- plot_data$n.Methods.Ratio * (1 / max(plot_data$n.Methods.Ratio))
   plot_data$area <- plot_data$n.Methods.Ratio / (max(plot_data$n.Methods.Ratio) / max(plot_data$Eigenvalues))
@@ -233,7 +266,7 @@ n_factors <- function(df, rotate="varimax", fm="minres", n_max=8) {
       size = 1
     ) +
     scale_y_continuous(sec.axis = sec_axis(
-      trans = ~ . * (max(eigenvalues$Cum.Variance) / max(eigenvalues$Eigenvalues)),
+      trans = ~ . * (max(plot_data$Cum.Variance) / max(plot_data$Eigenvalues)),
       name = "Cumulative Variance\n"
     )) +
     ylab("Eigenvalues\n") +

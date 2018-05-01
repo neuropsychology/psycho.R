@@ -9,11 +9,12 @@
 #'
 #' @examples
 #' library(psycho)
-#' require(lme4)
+#' library(lme4)
 #' fit <- lme4::glmer(vs ~ mpg + (1|cyl), data=mtcars, family="binomial")
 #'
 #' results <- analyze(fit)
 #' summary(results)
+#' print(results)
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
@@ -29,13 +30,17 @@ analyze.glmerMod <- function(x, ...) {
   # -------------
   fit <- x
 
+  predictors <- all.vars(as.formula(fit@call$formula))
+  outcome <- predictors[[1]]
+  predictors <- tail(predictors, -1)
+
   R2m <- MuMIn::r.squaredGLMM(fit)["R2m"]
   R2c <- MuMIn::r.squaredGLMM(fit)["R2c"]
 
 
   # Summary
   # -------------
-  fitsum <- data.frame(lmerTest::summary(fit)$coefficients)
+  fitsum <- data.frame(summary(fit)$coefficients)
 
   fitsum$Variable <- rownames(fitsum)
   fitsum$Coef <- fitsum$Estimate
@@ -54,22 +59,32 @@ analyze.glmerMod <- function(x, ...) {
   # Values
   # -------------
   # Initialize empty values
-  values <- list()
-  values$R2m <- R2m
-  values$R2c <- R2c
+  values <- list(model = list(), effects = list())
+  values$model$R2m <- R2m
+  values$model$R2c <- R2c
 
   # Loop over all variables
   for (varname in varnames) {
-    text <- paste(
-      "The effect of ", varname, " was [NOT] significant (beta = ",
+    if (fitsum[varname, "p"] < .1) {
+      significance <- ""
+    } else {
+      significance <- "not"
+    }
+
+
+    text <- paste0(
+      "The effect of ",
+      varname,
+      " is ",
+      significance,
+      " significant (beta = ",
       format_digit(fitsum[varname, "Coef"], 2), ", SE = ",
       format_digit(fitsum[varname, "SE"], 2), ", z = ",
       format_digit(fitsum[varname, "z"], 2), ", p ",
-      format_p(fitsum[varname, "p"]), ").",
-      sep = ""
+      format_p(fitsum[varname, "p"]), ")."
     )
 
-    values[[varname]] <- list(
+    values$effects[[varname]] <- list(
       Coef = fitsum[varname, "Coef"],
       SE = fitsum[varname, "SE"],
       z = fitsum[varname, "z"],
@@ -82,20 +97,23 @@ analyze.glmerMod <- function(x, ...) {
 
   # Text
   # -------------
-  text <- c(paste(
-    "The overall model predicting ... successfully converged ",
+  text <- c(paste0(
+    "The overall model predicting ",
+    outcome,
+    " (formula = ",
+    format(fit@call$formula),
+    ") successfully converged",
     "and explained ",
     format_digit(R2c * 100, 2), "% of the variance of the",
     " endogen (the conditional R2). ",
     "The variance explained by the fixed effects was of ",
     format_digit(R2m * 100, 2), "% (the marginal R2) and the ",
     "one explained by the random effects of ",
-    format_digit((R2c - R2m) * 100, 2), "%.",
-    sep = ""
+    format_digit((R2c - R2m) * 100, 2), "%."
   ))
 
   for (varname in varnames) {
-    text <- c(text, paste("   -", values[[varname]]$Text))
+    text <- c(text, paste("   -", values$effects[[varname]]$Text))
   }
 
 

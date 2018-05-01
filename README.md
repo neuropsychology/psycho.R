@@ -32,7 +32,7 @@
 
 ## Goal
 
-The main goal of the `psycho` package is to provide tools for psychologists, neuropsychologists and neuroscientists, to transform statistical outputs into something readable that can be, almost directly, copied and pasted into a report. It also implements various functions, from very useful ones (`correlation()`, `standardize()`) to miscellaenous ones (`find_season()`).
+The main goal of the `psycho` package is to provide tools for psychologists, neuropsychologists and neuroscientists, to facilitate and speed up the time spent on data analysis. It implements various useful functions with a special focus on the output, which becomes something readable that can be, almost directly, copied and pasted into a report or a manuscript.
 
 
 ## Contribute
@@ -49,6 +49,27 @@ Want to get involved in the developpment of an open-source software and improve 
 Check examples in the following vignettes:
 - [Overview of the psycho package](https://CRAN.R-project.org/package=psycho/vignettes/overview.html)
 - [Bayesian Analysis in Psychology](https://github.com/neuropsychology/psycho.R/blob/master/vignettes/bayesian.Rmd)
+
+Or run the following:
+```r
+library(rstanarm)
+library(psycho)
+
+df <- psycho::affective  # Load a dataset from the psycho package
+df <- standardize(df)  # Standardize all numeric variables
+
+fit <- stan_glm(Age ~ Salary, data=df)  # Fit a Bayesian linear model
+results <- analyze(fit)  # Format the output
+
+print(results)
+summary(results)
+plot(results)
+contrasts <- get_contrasts(results, "Salary")  # Compute estimated means and contrasts
+contrasts$means
+contrasts$contrasts
+
+get_predicted(fit)  # Get model prediction
+``` 
 
 
 ## Features

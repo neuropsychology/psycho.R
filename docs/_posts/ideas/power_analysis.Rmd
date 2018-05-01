@@ -1,0 +1,163 @@
+---
+title: "Bayesian and Frequentist Power Analysis"
+author: "Dominique Makowski"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+  md_document:
+    toc: yes
+    variant: markdown_github
+  pdf_document:
+    toc: yes
+tags:
+- r
+- psychology
+- neuroscience
+- neuropsychology
+- power analysis
+- poweranalysis
+layout: post
+---
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(knitr)
+```
+
+
+
+# The data
+
+Let's start by saying you did a pilot study. However, you'd like to know how many participants you should include in your final study to avoid a type II error (false negative, concluding to an absence of effect when in fact the effect exist).
+
+An an example, let's say we are interested in the amount of memories (the *autobiographical link*) associated with negative and neutral pictures. More specifically, we are interested to see if this **autobiographical link is related to the age of the participants**. Let's start by generating the correct dataframe.
+
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='hide'}
+library(dplyr)
+library(ggplot2)
+library(psycho)
+
+df <- psycho::emotion %>% 
+  group_by(Participant_ID) %>% 
+  select_if(is.numeric) %>% 
+  summarise_all(mean)
+
+head(df)
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE, results='markup'}
+knitr::kable(head(df))
+```
+
+Our dataframe is made of 19 rows (one row per participant) and includes the participant's age and average amount of autobiographical link (assessed by a scale after each picture they saw). Let's check the linear link between these two variables.
+
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+fit <- lm(Autobiographical_Link~Participant_Age, data=df)
+results <- psycho::analyze(fit)
+print(results)
+```
+
+
+It seems that **there is a trend**: the more a participant is old and the less autobiographical link he has. That might sound counter-intuitive but as many of the pictures had violent content, we could imagine that the younger participants are more exposed to that type of stimuli through video games and media. 
+
+We would like, then, to confirm this trend by running a new study. First we would like to estimate the number of participants needed to detect this effect.
+
+
+# Frequentist 
+
+There are many ways of doing a power analysis. Here, we will use an estimation based on data simulation through sampling. That means that we will extract different sample sizes of our data and fit the model. Then, we will compute the evolution of the **p value** in relationship to this sample size.
+
+Let's do it 50 times on a data from current sample size (n = 19) to a sample size of 60 (through random sampling with replacement). 
+
+
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='hide'}
+results <- psycho::power_analysis(fit, n_max=60, n_batch=50)  # This might take a long time
+```
+
+
+Now that we have our results, we can extract all the lines corresponding to our effect (where `variable == "Participant_Age"`), and summarise by sample size (group by `n`). We will then compute the median, as well as the 80% Highest Density Intervals (HDI, as an index of the 80% probability p value interval) of the p value.
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+pvalues <- results %>%
+  filter(Variable=="Participant_Age") %>%
+  select(n, p) %>%
+  group_by(n) %>%
+  summarise(p_median = median(p),
+            CI_lower = psycho::hdi(p, prob = 0.8)$values$HDImin,
+            CI_higher = psycho::hdi(p, prob = 0.8)$values$HDImax)
+
+```
+
+We can finally plot the data.
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+ggplot(pvalues, aes(x=n, y=p_median)) +
+  geom_hline(aes(yintercept=0.05), color="red", alpha=1) +
+  geom_hline(aes(yintercept=0.01), color="red", linetype="dashed", alpha=0.8) +
+  geom_hline(aes(yintercept=0.001), color="red", linetype="dotted", alpha=0.6) +
+  geom_line() +
+  geom_ribbon(aes(ymin=CI_lower, ymax=CI_higher), alpha=0.2) +
+  theme_bw() +
+  ylab("p value") +
+  xlab("Sample size")
+```
+
+**Based on this plot, it seems that a sample size of > 40 seems reasonable to reliably (with 80% of probability) detect (with a p < .05 treshold) the effect.** Note that this power analysis approach presents serious limitations has it based on multiple testing and data sampling. 
+
+# Bayesian
+
+You can possibly do a quite similar analysis in the Bayesian framework, altough it will take much more time to compute.
+
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='hide', include=FALSE}
+library(rstanarm)
+fit <- stan_glm(Autobiographical_Link~Participant_Age, data=df)
+results <- psycho::power_analysis(fit, n_max=60, n_batch=30)  # This takes a VERY long time
+```
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='hide', echo=FALSE}
+library(rstanarm)
+fit <- stan_glm(Autobiographical_Link~Participant_Age, data=df, chains=2, iter=1000)
+results <- psycho::power_analysis(fit, n_max=60, n_batch=30)  # This takes a VERY long time
+```
+
+We can then decide on a treshold, let's say the Maximum Probability of Effect (MPE, *i.e.*, the maximum probability that the effect is different from 0 in the median’s direction).
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+MPEs <- results %>%
+  filter(Variable=="Participant_Age") %>%
+  select(n, MPE) %>%
+  group_by(n) %>%
+  summarise(MPE_median = median(MPE),
+            CI_lower = psycho::hdi(MPE, prob = 0.8)$values$HDImin,
+            CI_higher = psycho::hdi(MPE, prob = 0.8)$values$HDImax)
+
+```
+
+We can finally plot the data.
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+ggplot(MPEs, aes(x=n, y=MPE_median)) +
+  geom_hline(aes(yintercept=95), color="red", alpha=1) +
+  geom_hline(aes(yintercept=99), color="red", linetype="dashed", alpha=0.8) +
+  geom_hline(aes(yintercept=99.9), color="red", linetype="dotted", alpha=0.6) +
+  geom_line() +
+  geom_ribbon(aes(ymin=CI_lower, ymax=CI_higher), alpha=0.2) +
+  theme_bw() +
+  ylab("MPE") +
+  xlab("Sample size")
+```
+
+The results appear as highly similar. The MPE consistently reaches the 95% treshold with a > 40 sample size.
+
+
+# Credits
+
+This package helped you? Don't forget to cite the various packages you used :)
+
+You can cite `psycho` as follows:
+
+- Makowski, (2018). *The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470

@@ -12,7 +12,13 @@ analyze(x, ...)
 \item{...}{Arguments passed to or from other methods.}
 }
 \description{
-Analyze objects.
+Analyze objects. See the documentation for your object's class:
+\itemize{
+ \item{\link[=analyze.stanreg]{analyze.stanreg}}
+ \item{\link[=analyze.lmerModLmerTest]{analyze.merModLmerTest}}
+ \item{\link[=analyze.glmerMod]{analyze.glmerMod}}
+ \item{\link[=analyze.lm]{analyze.lm}}
+ }
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
