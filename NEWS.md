@@ -1,5 +1,15 @@
 # Current Dev
 
+
+
+### Breaking changes
+### New functions / parameters
+### Changes
+
+
+
+# [0.2.0](https://github.com/neuropsychology/psycho.R/releases/tag/0.2.0) (2018-05-01)
+
 ### Breaking changes
 - Set default overlap parameter to TRUE in `analyze.stanreg` 
 - Remove support of lmerMod objects (linear mixed models must be fitted with lmerTest)

@@ -467,7 +467,7 @@ plot(results)
 Obviously, you need to learn more about Bayesian analyses before running them. You can find more information in the rstanarm's [vignettes](https://CRAN.R-project.org/package=rstanarm/vignettes/rstanarm.html).
 
 
-Critically, see [**THIS**](https://github.com/neuropsychology/psycho.R/blob/master/vignettes/bayesian.Rmd) vignette for a guide to bayesian statistics for psychology.
+Critically, see [**THIS**](https://CRAN.R-project.org/package=psycho/vignettes/bayesian.html) vignette for a guide to bayesian statistics for psychology.
 
 
 
