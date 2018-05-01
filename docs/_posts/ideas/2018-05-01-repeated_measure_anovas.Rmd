@@ -1,0 +1,200 @@
+---
+title: "How to do Repeated Measures ANOVAs in R"
+layout: post
+output:
+  md_document:
+    toc: yes
+    variant: markdown_github
+  html_document:
+    df_print: paged
+    toc: yes
+author: "Dominique Makowski"
+date: "`r Sys.Date()`"
+tags:
+- r
+- psychology
+- neuroscience
+- neuropsychology
+- repeated measures ANOVA
+- rmANOVA
+- ANOVAs
+- Analysis of Variance
+- mixed models
+- contrasts
+- posthoc analysis
+- posthoc tests
+- multiple comparisons
+---
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(knitr)
+```
+
+# Don't do it
+
+**Ha! Got ya!** Trying to run some *old school* ANOVAs *mmh*? **I'll show you even better!**
+
+There is now a tremendous amount of data showing the inadequacy of ANOVAs as a statistical procedure ([Camilli, 1987](http://journals.sagepub.com/doi/abs/10.3102/10769986012001087); [Levy, 1978](https://www.tandfonline.com/doi/abs/10.1080/00949657808810247); [Vasey, 1987](https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1469-8986.1987.tb00324.x); [Chang, 2009](https://link.springer.com/article/10.1007/s00180-009-0162-z)). Instead, many papers suggest moving toward the mixed-modelling framework ([Kristensen, 2004](https://www.physiology.org/doi/abs/10.1152/advan.00042.2003); [Jaeger, 2008](https://www.sciencedirect.com/science/article/pii/S0749596X07001337)), which was shown to be more flexible, accurate, powerful and suited for psychological data.
+
+Using this framework, we will see how we can very simply answer our questions with R.
+
+# The Emotion Dataset
+
+Let's take the example dataset included in the `psycho` package.
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+library(psycho)
+library(tidyverse)
+
+df <- psycho::emotion %>% 
+  select(Participant_ID, 
+         Participant_Sex, 
+         Emotion_Condition, 
+         Subjective_Valence,
+         Recall)
+
+summary(df)
+```
+
+Our dataframe (called `df`) contains data from several participants, exposed to neutral and negative pictures (the `Emotion_Condition` column). Each row corresponds to a single trial. As there were 48 trials per participants, there are 48 rows by participant. During each trial, the participant had to rate its emotional valence (`Subjective_Valence`: positive - negative) experienced during the picture presentation. Moreover, 20min after this emotional rating task, the participant was asked to freely recall all the pictures he remembered.
+
+Our dataframe contains, for each trial, 5 variables: the **name of the participant** (`Participant_ID`), its **sex** (`Participant_Sex`), the **emotion condition** (`Emotion_Condition`), the **valence rating** (`Subjective_Valence`) and whether the participant **recalled** the picture (`Recall`).
+
+# The effect of Emotion
+
+Does the emotion condition modulate the subjective valence? How to answer?
+
+**Whith a repeated measures ANOVA of course!**
+
+Let's run it:
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+summary(aov(Subjective_Valence ~ Emotion_Condition + Error(Participant_ID/Emotion_Condition), data=df))
+```
+
+Wow, we found that there is a significant effect of the emotional condition on valence ratings. *We might have Science material here.*
+
+As you know, an ANOVA is pretty much a *condensed* linear model where the predictors are factors. Therefore, we can run an ANOVA on a linear mixed model (which includes the "error" term, or *random effect*).
+
+
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+library(lmerTest)
+fit <- lmer(Subjective_Valence ~ Emotion_Condition + (1|Participant_ID), data=df)
+anova(fit)
+```
+
+As you can see, the results are, for the important bits (the sum of squares, mean square and *p* value), very close to those of the *traditional* approach.
+
+Note that the `psycho` package, through the `analyze` function, also allows to display the interpretation of the underlying model itself with the following:
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+results <- analyze(fit)
+print(results)
+```
+
+
+# Post-hoc / Contrast Analysis
+
+Then, we wou'd like to see how the levels are different. To do this, we have to run a "contrast" analysis, comparing the estimated means of each level.
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='hide'}
+# We have to provide the model (here called fit and the formula of the factors we want to contrast
+results <- get_contrasts(fit, "Emotion_Condition")
+print(results$contrasts)
+```
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+knitr::kable(results$contrasts, digits=2)
+```
+
+It appears that the negative condition yields a significantly lower valence (*i.e.*, more negative) than the neutral (-74.88 points of difference). At this point, we usually also want to know the means of each conditions. However, we often do it by directly computing the means and SDs of our observed data. But that's not the cleanest way, as our data might be unbalanced or biased. 
+
+The best way to do it is to estimate means based on the fitted model (marginal means). Those were automatically computed when running the `get_contrasts` function. We just have to extract them.
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, include=FALSE,results='markup'}
+print(results$means)
+```
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+knitr::kable(results$means, digits=2)
+```
+
+Finally, we can plot these means:
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center'}
+library(ggplot2)
+
+ggplot(results$means, aes(x=Emotion_Condition, y=Mean, group=1)) +
+  geom_line() +
+  geom_pointrange(aes(ymin=CI_lower, ymax=CI_higher)) +
+  ylab("Subjective Valence") +
+  xlab("Emotion Condition") +
+  theme_bw()
+```
+
+
+
+
+# Interaction
+
+Let's repeat the previous steps with adding the participant's **sex** as a predictor.
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+fit <- lmer(Subjective_Valence ~ Emotion_Condition * Participant_Sex + (1|Participant_ID), data=emotion)
+anova(fit)
+```
+
+It seems that there is a significant main effect of the emotion condition, as well as an interaction with the participants' sex. Let's plot the estimated means.
+
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, include=TRUE,results='hide'}
+results <- get_contrasts(fit, "Emotion_Condition * Participant_Sex")
+print(results$means)
+```
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+knitr::kable(results$means, digits=2)
+```
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center'}
+ggplot(results$means, aes(x=Emotion_Condition, y=Mean, color=Participant_Sex, group=Participant_Sex)) +
+  geom_line(position = position_dodge(.3)) +
+  geom_pointrange(aes(ymin=CI_lower, ymax=CI_higher), 
+                  position = position_dodge(.3)) +
+  ylab("Subjective Valence") +
+  xlab("Emotion Condition") +
+  theme_bw()
+```
+
+Let's investigate the contrasts:
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, include=TRUE, results='hide'}
+print(results$contrasts)
+```
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+knitr::kable(results$contrasts, digits=2)
+```
+
+It appears that the differences between men and women is not significant. However, by default, `get_contrasts` uses the Tukey method for p value adjustment. We can, with an exploratory mindset, **turn off the p value correction** (or choose other methods such as *bonferonni*, *fdr* and such).
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, include=TRUE, results='hide'}
+results <- get_contrasts(fit, "Emotion_Condition * Participant_Sex", adjust = "none")
+print(results$contrasts)
+```
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+knitr::kable(results$contrasts, digits=2)
+```
+
+Without correcting for multiple comparisons, we observe that men rate the negative pictures as significantly less negative than women.
+
+# Note
+
+**This analysis is even simpler in the Bayesian framework. See [this](https://CRAN.R-project.org/package=psycho/vignettes/bayesian.html) tutorial.**
+
+
+# Credits
+
+This package helped you? Don't forget to cite the various packages you used :)
+
+You can cite `psycho` as follows:
+
+- Makowski, (2018). *The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470
