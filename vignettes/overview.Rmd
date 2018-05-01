@@ -381,7 +381,7 @@ head(df)
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-kable(head(df))
+knitr::kable(head(df))
 ```
 
 This dataframe contains the data of 19 participants. Each participant underwent 48 trials (therefore, there are 48 lines per participant), consisting in viewing negative and neutral pictures. We measured, for each item, the emotional arousal felt by the participant.
@@ -452,7 +452,7 @@ summary(results, round = 2)
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-kable(summary(results, round = 2))
+knitr::kable(summary(results, round = 2))
 ```
 
 ```{r, results='markup', comment=NA}
@@ -467,7 +467,7 @@ plot(results)
 Obviously, you need to learn more about Bayesian analyses before running them. You can find more information in the rstanarm's [vignettes](https://CRAN.R-project.org/package=rstanarm/vignettes/rstanarm.html).
 
 
-Critically, see THIS vignette for a guide to bayesian statistics for psychology.
+Critically, see [**THIS**](https://github.com/neuropsychology/psycho.R/blob/master/vignettes/bayesian.Rmd) vignette for a guide to bayesian statistics for psychology.
 
 
 

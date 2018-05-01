@@ -182,7 +182,7 @@ df$Subjective_Arousal <- psycho::standardize(df$Subjective_Arousal)
 head(df)
 
 ## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
-kable(head(df))
+knitr::kable(head(df))
 
 ## ----message=FALSE, warning=FALSE, results='markup', comment=NA----------
 # Format data
@@ -191,8 +191,8 @@ df_for_anova <- df %>%
   dplyr::summarise(Subjective_Arousal = mean(Subjective_Arousal))
 
 # Run the anova
-anova <- aov(Subjective_Arousal ~ Emotion_Condition + Error(Participant_ID), df_for_anova)
-summary(anova)
+aov_results <- aov(Subjective_Arousal ~ Emotion_Condition + Error(Participant_ID), df_for_anova)
+summary(aov_results)
 
 ## ----fig.align='center', message=FALSE, warning=FALSE, val=TRUE, results='markup', comment=NA----
 library(lmerTest)
@@ -224,7 +224,7 @@ results <- psycho::analyze(fit, effsize = TRUE)
 summary(results, round = 2)
 
 ## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
-kable(summary(results, round = 2))
+knitr::kable(summary(results, round = 2))
 
 ## ---- results='markup', comment=NA---------------------------------------
 print(results)

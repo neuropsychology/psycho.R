@@ -50,14 +50,15 @@ Check examples in the following vignettes:
 - [Overview of the psycho package](https://CRAN.R-project.org/package=psycho/vignettes/overview.html)
 - [Bayesian Analysis in Psychology](https://github.com/neuropsychology/psycho.R/blob/master/vignettes/bayesian.Rmd)
 
+Or run the following:
 ```r
 library(rstanarm)
 library(psycho)
 
 df <- psycho::affective  # Load a dataset from the psycho package
-df <- standardize(df)  # Standardize numeric variables
+df <- standardize(df)  # Standardize all numeric variables
 
-fit <- stan_glm(Age ~ Salary, data=df)  # Fit a Bayesian linear models
+fit <- stan_glm(Age ~ Salary, data=df)  # Fit a Bayesian linear model
 results <- analyze(fit)  # Format the output
 
 print(results)

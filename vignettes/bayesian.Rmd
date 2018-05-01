@@ -72,7 +72,7 @@ X <- psycho::standardize(psycho::affective$Concealing)
 Y <- psycho::standardize(psycho::affective$Life_Satisfaction)
 r <- cor.test(X, Y)$estimate
 p <- cor.test(X, Y)$p.value
-fit <- rstanarm::stan_glm(Y ~ X, seed=666)
+fit <- rstanarm::stan_glm(Y ~ X, seed=666, data=data.frame(Y,X))
 values <- values(analyze(fit))
 posterior <- values$effects$X$posterior
 density <- density(posterior, n = length(posterior))
@@ -162,11 +162,11 @@ results <- psycho::analyze(fit)
 summary(results, round = 2)
 ```
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-kable(summary(results, round = 2))
+knitr::kable(summary(results, round = 2))
 ```
 
 And print it textually:
-```{r echo=T, message=FALSE, warning=FALSE}
+```{r echo=TRUE, message=FALSE, warning=FALSE}
 print(results)
 ```
 
@@ -281,7 +281,7 @@ Let's see if we can **predict the sex** with the tendency to flexibly *adjust* o
 
 ```{r, message=FALSE, results="hide"}
 # Let's fit our model
-fit <- rstanarm::stan_glm(Sex ~ Adjusting, data=df, family = binomial(link="logit"))
+fit <- rstanarm::stan_glm(Sex ~ Adjusting, data=df, family = "binomial")
 ```
 
 
@@ -652,7 +652,7 @@ As Bayesian models usually generate a lot of samples (*iterations*), one could w
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='hide', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 # Fit the model
-fit <- rstanarm::stan_glm(Sex ~ Adjusting, data=df, family = binomial(link="logit"))
+fit <- rstanarm::stan_glm(Sex ~ Adjusting, data=df, family = "binomial")
 ```
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 # Generate a new refgrid

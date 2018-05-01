@@ -8,6 +8,18 @@
 #'
 #' @export
 format_digit <- function(x, digits = 2, null_treshold = 0.001) {
+  if(length(x) > 1){
+    return(sapply(x, .format_digit, digits=digits, null_treshold=null_treshold))
+  } else{
+    return(.format_digit(x, digits=digits, null_treshold=null_treshold))
+  }
+}
+
+
+
+
+#' @keywords internal
+.format_digit <- function(x, digits = 2, null_treshold = 0.001) {
 
   # If x is an Integer
   if (x %% 1 == 0) {
@@ -34,11 +46,6 @@ format_digit <- function(x, digits = 2, null_treshold = 0.001) {
 }
 
 
-
-
-
-
-
 #' Tidyverse-friendly sprintf.
 #'
 #' @param x Values.
@@ -51,3 +58,28 @@ format_string <- function(x, fmt, ...) {
   x <- sprintf(fmt, x, ...)
   return(x)
 }
+
+
+
+
+
+
+#' Format p values.
+#'
+#' @param pvalues P values (scalar or vector).
+#'
+#' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
+#'
+#' @export
+format_p <- function(pvalues) {
+  ifelse(pvalues < 0.001, "< .001***",
+         ifelse(pvalues < 0.01, "< .01**",
+                ifelse(pvalues < 0.05, "< .05*",
+                       ifelse(pvalues < 0.1, paste0("= ", round(pvalues, 2), "\xB0"),
+                              "> .1"
+                       )
+                )
+         )
+  )
+}
+

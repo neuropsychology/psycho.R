@@ -13,7 +13,7 @@ X <- psycho::standardize(psycho::affective$Concealing)
 Y <- psycho::standardize(psycho::affective$Life_Satisfaction)
 r <- cor.test(X, Y)$estimate
 p <- cor.test(X, Y)$p.value
-fit <- rstanarm::stan_glm(Y ~ X, seed=666)
+fit <- rstanarm::stan_glm(Y ~ X, seed=666, data=data.frame(Y,X))
 values <- values(analyze(fit))
 posterior <- values$effects$X$posterior
 density <- density(posterior, n = length(posterior))
@@ -70,9 +70,9 @@ results <- psycho::analyze(fit)
 summary(results, round = 2)
 
 ## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
-kable(summary(results, round = 2))
+knitr::kable(summary(results, round = 2))
 
-## ----echo=T, message=FALSE, warning=FALSE--------------------------------
+## ----echo=TRUE, message=FALSE, warning=FALSE-----------------------------
 print(results)
 
 ## ----echo=T, message=FALSE, warning=FALSE--------------------------------
@@ -132,7 +132,7 @@ ggplot(contrasts$means, aes(x=Level, y=Median, group=1)) +
 
 ## ---- message=FALSE, results="hide"--------------------------------------
 # Let's fit our model
-fit <- rstanarm::stan_glm(Sex ~ Adjusting, data=df, family = binomial(link="logit"))
+fit <- rstanarm::stan_glm(Sex ~ Adjusting, data=df, family = "binomial")
 
 ## ---- message=FALSE, results="hide"--------------------------------------
 # Format the results using analyze()
@@ -322,7 +322,7 @@ data.frame(posterior = posterior,
 
 ## ---- fig.width=7, fig.height=4.5, eval = TRUE, results='hide', fig.align='center', comment=NA, message=FALSE, warning=FALSE----
 # Fit the model
-fit <- rstanarm::stan_glm(Sex ~ Adjusting, data=df, family = binomial(link="logit"))
+fit <- rstanarm::stan_glm(Sex ~ Adjusting, data=df, family = "binomial")
 
 ## ---- fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE----
 # Generate a new refgrid
