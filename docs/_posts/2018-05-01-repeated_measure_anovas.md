@@ -4,7 +4,7 @@ title: "How to do Repeated Measures ANOVAs in R"
 author: Dominique Makowski
 author_web: https://dominiquemakowski.github.io/
 date: 2018-05-01
-summary: How to do Repeated Measures ANOVAs in R
+summary: How to do Repeated Measures ANOVAs in R (with the Mixed Models).
 ---
 
 
