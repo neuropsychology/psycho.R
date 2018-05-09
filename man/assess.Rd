@@ -4,23 +4,34 @@
 \alias{assess}
 \title{Compare a score to a parent population.}
 \usage{
-assess(score, mean = 0, sd = 1, linecolor = "#E91E63",
-  fillcolor = "#2196F3", xlabel = "Score", verbose = T)
+assess(patient, mean = 0, sd = 1, n = NULL, controls = NULL,
+  verbose = TRUE, CI = 95, iter = 10000, color = "#2196F3",
+  color_CI = "#E91E63", color_score = "black", color_size = 2)
 }
 \arguments{
-\item{score}{The score.}
+\item{patient}{Single value (patient's score).}
 
-\item{mean}{The general population's mean.}
+\item{mean}{Mean of the control sample.}
 
-\item{sd}{The general population's standart deviation.}
+\item{sd}{SD of the control sample.}
 
-\item{linecolor}{The colour of the vertical line.}
+\item{n}{Size of the control sample.}
 
-\item{fillcolor}{The colour of the density plot.}
-
-\item{xlabel}{The label for the x axis.}
+\item{controls}{Vector of values (control's scores).}
 
 \item{verbose}{Print possible warnings.}
+
+\item{CI}{Credible interval bounds.}
+
+\item{iter}{Number of iterations.}
+
+\item{color}{Main color of plot distribution.}
+
+\item{color_CI}{Color of CI area.}
+
+\item{color_score}{Color of the line representing the patient's score.}
+
+\item{color_size}{Size of the line representing the patient's score.}
 }
 \value{
 output
@@ -29,7 +40,9 @@ output
 Compare a given score to a parent population.
 }
 \examples{
-rez <- assess(124, mean=100, sd=15)
+result <- assess(patient=124, mean=100, sd=15)
+print(result)
+plot(result)
 
 }
 \author{

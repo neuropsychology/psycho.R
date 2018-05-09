@@ -1,0 +1,93 @@
+---
+title: "Psycho's Popularity"
+layout: post
+output:
+  md_document:
+    toc: yes
+    variant: markdown_github
+  html_document:
+    df_print: paged
+    toc: yes
+author: "Dominique Makowski"
+date: "`r Sys.Date()`"
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(knitr)
+```
+
+# Download data
+
+```{r message=FALSE, warning=FALSE, include=TRUE, results="hide"}
+library(tidyverse)
+library(zoo)
+library(plotly)
+library(cranlogs)
+
+data <- cranlogs::cran_downloads(package = "psycho", from = "2017-10-06") %>% 
+  mutate(cumulative_count = cumsum(count),
+         average_count = zoo::rollmax(count, 10, fill=0)+10)
+
+
+blogposts_dates <- list.files("../") %>% 
+  stringr::str_subset("\\.md") %>% 
+  stringr::str_remove_all("[^0-9-]") %>% 
+  stringr::str_sub(end=-2) %>% 
+  lubridate::ymd() %>% 
+  as.data.frame() %>% 
+  dplyr::filter(. > "2018-04-30") %>% 
+  pull() %>% 
+  as.character()
+blogposts_names <- list.files("../") %>% 
+  stringr::str_subset(as.character(blogposts_dates)) %>% 
+  stringr::str_subset("\\.md") %>% 
+  stringr::str_remove_all("[0-9-]") %>% 
+  stringr::str_sub(end=-4) 
+
+
+events <- data.frame(date = c("2018-01-10", "2018-02-05", "2018-03-21"),
+                     label = c("JOSS Review", "JOSS Publication", "Blog Creation"),
+                     color = c("orange", "green", "blue")) %>% 
+   mutate_all(as.character) %>% 
+  bind_rows(
+    data.frame(date = blogposts_dates,
+               label = blogposts_names,
+               color = "red") %>% 
+      mutate_all(as.character)
+    ) %>% 
+  mutate(date = lubridate::ymd(date)) %>% 
+  left_join(data, by="date")
+ 
+```
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA}
+data %>% 
+  ggplot(aes(x=date, y=count, group=1)) +
+  geom_line(size=1) +
+  geom_vline(data=events, aes(xintercept = date), colour=events$color, size=1) +
+  geom_label(data=events, aes(label = label, x = date, y = average_count), fill = events$color, colour = "white", fontface="bold") +
+  theme_classic() +
+  scale_x_date(date_breaks = "1 month", 
+               # limits = as.Date(c('2011-01-01','2013-01-01')),
+               labels=scales::date_format("%Y-%m")) +
+  xlab("") +
+  ylab("CRAN Downloads\n")
+```
+
+# Event List
+
+<!-- links to blog posts -->
+- [Joss Publication]()
+- [Repeated measures ANOVA]()
+
+
+# Credits
+
+This package helped you? Don't forget to cite the various packages you used :)
+
+You can cite `psycho` as follows:
+
+- Makowski, (2018). *The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470

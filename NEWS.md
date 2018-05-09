@@ -3,8 +3,15 @@
 
 
 ### Breaking changes
+- `mellenbergh.test`, `crawford.test` and `crawford.test.freq` now return a psychobject
+- `assess` has been refactored to become a wrapper for `crawford.test`
+- `crawford.test` now computes the Bayesian version
+- `crawford.test` has been renamed to `crawford.test.freq`
 ### New functions / parameters
+- Added Crawford-Garthwaite (2007) Bayesian test for single-case analysis
+- Added `rnorm_perfect` function
 ### Changes
+- logo
 
 
 
