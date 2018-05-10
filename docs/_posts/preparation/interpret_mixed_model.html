@@ -11,7 +11,7 @@
 
 <meta name="author" content="Dominique Makowski" />
 
-<meta name="date" content="2018-05-07" />
+<meta name="date" content="2018-05-10" />
 
 <title>Format and Interpret Linear Mixed Models</title>
 
@@ -123,13 +123,14 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Format and Interpret Linear Mixed Models</h1>
 <h4 class="author"><em>Dominique Makowski</em></h4>
-<h4 class="date"><em>2018-05-07</em></h4>
+<h4 class="date"><em>2018-05-10</em></h4>
 
 </div>
 
 <div id="TOC">
 <ul>
-<li><a href="#fit-a-model">Fit a model</a></li>
+<li><a href="#the-data">The data</a></li>
+<li><a href="#fit-the-model">Fit the model</a></li>
 <li><a href="#the-analyze-function">The analyze function</a></li>
 <li><a href="#summary">Summary</a></li>
 <li><a href="#print">Print</a></li>
@@ -137,9 +138,9 @@ $(document).ready(function () {
 </ul>
 </div>
 
-<p>You find it time-consuming to manually format, copy and paste output values to your report or manuscript? This time is over, as the <code>psycho</code> package is here for you!</p>
-<div id="fit-a-model" class="section level1">
-<h1>Fit a model</h1>
+<p>You find it time-consuming to manually format, copy and paste output values to your report or manuscript? That time is over: the <code>psycho</code> package is here for you!</p>
+<div id="the-data" class="section level1">
+<h1>The data</h1>
 <p>Let’s take the example dataset included in the <code>psycho</code> package.</p>
 <pre class="r"><code>library(psycho)
 library(tidyverse)
@@ -148,20 +149,22 @@ df &lt;- psycho::emotion %&gt;%
   select(Participant_ID, 
          Emotion_Condition, 
          Subjective_Valence,
-         Autobiographical_Link) %&gt;% 
-  standardize()
+         Autobiographical_Link)
 
 summary(df)</code></pre>
 <pre><code> Participant_ID Emotion_Condition Subjective_Valence Autobiographical_Link
- 10S    : 48    Negative:456      Min.   :-1.5725    Min.   :-0.9235      
- 11S    : 48    Neutral :456      1st Qu.:-0.8959    1st Qu.:-0.9235      
- 12S    : 48                      Median : 0.3160    Median :-0.4091      
- 13S    : 48                      Mean   : 0.0000    Mean   : 0.0000      
- 14S    : 48                      3rd Qu.: 0.5022    3rd Qu.: 0.9847      
- 15S    : 48                      Max.   : 2.3054    Max.   : 2.2624      
+ 10S    : 48    Negative:456      Min.   :-100.000   Min.   :  0.00       
+ 11S    : 48    Neutral :456      1st Qu.: -65.104   1st Qu.:  0.00       
+ 12S    : 48                      Median :  -2.604   Median : 16.15       
+ 13S    : 48                      Mean   : -18.900   Mean   : 28.99       
+ 14S    : 48                      3rd Qu.:   7.000   3rd Qu.: 59.90       
+ 15S    : 48                      Max.   : 100.000   Max.   :100.00       
  (Other):624                                         NA's   :1            </code></pre>
-<p>Our dataframe (called <code>df</code>) contains data from several participants, exposed to neutral and negative pictures (the <code>Emotion_Condition</code> column). Each row corresponds to a single trial. As there were 48 trials per participants, there are 48 rows by participant. During each trial, the participant had to rate its emotional valence (<code>Subjective_Valence</code>: positive - negative) experienced during the picture presentation and the amount of personal memories associated with the picture (<code>Autobiographical_Link</code>).</p>
-<p>Our dataframe contains, for each trial, 4 variables: the <strong>name of the participant</strong> (<code>Participant_ID</code>), the <strong>emotion condition</strong> (<code>Emotion_Condition</code>), the <strong>valence rating</strong> (<code>Subjective_Valence</code>) and the <strong>Autobiographical Link</strong> (<code>Autobiographical_Link</code>).</p>
+<p>Our dataframe (called <code>df</code>) contains data from several participants, exposed to neutral and negative pictures (the <code>Emotion_Condition</code> column). Each row corresponds to a single trial. During each trial, the participant had to rate its emotional valence (<code>Subjective_Valence</code>: positive - negative) experienced during the picture presentation and the amount of personal memories associated with the picture (<code>Autobiographical_Link</code>).</p>
+<p>Our dataframe contains, for each of the 48 trials, 4 variables: the <strong>name of the participant</strong> (<code>Participant_ID</code>), the <strong>emotion condition</strong> (<code>Emotion_Condition</code>), the <strong>valence rating</strong> (<code>Subjective_Valence</code>) and the <strong>Autobiographical Link</strong> (<code>Autobiographical_Link</code>).</p>
+</div>
+<div id="fit-the-model" class="section level1">
+<h1>Fit the model</h1>
 <p><strong>Let’s fit a linear mixed model to predict the autobiographical link with the condition and the subjective valence.</strong></p>
 <pre class="r"><code>library(lmerTest)
 fit &lt;- lmer(Autobiographical_Link ~ Emotion_Condition * Subjective_Valence + (1|Participant_ID), data=df)
@@ -172,7 +175,7 @@ Formula: Autobiographical_Link ~ Emotion_Condition * Subjective_Valence +
     (1 | Participant_ID)
    Data: df
 
-REML criterion at convergence: 2287.8
+REML criterion at convergence: 8555.5
 
 Scaled residuals: 
     Min      1Q  Median      3Q     Max 
@@ -180,40 +183,39 @@ Scaled residuals:
 
 Random effects:
  Groups         Name        Variance Std.Dev.
- Participant_ID (Intercept) 0.2468   0.4968  
- Residual                   0.6712   0.8193  
+ Participant_ID (Intercept) 243.1    15.59   
+ Residual                   661.4    25.72   
 Number of obs: 911, groups:  Participant_ID, 19
 
 Fixed effects:
                                              Estimate Std. Error        df
-(Intercept)                                  -0.14510    0.12701  24.70753
-Emotion_ConditionNeutral                      0.09834    0.08124 894.28540
-Subjective_Valence                            0.09484    0.05636 898.46616
-Emotion_ConditionNeutral:Subjective_Valence   0.26519    0.08248 896.26695
-                                            t value Pr(&gt;|t|)   
-(Intercept)                                  -1.142  0.26422   
-Emotion_ConditionNeutral                      1.210  0.22645   
-Subjective_Valence                            1.683  0.09280 . 
-Emotion_ConditionNeutral:Subjective_Valence   3.215  0.00135 **
+(Intercept)                                  25.52248    4.23991  31.49944
+Emotion_ConditionNeutral                      6.13715    2.66993 895.13045
+Subjective_Valence                            0.05772    0.03430 898.46616
+Emotion_ConditionNeutral:Subjective_Valence   0.16140    0.05020 896.26695
+                                            t value Pr(&gt;|t|)    
+(Intercept)                                   6.020 1.09e-06 ***
+Emotion_ConditionNeutral                      2.299  0.02176 *  
+Subjective_Valence                            1.683  0.09280 .  
+Emotion_ConditionNeutral:Subjective_Valence   3.215  0.00135 ** 
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Correlation of Fixed Effects:
             (Intr) Emt_CN Sbjc_V
-Emtn_CndtnN -0.306              
-Sbjctv_Vlnc  0.322 -0.508       
-Emtn_CN:S_V -0.217 -0.057 -0.676</code></pre>
+Emtn_CndtnN -0.459              
+Sbjctv_Vlnc  0.455 -0.726       
+Emtn_CN:S_V -0.308  0.301 -0.676</code></pre>
 </div>
 <div id="the-analyze-function" class="section level1">
 <h1>The analyze function</h1>
-<p>The <code>analyze</code> function, available in the <code>psycho</code> package, transform a fit object into several objects.</p>
+<p>The <code>analyze</code> function, available in the <code>psycho</code> package, transforms a model fit object into user-friendly outputs.</p>
 <pre class="r"><code>results &lt;- analyze(fit, CI = 95)</code></pre>
 </div>
 <div id="summary" class="section level1">
 <h1>Summary</h1>
-<p>Summarizing an analyzed object returns a dataframe, that can be easily saved and included in reports.</p>
-<pre class="r"><code># We have to provide the model (here called fit and the formula of the factors we want to contrast
-summary(results) %&gt;% 
+<p>Summarizing an analyzed object returns a dataframe, that can be easily saved and included in reports. It also includes standardized coefficients, as well as bootstrapped confidence intervals (CI) and effect sizes.</p>
+<pre class="r"><code>summary(results) %&gt;% 
   mutate(p = psycho::format_p(p))</code></pre>
 <table>
 <thead>
@@ -234,73 +236,72 @@ summary(results) %&gt;%
 <tbody>
 <tr class="odd">
 <td align="left">(Intercept)</td>
-<td align="right">-0.15</td>
-<td align="right">0.13</td>
-<td align="right">-1.14</td>
-<td align="right">24.71</td>
+<td align="right">25.52</td>
+<td align="right">4.24</td>
+<td align="right">6.02</td>
+<td align="right">31.50</td>
 <td align="right">0.00</td>
 <td align="right">0.00</td>
-<td align="left">&gt; .1</td>
+<td align="left">&lt; .001***</td>
 <td align="left">Very Small</td>
-<td align="right">-0.40</td>
-<td align="right">0.11</td>
+<td align="right">17.16</td>
+<td align="right">33.93</td>
 </tr>
 <tr class="even">
 <td align="left">Emotion_ConditionNeutral</td>
+<td align="right">6.14</td>
+<td align="right">2.67</td>
+<td align="right">2.30</td>
+<td align="right">895.13</td>
 <td align="right">0.10</td>
-<td align="right">0.08</td>
-<td align="right">1.21</td>
-<td align="right">894.29</td>
-<td align="right">0.05</td>
 <td align="right">0.04</td>
-<td align="left">&gt; .1</td>
+<td align="left">&lt; .05*</td>
 <td align="left">Very Small</td>
-<td align="right">-0.06</td>
-<td align="right">0.26</td>
+<td align="right">0.91</td>
+<td align="right">11.37</td>
 </tr>
 <tr class="odd">
 <td align="left">Subjective_Valence</td>
-<td align="right">0.09</td>
 <td align="right">0.06</td>
+<td align="right">0.03</td>
 <td align="right">1.68</td>
 <td align="right">898.47</td>
 <td align="right">0.09</td>
 <td align="right">0.06</td>
 <td align="left">= 0.09°</td>
 <td align="left">Very Small</td>
-<td align="right">-0.02</td>
-<td align="right">0.20</td>
+<td align="right">-0.01</td>
+<td align="right">0.12</td>
 </tr>
 <tr class="even">
 <td align="left">Emotion_ConditionNeutral:Subjective_Valence</td>
-<td align="right">0.27</td>
-<td align="right">0.08</td>
-<td align="right">3.22</td>
-<td align="right">896.27</td>
 <td align="right">0.16</td>
 <td align="right">0.05</td>
+<td align="right">3.22</td>
+<td align="right">896.27</td>
+<td align="right">0.13</td>
+<td align="right">0.04</td>
 <td align="left">&lt; .01**</td>
 <td align="left">Very Small</td>
-<td align="right">0.10</td>
-<td align="right">0.43</td>
+<td align="right">0.06</td>
+<td align="right">0.26</td>
 </tr>
 </tbody>
 </table>
 </div>
 <div id="print" class="section level1">
 <h1>Print</h1>
-<p>Moreover, the <code>print</code> method return a nicely formatted output that can almost directly be pasted into the manuscript.</p>
+<p>Moreover, the <code>print</code> method return a nicely formatted output that can be almost directly pasted into the manuscript.</p>
 <pre class="r"><code>print(results)</code></pre>
-<pre><code>The overall model predicting Autobiographical_Link (formula = Autobiographical_Link ~ Emotion_Condition * Subjective_Valence +     (1 | Participant_ID)) successfully converged and explained 32.48% of the variance of the endogen (the conditional R2). The variance explained by the fixed effects was of 7.66% (the marginal R2) and the one explained by the random effects of 24.82%. The model's intercept is at -0.15 (SE = 0.13, 95% CI [-0.40, 0.11]). Within this model:
-   - The effect of Emotion_ConditionNeutral is not significant (beta = 0.098, SE = 0.081, 95% CI [-0.061, 0.26], t(894.29) = 1.21, p &gt; .1) and can be considered as very small (std. beta = 0.049, std. SE = 0.041).
-   - The effect of Subjective_Valence is  significant (beta = 0.095, SE = 0.056, 95% CI [-0.016, 0.20], t(898.47) = 1.68, p = 0.09°) and can be considered as very small (std. beta = 0.095, std. SE = 0.056).
-   - The effect of Emotion_ConditionNeutral:Subjective_Valence is  significant (beta = 0.27, SE = 0.082, 95% CI [0.10, 0.43], t(896.27) = 3.22, p &lt; .01**) and can be considered as very small (std. beta = 0.16, std. SE = 0.049).</code></pre>
+<pre><code>The overall model predicting Autobiographical_Link (formula = Autobiographical_Link ~ Emotion_Condition * Subjective_Valence + (1 | Participant_ID)) successfully converged and explained 32.48% of the variance of the endogen (the conditional R2). The variance explained by the fixed effects was of 7.66% (the marginal R2) and the one explained by the random effects of 24.82%. The model's intercept is at 25.52 (SE = 4.24, 95% CI [17.16, 33.93]). Within this model:
+   - The effect of Emotion_ConditionNeutral is significant (beta = 6.14, SE = 2.67, 95% CI [0.91, 11.37], t(895.13) = 2.30, p &lt; .05*) and can be considered as very small (std. beta = 0.098, std. SE = 0.043).
+   - The effect of Subjective_Valence is significant (beta = 0.058, SE = 0.034, 95% CI [-0.0097, 0.12], t(898.47) = 1.68, p = 0.09°) and can be considered as very small (std. beta = 0.095, std. SE = 0.056).
+   - The effect of Emotion_ConditionNeutral:Subjective_Valence is significant (beta = 0.16, SE = 0.050, 95% CI [0.063, 0.26], t(896.27) = 3.22, p &lt; .01**) and can be considered as very small (std. beta = 0.13, std. SE = 0.041).</code></pre>
 <p>The intercept (the baseline level) corresponds, here, to the negative condition with subjective valence at 0 (the average, as the data is standardized). Compared to that, changing the condition from negative to neutral does not induce any significant change to the outcome. However, in the negative condition, there is a trending linear relationship between valence and autobiographical memories: the more an item is positive the more it is related to memories. Finally, the interaction is significant: the relationship between valence autobiographical memories is stronger (more positive) in the neutral condition.</p>
 </div>
 <div id="credits" class="section level1">
 <h1>Credits</h1>
-<p>This package helped you? Don’t forget to cite the various packages you used :)</p>
-<p>You can cite <code>psycho</code> as follows:</p>
+<p>This package helped you? You can cite <a href="https://github.com/neuropsychology/psycho.R"><code>psycho</code></a> as follows:</p>
 <ul>
 <li>Makowski, (2018). <em>The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science</em>. Journal of Open Source Software, 3(22), 470. <a href="https://doi.org/10.21105/joss.00470" class="uri">https://doi.org/10.21105/joss.00470</a></li>
 </ul>

@@ -20,6 +20,7 @@
 #'
 #' @import dplyr
 #' @importFrom stats formula
+#' @importFrom stringr str_squish
 #' @export
 analyze.lm <- function(x, CI=95, ...) {
 
@@ -80,9 +81,9 @@ analyze.lm <- function(x, CI=95, ...) {
   # Loop over all variables
   for (varname in varnames) {
     if (fitsum[varname, "p"] < .1) {
-      significance <- ""
+      significance <- " "
     } else {
-      significance <- "not"
+      significance <- " not "
     }
 
     if (!is.null(CI)) {
@@ -103,9 +104,9 @@ analyze.lm <- function(x, CI=95, ...) {
     text <- paste0(
       "The effect of ",
       varname,
-      " is ",
+      " is",
       significance,
-      " significant (beta = ",
+      "significant (beta = ",
       format_digit(fitsum[varname, "Coef"], 2), ", SE = ",
       format_digit(fitsum[varname, "SE"], 2),
       CI_text,
@@ -153,7 +154,7 @@ analyze.lm <- function(x, CI=95, ...) {
     "The overall model predicting ",
     outcome,
     " (formula = ",
-    paste0(format(stats::formula(fit)), collapse = ""),
+    stringr::str_squish(paste0(format(stats::formula(fit)), collapse = "")),
     ") successfully converged",
     " and explained ",
     format_digit(R2 * 100, 2),

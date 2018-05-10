@@ -22,9 +22,9 @@ tags:
 library(knitr)
 ```
 
-You find it time-consuming to manually format, copy and paste output values to your report or manuscript? This time is over, as the `psycho` package is here for you!
+You find it time-consuming to manually format, copy and paste output values to your report or manuscript? That time is over: the [`psycho`](https://github.com/neuropsychology/psycho.R) package is here for you!
 
-# Fit a model
+# The data
 
 Let's take the example dataset included in the `psycho` package.
 
@@ -40,9 +40,11 @@ df <- psycho::emotion %>%
 
 summary(df)
 ```
-Our dataframe (called `df`) contains data from several participants, exposed to neutral and negative pictures (the `Emotion_Condition` column). Each row corresponds to a single trial. As there were 48 trials per participants, there are 48 rows by participant. During each trial, the participant had to rate its emotional valence (`Subjective_Valence`: positive - negative) experienced during the picture presentation and the amount of personal memories associated with the picture (`Autobiographical_Link`).
+Our dataframe (called `df`) contains data from several participants, exposed to neutral and negative pictures (the `Emotion_Condition` column). Each row corresponds to a single trial. During each trial, the participant had to rate its emotional valence (`Subjective_Valence`: positive - negative) experienced during the picture presentation and the amount of personal memories associated with the picture (`Autobiographical_Link`).
 
-Our dataframe contains, for each trial, 4 variables: the **name of the participant** (`Participant_ID`), the **emotion condition** (`Emotion_Condition`), the **valence rating** (`Subjective_Valence`) and the **Autobiographical Link** (`Autobiographical_Link`).
+Our dataframe contains, for each of the 48 trials, 4 variables: the **name of the participant** (`Participant_ID`), the **emotion condition** (`Emotion_Condition`), the **valence rating** (`Subjective_Valence`) and the **Autobiographical Link** (`Autobiographical_Link`).
+
+# Fit the model
 
 **Let's fit a linear mixed model to predict the autobiographical link with the condition and the subjective valence.**
 
@@ -55,7 +57,7 @@ summary(fit)
 
 # The analyze function
 
-The `analyze` function, available in the `psycho` package, transform a fit object into several objects.
+The `analyze` function, available in the `psycho` package, transforms a model fit object into user-friendly outputs.
 
 ```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
 results <- analyze(fit, CI = 95)
@@ -66,7 +68,6 @@ results <- analyze(fit, CI = 95)
 Summarizing an analyzed object returns a dataframe, that can be easily saved and included in reports. It also includes standardized coefficients, as well as bootstrapped confidence intervals (CI) and effect sizes.
 
 ```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='hide'}
-# We have to provide the model (here called fit and the formula of the factors we want to contrast
 summary(results) %>% 
   mutate(p = psycho::format_p(p))
 ```
@@ -77,7 +78,7 @@ knitr::kable(summary(results) %>%
 
 # Print
 
-Moreover, the `print` method return a nicely formatted output that can almost directly be pasted into the manuscript.
+Moreover, the `print` method return a nicely formatted output that can be almost directly pasted into the manuscript.
 
 ```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
 print(results)
@@ -88,8 +89,6 @@ The intercept (the baseline level) corresponds, here, to the negative condition 
 
 # Credits
 
-This package helped you? Don't forget to cite the various packages you used :)
-
-You can cite `psycho` as follows:
+This package helped you? You can cite [`psycho`](https://github.com/neuropsychology/psycho.R) as follows:
 
 - Makowski, (2018). *The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470
