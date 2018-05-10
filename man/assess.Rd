@@ -2,11 +2,12 @@
 % Please edit documentation in R/assess.R
 \name{assess}
 \alias{assess}
-\title{Compare a score to a parent population.}
+\title{Compare a patient's score to a control group}
 \usage{
-assess(patient, mean = 0, sd = 1, n = NULL, controls = NULL,
-  verbose = TRUE, CI = 95, iter = 10000, color = "#2196F3",
-  color_CI = "#E91E63", color_score = "black", color_size = 2)
+assess(patient, mean = 0, sd = 1, n = NULL, controls = NULL, CI = 95,
+  treshold = 0.05, iter = 10000, color = "#2196F3",
+  color_CI = "#E91E63", color_score = "black", color_size = 2,
+  verbose = TRUE)
 }
 \arguments{
 \item{patient}{Single value (patient's score).}
@@ -19,9 +20,9 @@ assess(patient, mean = 0, sd = 1, n = NULL, controls = NULL,
 
 \item{controls}{Vector of values (control's scores).}
 
-\item{verbose}{Print possible warnings.}
-
 \item{CI}{Credible interval bounds.}
+
+\item{treshold}{Significance treshold.}
 
 \item{iter}{Number of iterations.}
 
@@ -32,15 +33,22 @@ assess(patient, mean = 0, sd = 1, n = NULL, controls = NULL,
 \item{color_score}{Color of the line representing the patient's score.}
 
 \item{color_size}{Size of the line representing the patient's score.}
+
+\item{verbose}{Print possible warnings.}
 }
 \value{
 output
 }
 \description{
-Compare a given score to a parent population.
+Compare a patient's score to a control group.
+}
+\details{
+Until relatively recently the standard way of testing for a difference between a case and controls was to convert the case’s score to a z score using the control sample mean and standard deviation (SD). If z was less than -1.645 (i.e., below 95% of the controls) then it was concluded that the case was significantly lower than controls. However, this method has serious disadvantages (Crawford and Garthwaite, 2012).
+
+Crawford et al. (2012) remind that empirically based decision algorithms are almost always vastly superior to clinically based decision making while being more reliable, accurate, and cost-effective (Dawes, Faust, & Meehl, 1989; Grove & Lloyd, 2006; Salzinger, 2005).
 }
 \examples{
-result <- assess(patient=124, mean=100, sd=15)
+result <- assess(patient=124, mean=100, sd=15, n=100)
 print(result)
 plot(result)
 

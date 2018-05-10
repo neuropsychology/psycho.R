@@ -65,12 +65,14 @@ mellenbergh.test <- function(t0, t1, controls) {
   )
 
 
-  values <- list(text=text,
-                 diff=diff,
-                 diff_90_CI_lower=diff_CI_bottom,
-                 diff_90_CI_higher=diff_CI_top,
-                 z=z,
-                 p=pval)
+  values <- list(
+    text = text,
+    diff = diff,
+    diff_90_CI_lower = diff_CI_bottom,
+    diff_90_CI_higher = diff_CI_top,
+    z = z,
+    p = pval
+  )
   summary <- data.frame(diff = diff, diff_90_CI_lower = diff_CI_bottom, diff_90_CI_higher = diff_CI_top, z = z, p = pval)
   plot <- "Not available yet"
 

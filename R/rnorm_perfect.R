@@ -19,10 +19,10 @@
 #' @importFrom stats rnorm
 #' @export
 rnorm_perfect <- function(n, mean = 0, sd = 1, method="qnorm", iter=10000) {
-  if(method=="average"){
+  if (method == "average") {
     x <- rowMeans(replicate(iter, sort(rnorm(n, mean, sd))))
   } else {
-    x <- qnorm(seq(1/n, 1-1/n, length.out = n), mean, sd)
+    x <- qnorm(seq(1 / n, 1 - 1 / n, length.out = n), mean, sd)
   }
   return(x)
 }

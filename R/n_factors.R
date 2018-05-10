@@ -80,9 +80,9 @@ n_factors <- function(df, rotate="varimax", fm="minres", n_max=8) {
   }
 
   # Detect if df us a correlation matrix
-  if(length(setdiff(names(df),rownames(df))) != 0){
+  if (length(setdiff(names(df), rownames(df))) != 0) {
     cor <- qgraph::cor_auto(df, forcePD = FALSE)
-  } else{
+  } else {
     cor <- df
   }
 
@@ -211,7 +211,7 @@ n_factors <- function(df, rotate="varimax", fm="minres", n_max=8) {
   best_n <- best_n_df$n.Factors
 
   best_n_methods <- list()
-  for(i in as.list(best_n)){
+  for (i in as.list(best_n)) {
     methods_list <- results[results$n_optimal %in% as.list(i), ]
     methods_list <- as.character(methods_list$Method)
     best_n_methods[[paste0("n_", i)]] <- paste(methods_list, collapse = ", ")
@@ -219,23 +219,25 @@ n_factors <- function(df, rotate="varimax", fm="minres", n_max=8) {
 
 
 
-  values <- list(summary = summary, methods = results, best_n_df=best_n)
+  values <- list(summary = summary, methods = results, best_n_df = best_n)
 
 
 
   # Text
   # -------------
-  text <- paste0("The choice of ",
-                 best_n,
-                 " factors is supported by ",
-                 best_n_df$n.Methods,
-                 " (out of ",
-                 round(nrow(results)),
-                 "; ",
-                 round(best_n_df$n.Methods/nrow(results)*100, 2),
-                 "%) methods (",
-                 best_n_methods,
-                 ")")
+  text <- paste0(
+    "The choice of ",
+    best_n,
+    " factors is supported by ",
+    best_n_df$n.Methods,
+    " (out of ",
+    round(nrow(results)),
+    "; ",
+    round(best_n_df$n.Methods / nrow(results) * 100, 2),
+    "%) methods (",
+    best_n_methods,
+    ")"
+  )
 
   # text <- c(text, as.character(head(arrange_(summary, "n.Methods"))))
 

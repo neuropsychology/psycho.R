@@ -51,7 +51,8 @@ Imports:
     tibble,
     DescTools,
     pbkrtest,
-    BayesFactor
+    BayesFactor,
+    scales
 Suggests:
     knitr,
     rmarkdown,
