@@ -37,6 +37,7 @@
 #' @importFrom stats quantile as.formula
 #' @importFrom utils head tail
 #' @importFrom broom tidy
+#' @importFrom stringr str_squish
 #' @export
 analyze.stanreg <- function(x, CI=90, effsize=FALSE, overlap=TRUE, ...) {
   fit <- x
@@ -378,7 +379,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, overlap=TRUE, ...) {
     fit$family$link,
     ") model to predict ",
     outcome,
-    " (formula = ", paste0(format(fit$formula), collapse = ""),
+    " (formula = ", stringr::str_squish(paste0(format(fit$formula), collapse = "")),
     ").",
     info_effsize,
     " The model's priors were set as follows: "

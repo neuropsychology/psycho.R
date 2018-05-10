@@ -21,6 +21,7 @@
 #'
 #' @importFrom MuMIn r.squaredGLMM
 #' @importFrom MuMIn std.coef
+#' @importFrom stringr str_squish
 #' @import dplyr
 #' @export
 analyze.lmerModLmerTest <- function(x, CI=95, ...) {
@@ -93,9 +94,9 @@ analyze.lmerModLmerTest <- function(x, CI=95, ...) {
   # Loop over all variables
   for (varname in varnames) {
     if (fitsum[varname, "p"] < .1) {
-      significance <- ""
+      significance <- " "
     } else {
-      significance <- "not"
+      significance <- " not "
     }
 
     if (!is.null(CI)) {
@@ -116,9 +117,9 @@ analyze.lmerModLmerTest <- function(x, CI=95, ...) {
     text <- paste0(
       "The effect of ",
       varname,
-      " is ",
+      " is",
       significance,
-      " significant (beta = ",
+      "significant (beta = ",
       format_digit(fitsum[varname, "Coef"], 2), ", SE = ",
       format_digit(fitsum[varname, "SE"], 2),
       CI_text,
@@ -168,7 +169,7 @@ analyze.lmerModLmerTest <- function(x, CI=95, ...) {
     "The overall model predicting ",
     outcome,
     " (formula = ",
-    paste0(format(eval(fit@call$formula)), collapse = ""),
+    stringr::str_squish(paste0(format(eval(fit@call$formula)), collapse = "")),
     ") successfully converged",
     " and explained ",
     format_digit(R2c * 100, 2),
