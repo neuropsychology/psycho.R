@@ -5,9 +5,9 @@
 \title{Compare a patient's score to a control group}
 \usage{
 assess(patient, mean = 0, sd = 1, n = NULL, controls = NULL, CI = 95,
-  treshold = 0.05, iter = 10000, color = "#2196F3",
+  treshold = 0.05, iter = 10000, color_controls = "#2196F3",
   color_CI = "#E91E63", color_score = "black", color_size = 2,
-  verbose = TRUE)
+  alpha_controls = 1, alpha_CI = 0.8, verbose = TRUE)
 }
 \arguments{
 \item{patient}{Single value (patient's score).}
@@ -26,13 +26,17 @@ assess(patient, mean = 0, sd = 1, n = NULL, controls = NULL, CI = 95,
 
 \item{iter}{Number of iterations.}
 
-\item{color}{Main color of plot distribution.}
+\item{color_controls}{Color of the controls distribution.}
 
-\item{color_CI}{Color of CI area.}
+\item{color_CI}{Color of CI distribution.}
 
 \item{color_score}{Color of the line representing the patient's score.}
 
 \item{color_size}{Size of the line representing the patient's score.}
+
+\item{alpha_controls}{Alpha of the CI distribution.}
+
+\item{alpha_CI}{lpha of the controls distribution.}
 
 \item{verbose}{Print possible warnings.}
 }
