@@ -1,110 +1,65 @@
-#' Compare a score to a parent population.
+#' Compare a patient's score to a control group
 #'
-#' Compare a given score to a parent population.
+#' Compare a patient's score to a control group.
 #'
-#' @param score The score.
-#' @param mean The general population's mean.
-#' @param sd The general population's standart deviation.
-#' @param linecolor The colour of the vertical line.
-#' @param fillcolor The colour of the density plot.
-#' @param xlabel The label for the x axis.
+#' @param patient Single value (patient's score).
+#' @param controls Vector of values (control's scores).
+#' @param mean Mean of the control sample.
+#' @param sd SD of the control sample.
+#' @param n Size of the control sample.
+#' @param CI Credible interval bounds.
+#' @param treshold Significance treshold.
+#' @param iter Number of iterations.
+#' @param color_controls Color of the controls distribution.
+#' @param color_CI Color of CI distribution.
+#' @param color_score Color of the line representing the patient's score.
+#' @param color_size Size of the line representing the patient's score.
+#' @param alpha_controls Alpha of the CI distribution.
+#' @param alpha_CI lpha of the controls distribution.
 #' @param verbose Print possible warnings.
 #'
 #' @return output
 #'
 #' @examples
-#' rez <- assess(124, mean=100, sd=15)
+#' result <- assess(patient=124, mean=100, sd=15, n=100)
+#' print(result)
+#' plot(result)
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
+#'
+#' @details Until relatively recently the standard way of testing for a difference between a case and controls was to convert the case’s score to a z score using the control sample mean and standard deviation (SD). If z was less than -1.645 (i.e., below 95% of the controls) then it was concluded that the case was significantly lower than controls. However, this method has serious disadvantages (Crawford and Garthwaite, 2012).
+#'
+#' Crawford et al. (2012) remind that empirically based decision algorithms are almost always vastly superior to clinically based decision making while being more reliable, accurate, and cost-effective (Dawes, Faust, & Meehl, 1989; Grove & Lloyd, 2006; Salzinger, 2005).
 #'
 #' @importFrom stats ecdf
 #' @import ggplot2
 #' @import dplyr
 #' @export
-assess <- function(score,
-                   mean = 0,
-                   sd = 1,
-                   linecolor = "#E91E63",
-                   fillcolor = "#2196F3",
-                   xlabel = "Score",
-                   verbose = T) {
+assess <- function(patient, mean = 0, sd = 1, n = NULL, controls = NULL, CI=95, treshold=0.05, iter=10000, color_controls="#2196F3", color_CI="#E91E63", color_score="black", color_size=2, alpha_controls=1, alpha_CI=0.8, verbose=TRUE) {
+  if (is.null(controls)) {
+    if (is.null(n)) {
+      if (verbose == TRUE) {
+        warning("Sample size (n) not provided, thus set to 1000.")
+      }
+      n <- 1000
+    }
+  }
 
-  # Values
-  # -------------
-  values <- list()
-  values$psycho_function <- "assess"
-  values$psycho_name <- deparse(score)
 
-  values$distribution <- stats::rnorm(50000, mean = mean, sd = sd)
-  values$percentile <- stats::ecdf(values$distribution)(score)
-  values$z_score <- (score - mean) / sd
-
-  # Summary
-  # -------------
-  summary <- data.frame(Score = score)
-  summary$Function <- values$psycho_function
-  summary$Percentile <- values$percentile
-  summary$Z_Score <- values$z_score
 
 
   # If score is list
-  if (length(score) > 1) {
-    if (verbose == T) {
-      warning(paste(
-        "Multiple scores were provided.",
-        "Returning a list containing summmary and values."
-      ))
+  if (length(patient) > 1) {
+    if (verbose == TRUE) {
+      warning("Multiple scores were provided. Returning a list of results.")
     }
-    output <- list(summary = summary, values = values)
-    return(output)
-  }
-
-
-  # Text
-  # -------------
-  if (values$percentile < 0.50) {
-    values$percentile <- 1 - values$percentile
-    comparison <- "smaller"
+    results <- list()
+    for (i in patient) {
+      results[i] <- crawford.test(patient, controls, mean, sd, n, CI, treshold, iter, color_controls, color_CI, color_score, color_size, alpha_controls, alpha_CI)
+      return(results)
+    }
   } else {
-    comparison <- "greater"
+    result <- crawford.test(patient, controls, mean, sd, n, CI, treshold, iter, color_controls, color_CI, color_score, color_size, alpha_controls, alpha_CI)
+    return(result)
   }
-
-  text <- paste(
-    "The participant (score = ",
-    score,
-    ") is positioned at ",
-    as.character(round((score - mean) / sd, 2)),
-    " standard deviations from the mean (M = ",
-    as.character(mean),
-    ", SD = ",
-    as.character(sd),
-    "). ",
-    "The participant's score is ",
-    comparison,
-    " than ",
-    as.character((round(
-      values$percentile * 100, 2
-    ))),
-    " % of the general population.",
-    sep = ""
-  )
-
-  # Plot
-  # -------------
-  plot <- data.frame(Distribution = values$distribution) %>%
-    ggplot(aes_string(x = "Distribution")) +
-    geom_density(fill = fillcolor, colour = "white", adjust = 3, na.rm = TRUE) +
-    geom_vline(xintercept = score, size = 2, color = linecolor) +
-    xlab(paste("\n", xlabel, sep = "")) +
-    ylab("") +
-    theme_minimal() +
-    theme(
-      axis.ticks.y = element_blank(),
-      axis.text.y = element_blank()
-    )
-
-  output <- list(text = text, plot = plot, summary = summary, values = values)
-
-  class(output) <- c("psychobject", "list")
-  return(output)
 }

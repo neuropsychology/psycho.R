@@ -5,7 +5,6 @@
 #' @param t0 Single value (pretest or baseline score).
 #' @param t1 Single value (posttest score).
 #' @param controls Vector of scores of the control group OR single value corresponding to the control SD of the score.
-#' @param verbose True or False. Prints the interpretation text.
 #'
 #' @return Returns a data frame containing the z-value and p-value. If significant, the difference between pre and post tests is significant.
 #'
@@ -19,7 +18,7 @@
 #'
 #' @importFrom stats pnorm sd
 #' @export
-mellenbergh.test <- function(t0, t1, controls, verbose=T) {
+mellenbergh.test <- function(t0, t1, controls) {
   if (length(controls) > 1) {
     sd <- sd(controls) * sqrt(2)
   } else {
@@ -66,12 +65,20 @@ mellenbergh.test <- function(t0, t1, controls, verbose=T) {
   )
 
 
-  result <- data.frame(diff = diff, diff_90_CI_lower = diff_CI_bottom, diff_90_CI_higher = diff_CI_top, z = z, p = pval)
+  values <- list(
+    text = text,
+    diff = diff,
+    diff_90_CI_lower = diff_CI_bottom,
+    diff_90_CI_higher = diff_CI_top,
+    z = z,
+    p = pval
+  )
+  summary <- data.frame(diff = diff, diff_90_CI_lower = diff_CI_bottom, diff_90_CI_higher = diff_CI_top, z = z, p = pval)
+  plot <- "Not available yet"
 
-  if (verbose == T) {
-    cat(paste0(text, "\n\n"))
-  }
 
-  return(result)
+  output <- list(text = text, plot = plot, summary = summary, values = values)
+  class(output) <- c("psychobject", "list")
+  return(output)
   #   return("The method for no-controls is not implemented yet.")
 }

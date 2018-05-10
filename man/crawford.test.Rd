@@ -2,31 +2,60 @@
 % Please edit documentation in R/crawford.test.R
 \name{crawford.test}
 \alias{crawford.test}
-\title{Crawford-Howell (1998) t-test for single-case analysis.}
+\title{Crawford-Garthwaite (2007) Bayesian test for single-case analysis.}
 \usage{
-crawford.test(case, controls, verbose = T)
+crawford.test(patient, controls = NULL, mean = NULL, sd = NULL,
+  n = NULL, CI = 95, treshold = 0.1, iter = 10000,
+  color_controls = "#2196F3", color_CI = "#E91E63", color_score = "black",
+  color_size = 2, alpha_controls = 1, alpha_CI = 0.8)
 }
 \arguments{
-\item{case}{Single value (patient's score).}
+\item{patient}{Single value (patient's score).}
 
 \item{controls}{Vector of values (control's scores).}
 
-\item{verbose}{True or False. Prints the interpretation text.}
-}
-\value{
-Returns a data frame containing the t-value, degrees of freedom, and p-value. If significant, the case is different from the control group.
+\item{mean}{Mean of the control sample.}
+
+\item{sd}{SD of the control sample.}
+
+\item{n}{Size of the control sample.}
+
+\item{CI}{Credible interval bounds.}
+
+\item{treshold}{Significance treshold.}
+
+\item{iter}{Number of iterations.}
+
+\item{color_controls}{Color of the controls distribution.}
+
+\item{color_CI}{Color of CI distribution.}
+
+\item{color_score}{Color of the line representing the patient's score.}
+
+\item{color_size}{Size of the line representing the patient's score.}
+
+\item{alpha_controls}{Alpha of the CI distribution.}
+
+\item{alpha_CI}{lpha of the controls distribution.}
 }
 \description{
-Neuropsychologists often need to compare a single case to a small control group. However, the standard two-sample t-test does not work because the case is only one observation. Crawford and Garthwaite (2012) demonstrate that the Crawford-Howell (1998) t-test is a better approach (in terms of controlling Type I error rate) than other commonly-used alternatives.
+Neuropsychologists often need to compare a single case to a small control group. However, the standard two-sample t-test does not work because the case is only one observation. Crawford and Garthwaite (2007) demonstrate that the Bayesian test is a better approach than other commonly-used alternatives.
 .
+}
+\details{
+The p value obtained when this test is used to test significance also simultaneously provides a point estimate of the abnormality of the patient’s score; for example if the one-tailed probability is .013 then we know that the patient’s score is significantly (p < .05) below the control mean and that it is estimated that 1.3% of the control population would obtain a score lower than the patient’s. As for the credible interval interpretation, we could say that there is a 95% probability that the true level of abnormality of the patient’s score lies within the stated limits, or that There is 95% confidence that the percentage of people who have a score lower than the patient’s is between 0.01% and 6.66%.
 }
 \examples{
 library(psycho)
 
-crawford.test(case = 10, controls = c(0, -2, 5, 2, 1, 3, -4, -2))
-crawford.test(case = 7, controls = c(0, -2, 5, 2, 1, 3, -4, -2))
+crawford.test(patient = 125, mean=100, sd=15, n=100)
+plot(crawford.test(patient = 80, mean=100, sd=15, n=100))
+
+crawford.test(patient = 10, controls = c(0, -2, 5, 2, 1, 3, -4, -2))
+test <- crawford.test(patient = 7, controls = c(0, -2, 5, -6, 0, 3, -4, -2))
+plot(test)
 
 }
 \author{
-Dan Mirman, Dominique Makowski
+Dominique Makowski
 }

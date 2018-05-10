@@ -1,14 +1,19 @@
 context("assess")
 
 test_that("It works", {
-  # Correct percentile
-  percentile <- psycho::assess(1.3)
-  percentile <- percentile$values
-  percentile <- round(percentile$percentile, 1)
-  testthat::expect_equal(percentile, 0.9)
+  x <- assess(
+    patient = 10,
+    controls = c(0, -2, 5, 2, 1, 3, -4, -2)
+  )
 
-  # Correct sanity check
-  percentile <- psycho::assess(c(-0.2, 2))
-  percentile <- psycho::values(percentile)$z_score
-  testthat::expect_equal(percentile[1], -0.2)
+  testthat::expect_equal(x$values$p, 0.018, tol = 0.02)
+
+  x <- assess(
+    patient = 10,
+    mean = 8,
+    sd = 2,
+    n = 10
+  )
+
+  testthat::expect_equal(x$values$p, 0.18, tol = 0.02)
 })

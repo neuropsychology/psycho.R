@@ -8,10 +8,10 @@
 #'
 #' @export
 format_digit <- function(x, digits = 2, null_treshold = 0.001) {
-  if(length(x) > 1){
-    return(sapply(x, .format_digit, digits=digits, null_treshold=null_treshold))
-  } else{
-    return(.format_digit(x, digits=digits, null_treshold=null_treshold))
+  if (length(x) > 1) {
+    return(sapply(x, .format_digit, digits = digits, null_treshold = null_treshold))
+  } else {
+    return(.format_digit(x, digits = digits, null_treshold = null_treshold))
   }
 }
 
@@ -73,13 +73,12 @@ format_string <- function(x, fmt, ...) {
 #' @export
 format_p <- function(pvalues) {
   ifelse(pvalues < 0.001, "< .001***",
-         ifelse(pvalues < 0.01, "< .01**",
-                ifelse(pvalues < 0.05, "< .05*",
-                       ifelse(pvalues < 0.1, paste0("= ", round(pvalues, 2), "\xB0"),
-                              "> .1"
-                       )
-                )
-         )
+    ifelse(pvalues < 0.01, "< .01**",
+      ifelse(pvalues < 0.05, "< .05*",
+        ifelse(pvalues < 0.1, paste0("= ", round(pvalues, 2), "\xB0"),
+          "> .1"
+        )
+      )
+    )
   )
 }
-

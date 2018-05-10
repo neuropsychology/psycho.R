@@ -4,7 +4,7 @@
 \alias{mellenbergh.test}
 \title{Mellenbergh & van den Brink (1998) test for pre-post comparison.}
 \usage{
-mellenbergh.test(t0, t1, controls, verbose = T)
+mellenbergh.test(t0, t1, controls)
 }
 \arguments{
 \item{t0}{Single value (pretest or baseline score).}
@@ -12,8 +12,6 @@ mellenbergh.test(t0, t1, controls, verbose = T)
 \item{t1}{Single value (posttest score).}
 
 \item{controls}{Vector of scores of the control group OR single value corresponding to the control SD of the score.}
-
-\item{verbose}{True or False. Prints the interpretation text.}
 }
 \value{
 Returns a data frame containing the z-value and p-value. If significant, the difference between pre and post tests is significant.

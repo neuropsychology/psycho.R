@@ -1,2 +1,7 @@
+Copy, paste and rename the RMD file according to the standart (Y-M-D-TITLE)
+Compile this RMD file in "preparation" folder
+Move it to _posts
+Add YAML header
 Double check the MD file.
 For images, add https://raw.githubusercontent.com/neuropsychology/psycho.R/master/docs/_posts/ in front of the link
+Remove, in "preparation", the files with the standart name

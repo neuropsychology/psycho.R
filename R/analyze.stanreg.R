@@ -34,7 +34,7 @@
 #' @import tidyr
 #' @import dplyr
 #' @import ggplot2
-#' @importFrom stats quantile as.formula rnorm
+#' @importFrom stats quantile as.formula
 #' @importFrom utils head tail
 #' @importFrom broom tidy
 #' @export
@@ -301,7 +301,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, overlap=TRUE, ...) {
   if (overlap == TRUE) {
     for (varname in varnames) {
       posterior <- posteriors[, varname]
-      norm <- rnorm(length(posterior), 0, sd(posterior))
+      norm <- rnorm_perfect(length(posterior), 0, sd(posterior))
 
       overlap_coef <- overlap(posterior, norm) * 100
 

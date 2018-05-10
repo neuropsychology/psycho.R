@@ -1,0 +1,46 @@
+---
+title: "Statistical Assessment of a Patient with psycho"
+layout: post
+output:
+  md_document:
+    toc: yes
+    variant: markdown_github
+  html_document:
+    df_print: paged
+    toc: yes
+author: "Dominique Makowski"
+date: "`r Sys.Date()`"
+tags:
+- r
+- psychology
+- neuroscience
+- neuropsychology
+---
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(knitr)
+```
+
+
+Psychology students and practioners 
+
+# Installing R
+
+
+# Locate a patient on a distribution
+
+# Installing R
+
+# Note
+
+**Have any ideas on what to add, what to enhance? Know any better procedure? [Contributions and opinions are very welcome](https://github.com/neuropsychology/psycho.R/blob/master/CONTRIBUTING.md) :)**
+
+
+# Credits
+
+This package helped you? Don't forget to cite the various packages you used :)
+
+You can cite `psycho` as follows:
+
+- Makowski, (2018). *The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470

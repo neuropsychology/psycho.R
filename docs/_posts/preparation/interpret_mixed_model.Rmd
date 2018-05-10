@@ -1,0 +1,95 @@
+---
+title: "Format and Interpret Linear Mixed Models"
+layout: post
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+  md_document:
+    toc: yes
+    variant: markdown_github
+author: "Dominique Makowski"
+date: "`r Sys.Date()`"
+tags:
+- r
+- psychology
+- neuroscience
+- neuropsychology
+---
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(knitr)
+```
+
+You find it time-consuming to manually format, copy and paste output values to your report or manuscript? This time is over, as the `psycho` package is here for you!
+
+# Fit a model
+
+Let's take the example dataset included in the `psycho` package.
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+library(psycho)
+library(tidyverse)
+
+df <- psycho::emotion %>% 
+  select(Participant_ID, 
+         Emotion_Condition, 
+         Subjective_Valence,
+         Autobiographical_Link)
+
+summary(df)
+```
+Our dataframe (called `df`) contains data from several participants, exposed to neutral and negative pictures (the `Emotion_Condition` column). Each row corresponds to a single trial. As there were 48 trials per participants, there are 48 rows by participant. During each trial, the participant had to rate its emotional valence (`Subjective_Valence`: positive - negative) experienced during the picture presentation and the amount of personal memories associated with the picture (`Autobiographical_Link`).
+
+Our dataframe contains, for each trial, 4 variables: the **name of the participant** (`Participant_ID`), the **emotion condition** (`Emotion_Condition`), the **valence rating** (`Subjective_Valence`) and the **Autobiographical Link** (`Autobiographical_Link`).
+
+**Let's fit a linear mixed model to predict the autobiographical link with the condition and the subjective valence.**
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+library(lmerTest)
+fit <- lmer(Autobiographical_Link ~ Emotion_Condition * Subjective_Valence + (1|Participant_ID), data=df)
+summary(fit)
+```
+
+
+# The analyze function
+
+The `analyze` function, available in the `psycho` package, transform a fit object into several objects.
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+results <- analyze(fit, CI = 95)
+```
+
+# Summary
+
+Summarizing an analyzed object returns a dataframe, that can be easily saved and included in reports. It also includes standardized coefficients, as well as bootstrapped confidence intervals (CI) and effect sizes.
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='hide'}
+# We have to provide the model (here called fit and the formula of the factors we want to contrast
+summary(results) %>% 
+  mutate(p = psycho::format_p(p))
+```
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+knitr::kable(summary(results) %>% 
+  mutate(p = psycho::format_p(p)), digits=2)
+```
+
+# Print
+
+Moreover, the `print` method return a nicely formatted output that can almost directly be pasted into the manuscript.
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+print(results)
+```
+
+The intercept (the baseline level) corresponds, here, to the negative condition with subjective valence at 0 (the average, as the data is standardized). Compared to that, changing the condition from negative to neutral does not induce any significant change to the outcome. However, in the negative condition, there is a trending linear relationship between valence and  autobiographical memories: the more an item is positive the more it is related to memories. Finally, the interaction is significant: the relationship between valence autobiographical memories is stronger (more positive) in the neutral condition.
+
+
+# Credits
+
+This package helped you? Don't forget to cite the various packages you used :)
+
+You can cite `psycho` as follows:
+
+- Makowski, (2018). *The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470
