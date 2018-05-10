@@ -2,12 +2,12 @@
 title: "Format and Interpret Linear Mixed Models"
 layout: post
 output:
-  html_document:
-    df_print: paged
-    toc: yes
   md_document:
     toc: yes
     variant: markdown_github
+  html_document:
+    df_print: paged
+    toc: yes
 author: "Dominique Makowski"
 date: "`r Sys.Date()`"
 tags:
