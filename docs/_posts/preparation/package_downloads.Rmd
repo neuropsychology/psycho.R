@@ -50,12 +50,12 @@ blogposts_names <- list.files("../") %>%
 
 events <- data.frame(date = c("2018-01-10", "2018-02-05", "2018-03-21"),
                      label = c("JOSS Review", "JOSS Publication", "Blog Creation"),
-                     color = c("orange", "green", "blue")) %>% 
+                     color = c("#2196F3", "#4CAF50", "#FF9800")) %>% 
    mutate_all(as.character) %>% 
   bind_rows(
     data.frame(date = blogposts_dates,
                label = blogposts_names,
-               color = "red") %>% 
+               color = "#E91E63") %>% 
       mutate_all(as.character)
     ) %>% 
   mutate(date = lubridate::ymd(date)) %>% 

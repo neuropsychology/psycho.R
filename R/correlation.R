@@ -17,6 +17,7 @@
 #'   "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"). See
 #'   \link[stats]{p.adjust} for details about why to use "holm" rather than
 #'   "bonferroni").
+#' @param i_am_cheating Set to TRUE to run many uncorrected correlations.
 #'
 #' @return output
 #'
@@ -37,18 +38,20 @@
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
-#' @importFrom stats na.omit p.adjust cor
+#' @importFrom stats na.omit p.adjust cor runif
 #' @importFrom psych corr.test
 #' @importFrom ggplot2 theme element_text
 #' @importFrom stringr str_to_title
 #' @import ggcorrplot
 #' @import ppcor
+#' @import dplyr
 #' @export
 correlation <- function(df,
                         df2 = NULL,
                         type = "full",
                         method = "pearson",
-                        adjust = "holm") {
+                        adjust = "holm",
+                        i_am_cheating = FALSE) {
 
   # Processing
   # -------------------
@@ -60,6 +63,21 @@ correlation <- function(df,
   if (is.null(df2) == FALSE) {
     df2 <- df2[, sapply(df2, is.numeric)]
   }
+
+  # P-fishing prevention
+  if (ncol(df) > 10 && adjust == "none" && i_am_cheating == FALSE) {
+    warning("We've detected that you are running a lot (> 10) of correlation tests without adjusting the p values. To help you in your p-fishing, we've added some interesting variables: You never know, you might find something significant!\nTo deactivate this, change the 'i_am_cheating' argument to TRUE.")
+    df_complete <- dplyr::mutate_all(df, dplyr::funs_("replace(., is.na(.), 0)"))
+    df$Local_Air_Density <- svd(df_complete)$u[, 1]
+    df$Reincarnation_Cycle <- runif(nrow(df), max = 100)
+    df$Communism_Level <- -1 * svd(df_complete)$u[, 2]
+    df$Alien_Mothership_Distance <- rnorm(nrow(df), mean = 50000, sd = 5000)
+    df$Schopenhauers_Optimism <- svd(df_complete)$u[, 3]
+    df$Hulks_Power <- runif(nrow(df), max = 10)
+  }
+
+
+
   # Compute r coefficients
   if (type == "full") {
     corr <- psych::corr.test(df, y = df2, use = "pairwise", method = method, adjust = "none")

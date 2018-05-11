@@ -5,7 +5,7 @@
 \title{Multiple Correlations.}
 \usage{
 correlation(df, df2 = NULL, type = "full", method = "pearson",
-  adjust = "holm")
+  adjust = "holm", i_am_cheating = FALSE)
 }
 \arguments{
 \item{df}{The dataframe.}
@@ -27,6 +27,8 @@ abbreviated.}
 "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"). See
 \link[stats]{p.adjust} for details about why to use "holm" rather than
 "bonferroni").}
+
+\item{i_am_cheating}{Set to TRUE to run many uncorrected correlations.}
 }
 \value{
 output
