@@ -1,0 +1,107 @@
+---
+title: "Formatted and Flexible Correlation Tables"
+layout: post
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+  md_document:
+    toc: yes
+    variant: markdown_github
+author: "Dominique Makowski"
+date: "`r Sys.Date()`"
+tags:
+- r
+- psychology
+- neuroscience
+- neuropsychology
+---
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(knitr)
+```
+
+# Another *correlation* function?!
+
+Yes, the `correlation` function from the [`psycho`](https://github.com/neuropsychology/psycho.R) package.
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='hide'}
+library(psycho)
+library(tidyverse)
+
+cor <- psycho::affective %>% 
+  correlation()
+```
+
+This function automatically select numeric variables and run a correlation analysis. It returns a `psychobject`.
+
+
+# A table
+
+We can then extract a **formatted table** that can be saved and pasted into reports and manuscripts.
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='hide'}
+summary(cor)
+# write.csv(summary(cor), "myformattedcortable.csv")
+```
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+knitr::kable(summary(cor))
+```
+
+# A Plot
+
+It integrates a **plot** done with [`ggcorplot`](https://github.com/kassambara/ggcorrplot).
+
+```{r, eval = TRUE, results='markup', fig.align='center'}
+plot(cor)
+```
+
+
+# A print
+
+It also includes a **pairwise correlation printing** method.
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+print(cor)
+```
+
+# Options
+
+You can also cutomize the **type** (pearson, spearman or kendall), the **p value correction method** (holm (default), bonferroni, fdr, none...) and run **partial, semi-partial or glasso** correlations.
+
+
+```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='hide'}
+psycho::affective %>% 
+  correlation(method = "pearson", adjust="bonferroni", type="partial") %>% 
+  summary()
+```
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+psycho::affective %>% 
+  correlation(method = "pearson", adjust="bonferroni", type="partial") %>% 
+  summary() %>% 
+  knitr::kable()
+```
+
+# Fun with *p*-hacking
+
+In order to **prevent people for running many uncorrected correlation tests** (promoting *p*-hacking and result-fishing), we included the `i_am_cheating` parameter. If FALSE (default), the function will help you finding interesting results!
+
+```{r, eval = TRUE, results='hide', fig.align='center'}
+df_with_11_vars <- data.frame(replicate(11, rnorm(1000)))
+cor <- correlation(df_with_11_vars, adjust="none") 
+summary(cor)
+```
+```{r echo=FALSE, fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='markup'}
+knitr::kable(summary(cor)[,1:11])
+```
+
+
+**As we can see, Schopenhauer's Optimism is strongly related to many variables!!!**
+
+
+# Credits
+
+This package was useful? You can cite [`psycho`](https://github.com/neuropsychology/psycho.R) as follows:
+
+- Makowski, (2018). *The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470

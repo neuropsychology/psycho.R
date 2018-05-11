@@ -54,8 +54,8 @@ assess <- function(patient, mean = 0, sd = 1, n = NULL, controls = NULL, CI=95, 
       warning("Multiple scores were provided. Returning a list of results.")
     }
     results <- list()
-    for (i in patient) {
-      results[i] <- crawford.test(patient, controls, mean, sd, n, CI, treshold, iter, color_controls, color_CI, color_score, color_size, alpha_controls, alpha_CI)
+    for (i in 1:length(patient)) {
+      results[[i]] <- crawford.test(patient[i], controls, mean, sd, n, CI, treshold, iter, color_controls, color_CI, color_score, color_size, alpha_controls, alpha_CI)
       return(results)
     }
   } else {
