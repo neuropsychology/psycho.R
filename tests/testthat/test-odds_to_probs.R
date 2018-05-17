@@ -7,8 +7,9 @@ test_that("Correct", {
   testthat::expect_equal(
     ncol(odds_to_probs(
       psycho::affective,
-      subset=c("Life_Satisfaction"),
-      except=c("Sex"))),
-    8)
+      subset = c("Life_Satisfaction"),
+      except = c("Sex")
+    )),
+    8
+  )
 })
-

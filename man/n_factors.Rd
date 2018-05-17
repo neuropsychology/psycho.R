@@ -4,10 +4,10 @@
 \alias{n_factors}
 \title{Find Optimal Factor Number.}
 \usage{
-n_factors(df, rotate = "varimax", fm = "minres", n_max = 8)
+n_factors(df, rotate = "varimax", fm = "minres", n = NULL)
 }
 \arguments{
-\item{df}{The dataframe}
+\item{df}{A dataframe or correlation matrix}
 
 \item{rotate}{What rotation to use c("none", "varimax", "oblimin","promax")}
 
@@ -15,13 +15,13 @@ n_factors(df, rotate = "varimax", fm = "minres", n_max = 8)
 "minres" (default) for minimum residual (OLS) factoring, "mle" for
 Maximum Likelihood FA and "pc" for Principal Components}
 
-\item{n_max}{How many factors to test.}
+\item{n}{If correlation matrix is passed, the sample size.}
 }
 \value{
 output
 }
 \description{
-Find optimal factor number using various solutions.
+Find optimal components number using maximum method aggreement.
 }
 \examples{
 df <- dplyr::select_if(attitude, is.numeric)

@@ -418,7 +418,19 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, overlap=TRUE, ...) {
       }
     }
   }
-  text <- c(info, "", info_priors_text, "", "", paste0(tail(coefs_text, 1), head(coefs_text, 1)), "", head(tail(coefs_text, -1), -1))
+  text <- c(
+    info,
+    "",
+    info_priors_text,
+    "",
+    "",
+    paste0(
+      tail(coefs_text, 1),
+      head(coefs_text, 1)
+    ),
+    "",
+    head(tail(coefs_text, -1), -1)
+  )
 
 
 

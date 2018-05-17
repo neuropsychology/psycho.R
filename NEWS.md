@@ -3,17 +3,20 @@
 
 
 ### Breaking changes
+- Fixed bug in `dprime`
 - `mellenbergh.test`, `crawford.test` and `crawford.test.freq` now return a psychobject
 - `assess` has been refactored to become a wrapper for `crawford.test`
 - `crawford.test` now computes the Bayesian version
 - `crawford.test` has been renamed to `crawford.test.freq`
 ### New functions / parameters
+- Added  `analyze` for psych::fa objects
 - Added `i_am_cheating` parameter to `correlation` to prevent p-hacking
 - Added `percentile` and `percentile_to_z` functions
 - Added `as.data.frame` method for density objects
 - Added Crawford-Garthwaite (2007) Bayesian test for single-case analysis
 - Added `rnorm_perfect` function
 ### Changes
+- Fixed `draws` parameter in get_predicted.stanreg
 - logo
 
 

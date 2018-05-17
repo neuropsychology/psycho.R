@@ -14,5 +14,5 @@ test_that("Correct Value", {
   indices <- dprime(n_hit = df$n_hit, n_fa = df$n_fa, n_targets = 10, n_distractors = 10, adjusted = F)
   testthat::expect_equal(indices$dprime[1], -1.53, tolerance = 0.1)
 
-  testthat::expect_equal(dprime(5, 0, n_targets = 10, n_distractors = 8)$aprime, 0.875, tolerance = 0.1)
+  testthat::expect_equal(dprime(5, 0, n_targets = 10, n_distractors = 8, adjusted = FALSE)$aprime, 0.875, tolerance = 0.1)
 })

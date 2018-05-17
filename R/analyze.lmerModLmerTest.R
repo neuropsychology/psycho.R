@@ -40,7 +40,8 @@ analyze.lmerModLmerTest <- function(x, CI=95, ...) {
 
 
   # TODO: Bootstrapped p values
-  # boot.out = lme4::bootMer(fit, lme4::fixef, nsim=1000) #nsim determines p-value decimal places
+  # nsim determines p-value decimal places
+  # boot.out = lme4::bootMer(fit, lme4::fixef, nsim=1000)
   # p = rbind(
   #   (1-apply(boot.out$t<0, 2, mean))*2,
   #   (1-apply(boot.out$t>0, 2, mean))*2)

@@ -32,6 +32,7 @@ data <- cranlogs::cran_downloads(package = "psycho", from = "2017-10-06") %>%
          average_count = zoo::rollmax(count, 10, fill=0)+10)
 
 
+
 blogposts_dates <- list.files("../") %>% 
   stringr::str_subset("\\.md") %>% 
   stringr::str_remove_all("[^0-9-]") %>% 
@@ -42,7 +43,7 @@ blogposts_dates <- list.files("../") %>%
   pull() %>% 
   as.character()
 blogposts_names <- list.files("../") %>% 
-  stringr::str_subset(as.character(blogposts_dates)) %>% 
+  stringr::str_subset(paste(blogposts_dates,collapse="|")) %>% 
   stringr::str_subset("\\.md") %>% 
   stringr::str_remove_all("[0-9-]") %>% 
   stringr::str_sub(end=-4) 

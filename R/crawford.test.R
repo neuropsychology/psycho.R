@@ -37,7 +37,20 @@
 #' @importFrom scales rescale
 #' @import ggplot2
 #' @export
-crawford.test <- function(patient, controls=NULL, mean=NULL, sd=NULL, n=NULL, CI=95, treshold=0.1, iter=10000, color_controls="#2196F3", color_CI="#E91E63", color_score="black", color_size=2, alpha_controls=1, alpha_CI=0.8) {
+crawford.test <- function(patient,
+                          controls=NULL,
+                          mean=NULL,
+                          sd=NULL,
+                          n=NULL,
+                          CI=95,
+                          treshold=0.1,
+                          iter=10000,
+                          color_controls="#2196F3",
+                          color_CI="#E91E63",
+                          color_score="black",
+                          color_size=2,
+                          alpha_controls=1,
+                          alpha_CI=0.8) {
   if (is.null(controls)) {
     # Check if a parameter is null
     if (length(c(mean, sd, n)) != 3) {

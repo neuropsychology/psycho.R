@@ -21,7 +21,7 @@ test_that("It works", {
     patient = c(10, 12),
     mean = 8,
     sd = 2,
-    verbose=FALSE
+    verbose = FALSE
   )
 
   testthat::expect_equal(x[[1]]$values$p, 0.16, tol = 0.05)

@@ -57,14 +57,14 @@ dprime <- function(n_hit, n_fa, n_miss=NULL, n_cr=NULL, n_targets=NULL, n_distra
   }
 
   if (is.null(n_distractors)) {
-    n_distractors <- n_fa + n_miss
+    n_distractors <- n_fa + n_cr
   }
 
 
   # Parametric Indices ------------------------------------------------------
 
 
-  if (adjusted == T) {
+  if (adjusted == TRUE) {
     if (is.null(n_miss) | is.null(n_cr)) {
       warning("Please provide n_miss and n_cr in order to compute adjusted ratios. Computing indices anyway with non-adjusted ratios...")
 

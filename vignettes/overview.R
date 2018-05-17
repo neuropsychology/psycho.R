@@ -81,25 +81,6 @@ df <- cbind(df, indices)
 ## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
 kable(df)
 
-## ---- fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA----
-library(psycho)
-
-results <- psycho::assess(124, mean = 100, sd = 15)
-
-# Print it
-print(results)
-
-# Plot it
-plot(results)
-
-## ---- fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center'----
-library(psycho)
-
-results <- psycho::assess(85, mean = 100, sd = 15, linecolor = "orange", fillcolor = "#4CAF50")
-
-# Plot it
-plot(results)
-
 ## ----eval=TRUE, fig.align='center', fig.height=4.5, fig.width=9, message=FALSE, warning=FALSE, results='markup'----
 library(psycho)
 
@@ -124,10 +105,12 @@ p
 ## ----echo=TRUE, message=FALSE, warning=FALSE, results='markup'-----------
 library(psycho)
 
-case <- 61 # The IQ of a patient
+patient <- 61 # The IQ of a patient
 controls <- c(86, 100, 112, 95, 121, 102) # The IQs of a control group
 
-rez <- crawford.test(case, controls)
+result <- crawford.test(patient, controls)
+print(result)
+plot(result)
 
 ## ----echo=TRUE, message=FALSE, warning=FALSE, results='markup'-----------
 library(psycho)
@@ -137,7 +120,7 @@ case_Y <- 7
 controls_X <- c(100, 125, 89, 105, 109, 99)
 controls_Y <- c(7, 8, 9, 6, 7, 10)
 
-rez <- crawford_dissociation.test(case_X, case_Y, controls_X, controls_Y)
+result <- crawford_dissociation.test(case_X, case_Y, controls_X, controls_Y)
 
 ## ----echo=TRUE, message=FALSE, warning=FALSE, results='markup'-----------
 library(psycho)

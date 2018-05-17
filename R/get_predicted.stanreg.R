@@ -91,10 +91,10 @@ get_predicted.stanreg <- function(fit, newdata="model", prob=0.9, keep_iteration
   }
 
   # Generate draws -------------------------------------------------------
-  if (posterior_predict == F) {
-    posterior <- rstanarm::posterior_linpred(fit, newdata = newdata, re.form = re.form, seed = seed)
+  if (posterior_predict == FALSE) {
+    posterior <- rstanarm::posterior_linpred(fit, newdata = newdata, re.form = re.form, seed = seed, draws = draws)
   } else {
-    posterior <- rstanarm::posterior_predict(fit, newdata = newdata, re.form = re.form, seed = seed)
+    posterior <- rstanarm::posterior_predict(fit, newdata = newdata, re.form = re.form, seed = seed, draws = draws)
   }
 
   # Format -------------------------------------------------------
@@ -115,7 +115,7 @@ get_predicted.stanreg <- function(fit, newdata="model", prob=0.9, keep_iteration
 
   if (keep_iterations == TRUE) {
     iterations <- as.data.frame(t(posterior))
-    names(iterations) <- paste0("iter_", 1:length(names(iterations)))
+    names(iterations) <- paste0("iter_", seq_len(length(names(iterations))))
     pred_y <- cbind(pred_y, iterations)
   }
 

@@ -119,7 +119,7 @@ correlation <- function(df,
       ci.adj <- "Not available for glasso estimation."
     }
     else if (type == "cor_auto") {
-      corr <- qgraph::cor_auto(df, forcePD = F)
+      corr <- qgraph::cor_auto(df, forcePD = FALSE)
       r <- corr
       p <- NULL
       t <- NULL
@@ -135,9 +135,9 @@ correlation <- function(df,
 
 
   # Adjust P values
-  if (is.null(p) == F) {
+  if (is.null(p) == FALSE) {
     if (adjust != "none") {
-      if ((type == "full" & is.null(df2) == F) | (type == "semi")) {
+      if ((type == "full" & is.null(df2) == FALSE) | (type == "semi")) {
         p <- p.adjust(p, method = adjust)
       } else {
         p[lower.tri(p)] <- p.adjust(p[lower.tri(p)], method = adjust, n = choose(nrow(p), 2))
@@ -161,7 +161,7 @@ correlation <- function(df,
   # -------------
 
   # Define notions for significance levels; spacing is important.
-  if (is.null(p) == F) {
+  if (is.null(p) == FALSE) {
     mystars <- ifelse(p < .001, "***",
       ifelse(p < .01, "** ",
         ifelse(p < .05, "* ", " ")
@@ -185,7 +185,8 @@ correlation <- function(df,
     colnames(table) <- paste(colnames(df), "", sep = "")
     table[upper.tri(table, diag = TRUE)] <- "" # remove upper triangle
     table <- as.data.frame(table)
-    summary <- cbind(table[1:length(table) - 1]) # remove last column and return the matrix (which is now a data frame)
+    # remove last column and return the matrix (which is now a data frame)
+    summary <- cbind(table[seq_len(length(table) - 1)])
   } else {
     if (is.null(df2)) {
       colnames(table) <- paste(colnames(df), "", sep = "")
@@ -206,8 +207,8 @@ correlation <- function(df,
   # Text
   # -------------
   sentences <- c()
-  for (row in 1:nrow(r)) {
-    for (col in 1:ncol(r)) {
+  for (row in seq_len(nrow(r))) {
+    for (col in seq_len(ncol(r))) {
       if (as.matrix(table)[row, col] == "") next # skip iteration and go to next iteration
 
       val_r <- as.matrix(r)[row, col]
@@ -293,7 +294,7 @@ correlation <- function(df,
 
   # Plot
   # -------------
-  if (is.null(df2) == F & type == "full") {
+  if (is.null(df2) == FALSE & type == "full") {
     corr <- psych::corr.test(cbind(df, df2), use = "pairwise", method = method, adjust = "none")
     r <- corr$r
     p <- corr$p
