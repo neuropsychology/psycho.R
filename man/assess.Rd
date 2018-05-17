@@ -48,8 +48,6 @@ Compare a patient's score to a control group.
 }
 \details{
 Until relatively recently the standard way of testing for a difference between a case and controls was to convert the case’s score to a z score using the control sample mean and standard deviation (SD). If z was less than -1.645 (i.e., below 95% of the controls) then it was concluded that the case was significantly lower than controls. However, this method has serious disadvantages (Crawford and Garthwaite, 2012).
-
-Crawford et al. (2012) remind that empirically based decision algorithms are almost always vastly superior to clinically based decision making while being more reliable, accurate, and cost-effective (Dawes, Faust, & Meehl, 1989; Grove & Lloyd, 2006; Salzinger, 2005).
 }
 \examples{
 result <- assess(patient=124, mean=100, sd=15, n=100)

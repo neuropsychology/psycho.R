@@ -25,7 +25,7 @@
 #'
 #' @importFrom stats sd pt
 #' @export
-crawford_dissociation.test <- function(case_X, case_Y, controls_X, controls_Y, verbose=T) {
+crawford_dissociation.test <- function(case_X, case_Y, controls_X, controls_Y, verbose=TRUE) {
   X_mean <- mean(controls_X)
   X_sd <- sd(controls_X)
   Y_mean <- mean(controls_Y)
@@ -79,7 +79,7 @@ crawford_dissociation.test <- function(case_X, case_Y, controls_X, controls_Y, v
 
   result <- data.frame(t = tval, df = degfree, p = pval)
 
-  if (verbose == T) {
+  if (verbose == TRUE) {
     cat(paste0(text, "\n\n"))
   }
 

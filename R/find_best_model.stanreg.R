@@ -52,11 +52,11 @@ find_best_model.stanreg <- function(fit, interaction=TRUE, fixed=NULL, K=10, k_t
   kfolds <- list()
   complexities <- list()
   R2s <- list()
-  for (i in 1:length(combinations)) {
+  for (i in seq_len(length(combinations))) {
     print(paste0(i, "/", length(combinations)))
 
     formula <- combinations[i]
-    newfit <- update(fit, formula = formula, verbose = F)
+    newfit <- update(fit, formula = formula, verbose = FALSE)
     R2s[[formula]] <- median(rstanarm::bayes_R2(newfit))
 
     loo <- rstanarm::loo(newfit, k_treshold = k_treshold)

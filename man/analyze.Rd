@@ -19,6 +19,9 @@ Analyze objects. See the documentation for your object's class:
  \item{\link[=analyze.glmerMod]{analyze.glmerMod}}
  \item{\link[=analyze.lm]{analyze.lm}}
  }
+\itemize{
+ \item{\link[=analyze.fa]{analyze.fa}}
+ }
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

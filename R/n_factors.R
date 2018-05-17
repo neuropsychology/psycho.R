@@ -1,13 +1,13 @@
 #' Find Optimal Factor Number.
 #'
-#' Find optimal factor number using various solutions.
+#' Find optimal components number using maximum method aggreement.
 #'
-#' @param df The dataframe
+#' @param df A dataframe or correlation matrix
 #' @param rotate What rotation to use c("none", "varimax", "oblimin","promax")
 #' @param fm Factoring method: "pa" for Principal Axis Factor Analysis,
 #' "minres" (default) for minimum residual (OLS) factoring, "mle" for
 #' Maximum Likelihood FA and "pc" for Principal Components
-#' @param n_max How many factors to test.
+#' @param n If correlation matrix is passed, the sample size.
 #'
 #' @return output
 #'
@@ -33,7 +33,7 @@
 #' @importFrom stats dnorm
 #' @importFrom stats qnorm
 #' @export
-n_factors <- function(df, rotate="varimax", fm="minres", n_max=8) {
+n_factors <- function(df, rotate="varimax", fm="minres", n=NULL) {
 
   # Copy the parallel function from nFactors to correct the use of mvrnorm
   parallel <- function(subject = 100, var = 10, rep = 100, cent = 0.05,
@@ -82,12 +82,16 @@ n_factors <- function(df, rotate="varimax", fm="minres", n_max=8) {
   # Detect if df us a correlation matrix
   if (length(setdiff(names(df), rownames(df))) != 0) {
     cor <- qgraph::cor_auto(df, forcePD = FALSE)
+    n <- nrow(df)
   } else {
+    if (is.null(n)) {
+      stop("A correlation matrix was passed. You must provided the sample size (n).")
+    }
     cor <- df
   }
 
 
-  ap <- parallel(subject = nrow(df), var = ncol(df))
+  ap <- parallel(subject = n, var = ncol(cor))
   nS <- nFactors::nScree(x = eigen(cor)$values, aparallel = ap$eigen$qevpea)
 
   # Eigeinvalues data
@@ -97,7 +101,7 @@ n_factors <- function(df, rotate="varimax", fm="minres", n_max=8) {
       "Exp.Variance" = "Prop",
       "Cum.Variance" = "Cumu"
     ) %>%
-    mutate_("n.Factors" = ~ 1:nrow(nS$Analysis))
+    mutate_("n.Factors" = ~ seq_len(nrow(nS$Analysis)))
 
 
 
@@ -117,20 +121,19 @@ n_factors <- function(df, rotate="varimax", fm="minres", n_max=8) {
 
   # EGA Method
   # Doesn't really work for now :(
-  # ega <- EGA::EGA(cor, plot.EGA = F, matrix=T, n = nrow(df))
+  # ega <- EGA::EGA(cor, plot.EGA = F, matrix=TRUE, n = n)
   # ega <- EGA::bootEGA(df, n = 1000)
 
   # VSS
   vss <- psych::VSS(
     cor,
-    n = n_max,
-    n.obs = nrow(df),
+    n.obs = n,
     rotate = rotate,
     fm = fm, plot = F
   ) # fm can be "pa", "pc", "minres", "mle"
   stats <- vss$vss.stats
   stats$map <- vss$map
-  stats$n_factors <- 1:nrow(stats)
+  stats$n_factors <- seq_len(nrow(stats))
 
   # map
   if (length(stats$map[!is.na(stats$map)]) > 0) {
@@ -174,11 +177,11 @@ n_factors <- function(df, rotate="varimax", fm="minres", n_max=8) {
   for (name in names(cfits)) {
     cfit <- cfits[[name]]
 
-    cfit <- data.frame(cfit = cfit, n_factors = 1:length(cfit))
+    cfit <- data.frame(cfit = cfit, n_factors = seq_len(length(cfit)))
 
     result3 <- data.frame(
       Method = c(gsub("cfit.", "VSS Complexity ", name)),
-      n_optimal = c(na.omit(cfit[cfit$cfit == max(cfit$cfit, na.rm = T), ])$n_factors)
+      n_optimal = c(na.omit(cfit[cfit$cfit == max(cfit$cfit, na.rm = TRUE), ])$n_factors)
     )
 
     results <- rbind(results, result3)
@@ -188,7 +191,7 @@ n_factors <- function(df, rotate="varimax", fm="minres", n_max=8) {
   eigenvalues <- results %>%
     group_by_("n_optimal") %>%
     summarise_("n_method" = ~ n()) %>%
-    mutate_("n_optimal" = ~ factor(n_optimal, levels = 1:nrow(eigenvalues))) %>%
+    mutate_("n_optimal" = ~ factor(n_optimal, levels = seq_len(nrow(eigenvalues)))) %>%
     complete_("n_optimal", fill = list(n_method = 0)) %>%
     arrange_("n_optimal") %>%
     rename_(
