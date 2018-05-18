@@ -8,5 +8,5 @@ test_that("If it works.", {
 
   results <- analyze(x)
 
-  testthat::expect_equal(nrow(summary(results)),9)
+  testthat::expect_equal(nrow(summary(results)), 9)
 })

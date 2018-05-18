@@ -1,13 +1,13 @@
 ---
-title: "Formatted and Flexible Correlation Tables"
+title: "Beautiful and Powerful Correlation Tables"
 layout: post
 output:
-  html_document:
-    df_print: paged
-    toc: yes
   md_document:
     toc: yes
     variant: markdown_github
+  html_document:
+    df_print: paged
+    toc: yes
 author: "Dominique Makowski"
 date: "`r Sys.Date()`"
 tags:
@@ -27,6 +27,8 @@ library(knitr)
 Yes, the `correlation` function from the [`psycho`](https://github.com/neuropsychology/psycho.R) package.
 
 ```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='hide'}
+# devtools::install_github("neuropsychology/psycho.R")  # Install the newest version
+
 library(psycho)
 library(tidyverse)
 
@@ -39,7 +41,7 @@ This function automatically select numeric variables and run a correlation analy
 
 # A table
 
-We can then extract a **formatted table** that can be saved and pasted into reports and manuscripts.
+We can then extract a **formatted table** that can be saved and pasted into reports and manuscripts by using the `summary` function.
 
 ```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='hide'}
 summary(cor)
@@ -68,7 +70,7 @@ print(cor)
 
 # Options
 
-You can also cutomize the **type** (pearson, spearman or kendall), the **p value correction method** (holm (default), bonferroni, fdr, none...) and run **partial, semi-partial or glasso** correlations.
+You can also cutomize the **type** (*pearson, spearman or kendall*), the **p value correction method** (*holm (default), bonferroni, fdr, none...*) and run **partial, semi-partial** or **glasso** correlations.
 
 
 ```{r fig.align='center', message=FALSE, warning=FALSE, comment=NA, results='hide'}
