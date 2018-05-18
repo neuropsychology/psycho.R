@@ -9,6 +9,7 @@
 - `crawford.test` now computes the Bayesian version
 - `crawford.test` has been renamed to `crawford.test.freq`
 ### New functions / parameters
+- Added `find_matching_string` for fuzzy string matching
 - Added  `analyze` for psych::fa objects
 - Added `i_am_cheating` parameter to `correlation` to prevent p-hacking
 - Added `percentile` and `percentile_to_z` functions

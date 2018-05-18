@@ -251,7 +251,7 @@ correlation <- function(df,
       sentence <- paste0(
         "   - ",
         var1,
-        " - ",
+        " / ",
         var2,
         ":   ",
         "Results of the ",
@@ -282,9 +282,9 @@ correlation <- function(df,
     stringr::str_to_title(method),
     " ",
     stringr::str_to_title(type),
-    " Correlation (p value correction: ",
+    " correlation (p value correction: ",
     adjust,
-    "):"
+    "):\n"
   ), sentences)
 
   text <- sentences

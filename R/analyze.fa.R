@@ -124,7 +124,7 @@ get_loadings_max <- function(loadings) {
   max <- loadings %>%
     tidyr::gather_("Component", "Loading", names(loadings)[!names(loadings) %in% c("Item", "N", "Label")]) %>%
     dplyr::group_by_("Item") %>%
-    dplyr::slice_("which.max(Loading)") %>%
+    dplyr::slice_("which.max(abs(Loading))") %>%
     dplyr::arrange_("Component", "desc(Loading)")
   return(max)
 }
