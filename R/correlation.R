@@ -242,7 +242,7 @@ correlation <- function(df,
       }
 
 
-      if (val_r < 0) {
+      if (val_r > 0) {
         direction <- "positive"
       } else {
         direction <- "negative"
