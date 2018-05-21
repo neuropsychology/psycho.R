@@ -26,11 +26,13 @@ analyze.fa <- function(x, labels=NULL, ...) {
   loadings <- format_loadings(x, labels)
 
   values <- list()
+  values$variance <- x$Vaccounted
   values$loadings <- loadings$loadings
   values$loadings_max <- loadings$max
   values$cfa_model <- get_cfa_model(loadings$max)
 
-  text <- format(values$cfa_model)
+  text <- .fa_variance_text(values$variance)
+  text <- paste0(text, "\n\n", format(values$cfa_model))
   summary <- values$loadings
   plot <- plot_loadings(values$loadings)
 
@@ -38,6 +40,40 @@ analyze.fa <- function(x, labels=NULL, ...) {
 
   class(output) <- c("psychobject", "list")
   return(output)
+}
+
+
+
+
+
+
+
+
+
+#' @export
+.fa_variance_text <- function(variance) {
+  variance <- as.data.frame(variance)
+  n_factors <- ncol(variance)
+
+  t <- as.data.frame(t(variance))
+  tot_var <- max(t$`Cumulative Var`)
+
+  factors <- names(variance)
+  var <- variance["Proportion Var", ]
+  text_var <- paste0(factors,
+         " = ",
+         format_digit(var*100),
+         "%",
+         collapse = ", ")
+
+  text <- paste0("The ",
+                 n_factors,
+                 " components accounted for ",
+                 format_digit(tot_var*100),
+                 "% of the total variance (")
+  text <- paste0(text, text_var, ")")
+
+  return(text)
 }
 
 

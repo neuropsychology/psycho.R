@@ -3,7 +3,7 @@ layout: post
 title: "Beautiful and Powerful Correlation Tables in R"
 author: Dominique Makowski
 author_web: https://dominiquemakowski.github.io/
-date: 2018-05-18
+date: 2018-05-20
 summary: Beautiful and Powerful Correlation Tables in R.
 ---
 
@@ -59,7 +59,7 @@ It integrates a **plot** done with [`ggcorplot`](https://github.com/kassambara/g
 plot(cor)
 ```
 
-<img src="https://raw.githubusercontent.com/neuropsychology/psycho.R/master/docs/_posts/2018-05-18-correlation_files/figure-markdown_github/unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/neuropsychology/psycho.R/master/docs/_posts/2018-05-20-correlation_files/figure-markdown_github/unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
 
 A print
 =======
