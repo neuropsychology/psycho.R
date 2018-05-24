@@ -4,7 +4,7 @@
 \alias{format_digit}
 \title{Format digits.}
 \usage{
-format_digit(x, digits = 2, null_treshold = 0.001)
+format_digit(x, digits = 2, null_treshold = 0.001, inf_treshold = 9e+08)
 }
 \arguments{
 \item{x}{A digit.}
@@ -12,6 +12,8 @@ format_digit(x, digits = 2, null_treshold = 0.001)
 \item{digits}{Number of significant digits.}
 
 \item{null_treshold}{Treshold below which return 0.}
+
+\item{inf_treshold}{Treshold above which return Inf.}
 }
 \description{
 Format digits.

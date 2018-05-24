@@ -4,10 +4,12 @@
 \alias{get_cfa_model}
 \title{Get CFA model.}
 \usage{
-get_cfa_model(loadings_max)
+get_cfa_model(loadings, treshold = "max")
 }
 \arguments{
-\item{loadings_max}{Max loadings by variable.}
+\item{loadings}{Formatted loadings.}
+
+\item{treshold}{'max' or numeric. The treshold over which to associate an item with its component.}
 }
 \description{
 Get CFA model.
@@ -17,7 +19,9 @@ Get CFA model.
 library(psycho)
 
 x <- psych::fa(psych::Thurstone.33, 2)
-get_cfa_model(format_loadings(x)$max)
+loadings <- format_loadings(x)$loadings
+get_cfa_model(loadings, treshold="max")
+get_cfa_model(loadings, treshold=0.1)
 }
 
 

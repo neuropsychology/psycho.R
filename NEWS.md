@@ -9,6 +9,10 @@
 - `crawford.test` now computes the Bayesian version
 - `crawford.test` has been renamed to `crawford.test.freq`
 ### New functions / parameters
+- Added `refdata` for reference grid creation
+- Added `rope` for region of practical equivalence
+- Added `interpret_r` for correlation coefficient interpretation
+- Added `bayesian_cor.test`, start to work on implementation of bayesian method for correlation
 - Added `find_matching_string` for fuzzy string matching
 - Added  `analyze` for psych::fa objects
 - Added `i_am_cheating` parameter to `correlation` to prevent p-hacking

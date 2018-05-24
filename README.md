@@ -37,13 +37,14 @@ The main goal of the `psycho` package is to provide tools for psychologists, neu
 
 ## Contribute
 
-Want to get involved in the developpment of an open-source software and improve psychological science? **Join us!**
+**`psycho` is a young package in need of affection.** You can easily hop aboard the developpment of this open-source software and improve psychological science:
 
-- You need some help? You found a bug? You would like to request a new feature? 
-  Just open an [issue](https://github.com/neuropsychology/psycho.R/issues) :relaxed:
-- Want to add a feature? Correct a bug? You're more than welcome to contribute!
-- Looking for help to implement and enhance the `analyze` method for other models and tests.
-  
+- You need some help? You found a bug? You would like to request a new feature? Just open an [issue](https://github.com/neuropsychology/psycho.R/issues) :relaxed:
+- Want to add a feature? Correct a bug? You're more than welcome to [contribute](https://github.com/neuropsychology/psycho.R/blob/master/CONTRIBUTING.md)!
+
+Don't be shy, try to code and submit a pull request (PR). Even if unperfect, we will help you to make a great PR!
+All contributors will be very graciously rewarded. One day.
+
 ## Examples
 
 Check examples in the following vignettes:

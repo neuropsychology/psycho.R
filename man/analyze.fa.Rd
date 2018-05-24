@@ -4,12 +4,14 @@
 \alias{analyze.fa}
 \title{Analyze fa objects.}
 \usage{
-\method{analyze}{fa}(x, labels = NULL, ...)
+\method{analyze}{fa}(x, labels = NULL, treshold = "max", ...)
 }
 \arguments{
 \item{x}{An psych object.}
 
 \item{labels}{Supply a additional column with e.g. item labels.}
+
+\item{treshold}{'max' or numeric. The treshold over which to associate an item with its component.}
 
 \item{...}{Arguments passed to or from other methods.}
 }

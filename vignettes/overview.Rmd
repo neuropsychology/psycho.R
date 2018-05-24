@@ -150,6 +150,18 @@ You can also have access to the individual correlations as follows:
 print(pcor)
 ```
 
+### Bayesian Correlations
+
+Bayesian correlations can be performed very simply as following:
+
+
+```{r, results='markup', comment=NA}
+psycho::bayesian_cor.test(iris$Petal.Width, iris$Sepal.Width)
+```
+
+
+
+
 ------
 
 ## Standardize / Normalize / Z-score / Scale
