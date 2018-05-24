@@ -228,10 +228,18 @@ n_factors <- function(df, rotate="varimax", fm="minres", n=NULL) {
 
   # Text
   # -------------
+  # Plural
+  if(best_n == 1){
+    factor_text <- " factor "
+  } else{
+    factor_text <- " factors "
+  }
+
   text <- paste0(
     "The choice of ",
     best_n,
-    " factors is supported by ",
+    factor_text,
+    "is supported by ",
     best_n_df$n.Methods,
     " (out of ",
     round(nrow(results)),
@@ -239,10 +247,8 @@ n_factors <- function(df, rotate="varimax", fm="minres", n=NULL) {
     round(best_n_df$n.Methods / nrow(results) * 100, 2),
     "%) methods (",
     best_n_methods,
-    ")"
+    ")."
   )
-
-  # text <- c(text, as.character(head(arrange_(summary, "n.Methods"))))
 
 
   # Plot

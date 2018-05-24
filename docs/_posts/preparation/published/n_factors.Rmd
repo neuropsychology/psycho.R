@@ -1,0 +1,88 @@
+---
+title: "How Many Factors to Retain in Factor Analysis?"
+layout: post
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+  md_document:
+    toc: yes
+    variant: markdown_github
+author: "Dominique Makowski"
+date: "`r Sys.Date()`"
+editor_options: 
+  chunk_output_type: console
+---
+
+# The method agreement procedure
+
+
+When running factor analysis, one often needs to know how many components to retain. Fortunately, many methods exist to statistically answer this issue. Unfortunately, there is no consensus on which method is the best. Therefore, the `n_factors()` function, available in the [psycho](https://github.com/neuropsychology/psycho.R) package, performs a **method agreement procedure**. In other words, it runs all the routines and returns the number of factors with the higher consensus.  
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, results='markup'}
+# devtools::install_github("neuropsychology/psycho.R")  # Install the last psycho version if needed
+
+library(tidyverse)
+library(psycho)
+
+results <- attitude %>%
+  psycho::n_factors()
+
+print(results)
+```
+
+We can have an overview of all values by using the `summary` method.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results = "hide"}
+summary(results)
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+knitr::kable(summary(results), digits=2)
+```
+
+And, of course, plot it :)
+
+```{r}
+plot(results)
+```
+
+The plot shows the **number of methods** (in yellow), the **Eigenvalues** (red line) and the cumulative proportion of **explained variance** (blue line). 
+
+For more details, we can also extract the final result (the optimal number of factors) for each method:
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+psycho::values(results)$methods
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+knitr::kable(psycho::values(results)$methods)
+```
+
+# Tweaking
+
+We can also provide a correlation matrix, as well as changing the rotation and the factoring method.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, results='markup'}
+df <- psycho::affective
+
+cor_mat <- psycho::correlation(df)
+cor_mat <- cor_mat$values$r
+
+results <- cor_mat %>%
+  psycho::n_factors(rotate = "oblimin", fm = "mle", n=nrow(df))
+
+print(results)
+
+plot(results)
+```
+
+
+
+
+# Credits
+
+This package helped you? Don't forget to cite the various packages you used :)
+
+You can cite `psycho` as follows:
+
+- Makowski, (2018). *The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470
