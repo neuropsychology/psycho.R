@@ -58,4 +58,6 @@ test_that("Ccorrelations work", {
   # Plot
   plot <- plot(correlation(df))
   testthat::expect_equal(length(plot), 10, tol = 0.1)
+
+  testthat::expect_warning(correlation(data.frame(replicate(11, rnorm(100))), adjust = "none"))
 })

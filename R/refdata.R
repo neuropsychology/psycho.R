@@ -54,12 +54,17 @@ refdata <- function(df, target="all", length.out=10, type="reference", fixed="me
     var_order <- names(df_rest)
     factors <- purrr::keep(df_rest, is.factor)
     factors_name <- names(factors)
+    factors_df <- tidyr::expand_(df_rest, factors_name)
 
     nums <- purrr::keep(df, is.numeric) %>%
       summarise_all(funs_(fixed))
 
-    factors_df <- tidyr::expand_(df_rest, factors_name)
-    refrest <- merge(factors_df, nums)
+    if(nrow(factors_df) > 0){
+      refrest <- merge(factors_df, nums)
+      } else{
+      refrest <- nums
+      }
+
     refrest <- refrest[var_order]
 
     # Join
