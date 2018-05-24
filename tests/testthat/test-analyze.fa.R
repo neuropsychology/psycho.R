@@ -10,5 +10,5 @@ test_that("If it works.", {
   testthat::expect_equal(nrow(summary(results)), 9)
 
   cfa_model <- get_cfa_model(results$values$loadings, treshold = 0.3)
-  testthat::expect_equal(nchar(cfa_model), 195)
+  testthat::expect_equal(length(cfa_model), 1)
 })
