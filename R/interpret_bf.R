@@ -22,7 +22,7 @@ interpret_bf <- function(x, label_only=FALSE) {
     x <- 1 / abs(x)
     direction <- "against"
   } else {
-    direction <- "in favor of"
+    direction <- "in favour of"
   }
 
   interpretation <- ifelse(abs(x) > 100, "extreme evidence",

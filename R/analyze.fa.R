@@ -4,6 +4,7 @@
 #'
 #' @param x An psych object.
 #' @param labels Supply a additional column with e.g. item labels.
+#' @param treshold 'max' or numeric. The treshold over which to associate an item with its component.
 #' @param ... Arguments passed to or from other methods.
 #'
 #' @return output
@@ -22,14 +23,14 @@
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-analyze.fa <- function(x, labels=NULL, ...) {
+analyze.fa <- function(x, labels=NULL, treshold="max", ...) {
   loadings <- format_loadings(x, labels)
 
   values <- list()
   values$variance <- x$Vaccounted
   values$loadings <- loadings$loadings
   values$loadings_max <- loadings$max
-  values$cfa_model <- get_cfa_model(loadings$max)
+  values$cfa_model <- get_cfa_model(loadings$loadings, treshold = treshold)
 
   text <- .fa_variance_text(values$variance)
   text <- paste0(text, "\n\n", format(values$cfa_model))
@@ -61,16 +62,19 @@ analyze.fa <- function(x, labels=NULL, ...) {
   factors <- names(variance)
   var <- variance["Proportion Var", ]
   text_var <- paste0(factors,
-         " = ",
-         format_digit(var*100),
-         "%",
-         collapse = ", ")
+    " = ",
+    format_digit(var * 100),
+    "%",
+    collapse = ", "
+  )
 
-  text <- paste0("The ",
-                 n_factors,
-                 " components accounted for ",
-                 format_digit(tot_var*100),
-                 "% of the total variance (")
+  text <- paste0(
+    "The ",
+    n_factors,
+    " components accounted for ",
+    format_digit(tot_var * 100),
+    "% of the total variance ("
+  )
   text <- paste0(text, text_var, ")")
 
   return(text)
@@ -171,7 +175,8 @@ get_loadings_max <- function(loadings) {
 #'
 #' Get CFA model.
 #'
-#' @param loadings_max Max loadings by variable.
+#' @param loadings Formatted loadings.
+#' @param treshold 'max' or numeric. The treshold over which to associate an item with its component.
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
@@ -180,14 +185,24 @@ get_loadings_max <- function(loadings) {
 #' library(psycho)
 #'
 #' x <- psych::fa(psych::Thurstone.33, 2)
-#' get_cfa_model(format_loadings(x)$max)
+#' loadings <- format_loadings(x)$loadings
+#' get_cfa_model(loadings, treshold="max")
+#' get_cfa_model(loadings, treshold=0.1)
 #' }
 #'
 #'
 #' @import dplyr
 #' @export
-get_cfa_model <- function(loadings_max) {
-  cfa_model <- loadings_max %>%
+get_cfa_model <- function(loadings, treshold="max") {
+  if (treshold == "max") {
+    filtered_loadings <- get_loadings_max(loadings)
+  } else {
+    filtered_loadings <- loadings %>%
+      tidyr::gather_("Component", "Loading", names(loadings)[!names(loadings) %in% c("Item", "N", "Label")]) %>%
+      filter_("Loading > treshold")
+  }
+
+  cfa_model <- filtered_loadings %>%
     select_("Item", "Component") %>%
     group_by_("Component") %>%
     summarise_("Observed" = 'paste(Item, collapse=" + ")') %>%

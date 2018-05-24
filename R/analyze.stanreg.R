@@ -306,7 +306,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, overlap=TRUE, ...) {
 
       overlap_coef <- overlap(posterior, norm) * 100
 
-      values$effects[[varname]]$overlap_coef <- overlap_coef
+      values$effects[[varname]]$overlap <- overlap_coef
     }
   }
 
@@ -325,13 +325,11 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, overlap=TRUE, ...) {
       summary,
       data.frame(
         Variable = varname,
-        MPE = values$effects[[varname]]$MPE,
         Median = values$effects[[varname]]$median,
         MAD = values$effects[[varname]]$mad,
-        Mean = values$effects[[varname]]$mean,
-        SD = values$effects[[varname]]$sd,
         CI_lower = values$effects[[varname]]$CI_values[1],
-        CI_higher = values$effects[[varname]]$CI_values[2]
+        CI_higher = values$effects[[varname]]$CI_values[2],
+        MPE = values$effects[[varname]]$MPE
       )
     )
   }
@@ -357,9 +355,18 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, overlap=TRUE, ...) {
   if (overlap == TRUE) {
     summary$Overlap <- NA
     for (varname in varnames_for_summary) {
-      summary[summary$Variable == varname, ]$Overlap <- values$effects[[varname]]$overlap_coef
+      summary[summary$Variable == varname, ]$Overlap <- values$effects[[varname]]$overlap
     }
   }
+
+  if (R2 == TRUE) {
+    summary[summary$Variable == "R2", ]$MPE <- NA
+    summary[summary$Variable == "R2", ]$Overlap <- NA
+  }
+
+  # For now, toggle off Overlap
+  summary$Overlap <- NULL
+
 
   # Text --------------------------------------------------------------------
   # -------------------------------------------------------------------------

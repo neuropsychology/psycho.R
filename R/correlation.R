@@ -226,27 +226,13 @@ correlation <- function(df,
       var2 <- row.names(r)[row]
 
       if (is.numeric(val_p) & val_p <= .05) {
-        significance <- "significant and "
+        significance <- "significant "
       } else if (is.numeric(val_p) & val_p > .05) {
-        significance <- "non significant and "
+        significance <- "non significant "
       } else {
         significance <- ""
       }
 
-      if (abs(val_r) < .30) {
-        strength <- "weak"
-      } else if (abs(val_r) < .5) {
-        strength <- "moderate"
-      } else {
-        strength <- "strong"
-      }
-
-
-      if (val_r > 0) {
-        direction <- "positive"
-      } else {
-        direction <- "negative"
-      }
 
       sentence <- paste0(
         "   - ",
@@ -258,9 +244,7 @@ correlation <- function(df,
         stringr::str_to_title(method),
         " correlation showed a ",
         significance,
-        strength,
-        " ",
-        direction,
+        interpret_r(val_r),
         " association between ",
         var1,
         " and ",

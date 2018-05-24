@@ -11,12 +11,14 @@ abstract: |
   Why use frequentist methods when you can use, in an even simpler way, the Bayesian framework? Throughout this tutorial, we will explore many of the analyses you might want to do with your data.
 vignette: >
   %\VignetteIndexEntry{BayesianPsychology}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteDepends{dplyr}
   %\VignetteDepends{tidyr}
   %\VignetteDepends{ggplot2}
   %\VignetteDepends{plotly}
   \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
 
@@ -111,7 +113,7 @@ ggplot(data.frame(x = density$x, y = density$y), aes(x=x, y=y)) +
 In this example (based on real data):
 
 - The **median of the posterior distribution is really close to the *r* coefficient obtained through a "normal" correlation analysis**, appearing as a good point-estimate of the correlation. Moreover, and unlike the frequentist estimate, the median has an intuitive meaning (as it cuts the distribution in two equal parts): the "true" effect has 50% of chance of being higher and 50% of chance of being lower. 
-- We can also compute the **90% *credible* interval**, which shows where the true effect can fall with a probability of 90%. 
+- We can also compute the **90% *credible* interval**, which shows where the true effect can fall with a probability of 90% (better than 95% CI, see *Kruschke, 2015*). 
 - Finally, we can also compute the **MPE**, *i.e.*, the maximum probability of effect, which is the probability that the effect is in the median's direction (*i.e.*, negative in this example): the area in red. It interesting to note that the probability that the effect is opposite ((100 - MPE) / 100, here (100-`r mpe`) / 100 = `r format_digit((100-mpe)/100)`) is relatively close to the actual **p value** obtained through frequentist correlation (p = `r format_digit(p)`).
 
 **Now that you're familiar with posterior distributions, the core difference of the Bayesian framework, let's practice!**
@@ -122,7 +124,6 @@ Let's start by taking a look at the dataset included within the `psycho` package
 
 ```{r, echo=T, message=FALSE, warning=FALSE, results='hide'}
 library(rstanarm)
-library(emmeans)
 library(dplyr)
 library(ggplot2)
 library(psycho)
@@ -165,10 +166,24 @@ summary(results, round = 2)
 knitr::kable(summary(results, round = 2))
 ```
 
-And print it textually:
+For each parameter of the model, the summary shows:
+
+- the **median** of the posterior distribution of the parameter (can be used as a point estimate, similar to the beta of frequentist models)
+- the **Median Absolute Deviation (MAD)**, a robust measure of dispertion (could be seen as a robust version of SD)
+- the **Credible Interval** (by default, the 90\% CI; see Kruschke, 2018), representing the range of parameter values possibility
+- the **Maximum Probability of Effect (MPE)**, an index of effect existence (the probability that the effect is different from 0 in the median's direction)
+
+It also returns the (unadjusted) R2 (which represents the *percentage of variance of the outcome explained by the model*). In the Bayesian framework, the R2 is also estimated with probabilities. As such, characteristics of its posterior distribution are returned.
+
+
+
+We can also print a formatted version:
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 print(results)
 ```
+
+Note that the  `print()` returns also additional info, such as the 100\% CI of the R2 and, for each parameter, the limits of the range defined by the MPE. 
+
 
 
 ### Interpretation
@@ -183,29 +198,25 @@ The current model explains about `r psycho::format_digit(results$values$effects$
 
 ### Model Visualization
 
-To visualize the model, the most neat way is to extract a "reference grid" (*i.e.*, a theorethical dataframe with balanced data), using the `emmeans` package.
+To visualize the model, the most neat way is to extract a "reference grid" (*i.e.*, a theorethical dataframe with balanced data).
 
 ```{r echo=T, message=FALSE, warning=FALSE}
-# We enter the values of tolerating that we want in our reference grid, in this case a sequence of length=10 with minimum and maximum similar to the actual data.
-ref_grid <- emmeans::ref_grid(fit, at = list(
-  Tolerating = seq(min(df$Tolerating),
-                   max(df$Tolerating),
-                   length.out = 10)))
-                              
-predicted <- psycho::get_predicted(fit, newdata=ref_grid)
+refgrid <- df %>% 
+  select(Tolerating) %>% 
+  psycho::refdata(length.out=10)
+
+predicted <- psycho::get_predicted(fit, newdata=refgrid)
 ```
 ```{r echo=T, message=FALSE, warning=FALSE, results='hide'}
 predicted
 ```
 
 
-
-
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 kable(predicted)
 ```
 
-Our refgrid is made of equally spaced (balanced) predictor values. It also include the meedian of the posterior prediction, as well as 90% credible intervals. Now, we can plot it as follows:
+Our refgrid is made of equally spaced (balanced) predictor values. It also include the median of the posterior prediction, as well as 90% credible intervals. Now, we can plot it as follows:
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA}
 ggplot(predicted, aes(x=Tolerating, y=Life_Satisfaction_Median)) +
@@ -311,12 +322,11 @@ As **female** is the first level, it means that it is the intercept. Based on ou
 To visualize this type of model, we have to derive a reference grid.
 
 ```{r echo=T, message=FALSE, warning=FALSE}
-ref_grid <- emmeans::ref_grid(fit, at = list(
-  Adjusting = seq(min(df$Adjusting),
-                   max(df$Adjusting),
-                   length.out = 10)))
-
-predicted <- psycho::get_predicted(fit, newdata=ref_grid)
+refgrid <- df %>% 
+  select(Adjusting) %>% 
+  psycho::refdata(length.out=10)
+  
+predicted <- psycho::get_predicted(fit, newdata=refgrid)
 ```
 
 Note that `get_predicted` automatically transformed log odds ratios (the values in which the model is expressed) to probabilities, easier to apprehend.
@@ -364,11 +374,11 @@ Again, it is important to notice that the intercept (the baseline) corresponds h
 How to represent this type of models? Again, we have to generate a reference grid.
 
 ```{r echo=T, message=FALSE, warning=FALSE, results="hide"}
-ref_grid <- emmeans::ref_grid(fit, at = list(
-  Concealing = seq(min(df$Concealing),
-                   max(df$Concealing),
-                   length.out = 10)))
-predicted <- psycho::get_predicted(fit, newdata=ref_grid)
+refgrid <- df %>% 
+  select(Concealing, Sex) %>% 
+  psycho::refdata(length.out=10)
+
+predicted <- psycho::get_predicted(fit, newdata=refgrid)
 predicted
 ```
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
@@ -411,7 +421,7 @@ fit <- rstanarm::stan_lmer(Concealing ~ Age + (1|Salary), data=df)
 ```
 ```{r message=FALSE, warning=FALSE, include=FALSE, results="hide"}
 # Let's fit our model (it takes more time)
-fit <- rstanarm::stan_lmer(Concealing ~ Age + (1|Salary), data=df, iter=500, chains=2)
+fit <- rstanarm::stan_lmer(Concealing ~ Age + (1|Salary), data=df, iter=500, chains=2, seed=666)
 ```
 
 Let's check our model: 
@@ -426,19 +436,18 @@ summary(results, round = 2)
 kable(summary(results, round = 2))
 ```
 
-As we can see, the linear relationship is probable.
+As we can see, the linear relationship has only a moderate probability of being different from 0.
 
 ### Model Visualization
 
 
 ```{r echo=T, message=FALSE, warning=FALSE}
-ref_grid <- emmeans::ref_grid(fit, at = list(
-  Age = seq(min(df$Age),
-            max(df$Age),
-            length.out = 4)))
+refgrid <- df %>% 
+  select(Age) %>% 
+  psycho::refdata(length.out=10)
 
-# We name the predicted dataframe by adding _linear to keep it for further comparison (see next part)
-predicted_linear <- psycho::get_predicted(fit, newdata=ref_grid)
+# We name the predicted dataframe by adding '_linear' to keep it for further comparison (see next part)
+predicted_linear <- psycho::get_predicted(fit, newdata=refgrid)
 ```
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA}
 ggplot(predicted_linear, aes(x=Age, y=Concealing_Median)) +
@@ -482,12 +491,11 @@ As we can see, both the linear relationship and the second order curvature are h
 The model visualization routine is similar to the previous ones.
 
 ```{r echo=T, message=FALSE, warning=FALSE}
-ref_grid <- emmeans::ref_grid(fit, at = list(
-  Age = seq(min(df$Age),
-            max(df$Age),
-            length.out = 20)))
+refgrid <- df %>% 
+  select(Age) %>% 
+  psycho::refdata(length.out=20)
 
-predicted_poly <- psycho::get_predicted(fit, newdata=ref_grid)
+predicted_poly <- psycho::get_predicted(fit, newdata=refgrid)
 ```
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA}
 ggplot(predicted_poly, aes(x=Age, y=Concealing_Median)) +
@@ -656,13 +664,12 @@ fit <- rstanarm::stan_glm(Sex ~ Adjusting, data=df, family = "binomial")
 ```
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 # Generate a new refgrid
-ref_grid <- emmeans::ref_grid(fit, at = list(
-  Adjusting = seq(min(df$Adjusting),
-                   max(df$Adjusting),
-                   length.out = 10)))
+refgrid <- df %>% 
+  select(Adjusting) %>% 
+  psycho::refdata(length.out=10)
 
 # Get predictions and keep iterations
-predicted <- psycho::get_predicted(fit, newdata=ref_grid, keep_iterations=TRUE)
+predicted <- psycho::get_predicted(fit, newdata=refgrid, keep_iterations=TRUE)
 
 # Reshape this dataframe to have iterations as factor
 predicted <- predicted %>% 
