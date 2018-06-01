@@ -1,29 +1,24 @@
 ---
-title: "Fancy Plot (with Posterior Samples) for Bayesian Regressions"
 layout: post
-output:
-  html_document:
-    df_print: paged
-    toc: yes
-  md_document:
-    toc: yes
-    variant: markdown_github
-author: "Dominique Makowski"
-date: "`r Sys.Date()`"
-editor_options: 
-  chunk_output_type: console
+title: "Fancy Plot (with Posterior Samples) for Bayesian Regressions"
+author: Dominique Makowski
+author_web: https://dominiquemakowski.github.io/
+date: 2018-05-24
+summary: Describes how to plot a Bayesian regression with all the draws from the posterior distribution.
 ---
 
-
-```{r message=FALSE, warning=FALSE, include=FALSE}
-library(knitr)
-```
+-   [The Model](#the-model)
+-   [Plot](#plot)
+-   [Credits](#credits)
 
 As Bayesian models usually generate a lot of samples (*iterations*), one could want to plot them as well, instead (or along) the posterior "summary" (with indices like the 90% HDI). This can be done quite easily by extracting all the iterations in `get_predicted` from the `psycho` package.
 
-# The Model
+The Model
+=========
 
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='hide', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+``` r
+# devtools::install_github("neuropsychology/psycho.R")  # Install the last psycho version if needed
+
 # Load packages
 library(tidyverse)
 library(psycho)
@@ -35,13 +30,14 @@ df <- psycho::affective
 fit <- rstanarm::stan_glm(Sex ~ Adjusting, data=df, family = "binomial")
 ```
 
-We fitted a Bayesian logistic regression to predict the sex (*W / M*) with one's ability to flexibly adjust to his/her emotional reaction. 
+We fitted a Bayesian logistic regression to predict the sex (*W / M*) with one's ability to flexibly adjust to his/her emotional reaction.
 
-# Plot
+Plot
+====
 
 To visualize the model, the most neat way is to extract a "reference grid" (*i.e.*, a theorethical dataframe with balanced data). Our refgrid is made of equally spaced predictor values. With it, we can make predictions using the previously fitted model. This will compute the median of the posterior prediction, as well as the 90% credible interval. However, we're interested in keeping all the prediction samples (iterations). Note that `get_predicted` automatically transformed log odds ratios (the values in which the model is expressed) to probabilities, easier to apprehend.
 
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+``` r
 # Generate a new refgrid
 refgrid <- df %>% 
   dplyr::select(Adjusting) %>% 
@@ -56,16 +52,19 @@ predicted <- predicted %>%
 
 # Plot all iterations with the median prediction
 ggplot(predicted, aes(x=Adjusting)) +
-  geom_line(aes(y=Iteration_Value, group=Iteration), size=0.3, alpha=0.01) +
+  geom_line(aes(y=Iteration_Value, group=Iteration), size=0.3, alpha=0.02) +
   geom_line(aes(y=Sex_Median), size=1) + 
   ylab("Probability of being a man\n") +
   theme_classic()
 ```
 
-# Credits
+<img src="https://raw.githubusercontent.com/neuropsychology/psycho.R/master/docs/_posts/2018-06-01-plot_bayesian_model_files/figure-markdown_github/unnamed-chunk-3-1.png" style="display: block; margin: auto;" />
+
+Credits
+=======
 
 This package helped you? Don't forget to cite the various packages you used :)
 
 You can cite `psycho` as follows:
 
-- Makowski, (2018). *The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470
+-   Makowski, (2018). *The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. <https://doi.org/10.21105/joss.00470>
