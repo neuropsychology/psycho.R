@@ -18,6 +18,7 @@
 #' results <- analyze(x)
 #' print(results)
 #' summary(results)
+#' plot(results)
 #'
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

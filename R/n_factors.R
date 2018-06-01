@@ -229,9 +229,9 @@ n_factors <- function(df, rotate="varimax", fm="minres", n=NULL) {
   # Text
   # -------------
   # Plural
-  if(best_n == 1){
+  if (best_n == 1) {
     factor_text <- " factor "
-  } else{
+  } else {
     factor_text <- " factors "
   }
 

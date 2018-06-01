@@ -4,12 +4,14 @@
 \alias{find_matching_string}
 \title{Fuzzy string matching.}
 \usage{
-find_matching_string(x, y, step = 0.1, ignore.case = TRUE)
+find_matching_string(x, y, value = TRUE, step = 0.1, ignore.case = TRUE)
 }
 \arguments{
 \item{x}{Strings.}
 
 \item{y}{List of strings to be matched.}
+
+\item{value}{Return value or the index of the closest string.}
 
 \item{step}{Step by which decrease the distance.}
 

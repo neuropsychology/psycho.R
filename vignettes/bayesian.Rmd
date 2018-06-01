@@ -54,7 +54,7 @@ In short, because it's:
 
 ##### **From Makowski et al. (*under review*):**
 
-> Reasons to prefer this approach is reliability, better accuracy in noisy data, better estimation for small samples, less prone to type I error, the possibility of introducing prior knowledge into the analysis and, critically, results intuitiveness and their straightforward interpretation (Andrews & Baguley, 2013; Etz & Vandekerckhove, 2016; Kruschke, 2010; Kruschke, Aguinis, & Joo, 2012; Wagenmakers et al., 2018). Indeed, in the frequentist view, the effects are fixed (but unknown) and data are random, while the Bayesian inference calculates the probability of different effect values (called the **"posterior" distribution**) given the observed data. Bayesian’s uncertainty can be summarized, for example, by giving a range of values on the posterior distribution that includes 95% of the probability (the 95% *Credible Interval*). To illustrate the difference, the Bayesian framework allows to say "*given the observed data, the effect has 95% probability of falling within this range*", while the Frequentist less straightforward alternative would be "*there is a 95% probability that when computing a confidence interval from data of this sort, the effect falls within this range*". In general, the frequentist approach has been associated with the focus on null hypothesis testing, and the misuse of *p* values has been shown to critically contribute to the reproducibility crisis of psychological science (Chambers, Feredoes, Muthukumaraswamy, Suresh, & Etchells, 2014; Szucs & Ioannidis, 2016). There is a general agreement that the generalization of the Bayesian approach is a way of overcoming these issues (Benjamin et al., 2018; Etz & Vandekerckhove, 2016).
+> Reasons to prefer this approach are reliability, better accuracy in noisy data, better estimation for small samples, less prone to type I error, the possibility of introducing prior knowledge into the analysis and, critically, results intuitiveness and their straightforward interpretation (Andrews & Baguley, 2013; Etz & Vandekerckhove, 2016; Kruschke, 2010; Kruschke, Aguinis, & Joo, 2012; Wagenmakers et al., 2018). Indeed, in the frequentist view, the effects are fixed (but unknown) and data are random, while the Bayesian inference calculates the probability of different effect values (called the **"posterior" distribution**) given the observed data. Bayesian’s uncertainty can be summarized, for example, by giving a range of values on the posterior distribution that includes 95% of the probability (the 95% *Credible Interval*). To illustrate the difference, the Bayesian framework allows to say "*given the observed data, the effect has 95% probability of falling within this range*", while the Frequentist less straightforward alternative would be "*there is a 95% probability that when computing a confidence interval from data of this sort, the effect falls within this range*". In general, the frequentist approach has been associated with the focus on null hypothesis testing, and the misuse of *p* values has been shown to critically contribute to the reproducibility crisis of psychological science (Chambers, Feredoes, Muthukumaraswamy, Suresh, & Etchells, 2014; Szucs & Ioannidis, 2016). There is a general agreement that the generalization of the Bayesian approach is a way of overcoming these issues (Benjamin et al., 2018; Etz & Vandekerckhove, 2016).
 
 ### What is the Bayesian Framework?
 
@@ -100,7 +100,7 @@ ggplot(data.frame(x = density$x, y = density$y), aes(x=x, y=y)) +
   annotate("text", x = r+0.055, y = 10, label = "Frequentist r Coefficient" , size=4 , fontface="bold", hjust = 0, color="#4CAF50") +
   # median
   geom_vline(xintercept=median(posterior)) +
-  annotate("segment", x = median(posterior)+0.05, xend = r, y = 8, yend = 8, colour = "black", size=0.1, arrow=arrow(type="closed", length = unit(0.10, "inches"))) +
+  annotate("segment", x = median(posterior)+0.05, xend = median(posterior), y = 8, yend = 8, colour = "black", size=0.1, arrow=arrow(type="closed", length = unit(0.10, "inches"))) +
   annotate("text", x = median(posterior)+0.055, y = 8, label = "Posterior's Median" , size=4 , fontface="bold", hjust = 0) +
   # # mean
   # geom_vline(xintercept=mean(posterior), color="#2196F3") +
@@ -168,10 +168,11 @@ knitr::kable(summary(results, round = 2))
 
 For each parameter of the model, the summary shows:
 
-- the **median** of the posterior distribution of the parameter (can be used as a point estimate, similar to the beta of frequentist models)
-- the **Median Absolute Deviation (MAD)**, a robust measure of dispertion (could be seen as a robust version of SD)
-- the **Credible Interval** (by default, the 90\% CI; see Kruschke, 2018), representing the range of parameter values possibility
-- the **Maximum Probability of Effect (MPE)**, an index of effect existence (the probability that the effect is different from 0 in the median's direction)
+- the **median** of the posterior distribution of the parameter (can be used as a point estimate, similar to the beta of frequentist models).
+- the **Median Absolute Deviation (MAD)**, a robust measure of dispertion (could be seen as a robust version of SD).
+- the **Credible Interval (CI)** (by default, the 90\% CI; see Kruschke, 2018), representing a range of possible parameter values.
+- the **Maximum Probability of Effect (MPE)**, the probability that the effect is positive or negative (depending on the median’s direction).
+- the **Overlap (O)*}**, the percentage of overlap between the posterior distribution and a normal distribution of mean 0 and same SD than the posterior. Can be interpreted as the probability that a value from the posterior distribution comes from a null distribution.
 
 It also returns the (unadjusted) R2 (which represents the *percentage of variance of the outcome explained by the model*). In the Bayesian framework, the R2 is also estimated with probabilities. As such, characteristics of its posterior distribution are returned.
 
@@ -182,7 +183,7 @@ We can also print a formatted version:
 print(results)
 ```
 
-Note that the  `print()` returns also additional info, such as the 100\% CI of the R2 and, for each parameter, the limits of the range defined by the MPE. 
+Note that the `print()` returns also additional info, such as the 100\% CI of the R2 and, for each parameter, the limits of the range defined by the MPE. 
 
 
 
@@ -191,7 +192,7 @@ Note that the  `print()` returns also additional info, such as the 100\% CI of t
 
 For now, omit the part dedicated to priors. We'll see it in the next chapters. Let's rather interpret the part related to effects.
 
-> Full Bayesian mixed linear models are fitted using the rstanarm R wrapper for the stan probabilistic language (Gabry & Goodrich, 2016). Bayesian inference was done using Markov Chain Monte Carlo (MCMC) sampling. The prior distributions of all effects were set as weakly informative (mean = 0, SD = `r psycho::format_digit(results$values$effects$Tolerating$prior$adjusted_scale)`), meaning that we did not expect effects different from null in any particular direction. For each model and each coefficient, we will present several characteristics of the posterior distribution, such as its median (a robust estimate comparable to the beta from frequentist linear models), MAD (median absolute deviation, a robust equivalent of standard deviation) and the 90% credible interval. Instead of the *p value* as an index of effect existence, we also computed the maximum probability of effect (MPE), *i.e.*, the maximum probability that the effect is different from 0 in the median’s direction. For our analyses, we will consider an effect as inconsistent (*i.e.*, not probable enough) if its MPE is lower than 90% (however, **beware not to fall in a *p* value-like obsession**).
+> Full Bayesian mixed linear models are fitted using the rstanarm R wrapper for the stan probabilistic language (Gabry & Goodrich, 2016). Bayesian inference was done using Markov Chain Monte Carlo (MCMC) sampling. The prior distributions of all effects were set as weakly informative (mean = 0, SD = `r psycho::format_digit(results$values$effects$Tolerating$prior_adjusted_scale)`), meaning that we did not expect effects different from null in any particular direction. For each model and each coefficient, we will present several characteristics of the posterior distribution, such as its median (a robust estimate comparable to the beta from frequentist linear models), MAD (median absolute deviation, a robust equivalent of standard deviation) and the 90% credible interval. Instead of the *p value* as an index of effect existence, we also computed the maximum probability of effect (MPE), *i.e.*, the maximum probability that the effect is different from 0 in the median’s direction. For our analyses, we will consider an effect as inconsistent (*i.e.*, not probable enough) if its MPE is lower than 90% (however, **beware not to fall in a *p* value-like obsession**).
 
 
 The current model explains about `r psycho::format_digit(results$values$effects$R2$median*100)`% of life satisfaction variance. Within this model, a positive linear relationship between life satisfaction and tolerating exists with high probability (Median = `r psycho::format_digit(results$values$effects$Tolerating$median)`, MAD = `r psycho::format_digit(results$values$effects$Tolerating$mad)`, 90% CI [`r paste(psycho::format_digit(results$values$effects$Tolerating$CI_values), collapse = ', ')`], MPE = `r psycho::format_digit(results$values$effects$Tolerating$MPE)`%).
@@ -306,7 +307,7 @@ results <- psycho::analyze(fit)
 summary(results, round = 2)
 ```
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-kable(summary(results, round = 2))
+knitr::kable(summary(results, round = 2))
 ```
 
 It appears that the link between adjusting and the sex is highly probable (MPE > 90%). But in what direction? To know that, we have to find out what is the intercept (the reference level).

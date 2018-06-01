@@ -8,6 +8,4 @@ test_that("Correct Value", {
 
   testthat::expect_equal(results$values$median, 0.073, tol = 0.05)
   testthat::expect_equal(results$values$effect_size$values$`very weak`, 0.995, tol = 0.05)
-
-
 })

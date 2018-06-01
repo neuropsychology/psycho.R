@@ -20,5 +20,6 @@ summary.psychobject <- function(object, round=NULL, ...) {
     fact <- cbind(fact, dplyr::select_if(summary, is.factor))
     summary <- cbind(fact, nums)
   }
+
   return(summary)
 }

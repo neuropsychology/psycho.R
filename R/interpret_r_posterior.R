@@ -26,8 +26,10 @@ interpret_r_posterior <- function(posterior) {
     ) %>%
     mutate_(
       "Median" = 'ifelse(median(posterior) > 0, "positive", "negative")',
-      "Opposite" = "ifelse(Median == Direction, FALSE, TRUE)"
-    )
+      "Opposite" = "ifelse(Median == Direction, FALSE, TRUE)",
+      "Strength" = 'factor(Strength, levels=c("very strong", "strong", "moderate", "weak", "very weak"))'
+    ) %>%
+    arrange_("Strength")
 
   values <- list()
   for (strength in c("very strong", "strong", "moderate", "weak", "very weak")) {
@@ -39,19 +41,35 @@ interpret_r_posterior <- function(posterior) {
   }
   values$opposite <- sum(summary[summary$Opposite == TRUE, ]$Probability)
 
-  text <- paste0(
-    "This correlation can be considered as very strong, strong, moderate, weak or very weak with respective probabilities of ",
-    format_digit(values$`very strong` * 100),
-    "%, ",
-    format_digit(values$strong * 100),
-    "%, ",
-    format_digit(values$moderate * 100),
-    "%, ",
-    format_digit(values$weak * 100),
-    "% and ",
-    format_digit(values$`very weak` * 100),
-    "%."
-  )
+  # Text
+  if (length(summary[summary$Opposite == FALSE, ]$Strength) > 1) {
+    text_strength <- paste0(paste0(head(summary[summary$Opposite == FALSE, ]$Strength, -1), collapse = ", "), " or ", tail(summary[summary$Opposite == FALSE, ]$Strength, 1))
+    text_effects <- paste0(
+      paste0(paste0(format_digit(head(summary[summary$Opposite == FALSE, ]$Probability * 100, -1)), "%"), collapse = ", "),
+      " and ",
+      paste0(format_digit(tail(summary[summary$Opposite == FALSE, ]$Probability, 1) * 100), "%")
+    )
+
+    text <- paste0(
+      "The correlation can be considered as ",
+      text_strength,
+      " with respective probabilities of ",
+      text_effects,
+      "."
+    )
+  } else {
+    text_sizes <- summary[summary$Opposite == FALSE, ]$Strength
+    text_effects <- paste0(format_digit(summary[summary$Opposite == FALSE, ]$Probability * 100), "%")
+
+    text <- paste0(
+      "The correlation can be considered as ",
+      text_sizes,
+      " with a probability of ",
+      text_effects,
+      "."
+    )
+  }
+
 
   plot <- "Not available."
 
