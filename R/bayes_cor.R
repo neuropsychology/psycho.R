@@ -15,8 +15,8 @@
 #' x <- psycho::affective$Concealing
 #' y <- psycho::affective$Tolerating
 #'
-#' bayesian_cor.test(x, y)
-#' summary(bayesian_cor.test(x, y))
+#' bayes_cor.test(x, y)
+#' summary(bayes_cor.test(x, y))
 #' }
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
@@ -25,7 +25,7 @@
 #' @importFrom stats complete.cases cor.test
 #' @import dplyr
 #' @export
-bayesian_cor.test <- function(x, y, CI=90, iterations = 10000) {
+bayes_cor.test <- function(x, y, CI=90, iterations = 10000) {
 
 
   # Varnames ----------------------------------------------------------------
@@ -117,11 +117,7 @@ bayesian_cor.test <- function(x, y, CI=90, iterations = 10000) {
     format_digit(values$CI_values[1], null_treshold = 0.0001),
     ", ",
     format_digit(values$CI_values[2], null_treshold = 0.0001),
-    "], MPE = ",
-    format_digit(values$MPE),
-    "%, BF = ",
-    format_digit(values$bf),
-    "). ",
+    "]). ",
     values$effect_size$text
   )
 
@@ -152,14 +148,14 @@ bayesian_cor.test <- function(x, y, CI=90, iterations = 10000) {
 #' library(psycho)
 #'
 #' df <- psycho::affective
-#' cor <- bayesian_cor(df)
+#' cor <- bayes_cor(df)
 #' summary(cor)
 #' print(cor)
 #' plot(cor)
 #'
 #' df <- select(psycho::affective, Adjusting, Tolerating)
 #' df2 <- select(psycho::affective, -Adjusting, -Tolerating)
-#' cor <- bayesian_cor(df, df2)
+#' cor <- bayes_cor(df, df2)
 #' summary(cor)
 #' print(cor)
 #' plot(cor)
@@ -167,7 +163,7 @@ bayesian_cor.test <- function(x, y, CI=90, iterations = 10000) {
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #' @export
-bayesian_cor <- function(df, df2=NULL, reorder=TRUE) {
+bayes_cor <- function(df, df2=NULL, reorder=TRUE) {
   df <- purrr::keep(df, is.numeric)
 
   if (!is.null(df2)) {
@@ -198,7 +194,7 @@ bayesian_cor <- function(df, df2=NULL, reorder=TRUE) {
 
       x <- df[[as.character(combinations$Var1[counter])]]
       y <- df[[as.character(combinations$Var2[counter])]]
-      result <- bayesian_cor.test(x, y)
+      result <- bayes_cor.test(x, y)
 
       if (!is.psychobject(result)) {
         text[i, j] <- ""

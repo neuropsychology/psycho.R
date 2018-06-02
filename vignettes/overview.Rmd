@@ -156,7 +156,7 @@ Bayesian correlations can be performed very simply as following:
 
 
 ```{r, results='markup', comment=NA}
-psycho::bayesian_cor.test(iris$Petal.Width, iris$Sepal.Width)
+psycho::bayes_cor.test(iris$Petal.Width, iris$Sepal.Width)
 ```
 
 

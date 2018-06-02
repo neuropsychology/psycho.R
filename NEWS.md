@@ -3,6 +3,7 @@
 
 
 ### Breaking changes
+- Renamed `bayesian_cor` to `bayes_cor` for consistency
 - Changed parameters name and role in `refdata`
 - Changed output of analyze.stanreg
 - effsize in analyze.stanreg default to TRUE
@@ -12,6 +13,7 @@
 - `crawford.test` now computes the Bayesian version
 - `crawford.test` has been renamed to `crawford.test.freq`
 ### New functions / parameters
+- Added "bayesian" method for correlation matrix
 - Added `reorder_matrix`
 - Added `bayes_adj_R2` for loo-adjusted R2 in stanreg models
 - Added `get_std_posteriors` for standardized coefs in Bayesian models

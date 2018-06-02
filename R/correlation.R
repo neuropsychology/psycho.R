@@ -55,6 +55,11 @@ correlation <- function(df,
 
   # Processing
   # -------------------
+  if(method=="bayes" | method=="bayesian"){
+    return(bayes_cor(df, df2, reorder=TRUE))
+  }
+
+
   # N samples
   n <- nrow(df)
 
