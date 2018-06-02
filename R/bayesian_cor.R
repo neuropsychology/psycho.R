@@ -174,14 +174,16 @@ bayesian_cor <- function(df, df2=NULL, reorder=TRUE) {
     df2 <- purrr::keep(df2, is.numeric)
     combinations <- expand.grid(names(df), names(df2))
     df <- cbind(df, df2)
-  } else{
+  } else {
     combinations <- expand.grid(names(df), names(df))
   }
 
   size_row <- length(unique(combinations$Var1))
   size_col <- length(unique(combinations$Var2))
-  dimnames <- list(unique(combinations$Var1),
-                   unique(combinations$Var2))
+  dimnames <- list(
+    unique(combinations$Var1),
+    unique(combinations$Var2)
+  )
 
   r <- matrix(0, nrow = size_row, ncol = size_col, dimnames = dimnames)
   mpe <- matrix(0, nrow = size_row, ncol = size_col, dimnames = dimnames)
@@ -205,12 +207,14 @@ bayesian_cor <- function(df, df2=NULL, reorder=TRUE) {
         bf[i, j] <- Inf
         ci[i, j] <- "100% CI [1, 1]"
       } else {
-        text[i, j] <- paste0("   - ",
-                             names(df)[j],
-                             " / ",
-                             names(df)[i],
-                             ":   ",
-                             result$text)
+        text[i, j] <- paste0(
+          "   - ",
+          names(df)[j],
+          " / ",
+          names(df)[i],
+          ":   ",
+          result$text
+        )
         text[i, j] <- stringr::str_remove(text[i, j], "between x and y ")
         r[i, j] <- result$values$median
         mpe[i, j] <- result$values$MPE
@@ -222,7 +226,7 @@ bayesian_cor <- function(df, df2=NULL, reorder=TRUE) {
 
 
   # Reorder
-  if(is.null(df2) & reorder==TRUE){
+  if (is.null(df2) & reorder == TRUE) {
     r <- reorder_matrix(r, r)
     mpe <- reorder_matrix(mpe, r)
     bf <- reorder_matrix(bf, r)
@@ -232,20 +236,22 @@ bayesian_cor <- function(df, df2=NULL, reorder=TRUE) {
 
 
   stars <- ifelse(bf > 30, "***",
-                  ifelse(bf > 10, "**",
-                         ifelse(bf > 3, "*", "")))
+    ifelse(bf > 10, "**",
+      ifelse(bf > 3, "*", "")
+    )
+  )
 
 
 
   summary <- round(r, 2)
   summary <- matrix(paste(summary, stars, sep = ""), ncol = ncol(r), dimnames = dimnames(r))
 
-  if(is.null(df2)){
+  if (is.null(df2)) {
     summary[upper.tri(summary, diag = TRUE)] <- "" # remove upper triangle
-    summary <- summary[-1,-ncol(summary)]  # Remove first row and last column
+    summary <- summary[-1, -ncol(summary)] # Remove first row and last column
 
     text[upper.tri(text, diag = TRUE)] <- "" # remove upper triangle
-    text <- text[-1,-ncol(text)]  # Remove first row and last column
+    text <- text[-1, -ncol(text)] # Remove first row and last column
   }
 
   summary <- as.data.frame(summary)
@@ -269,14 +275,20 @@ bayesian_cor <- function(df, df2=NULL, reorder=TRUE) {
     gather_("Var2", "Correlation", as.character(unique(combinations$Var2))) %>%
     ggplot(aes_string(x = "Var2", y = "Var1", fill = "Correlation", label = "Correlation")) +
     geom_tile(color = "white") +
-    scale_fill_gradient2(low = "#2196F3", high = "#E91E63", mid = "white",
-                         midpoint = 0, limit = c(-1,1)) +
+    scale_fill_gradient2(
+      low = "#2196F3", high = "#E91E63", mid = "white",
+      midpoint = 0, limit = c(-1, 1)
+    ) +
     theme_minimal() +
-    theme(axis.title = element_blank(),
-          axis.text.x = element_text(angle = 45,
-                                     vjust = 1,
-                                     hjust = 1),
-          legend.position = "none") +
+    theme(
+      axis.title = element_blank(),
+      axis.text.x = element_text(
+        angle = 45,
+        vjust = 1,
+        hjust = 1
+      ),
+      legend.position = "none"
+    ) +
     coord_fixed() +
     geom_text(color = "black")
 
@@ -307,17 +319,17 @@ bayesian_cor <- function(df, df2=NULL, reorder=TRUE) {
 #'
 #' @importFrom stats as.dist hclust
 #' @export
-reorder_matrix <- function(mat, dmat=NULL){
-  if(is.null(dmat)){
+reorder_matrix <- function(mat, dmat=NULL) {
+  if (is.null(dmat)) {
     dmat <- mat
   }
 
-  if(ncol(mat)!=nrow(mat)|ncol(dmat)!=nrow(dmat)){
+  if (ncol(mat) != nrow(mat) | ncol(dmat) != nrow(dmat)) {
     warning("Matrix must be squared.")
     return(mat)
   }
 
-  dmat <- as.dist((1-dmat)/2, diag=TRUE, upper=TRUE)
+  dmat <- as.dist((1 - dmat) / 2, diag = TRUE, upper = TRUE)
   hc <- hclust(dmat)
   mat <- mat[hc$order, hc$order]
   return(mat)

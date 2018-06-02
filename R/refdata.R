@@ -39,39 +39,39 @@ refdata <- function(df, target="all", length.out=10, factors="reference", numeri
 
 
   smart_summary <- function(x, numerics) {
-      if (is.numeric(x)) {
-        fun <- paste0(numerics, "(x)")
-        out <- eval(parse(text = fun))
-      } else if (is.factor(x)) {
-        out <- levels(x)[1]
-      } else if (is.logical(x)) {
-        out <- unique(x)[1]
-      } else {
-        warning("Argument is not numeric nor factor: returning NA.")
-        out <- NA
-      }
-      return(out)
+    if (is.numeric(x)) {
+      fun <- paste0(numerics, "(x)")
+      out <- eval(parse(text = fun))
+    } else if (is.factor(x)) {
+      out <- levels(x)[1]
+    } else if (is.logical(x)) {
+      out <- unique(x)[1]
+    } else {
+      warning("Argument is not numeric nor factor: returning NA.")
+      out <- NA
     }
+    return(out)
+  }
 
 
-  if(factors == "reference"){
+  if (factors == "reference") {
     facs <- summarise_all(facs, smart_summary)
-  } else{
+  } else {
     facs <- tidyr::expand_(facs, names(facs))
   }
 
-  if(numerics != "combination"){
+  if (numerics != "combination") {
     nums <- summarise_all(nums, smart_summary, numerics)
-  } else{
+  } else {
     nums <- tidyr::expand_(nums, names(nums))
   }
 
 
-  if(nrow(facs) == 0){
+  if (nrow(facs) == 0) {
     refrest <- nums
-  } else if(nrow(nums) == 0){
+  } else if (nrow(nums) == 0) {
     refrest <- facs
-  } else{
+  } else {
     refrest <- merge(facs, nums)
   }
 

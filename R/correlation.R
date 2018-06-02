@@ -163,8 +163,10 @@ correlation <- function(df,
   # Define notions for significance levels; spacing is important.
   if (is.null(p) == FALSE) {
     stars <- ifelse(p < .001, "***",
-                    ifelse(p < .01, "** ",
-                           ifelse(p < .05, "* ", " ")))
+      ifelse(p < .01, "** ",
+        ifelse(p < .05, "* ", " ")
+      )
+    )
   } else {
     stars <- ""
   }

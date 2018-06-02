@@ -361,7 +361,7 @@ get_std_posteriors <- function(fit, method="posterior") {
 #' @import rstantools
 #'
 #' @export
-bayes_adj_R2 <- function(fit){
+bayes_adj_R2 <- function(fit) {
   predictors <- all.vars(as.formula(fit$formula))
   y <- fit$data[[predictors[[1]]]]
   ypred <- rstantools::posterior_linpred(fit)
