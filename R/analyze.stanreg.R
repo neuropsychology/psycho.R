@@ -96,7 +96,7 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, ...) {
   }
 
   adj_rsquared <- tryCatch({
-    suppressWarnings(.adj_r_squared(fit, outcome))
+    suppressWarnings(bayes_adj_R2(fit))
   }, error = function(e) {
     NULL
   })
@@ -113,12 +113,11 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, ...) {
 
   # Standardized posteriors --------------------------------------------
   if (fit$family$family == "gaussian") {
-    posteriors_std <- .get_posteriors_std(fit, outcome)
+    posteriors_std <- get_std_posteriors(fit)
   } else {
     posteriors_std <- NA
     effsize <- FALSE
   }
-
 
 
   # Get indices of each variable --------------------------------------------
@@ -288,13 +287,35 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, ...) {
 
 
 
-
-#' @keywords internal
-.get_posteriors_std <- function(fit, outcome, method="posterior") {
+#' Compute standardized posteriors.
+#'
+#' Compute standardized posteriors from which to get standardized coefficients.
+#'
+#' @param fit A stanreg model.
+#' @param method "posterior" (default, based on estimated SD) or "sample" (based on the sample SD).
+#'
+#' @examples
+#' \dontrun{
+#' library(psycho)
+#' library(rstanarm)
+#'
+#' data <- attitude
+#' fit <- rstanarm::stan_glm(rating ~ advance + privileges, data=data)
+#'
+#' posteriors <- get_std_posteriors(fit)
+#'
+#' }
+#'
+#' @author \href{https://github.com/jgabry}{Jonah Gabry}, \href{https://github.com/bgoodri}{bgoodri}
+#'
+#' @export
+get_std_posteriors <- function(fit, method="posterior") {
   # See https://github.com/stan-dev/rstanarm/issues/298
 
   if (method == "sample") {
     # By jgabry
+    predictors <- all.vars(as.formula(fit$formula))
+    outcome <- predictors[[1]]
     X <- as.matrix(model.matrix(fit)[, -1]) # -1 to drop column of 1s for intercept
     sd_X_over_sd_y <- apply(X, 2, sd) / sd(fit$data[[outcome]])
     beta <- as.matrix(fit, pars = colnames(X)) # posterior distribution of regression coefficients
@@ -317,14 +338,32 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, ...) {
 
 
 
-
+#' Compute LOO-adjusted R2.
+#'
+#' Compute LOO-adjusted R2.
+#'
+#' @param fit A stanreg model.
+#'
+#' @examples
+#' \dontrun{
+#' library(psycho)
+#' library(rstanarm)
+#'
+#' data <- attitude
+#' fit <- rstanarm::stan_glm(rating ~ advance + privileges, data=data)
+#'
+#' bayes_adj_R2(fit)
+#'
+#' }
+#'
 #' @author \href{https://github.com/strengejacke}{Daniel Luedecke}
 #'
 #' @import rstantools
 #'
-#' @keywords internal
-.adj_r_squared <- function(fit, outcome) {
-  y <- fit$data[[outcome]]
+#' @export
+bayes_adj_R2 <- function(fit){
+  predictors <- all.vars(as.formula(fit$formula))
+  y <- fit$data[[predictors[[1]]]]
   ypred <- rstantools::posterior_linpred(fit)
   ll <- rstantools::log_lik(fit)
 

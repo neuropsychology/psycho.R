@@ -36,7 +36,11 @@ interpret_d_posterior <- function(posterior) {
   values <- list()
   for (size in c("very large", "large", "medium", "small", "very small")) {
     if (size %in% summary$Size) {
-      values[size] <- summary[summary$Size == size & summary$Opposite == FALSE, ]$Probability
+      if(nrow(summary[summary$Size == size & summary$Opposite == FALSE, ]) == 0){
+        values[size] <- 0
+      } else{
+        values[size] <- summary[summary$Size == size & summary$Opposite == FALSE, ]$Probability
+      }
     } else {
       values[size] <- 0
     }

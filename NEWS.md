@@ -12,6 +12,10 @@
 - `crawford.test` now computes the Bayesian version
 - `crawford.test` has been renamed to `crawford.test.freq`
 ### New functions / parameters
+- Added `reorder_matrix`
+- Added `bayes_adj_R2` for loo-adjusted R2 in stanreg models
+- Added `get_std_posteriors` for standardized coefs in Bayesian models
+- First iteration on `bayesian_cor` for Bayesian correlation tables
 - Added standardized coefs computation to analyze.stanreg
 - Added `refdata` for reference grid creation
 - Added `rope` for region of practical equivalence

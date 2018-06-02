@@ -4,10 +4,14 @@
 \alias{bayesian_cor}
 \title{Bayesian Correlation Matrix.}
 \usage{
-bayesian_cor(df)
+bayesian_cor(df, df2 = NULL, reorder = TRUE)
 }
 \arguments{
 \item{df}{The dataframe.}
+
+\item{df2}{Optional dataframe to correlate with the first one.}
+
+\item{reorder}{Reorder matrix by correlation strength. Only for square matrices.}
 }
 \value{
 A list of dataframes
@@ -16,9 +20,22 @@ A list of dataframes
 Bayesian Correlation Matrix.
 }
 \examples{
+\dontrun{
 library(psycho)
+
 df <- psycho::affective
-bayesian_cor(df)
+cor <- bayesian_cor(df)
+summary(cor)
+print(cor)
+plot(cor)
+
+df <- select(psycho::affective, Adjusting, Tolerating)
+df2 <- select(psycho::affective, -Adjusting, -Tolerating)
+cor <- bayesian_cor(df, df2)
+summary(cor)
+print(cor)
+plot(cor)
+}
 
 }
 \author{
