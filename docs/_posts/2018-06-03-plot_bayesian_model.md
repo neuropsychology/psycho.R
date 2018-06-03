@@ -3,7 +3,7 @@ layout: post
 title: "Fancy Plot (with Posterior Samples) for Bayesian Regressions"
 author: Dominique Makowski
 author_web: https://dominiquemakowski.github.io/
-date: 2018-05-24
+date: 2018-06-03
 summary: Describes how to plot a Bayesian regression with all the draws from the posterior distribution.
 ---
 
@@ -58,7 +58,7 @@ ggplot(predicted, aes(x=Adjusting)) +
   theme_classic()
 ```
 
-<img src="https://raw.githubusercontent.com/neuropsychology/psycho.R/master/docs/_posts/2018-06-01-plot_bayesian_model_files/figure-markdown_github/unnamed-chunk-3-1.png" style="display: block; margin: auto;" />
+<img src="https://raw.githubusercontent.com/neuropsychology/psycho.R/master/docs/_posts/2018-06-03-plot_bayesian_model_files/figure-markdown_github/unnamed-chunk-3-1.png" style="display: block; margin: auto;" />
 
 Credits
 =======
