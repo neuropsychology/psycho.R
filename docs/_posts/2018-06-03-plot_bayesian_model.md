@@ -52,7 +52,7 @@ predicted <- predicted %>%
 
 # Plot all iterations with the median prediction
 ggplot(predicted, aes(x=Adjusting)) +
-  geom_line(aes(y=Iteration_Value, group=Iteration), size=0.3, alpha=0.02) +
+  geom_line(aes(y=Iteration_Value, group=Iteration), size=0.3, alpha=0.01) +
   geom_line(aes(y=Sex_Median), size=1) + 
   ylab("Probability of being a man\n") +
   theme_classic()
