@@ -2,12 +2,12 @@
 title: "Fancy Plot (with Posterior Samples) for Bayesian Regressions"
 layout: post
 output:
-  html_document:
-    df_print: paged
-    toc: yes
   md_document:
     toc: yes
     variant: markdown_github
+  html_document:
+    df_print: paged
+    toc: yes
 author: "Dominique Makowski"
 date: "`r Sys.Date()`"
 editor_options: 
@@ -58,7 +58,7 @@ predicted <- predicted %>%
 
 # Plot all iterations with the median prediction
 ggplot(predicted, aes(x=Adjusting)) +
-  geom_line(aes(y=Iteration_Value, group=Iteration), size=0.3, alpha=0.02) +
+  geom_line(aes(y=Iteration_Value, group=Iteration), size=0.3, alpha=0.01) +
   geom_line(aes(y=Sex_Median), size=1) + 
   ylab("Probability of being a man\n") +
   theme_classic()
