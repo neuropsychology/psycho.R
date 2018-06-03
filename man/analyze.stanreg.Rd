@@ -4,22 +4,26 @@
 \alias{analyze.stanreg}
 \title{Analyze stanreg objects.}
 \usage{
-\method{analyze}{stanreg}(x, CI = 90, effsize = FALSE, overlap = TRUE,
-  ...)
+\method{analyze}{stanreg}(x, CI = 90, effsize = TRUE, ...)
 }
 \arguments{
 \item{x}{A stanreg model.}
 
 \item{CI}{Credible interval bounds.}
 
-\item{effsize}{Compute Effect Sizes according to Cohen (1988)? Your outcome variable must be standardized.}
-
-\item{overlap}{Compute the overlapping coefficient between the posterior and a normal distribution of mean 0 and same SD.}
+\item{effsize}{Compute Effect Sizes according to Cohen (1988). For linear models only.}
 
 \item{...}{Arguments passed to or from other methods.}
 }
 \value{
-output
+Contains the following indices:
+\itemize{
+ \item{the Median of the posterior distribution of the parameter (can be used as a point estimate, similar to the beta of frequentist models).}
+ \item{the Median Absolute Deviation (MAD), a robust measure of dispertion (could be seen as a robust version of SD).}
+ \item{the Credible Interval (CI) (by default, the 90\% CI; see Kruschke, 2018), representing a range of possible parameter.}
+ \item{the Maximum Probability of Effect (MPE), the probability that the effect is positive or negative (depending on the median’s direction).}
+ \item{the Overlap (O), the percentage of overlap between the posterior distribution and a normal distribution of mean 0 and same SD than the posterior. Can be interpreted as the probability that a value from the posterior distribution comes from a null distribution.}
+ }
 }
 \description{
 Analyze stanreg objects.
@@ -29,13 +33,18 @@ Analyze stanreg objects.
 library(psycho)
 library(rstanarm)
 
-data <- standardize(attitude)
+data <- attitude
 fit <- rstanarm::stan_glm(rating ~ advance + privileges, data=data)
 
 results <- analyze(fit, effsize=TRUE)
 summary(results)
-plot(results)
 print(results)
+plot(results)
+
+
+results <- analyze(fit, effsize=FALSE)
+print(results)
+
 
 fit <- rstanarm::stan_glmer(Sepal.Length ~ Sepal.Width + (1|Species), data=iris)
 results <- analyze(fit)

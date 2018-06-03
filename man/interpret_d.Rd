@@ -4,10 +4,12 @@
 \alias{interpret_d}
 \title{Return the interpretation of a Cohen's d or a standardized coefficient following Cohen (1988).}
 \usage{
-interpret_d(x)
+interpret_d(x, direction = FALSE)
 }
 \arguments{
 \item{x}{Cohen's d value of standardized coefficient.}
+
+\item{direction}{Return effect direction (positive / negative).}
 }
 \value{
 The interpretation according to Cohen (1988).

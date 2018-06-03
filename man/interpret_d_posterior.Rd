@@ -17,7 +17,9 @@ Return the effect sizes for the posterior of a standardized coefficient followin
 }
 \examples{
 library(psycho)
-interpret_d_posterior(rnorm(1000, 0, 1))
+posterior <- rnorm(1000, 0.6, 0.05)
+interpret_d_posterior(rnorm(1000, 0.1, 1))
+interpret_d_posterior(rnorm(1000, 0.6, 0.05))
 
 }
 \author{

@@ -25,9 +25,7 @@ test_that("Ccorrelations work", {
   testthat::expect_equal(value, 0.53, tol = 0.1)
 
   # glasso
-  output <- psycho::correlation(df, type = "glasso", adjust = "none")
-  value <- output$values$r[2, 1]
-  testthat::expect_equal(value, 0.66, tol = 0.1)
+  testthat::expect_warning(psycho::correlation(df, type = "glasso", adjust = "none"))
 
   # cor_auto
   output <- psycho::correlation(df, type = "cor_auto", adjust = "none")
@@ -37,9 +35,8 @@ test_that("Ccorrelations work", {
   # Dual
   df2 <- attitude[c("raises", "critical")]
 
-  output <- psycho::correlation(df, df2, type = "full", adjust = "none")
-  value <- output$values$r[2, 1]
-  testthat::expect_equal(value, 0.66, tol = 0.1)
+  testthat::expect_warning(psycho::correlation(df, df2, type = "full", adjust = "none"))
+
 
   type <- "semi"
   adjust <- "none"
@@ -52,8 +49,7 @@ test_that("Ccorrelations work", {
   testthat::expect_equal(length(plot), 10, tol = 0.1)
 
   # Other
-  output <- psycho::correlation(df, type = "dupa", adjust = "holm")
-  testthat::expect_null(output)
+  testthat::expect_warning(psycho::correlation(df, type = "dupa", adjust = "holm"))
 
   # Plot
   plot <- plot(correlation(df))

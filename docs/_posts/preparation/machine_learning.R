@@ -1,6 +1,6 @@
 library(caret)
 library(tidyverse)
-
+library(psycho)
 
 
 
@@ -17,23 +17,12 @@ df <- data.frame(x=x, y=y)
 
 
 
-# Real
-df <- psycho::emotion %>%
-  mutate(x=Subjective_Valence,
-         y=Subjective_Arousal)
-
-
-
-
-ggplot(df, aes(x=x, y=y)) +
-  geom_point() +
-  geom_smooth()
-
-
 # Partition ---------------------------------------------------------------
 
 
-training <- df %>%
+training <- psycho::emotion %>%
+  select(-Participant_ID) %>%
+  na.omit() %>%
   modelr::resample_partition(c(train = 0.7, test = 0.3))
 
 test <- ungroup(as.data.frame(training$test))
@@ -44,30 +33,38 @@ training <- ungroup(as.data.frame(training$train))
 # Model -------------------------------------------------------------------
 
 # ML
-model <- caret::train(y ~ x,
+model <- caret::train(Subjective_Arousal ~ .,
                       data=training,
                       method = "rf",
                       trControl=caret::trainControl(method="repeatedcv",
                                                     number=10,
                                                     repeats=3))
 print(model)
+varImp(model, scale = TRUE)
 
 # Visualize
-newdata = data.frame(x = seq(min(df$x),
-                             max(df$x),
-                             length.out=100))
+newdata <- psycho::emotion %>%
+  select(-Participant_ID) %>%
+  psycho::refdata(target="Subjective_Valence", length.out=100)
 
-newdata$y <- predict(model, newdata)
-ggplot(newdata, aes(x=x, y=y)) +
-  geom_point(data=df, aes(x=x, y=y)) +
-  geom_line(colour="red")
+newdata$Predicted <- predict(model, newdata)
+ggplot(newdata, aes(x=Subjective_Valence, y=Predicted)) +
+  geom_point(data=training, aes(x=Subjective_Valence, y=Subjective_Arousal)) +
+  geom_line(colour="red", size=2)
 
 
 # test
-test$predicted_y <- predict(model, test)
-ggplot(test, aes(x=y, y=predicted_y)) +
+newdata <- cbind(newdata, predict(model, newdata, type = "prob"))
+test %>%
+  select(pred=Predicted, obs=Subjective_Arousal) %>%
+  defaultSummary()
+
+ggplot(test, aes(x=Subjective_Arousal, y=Predicted)) +
   geom_point() +
   geom_smooth()
+
+
+
 
 
 
@@ -76,9 +73,9 @@ ggplot(test, aes(x=y, y=predicted_y)) +
 
 # data
 df <- psycho::emotion %>%
-  mutate(Recall = as.numeric(Recall)) %>%
+  mutate(Recall = as.factor(Recall)) %>%
   na.omit() %>%
-  select(-Participant_ID, -Item_Name)
+  select(-Participant_ID)
 
 training <- df %>%
   group_by(Recall) %>%
@@ -91,77 +88,27 @@ training <- ungroup(as.data.frame(training$train))
 # ML
 model <- caret::train(Recall ~ .,
                       data=training,
-                      method = "naive_bayes",
+                      method = "rf",
                       trControl=caret::trainControl(method="repeatedcv",
                                                     number=10,
                                                     repeats=3))
 print(model)
 varImp(model, scale = TRUE)
 
-newdata <- refgrid(df, "Trial_Order", length.out=10, type="reference")
+# Visualize
+newdata <- training %>%
+  psycho::refdata(target="Subjective_Valence", length.out=100)
+
 newdata <- cbind(newdata, predict(model, newdata, type = "prob"))
-ggplot(newdata, aes(x=Trial_Order, y=`TRUE`)) +
-  geom_line(colour="red")
+ggplot(newdata, aes(x=Subjective_Valence, y=`TRUE`)) +
+  # geom_point(data=training, aes(x=Subjective_Valence, y=Recall)) +
+  geom_line(colour="red", size=2)
 
 
-refgrid_var(x, length.out=10, varname=NULL){
+# test
+test$Predicted <- predict(model, test)
+test %>%
+  select(pred=Predicted, obs=Recall) %>%
+  as.data.frame() %>%
+  defaultSummary()
 
-  factors_df <- tidyr::expand_(df, factors_name)
-
-  if(is.numeric(x)){
-      out <- data.frame(seq(min(x),
-                               max(x),
-                               length.out = length.out))
-      names(out) <- varname
-  } else if(is.factor(x)){
-    out <- levels(x)[1]
-  } else{
-    warning("Argument is not numeric nor factor: returning NA.")
-    out <- NA
-  }
-}
-
-
-
-refgrid <- function(df, at, length.out=10, type="combinations", fixed="mean"){
-  # Target
-  target <- data.frame(seq(min(df[at]),
-                           max(df[at]),
-                           length.out = length.out))
-  names(target) <- at
-
-  # Rest
-  df <- select_(df, paste0("-", at))
-  if(type == "reference"){
-    smart_mean <- function(x){
-      if(is.numeric(x)){
-        out <- mean(x, na.rm=TRUE)
-      } else if(is.factor(x)){
-        out <- levels(x)[1]
-      } else{
-        warning("Argument is not numeric nor factor: returning NA.")
-        out <- NA
-      }
-      return(out)
-    }
-
-    refgrid <- df %>%
-      summarise_all(smart_mean)
-  } else{
-    var_order <- names(df)
-    factors <- purrr::keep(df, is.factor)
-    factors_name <- names(factors)
-
-    nums <- purrr::keep(df, is.numeric) %>%
-      summarise_all(funs_(fixed))
-
-    factors_df <- tidyr::expand_(df, factors_name)
-    refgrid <- merge(factors_df, nums)
-    refgrid <- refgrid[var_order]
-  }
-
-  # Join
-  refgrid <- merge(target, refgrid)
-
-  return(refgrid)
-}

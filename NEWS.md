@@ -3,12 +3,22 @@
 
 
 ### Breaking changes
+- Renamed `bayesian_cor` to `bayes_cor` for consistency
+- Changed parameters name and role in `refdata`
+- Changed output of analyze.stanreg
+- effsize in analyze.stanreg default to TRUE
 - Fixed bug in `dprime`
 - `mellenbergh.test`, `crawford.test` and `crawford.test.freq` now return a psychobject
 - `assess` has been refactored to become a wrapper for `crawford.test`
 - `crawford.test` now computes the Bayesian version
 - `crawford.test` has been renamed to `crawford.test.freq`
 ### New functions / parameters
+- Added "bayesian" method for correlation matrix
+- Added `reorder_matrix`
+- Added `bayes_adj_R2` for loo-adjusted R2 in stanreg models
+- Added `get_std_posteriors` for standardized coefs in Bayesian models
+- First iteration on `bayesian_cor` for Bayesian correlation tables
+- Added standardized coefs computation to analyze.stanreg
 - Added `refdata` for reference grid creation
 - Added `rope` for region of practical equivalence
 - Added `interpret_r` for correlation coefficient interpretation
@@ -21,6 +31,7 @@
 - Added Crawford-Garthwaite (2007) Bayesian test for single-case analysis
 - Added `rnorm_perfect` function
 ### Changes
+- Improvements on analyze.stanreg
 - Fixed `draws` parameter in get_predicted.stanreg
 - logo
 

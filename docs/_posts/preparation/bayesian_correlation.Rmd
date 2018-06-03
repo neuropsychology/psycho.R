@@ -1,0 +1,66 @@
+---
+title: "Very Easy Bayesian Correlation"
+layout: post
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+  md_document:
+    toc: yes
+    variant: markdown_github
+author: "Dominique Makowski"
+date: "`r Sys.Date()`"
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(knitr)
+```
+
+The Bayesian framework is the right way to go for psychological science. with the `bayesian_cor.test` function, from the [`psycho` package](https://github.com/neuropsychology/psycho.R), a user-friendly wrapper for the `correlationBF` function of the great [`BayesFactor`](https://richarddmorey.github.io/BayesFactor/) package by Richard D. Morey.
+
+# Formatted Output
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+# devtools::install_github("neuropsychology/psycho.R")  # Install the last psycho version if needed
+
+# Load packages
+library(tidyverse)
+library(psycho)
+
+# Import data
+df <- psycho::affective
+
+results <- psycho::bayes_cor.test(df$Concealing, df$Tolerating)
+print(results)
+```
+
+# Indices
+
+We can have access to more indices with the `summary`:
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='hide', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+summary(results)
+```
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='hide', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+knitr::kable(summary(results))
+```
+
+Those indices include the ROPE decision criterion (see REFERENCE) as well as the Maximum Probability of Effect (MPE, which equals the sum of probabilities of all effect sizes).
+
+
+# Posterior Distribution
+
+Those indices are computed from the posterior distribution of the correlation values.
+
+
+
+# Credits
+
+This package helped you? Don't forget to cite the various packages you used :)
+
+You can cite `psycho` as follows:
+
+- Makowski, (2018). *The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470

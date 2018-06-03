@@ -5,6 +5,7 @@
 ^steps
 ^paper
 ^dev
+^.github
 ^docs
 ^codecov\.yml$
 ^\.lintr$

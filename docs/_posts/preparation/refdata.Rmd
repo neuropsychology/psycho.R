@@ -1,5 +1,5 @@
 ---
-title: "Fancy plot for Bayesian regressions"
+title: "Fancy Plot (with Posterior Samples) for Bayesian Regressions"
 layout: post
 output:
   html_document:
@@ -19,11 +19,13 @@ editor_options:
 library(knitr)
 ```
 
-As Bayesian models usually generate a lot of samples (*iterations*), one could want to plot them as well, instead (or along) the posterior "summary". This can be done quite easily by extracting all the iterations in `get_predicted`.
+As Bayesian models usually generate a lot of samples (*iterations*), one could want to plot them as well, instead (or along) the posterior "summary" (with indices like the 90% HDI). This can be done quite easily by extracting all the iterations in `get_predicted` from the `psycho` package.
 
-# Model
+# The Model
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='hide', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+# devtools::install_github("neuropsychology/psycho.R")  # Install the last psycho version if needed
+
 # Load packages
 library(tidyverse)
 library(psycho)
@@ -35,11 +37,11 @@ df <- psycho::affective
 fit <- rstanarm::stan_glm(Sex ~ Adjusting, data=df, family = "binomial")
 ```
 
-We fitted a logistic regression to predict the sex (*W/M*) with one's ability to flexibly adjust to his/her emotional reaction. 
+We fitted a Bayesian logistic regression to predict the sex (*W / M*) with one's ability to flexibly adjust to his/her emotional reaction. 
 
 # Plot
 
-To visualize the model, the most neat way is to extract a "reference grid" (*i.e.*, a theorethical dataframe with balanced data). Our refgrid is made of equally spaced (balanced) predictor values. With it, we can make predictions using the previously fitted model. This will compute the median of the posterior prediction, as well as 90% credible intervals. However, we're interested in keeping all the prediction samples (iterations). Note that `get_predicted` automatically transformed log odds ratios (the values in which the model is expressed) to probabilities, easier to apprehend.
+To visualize the model, the most neat way is to extract a "reference grid" (*i.e.*, a theorethical dataframe with balanced data). Our refgrid is made of equally spaced predictor values. With it, we can make predictions using the previously fitted model. This will compute the median of the posterior prediction, as well as the 90% credible interval. However, we're interested in keeping all the prediction samples (iterations). Note that `get_predicted` automatically transformed log odds ratios (the values in which the model is expressed) to probabilities, easier to apprehend.
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 # Generate a new refgrid
@@ -54,13 +56,15 @@ predicted <- psycho::get_predicted(fit, newdata=refgrid, keep_iterations=TRUE)
 predicted <- predicted %>% 
   tidyr::gather(Iteration, Iteration_Value, starts_with("iter"))
 
-# Plot iterations as well as the median prediction
+# Plot all iterations with the median prediction
 ggplot(predicted, aes(x=Adjusting)) +
-  geom_line(aes(y=Iteration_Value, group=Iteration), size=0.3, alpha=0.01) +
+  geom_line(aes(y=Iteration_Value, group=Iteration), size=0.3, alpha=0.02) +
   geom_line(aes(y=Sex_Median), size=1) + 
   ylab("Probability of being a man\n") +
   theme_classic()
 ```
+
+
 
 # Credits
 

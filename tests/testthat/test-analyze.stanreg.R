@@ -2,7 +2,7 @@ context("analyze.stanreg")
 
 test_that("If it works.", {
   # Fit
-  require(rstanarm)
+  library(rstanarm)
 
 
   fit <- rstanarm::stan_glm(
@@ -25,7 +25,7 @@ test_that("If it works.", {
     chains = 1, iter = 1000, seed = 666
   )
 
-  model <- psycho::analyze(fit, effsize = T)
+  model <- psycho::analyze(fit, effsize = FALSE)
   values <- psycho::values(model)
   testthat::expect_equal(
     round(values$effects$Sepal.Width$median, 2), 0.79,
@@ -35,13 +35,13 @@ test_that("If it works.", {
 
 
   # standardized
-  data <- standardize(attitude)
+  data <- psycho::standardize(attitude)
   fit <- rstanarm::stan_glm(rating ~ advance + privileges,
     data = data,
     prior = rstanarm::normal(0, 1, autoscale = F),
     chains = 1, iter = 1000, seed = 666
   )
-  results <- analyze(fit)
+  results <- psycho::analyze(fit)
   testthat::expect_equal(
     round(results$values$effects$advance$median), 0.01,
     tolerance = 0.025
@@ -70,6 +70,6 @@ test_that("If it works.", {
   values <- psycho::values(model)
   testthat::expect_equal(
     round(values$effects$Sepal.Width$median, 2), -0.46,
-    tolerance = 0.05
+    tolerance = 0.1
   )
 })

@@ -55,13 +55,18 @@ correlation <- function(df,
 
   # Processing
   # -------------------
+  if(method=="bayes" | method=="bayesian"){
+    return(bayes_cor(df, df2, reorder=TRUE))
+  }
+
+
   # N samples
   n <- nrow(df)
 
   # Remove non numeric
-  df <- df[, sapply(df, is.numeric)]
+  df <- purrr::keep(df, is.numeric)
   if (is.null(df2) == FALSE) {
-    df2 <- df2[, sapply(df2, is.numeric)]
+    df2 <- purrr::keep(df2, is.numeric)
   }
 
   # P-fishing prevention
@@ -162,39 +167,37 @@ correlation <- function(df,
 
   # Define notions for significance levels; spacing is important.
   if (is.null(p) == FALSE) {
-    mystars <- ifelse(p < .001, "***",
+    stars <- ifelse(p < .001, "***",
       ifelse(p < .01, "** ",
         ifelse(p < .05, "* ", " ")
       )
     )
   } else {
-    mystars <- ""
+    stars <- ""
   }
 
 
-  # trunctuate the matrix that holds the correlations to two decimal
-  r_format <- format(round(cbind(rep(-1.11, ncol(df)), r), 2))[, -1]
   # build a new correlation matrix with significance stars
-  table <- matrix(paste(r_format, mystars, sep = ""), ncol = ncol(r))
+  table <- matrix(paste0(round(r, 2), stars), ncol = ncol(r))
 
 
   # Format
   rownames(table) <- colnames(df)
   if (isSymmetric(r)) {
-    diag(table) <- paste(diag(r_format), " ", sep = "")
-    colnames(table) <- paste(colnames(df), "", sep = "")
+    diag(table) <- paste0(diag(round(r, 2)), " ")
+    colnames(table) <- colnames(df)
     table[upper.tri(table, diag = TRUE)] <- "" # remove upper triangle
     table <- as.data.frame(table)
     # remove last column and return the matrix (which is now a data frame)
     summary <- cbind(table[seq_len(length(table) - 1)])
   } else {
     if (is.null(df2)) {
-      colnames(table) <- paste(colnames(df), "", sep = "")
+      colnames(table) <- colnames(df)
     } else {
       if (type == "semi") {
-        colnames(table) <- paste(colnames(df), "", sep = "")
+        colnames(table) <- colnames(df)
       } else {
-        colnames(table) <- paste(colnames(df2), "", sep = "")
+        colnames(table) <- colnames(df2)
       }
     }
     table <- as.data.frame(table)
