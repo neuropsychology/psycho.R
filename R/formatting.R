@@ -80,13 +80,16 @@ format_string <- function(x, fmt, ...) {
 #' @export
 format_p <- function(pvalues, stars=TRUE) {
   p <- ifelse(pvalues < 0.001, "< .001***",
-              ifelse(pvalues < 0.01, "< .01**",
-                     ifelse(pvalues < 0.05, "< .05*",
-                            ifelse(pvalues < 0.1, paste0("= ", round(pvalues, 2), "\xB0"),
-                                   "> .1"
-                                   ))))
+    ifelse(pvalues < 0.01, "< .01**",
+      ifelse(pvalues < 0.05, "< .05*",
+        ifelse(pvalues < 0.1, paste0("= ", round(pvalues, 2), "\xB0"),
+          "> .1"
+        )
+      )
+    )
+  )
 
-  if(stars == FALSE){
+  if (stars == FALSE) {
     p <- stringr::str_remove_all(p, "\\*")
   }
 

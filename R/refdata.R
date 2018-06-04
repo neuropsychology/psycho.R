@@ -44,6 +44,8 @@ refdata <- function(df, target="all", length.out=10, factors="reference", numeri
       out <- eval(parse(text = fun))
     } else if (is.factor(x)) {
       out <- levels(x)[1]
+    } else if (is.character(x)) {
+      out <- unique(x)[1]
     } else if (is.logical(x)) {
       out <- unique(x)[1]
     } else {

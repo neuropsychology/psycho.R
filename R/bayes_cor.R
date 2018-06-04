@@ -98,9 +98,9 @@ bayes_cor.test <- function(x, y, CI=90, iterations = 10000, effsize_rules_r="coh
   )
   rownames(summary) <- paste0(var1, " / ", var2)
 
-  values$effect_size <- interpret_r_posterior(posterior, rules=effsize_rules_r)
-  interpretation_r <- interpret_r(values$median, strength = FALSE, rules=effsize_rules_r)
-  interpretation_bf <- interpret_bf(values$bf, rules=effsize_rules_bf)
+  values$effect_size <- interpret_r_posterior(posterior, rules = effsize_rules_r)
+  interpretation_r <- interpret_r(values$median, strength = FALSE, rules = effsize_rules_r)
+  interpretation_bf <- interpret_bf(values$bf, rules = effsize_rules_bf)
 
   text <- paste0(
     "Results of the Bayesian correlation indicate ",

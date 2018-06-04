@@ -31,10 +31,12 @@ library(tidyverse)
 library(psycho)
 
 # Import data
-df <- psycho::affective
-
-results <- psycho::bayes_cor.test(df$Concealing, df$Tolerating)
-print(results)
+model <- caret::train(Recall ~ .,
+                      data=psycho::affective,
+                      method = "nnet",
+                      trControl=caret::trainControl(method="repeatedcv",
+                                                    number=10,
+                                                    repeats=3))
 ```
 
 # Indices

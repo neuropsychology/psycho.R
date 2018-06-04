@@ -149,7 +149,7 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
         predictors,
         CI = CI,
         effsize = effsize,
-        effsize_rules=effsize_rules
+        effsize_rules = effsize_rules
       )
     }
   }
@@ -633,7 +633,7 @@ bayes_adj_R2 <- function(fit) {
     values$std_CI_values <- c(values$std_CI_values$values$HDImin, values$std_CI_values$values$HDImax)
 
 
-    EffSize <- interpret_d_posterior(posterior_std, rules=effsize_rules)
+    EffSize <- interpret_d_posterior(posterior_std, rules = effsize_rules)
 
     EffSize_table <- EffSize$summary
     EffSize_table$Variable <- varname

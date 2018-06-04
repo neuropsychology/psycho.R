@@ -22,7 +22,7 @@
 #'  }
 #' @export
 interpret_bf <- function(x, direction=TRUE, bf=TRUE, rules="jeffreys1961") {
-  interpretation <- sapply(x, .interpret_bf, direction=direction, bf=bf, rules=rules, return_rules=FALSE)
+  interpretation <- sapply(x, .interpret_bf, direction = direction, bf = bf, rules = rules, return_rules = FALSE)
   return(interpretation)
 }
 
@@ -38,11 +38,10 @@ interpret_bf <- function(x, direction=TRUE, bf=TRUE, rules="jeffreys1961") {
 #' @param max Treshold for maximum.
 #'
 #' @export
-format_bf <- function(bf, max=100){
-
-  if(bf > max){
+format_bf <- function(bf, max=100) {
+  if (bf > max) {
     bf <- paste0("BF > ", max)
-  } else{
+  } else {
     bf <- paste0("BF = ", format_digit(bf))
   }
   return(bf)
@@ -67,21 +66,25 @@ format_bf <- function(bf, max=100){
   }
 
 
-  if(!is.list(rules)){
-    if(rules == "jeffreys1961"){
-      rules <- list("no"=0,
-                    "anecdotal"=1,
-                    "moderate"=3,
-                    "strong"=10,
-                    "very strong"=30,
-                    "extreme"=100)
-    } else if(rules == "raftery1995"){
-      rules <- list("no"=0,
-                    "weak"=1,
-                    "positive"=3,
-                    "strong"=20,
-                    "very strong"=150)
-    } else{
+  if (!is.list(rules)) {
+    if (rules == "jeffreys1961") {
+      rules <- list(
+        "no" = 0,
+        "anecdotal" = 1,
+        "moderate" = 3,
+        "strong" = 10,
+        "very strong" = 30,
+        "extreme" = 100
+      )
+    } else if (rules == "raftery1995") {
+      rules <- list(
+        "no" = 0,
+        "weak" = 1,
+        "positive" = 3,
+        "strong" = 20,
+        "very strong" = 150
+      )
+    } else {
       stop("rules must be either a list or 'jeffreys1961' or 'raftery1995'.")
     }
   }
@@ -90,16 +93,16 @@ format_bf <- function(bf, max=100){
 
   s <- (abs(x) - unlist(rules))
   s <- names(which.min(s[s >= 0]))
-  if(is.null(s)){
+  if (is.null(s)) {
     s <- NA
-  } else{
+  } else {
     s <- paste(s, "evidence")
   }
 
 
 
 
-  if(bf == TRUE){
+  if (bf == TRUE) {
     bf <- paste0("(", format_bf(x), ")")
     s <- paste(s, bf)
   }
@@ -109,4 +112,3 @@ format_bf <- function(bf, max=100){
 
   return(interpretation)
 }
-

@@ -14,8 +14,7 @@
 #'
 #' @export
 interpret_R2 <- function(x, rules="cohen1988") {
-
-  interpretation <- sapply(x, .interpret_R2, rules=rules, return_rules=FALSE)
+  interpretation <- sapply(x, .interpret_R2, rules = rules, return_rules = FALSE)
   return(interpretation)
 }
 
@@ -39,8 +38,7 @@ interpret_R2 <- function(x, rules="cohen1988") {
 #'
 #' @export
 interpret_R2_posterior <- function(posterior, rules="cohen1988") {
-
-  interpretation <- sapply(posterior, .interpret_R2, rules=rules)
+  interpretation <- sapply(posterior, .interpret_R2, rules = rules)
   rules <- unlist(interpretation[, 1]$rules)
   interpretation <- as.data.frame(unlist(interpretation[1, ]))
   interpretation <- na.omit(interpretation)
@@ -51,7 +49,7 @@ interpret_R2_posterior <- function(posterior, rules="cohen1988") {
     summarise_("Probability" = "n() / length(posterior)")
 
   values <- list()
-  for (value in names(sort(rules, decreasing=TRUE))){
+  for (value in names(sort(rules, decreasing = TRUE))) {
     if (value %in% summary$Interpretation) {
       values[value] <- summary[summary$Interpretation == value, ]$Probability
     } else {
@@ -104,37 +102,42 @@ interpret_R2_posterior <- function(posterior, rules="cohen1988") {
 
 #' @keywords internal
 .interpret_R2 <- function(x, rules="cohen1988", return_rules=TRUE) {
-
-  if(!is.list(rules)){
-    if(rules == "cohen1988"){
-      rules <- list("very small"=0,
-                    "small"=0.02,
-                    "medium"=0.13,
-                    "large"=0.26)
-    } else if(rules == "chin1998"){
-      rules <- list("very small"=0,
-                    "small"=0.19,
-                    "medium"=0.33,
-                    "large"=0.67)
-    } else if(rules == "hair2013"){
-      rules <- list("very small"=0,
-                    "small"=0.25,
-                    "medium"=0.50,
-                    "large"=0.75)
-    } else{
+  if (!is.list(rules)) {
+    if (rules == "cohen1988") {
+      rules <- list(
+        "very small" = 0,
+        "small" = 0.02,
+        "medium" = 0.13,
+        "large" = 0.26
+      )
+    } else if (rules == "chin1998") {
+      rules <- list(
+        "very small" = 0,
+        "small" = 0.19,
+        "medium" = 0.33,
+        "large" = 0.67
+      )
+    } else if (rules == "hair2013") {
+      rules <- list(
+        "very small" = 0,
+        "small" = 0.25,
+        "medium" = 0.50,
+        "large" = 0.75
+      )
+    } else {
       stop("rules must be either a list or 'cohen1988', 'chin1998' or 'hair2013'.")
     }
   }
 
   x <- (x - unlist(rules))
   interpretation <- names(which.min(x[x >= 0]))
-  if(is.null(interpretation)){
+  if (is.null(interpretation)) {
     interpretation <- NA
   }
 
-  if(return_rules){
-    return(list(interpretation=interpretation, rules=rules))
-  } else{
+  if (return_rules) {
+    return(list(interpretation = interpretation, rules = rules))
+  } else {
     return(interpretation)
   }
 }

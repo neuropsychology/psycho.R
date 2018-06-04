@@ -16,7 +16,7 @@
 #'
 #' @export
 interpret_r <- function(x, direction=TRUE, strength=TRUE, rules="cohen1988") {
-  interpretation <- sapply(x, .interpret_r, direction=direction, strength=strength, rules=rules, return_rules=FALSE)
+  interpretation <- sapply(x, .interpret_r, direction = direction, strength = strength, rules = rules, return_rules = FALSE)
   return(interpretation)
 }
 
@@ -44,8 +44,7 @@ interpret_r <- function(x, direction=TRUE, strength=TRUE, rules="cohen1988") {
 #'
 #' @export
 interpret_r_posterior <- function(posterior, rules="cohen1988") {
-
-  interpretation <- sapply(posterior, .interpret_r, rules=rules)
+  interpretation <- sapply(posterior, .interpret_r, rules = rules)
   rules <- unlist(interpretation[, 1]$rules)
   interpretation <- as.data.frame(unlist(interpretation[1, ]))
   interpretation <- na.omit(interpretation)
@@ -55,19 +54,19 @@ interpret_r_posterior <- function(posterior, rules="cohen1988") {
     group_by_("Interpretation") %>%
     summarise_("Probability" = "n() / length(posterior)") %>%
     separate("Interpretation",
-             c("Strength", "Direction"),
-             " and ",
-             remove = FALSE
+      c("Strength", "Direction"),
+      " and ",
+      remove = FALSE
     ) %>%
     mutate_(
       "Median" = 'ifelse(median(posterior) > 0, "positive", "negative")',
       "Opposite" = "ifelse(Median == Direction, FALSE, TRUE)",
-      "Strength" = 'factor(Strength)'
+      "Strength" = "factor(Strength)"
     ) %>%
     arrange_("Strength")
 
   values <- list()
-  for (strength in names(sort(rules, decreasing=TRUE))) {
+  for (strength in names(sort(rules, decreasing = TRUE))) {
     if (strength %in% summary$Strength) {
       values[strength] <- summary[summary$Strength == strength & summary$Opposite == FALSE, ]$Probability
     } else {
@@ -131,20 +130,23 @@ interpret_r_posterior <- function(posterior, rules="cohen1988") {
 
 #' @keywords internal
 .interpret_r <- function(x, direction=TRUE, strength=TRUE, rules="cohen1988", return_rules=TRUE) {
-
-  if(!is.list(rules)){
-    if(rules == "evans1996"){
-      rules <- list("very weak"=0,
-                    "weak"=0.20,
-                    "moderate"=0.40,
-                    "strong"=0.60,
-                    "very strong"=0.80)
-    } else if(rules == "cohen1988"){
-      rules <- list("very small"=0,
-                    "small"=0.10,
-                    "moderate"=0.30,
-                    "large"=0.50)
-    } else{
+  if (!is.list(rules)) {
+    if (rules == "evans1996") {
+      rules <- list(
+        "very weak" = 0,
+        "weak" = 0.20,
+        "moderate" = 0.40,
+        "strong" = 0.60,
+        "very strong" = 0.80
+      )
+    } else if (rules == "cohen1988") {
+      rules <- list(
+        "very small" = 0,
+        "small" = 0.10,
+        "moderate" = 0.30,
+        "large" = 0.50
+      )
+    } else {
       stop("rules must be either a list or 'cohen1988' or 'evans1996'.")
     }
   }
@@ -158,7 +160,7 @@ interpret_r_posterior <- function(posterior, rules="cohen1988") {
 
   x <- (abs(x) - unlist(rules))
   s <- names(which.min(x[x >= 0]))
-  if(is.null(s)){
+  if (is.null(s)) {
     s <- NA
   }
 
@@ -174,9 +176,9 @@ interpret_r_posterior <- function(posterior, rules="cohen1988") {
 
 
 
-  if(return_rules){
-    return(list(interpretation=interpretation, rules=rules))
-  } else{
+  if (return_rules) {
+    return(list(interpretation = interpretation, rules = rules))
+  } else {
     return(interpretation)
   }
 }

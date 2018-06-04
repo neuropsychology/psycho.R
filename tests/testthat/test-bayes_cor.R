@@ -1,9 +1,10 @@
 context("bayes_cor")
 
 test_that("Correct Value", {
-
-  results <- psycho::bayes_cor.test(psycho::affective$Concealing,
-                                    psycho::affective$Tolerating)
+  results <- psycho::bayes_cor.test(
+    psycho::affective$Concealing,
+    psycho::affective$Tolerating
+  )
 
   testthat::expect_equal(results$values$median, 0.073, tol = 0.05)
   testthat::expect_equal(results$values$effect_size$values$`very small`, 0.82, tol = 0.05)

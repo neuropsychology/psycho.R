@@ -1,5 +1,5 @@
 ---
-title: "Fancy Plot (with Posterior Samples) for Bayesian Regressions"
+title: "Extracting a Reference Grid of your Data for Machine Learning Models Visualization"
 layout: post
 output:
   html_document:
@@ -17,53 +17,160 @@ editor_options:
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 library(knitr)
+set.seed(666)
 ```
 
-As Bayesian models usually generate a lot of samples (*iterations*), one could want to plot them as well, instead (or along) the posterior "summary" (with indices like the 90% HDI). This can be done quite easily by extracting all the iterations in `get_predicted` from the `psycho` package.
+Sometimes, for visualization purposes, we want to extract a reference grid of our dataset. This reference grid often contains equally spaced values of a "target" variable, and all other variables "fixed" by their mean, median or reference level. The `refdata` of the [`psycho` package](https://github.com/neuropsychology/psycho.R) was built to do just that.
 
 # The Model
 
+Let's build a complex machine learning model (a neural network) predicting the Sex of our participant with all the variables of the dataframe.
+
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='hide', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-# devtools::install_github("neuropsychology/psycho.R")  # Install the last psycho version if needed
+# devtools::install_github("neuropsychology/psycho.R")  # Install the latest psycho version if needed
 
 # Load packages
 library(tidyverse)
+library(caret)
 library(psycho)
 
 # Import data
-df <- psycho::affective
+df <- psycho::affective %>% 
+  standardize() %>%  # Standardize
+  na.omit(df)  # Remove missing values
 
-# Fit a logistic regression model
-fit <- rstanarm::stan_glm(Sex ~ Adjusting, data=df, family = "binomial")
+# Fit the model
+model <- caret::train(Sex ~ .,
+                      data=df,
+                      method = "nnet")
+```
+```{r message=FALSE, warning=FALSE}
+varImp(model, scale = TRUE)
 ```
 
-We fitted a Bayesian logistic regression to predict the sex (*W / M*) with one's ability to flexibly adjust to his/her emotional reaction. 
+It seems that the upper salary category is the most important variable of the model, followed by the concealing and adjusting personality traits. Interesting, but what does it say about the actual relationship between those variables and our outcome?
 
-# Plot
 
-To visualize the model, the most neat way is to extract a "reference grid" (*i.e.*, a theorethical dataframe with balanced data). Our refgrid is made of equally spaced predictor values. With it, we can make predictions using the previously fitted model. This will compute the median of the posterior prediction, as well as the 90% credible interval. However, we're interested in keeping all the prediction samples (iterations). Note that `get_predicted` automatically transformed log odds ratios (the values in which the model is expressed) to probabilities, easier to apprehend.
+# Simple
 
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-# Generate a new refgrid
-refgrid <- df %>% 
-  dplyr::select(Adjusting) %>% 
-  psycho::refdata(length.out=10)
+To visualize the effect of Salary, we can extract a reference data with all the salary levels and all other variables fixed at their mean level.
 
-# Get predictions and keep iterations
-predicted <- psycho::get_predicted(fit, newdata=refgrid, keep_iterations=TRUE)
-
-# Reshape this dataframe to have iterations as factor
-predicted <- predicted %>% 
-  tidyr::gather(Iteration, Iteration_Value, starts_with("iter"))
-
-# Plot all iterations with the median prediction
-ggplot(predicted, aes(x=Adjusting)) +
-  geom_line(aes(y=Iteration_Value, group=Iteration), size=0.3, alpha=0.02) +
-  geom_line(aes(y=Sex_Median), size=1) + 
-  ylab("Probability of being a man\n") +
-  theme_classic()
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='hide', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+newdata <- df %>% 
+  select(-Sex) %>% 
+  refdata("Salary")
+newdata
+```
+```{r message=FALSE, warning=FALSE}
+knitr::kable(newdata, digits=2)
 ```
 
+We can make predictions from the model on this minimal dataset and visualize it.
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='hide', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+predicted <- predict(model, newdata, type = "prob")
+newdata <- cbind(newdata, predicted)
+
+newdata %>% 
+  ggplot(aes(x=Salary, y=M, group=1)) +
+  geom_line() +
+  theme_classic() +
+  ylab("Probability of being a man")
+```
+
+Well it seems that males are more represented in categories in lower and uppper salary classes.
+
+# Multiple Targets
+
+How does this interact with the concealing personality trait?
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='hide', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+newdata <- df %>% 
+  select(-Sex) %>% 
+  refdata(c("Salary", "Concealing"))  # We can sepcify multiple targets
+
+predicted <- predict(model, newdata, type = "prob")
+newdata <- cbind(newdata, predicted)
+
+newdata %>% 
+  ggplot(aes(x=Concealing, y=M, colour=Salary)) +
+  geom_line() +
+  theme_classic() +
+  ylab("Probability of being a man")
+
+```
+
+This plot is rather ugly...
+
+# Increase Length
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='hide', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+newdata <- df %>% 
+  select(-Sex) %>% 
+  refdata(c("Salary", "Concealing"), length.out=500)  # Set the length by which to spread numeric targets
+
+predicted <- predict(model, newdata, type = "prob")
+newdata <- cbind(newdata, predicted)
+
+newdata %>% 
+  ggplot(aes(x=Concealing, y=M, colour=Salary)) +
+  geom_line(size=1) +
+  theme_classic() +
+  ylab("Probability of being a man")
+```
+
+It seems that for richer people, the concealing treshold for increasing the probability of being a male is lower. 
+
+
+# How to Fix Numeric Variables?
+
+Note that here, all other variables are fixed to mean. But maybe this behaviour would be different when other variables are low or high.
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='hide', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+newdata_min <- df %>% 
+  select(-Sex) %>% 
+  refdata(c("Salary", "Concealing"), length.out=500, numerics = "min") %>%  # Set the other numeric variables to their minimum 
+  mutate(Fixed = "Minimum")
+newdata_max <- df %>% 
+  select(-Sex) %>% 
+  refdata(c("Salary", "Concealing"), length.out=500, numerics = "max")%>%  # Set the other numeric variables to their maximum 
+  mutate(Fixed = "Maximum")
+newdata <- rbind(newdata_min, newdata_max)
+
+predicted <- predict(model, newdata, type = "prob")
+newdata <- cbind(newdata, predicted)
+
+newdata %>% 
+  ggplot(aes(x=Concealing, y=M, colour=Salary)) +
+  geom_line(size=1) +
+  theme_classic() +
+  ylab("Probability of being a man") +
+  facet_wrap(~Fixed)
+```
+
+When all variables are set to their maximum, concealing is not related to the sex. When the variables are set to their minimum, the concealing treshold for the two lower salary classes is higher (around 1.5).
+
+
+# Chains of refdata
+
+Let's say we want one target of length 500 and another to length 5. To do it, we can nicely chain `refdata`.
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='hide', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+newdata <- df %>% 
+  select(-Sex) %>% 
+  refdata(c("Adjusting", "Concealing"), length.out=500) %>% 
+  refdata("Adjusting", length.out=5, numerics = "combination")
+
+predicted <- predict(model, newdata, type = "prob")
+newdata <- cbind(newdata, predicted)
+
+newdata %>% 
+  mutate(Adjusting=as.factor(Adjusting)) %>% 
+  ggplot(aes(x=Concealing, y=M, alpha=Adjusting)) +
+  geom_line(size=1) +
+  theme_classic() +
+  ylab("Probability of being a man")
+```
 
 
 # Credits

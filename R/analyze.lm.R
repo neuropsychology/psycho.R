@@ -51,7 +51,7 @@ analyze.lm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
   stdz <- as.data.frame(MuMIn::std.coef(fit, partial.sd = FALSE))
   fitsum$Coef.std <- stdz$Estimate
   fitsum$SE.std <- stdz$`Std. Error`
-  fitsum$Effect_Size <- interpret_d(fitsum$Coef.std, rules=effsize_rules)
+  fitsum$Effect_Size <- interpret_d(fitsum$Coef.std, rules = effsize_rules)
 
   fitsum <- dplyr::select_(
     fitsum, "Variable", "Coef", "SE", "t", "Coef.std", "SE.std",

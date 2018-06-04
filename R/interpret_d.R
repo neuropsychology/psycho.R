@@ -15,7 +15,7 @@
 #'
 #' @export
 interpret_d <- function(x, direction=FALSE, rules="cohen1988") {
-  interpretation <- sapply(x, .interpret_d, direction=direction, rules=rules, return_rules=FALSE)
+  interpretation <- sapply(x, .interpret_d, direction = direction, rules = rules, return_rules = FALSE)
   return(interpretation)
 }
 
@@ -42,7 +42,7 @@ interpret_d <- function(x, direction=FALSE, rules="cohen1988") {
 #'
 #' @export
 interpret_d_posterior <- function(posterior, rules="cohen1988") {
-  interpretation <- sapply(posterior, .interpret_d, rules=rules, direction=TRUE, return_rules=TRUE)
+  interpretation <- sapply(posterior, .interpret_d, rules = rules, direction = TRUE, return_rules = TRUE)
   rules <- unlist(interpretation[, 1]$rules)
   interpretation <- as.data.frame(unlist(interpretation[1, ]))
   interpretation <- na.omit(interpretation)
@@ -52,19 +52,19 @@ interpret_d_posterior <- function(posterior, rules="cohen1988") {
     group_by_("Interpretation") %>%
     summarise_("Probability" = "n() / length(posterior)") %>%
     tidyr::separate("Interpretation",
-                    c("Size", "Direction"),
-                    " and ",
-                    remove = FALSE
+      c("Size", "Direction"),
+      " and ",
+      remove = FALSE
     ) %>%
     mutate_(
       "Median" = 'ifelse(median(posterior) > 0, "positive", "negative")',
       "Opposite" = "ifelse(Median == Direction, FALSE, TRUE)",
-      "Size" = 'factor(Size)'
+      "Size" = "factor(Size)"
     ) %>%
     arrange_("Size")
 
   values <- list()
-  for (size in names(sort(rules, decreasing=TRUE))) {
+  for (size in names(sort(rules, decreasing = TRUE))) {
     if (size %in% summary$Size) {
       if (nrow(summary[summary$Size == size & summary$Opposite == FALSE, ]) == 0) {
         values[size] <- 0
@@ -124,21 +124,25 @@ interpret_d_posterior <- function(posterior, rules="cohen1988") {
 
 #' @keywords internal
 .interpret_d <- function(x, direction=FALSE, rules="cohen1988", return_rules=TRUE) {
-  if(!is.list(rules)){
-    if(rules == "cohen1988"){
-      rules <- list("very small"=0,
-                    "small"=0.2,
-                    "medium"=0.5,
-                    "large"=0.8)
-    } else if(rules == "sawilowsky2009"){
-      rules <- list("tiny"=0,
-                    "very small"=0.1,
-                    "small"=0.2,
-                    "medium"=0.5,
-                    "large"=0.8,
-                    "very large"=1.2,
-                    "huge"=2.0)
-    } else{
+  if (!is.list(rules)) {
+    if (rules == "cohen1988") {
+      rules <- list(
+        "very small" = 0,
+        "small" = 0.2,
+        "medium" = 0.5,
+        "large" = 0.8
+      )
+    } else if (rules == "sawilowsky2009") {
+      rules <- list(
+        "tiny" = 0,
+        "very small" = 0.1,
+        "small" = 0.2,
+        "medium" = 0.5,
+        "large" = 0.8,
+        "very large" = 1.2,
+        "huge" = 2.0
+      )
+    } else {
       stop("rules must be either a list or 'cohen1988' or 'sawilowsky2009'.")
     }
   }
@@ -152,7 +156,7 @@ interpret_d_posterior <- function(posterior, rules="cohen1988") {
 
   x <- (abs(x) - unlist(rules))
   s <- names(which.min(x[x >= 0]))
-  if(is.null(s)){
+  if (is.null(s)) {
     s <- NA
   }
 
@@ -164,9 +168,9 @@ interpret_d_posterior <- function(posterior, rules="cohen1988") {
   }
 
 
-  if(return_rules){
-    return(list(interpretation=interpretation, rules=rules))
-  } else{
+  if (return_rules) {
+    return(list(interpretation = interpretation, rules = rules))
+  } else {
     return(interpretation)
   }
 }

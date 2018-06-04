@@ -70,7 +70,7 @@ power_analysis <- function(fit, n_max, n_min=NULL, step=1, n_batch=1, groups=NUL
 
       # Fit new model
       newfit <- update(fit, data = newdf)
-      newfit <- analyze(newfit, CI = CI, effsize = effsize, bayes_factor = bayes_factor, overlap = overlap, effsize_rules=effsize_rules)
+      newfit <- analyze(newfit, CI = CI, effsize = effsize, bayes_factor = bayes_factor, overlap = overlap, effsize_rules = effsize_rules)
 
       # Store results
       newresults <- summary(newfit)

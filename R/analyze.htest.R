@@ -40,60 +40,70 @@ analyze.htest <- function(x, effsize_rules="cohen1988", ...) {
   values$df <- x$parameter
   values$CI <- x$conf.int
   values$signif <- ifelse(values$p < .05, "significant", "not significant")
-  values$CI_level <- attr(values$CI, "conf.level" )*100
+  values$CI_level <- attr(values$CI, "conf.level") * 100
   values$CI_format <- paste0(values$CI_level, "% CI [", format_digit(values$CI[1]), ", ", format_digit(values$CI[2]), "]")
 
 
   # Text
   # -------------
-  if(grepl("correlation", values$method)){
-    text <- paste0("The ",
-                   values$method,
-                   " between ",
-                   values$names,
-                   " is ",
-                   values$signif,
-                   "ly ",
-                   interpret_r(values$effect, rules=effsize_rules),
-                   " (r(",
-                   format_digit(values$df),
-                   ") = ",
-                   format_digit(values$effect),
-                   ", ",
-                   values$CI_format,
-                   ", p ",
-                   format_p(values$p, stars=FALSE),
-                   ")")
-  } else if(grepl("t-test", values$method)){
+  if (grepl("correlation", values$method)) {
+    text <- paste0(
+      "The ",
+      values$method,
+      " between ",
+      values$names,
+      " is ",
+      values$signif,
+      "ly ",
+      interpret_r(values$effect, rules = effsize_rules),
+      " (r(",
+      format_digit(values$df),
+      ") = ",
+      format_digit(values$effect),
+      ", ",
+      values$CI_format,
+      ", p ",
+      format_p(values$p, stars = FALSE),
+      ")"
+    )
+  } else if (grepl("t-test", values$method)) {
     means <- paste0(
-      c(paste0(
-        names(values$effect), " = ",
-        format_digit(values$effect)),
-      paste0("difference = ",
-             format_digit(values$effect[1]-values$effect[2]))),
-      collapse=", ")
+      c(
+        paste0(
+          names(values$effect), " = ",
+          format_digit(values$effect)
+        ),
+        paste0(
+          "difference = ",
+          format_digit(values$effect[1] - values$effect[2])
+        )
+      ),
+      collapse = ", "
+    )
 
     values$effect <- values$effect[1] - values$effect[2]
 
-    text <- paste0("The ",
-                   values$method,
-                   " suggests that the difference ",
-                   ifelse(grepl(" by ", values$names), "of ", "between "),
-                   values$names,
-                   " (",
-                   means,
-                   ") is ",
-                   values$signif,
-                   " (t(",
-                   format_digit(values$df),
-                   ") = ",
-                   format_digit(values$statistic),
-                   ", ",
-                   values$CI_format,
-                   ", p ",
-                   format_p(values$p, stars=FALSE),
-                   ")")
-  } else{
+    text <- paste0(
+      "The ",
+      values$method,
+      " suggests that the difference ",
+      ifelse(grepl(" by ", values$names), "of ", "between "),
+      values$names,
+      " (",
+      means,
+      ") is ",
+      values$signif,
+      " (t(",
+      format_digit(values$df),
+      ") = ",
+      format_digit(values$statistic),
+      ", ",
+      values$CI_format,
+      ", p ",
+      format_p(values$p, stars = FALSE),
+      ")"
+    )
+  } else {
     stop(paste0("The ", values$method, " is not implemented yet."))
   }
 
