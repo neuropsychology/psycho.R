@@ -2,9 +2,9 @@
 % Please edit documentation in R/interpret_r.R
 \name{interpret_r}
 \alias{interpret_r}
-\title{Return the interpretation of a correlation coefficient following Evans (1996).}
+\title{Correlation coefficient r interpreation.}
 \usage{
-interpret_r(x, direction = TRUE, strength = TRUE)
+interpret_r(x, direction = TRUE, strength = TRUE, rules = "cohen1988")
 }
 \arguments{
 \item{x}{Correlation coefficient.}
@@ -12,12 +12,11 @@ interpret_r(x, direction = TRUE, strength = TRUE)
 \item{direction}{Return direction.}
 
 \item{strength}{Return strength.}
-}
-\value{
-The interpretation following Evans (1996).
+
+\item{rules}{Can be "cohen1988" (default), "evans1996", or a custom list.}
 }
 \description{
-Return the interpretation of a correlation coefficient following Evans (1996).
+Interpret r with a set of rules.
 }
 \examples{
 library(psycho)

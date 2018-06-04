@@ -4,12 +4,14 @@
 \alias{analyze.lm}
 \title{Analyze lm objects.}
 \usage{
-\method{analyze}{lm}(x, CI = 95, ...)
+\method{analyze}{lm}(x, CI = 95, effsize_rules = "cohen1988", ...)
 }
 \arguments{
 \item{x}{lm object.}
 
 \item{CI}{Confidence interval bounds. Set to NULL turn off their computation.}
+
+\item{effsize_rules}{Grid for effect size interpretation. See \link[=interpret_d]{interpret_d}.}
 
 \item{...}{Arguments passed to or from other methods.}
 }

@@ -51,39 +51,15 @@ Check examples in the following vignettes:
 - [Overview of the psycho package](https://CRAN.R-project.org/package=psycho/vignettes/overview.html)
 - [Bayesian Analysis in Psychology](https://CRAN.R-project.org/package=psycho/vignettes/bayesian.html)
 
-Or run the following:
-```r
-library(rstanarm)
-library(psycho)
+Or the following blog posts:
 
-df <- psycho::affective  # Load a dataset from the psycho package
-df <- standardize(df)  # Standardize all numeric variables
-
-fit <- stan_glm(Age ~ Salary, data=df)  # Fit a Bayesian linear model
-results <- analyze(fit)  # Format the output
-
-print(results)
-summary(results)
-plot(results)
-contrasts <- get_contrasts(results, "Salary")  # Compute estimated means and contrasts
-contrasts$means
-contrasts$contrasts
-
-get_predicted(fit)  # Get model prediction
-``` 
-
-
-## Features
-
-The `psycho` package can already do the following:
-
-- [x] Standardize your data
-- [x] Enlight you on how many factors to retain for a PCA
-- [x] Give you some clinically relevant info on a participant's score
-- [x] Implements methods for single-case analyses
-- [x] Compute complex correlation matrices
-- [x] Compute signal detection theory indices (d', beta, ...)
-- [x] Help you in the interpretation of various models (mixed, Bayesian, ...)
+- [Fancy Plot (with Posterior Samples) for Bayesian Regressions](https://neuropsychology.github.io/psycho.R/2018/06/03/plot_bayesian_model.html)
+- [How Many Factors to Retain in Factor Analysis](https://neuropsychology.github.io/psycho.R/2018/05/24/n_factors.html)
+- [Beautiful and Powerful Correlation Tables](https://neuropsychology.github.io/psycho.R/2018/05/20/correlation.html)
+- [Format and Interpret Linear Mixed Models](https://neuropsychology.github.io/psycho.R/2018/05/10/interpret_mixed_models.html)
+- [How to do Repeated Measures ANOVAs](https://neuropsychology.github.io/psycho.R/2018/05/01/repeated_measure_anovas.html)
+- [Standardize (Z-score) a dataframe](https://neuropsychology.github.io/psycho.R/2018/03/29/standardize.html)
+- [Compute Signal Detection Theory Indices](https://neuropsychology.github.io/psycho.R/2018/03/29/SDT.html)
 
 
 

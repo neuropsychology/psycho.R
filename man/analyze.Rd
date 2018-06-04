@@ -18,6 +18,7 @@ Analyze objects. See the documentation for your object's class:
  \item{\link[=analyze.lmerModLmerTest]{analyze.merModLmerTest}}
  \item{\link[=analyze.glmerMod]{analyze.glmerMod}}
  \item{\link[=analyze.lm]{analyze.lm}}
+ \item{\link[=analyze.htest]{analyze.htest}}
  }
 \itemize{
  \item{\link[=analyze.fa]{analyze.fa}}

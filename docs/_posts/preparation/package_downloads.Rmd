@@ -19,6 +19,20 @@ editor_options:
 library(knitr)
 ```
 
+
+# Rank
+
+```{r message=FALSE, warning=FALSE, include=TRUE, results="hide"}
+library(tidyverse)
+library(cranly)
+
+pkg_df <- cranly::clean_CRAN_db(tools::CRAN_package_db())
+plot(cranly::build_network(object = pkg_df, perspective = "author"), author = "Dominique Makowski", exact = FALSE)
+plot(cranly::build_dependence_tree(cranly::build_network(pkg_df), "psycho"))
+
+```
+
+
 # Download data
 
 ```{r message=FALSE, warning=FALSE, include=TRUE, results="hide"}
@@ -26,11 +40,6 @@ library(tidyverse)
 library(zoo)
 library(plotly)
 library(cranlogs)
-
-data <- cranlogs::cran_downloads(package = "psycho", from = "2017-10-06") %>% 
-  mutate(cumulative_count = cumsum(count),
-         average_count = zoo::rollmax(count, 10, fill=0)+10)
-
 
 
 blogposts_dates <- list.files("../") %>% 
@@ -61,13 +70,34 @@ events <- data.frame(date = c("2018-01-10", "2018-02-05", "2018-03-21"),
     ) %>% 
   mutate(date = lubridate::ymd(date)) %>% 
   left_join(data, by="date")
- 
+
+
+
+
+data <- cranlogs::cran_downloads(package = "psycho", from = "2017-10-06") %>% 
+  mutate(cumulative_count = cumsum(count),
+         average_count = zoo::rollmax(count, 10, fill=0)+10,
+         day_num = as.numeric(date) - min(as.numeric(date)),
+         day = weekdays(date),
+         month = months(date),
+         quarters = quarters(date),
+         month_day = lubridate::mday(date),
+         event = ifelse(date %in% events$date, 1, 0))
 ```
 
+
+# Trend 
+
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA}
-data %>% 
-  ggplot(aes(x=date, y=count, group=1)) +
-  geom_line(size=1) +
+library(rstanarm)
+library(psycho)
+
+fit<- rstanarm::stan_glm(count~poly(day_num, 2), data=data)
+
+psycho::get_predicted(fit, data) %>% 
+  ggplot(aes(x=date, group=1)) +
+  geom_line(aes(y=count), size=1) +
+  geom_line(aes(y=count_Median), size=1, colour="blue") +
   geom_vline(data=events, aes(xintercept = date), colour=events$color, size=1) +
   geom_label(data=events, aes(label = label, x = date, y = average_count), fill = events$color, colour = "white", fontface="bold") +
   theme_classic() +
@@ -76,24 +106,67 @@ data %>%
                labels=scales::date_format("%Y-%m")) +
   xlab("") +
   ylab("CRAN Downloads\n")
+
 ```
 
-# Forecasting
+# Day
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA}
-library(forecast)
+fit<- rstanarm::stan_glm(count~day, data=data)
 
-data %>%
-  select(count) %>% 
-  pull() %>% 
-  ts(start=c(2017, 310), frequency=365) %>% 
-  ets() %>%
-  forecast() %>%
-  autoplot()
+results <- get_contrasts(fit, "day")
 
+results$means %>% 
+  mutate(Day = str_remove(Level, "day "),
+         Day = factor(Day, levels=c("lundi", "mardi", "mercredi", "jeudi","vendredi", "samedi", "dimanche"))) %>% 
+  ggplot(aes(x=Day, y=Median, group=1)) +
+  geom_linerange(aes(ymin=CI_lower, ymax=CI_higher)) +
+  geom_line()
 
+results$contrasts
 ```
 
+
+# Machine Learning
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA}
+# Data Partition
+training <- data %>% 
+  select(count, day_num, day, month, quarters, month_day, event) %>%
+  modelr::resample_partition(c(train = 0.7, test = 0.3))
+
+test <- ungroup(as.data.frame(training$test))
+training <- ungroup(as.data.frame(training$train))
+
+# Train
+model <- caret::train(count ~ .,
+                      data=training,
+                      method = "rf",
+                      trControl=caret::trainControl(method="repeatedcv",
+                                                    number=10,
+                                                    repeats=3))
+print(model)
+varImp(model, scale = TRUE)
+
+# test
+test$Predicted <- predict(model, test)
+test %>%
+  select(pred=Predicted, obs=count) %>%
+  as.data.frame() %>%
+  defaultSummary()
+
+cbind(data, data.frame(Predicted = predict(model, data))) %>% 
+  ggplot(aes(x=count, y=Predicted)) +
+  geom_point() +
+  geom_smooth()
+
+
+
+# Visualize
+newdata <- psycho::emotion %>%
+  select(-Participant_ID) %>%
+  psycho::refdata(target="Subjective_Valence", length.out=100)
+```
 
 
 # Event List
