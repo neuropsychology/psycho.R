@@ -36,7 +36,7 @@ ggplot(data.frame(x = density$x, y = density$y), aes(x=x, y=y)) +
   annotate("text", x = r+0.055, y = 10, label = "Frequentist r Coefficient" , size=4 , fontface="bold", hjust = 0, color="#4CAF50") +
   # median
   geom_vline(xintercept=median(posterior)) +
-  annotate("segment", x = median(posterior)+0.05, xend = r, y = 8, yend = 8, colour = "black", size=0.1, arrow=arrow(type="closed", length = unit(0.10, "inches"))) +
+  annotate("segment", x = median(posterior)+0.05, xend = median(posterior), y = 8, yend = 8, colour = "black", size=0.1, arrow=arrow(type="closed", length = unit(0.10, "inches"))) +
   annotate("text", x = median(posterior)+0.055, y = 8, label = "Posterior's Median" , size=4 , fontface="bold", hjust = 0) +
   # # mean
   # geom_vline(xintercept=mean(posterior), color="#2196F3") +
@@ -47,7 +47,6 @@ ggplot(data.frame(x = density$x, y = density$y), aes(x=x, y=y)) +
 
 ## ---- echo=T, message=FALSE, warning=FALSE, results='hide'---------------
 library(rstanarm)
-library(emmeans)
 library(dplyr)
 library(ggplot2)
 library(psycho)
@@ -76,13 +75,11 @@ knitr::kable(summary(results, round = 2))
 print(results)
 
 ## ----echo=T, message=FALSE, warning=FALSE--------------------------------
-# We enter the values of tolerating that we want in our reference grid, in this case a sequence of length=10 with minimum and maximum similar to the actual data.
-ref_grid <- emmeans::ref_grid(fit, at = list(
-  Tolerating = seq(min(df$Tolerating),
-                   max(df$Tolerating),
-                   length.out = 10)))
-                              
-predicted <- psycho::get_predicted(fit, newdata=ref_grid)
+refgrid <- df %>% 
+  select(Tolerating) %>% 
+  psycho::refdata(length.out=10)
+
+predicted <- psycho::get_predicted(fit, newdata=refgrid)
 
 ## ----echo=T, message=FALSE, warning=FALSE, results='hide'----------------
 predicted
@@ -142,18 +139,17 @@ results <- psycho::analyze(fit)
 summary(results, round = 2)
 
 ## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
-kable(summary(results, round = 2))
+knitr::kable(summary(results, round = 2))
 
 ## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
 levels(df$Sex)
 
 ## ----echo=T, message=FALSE, warning=FALSE--------------------------------
-ref_grid <- emmeans::ref_grid(fit, at = list(
-  Adjusting = seq(min(df$Adjusting),
-                   max(df$Adjusting),
-                   length.out = 10)))
-
-predicted <- psycho::get_predicted(fit, newdata=ref_grid)
+refgrid <- df %>% 
+  select(Adjusting) %>% 
+  psycho::refdata(length.out=10)
+  
+predicted <- psycho::get_predicted(fit, newdata=refgrid)
 
 ## ---- fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA----
 ggplot(predicted, aes(x=Adjusting, y=Sex_Median)) +
@@ -178,11 +174,11 @@ summary(results, round = 2)
 kable(summary(results, round = 2))
 
 ## ----echo=T, message=FALSE, warning=FALSE, results="hide"----------------
-ref_grid <- emmeans::ref_grid(fit, at = list(
-  Concealing = seq(min(df$Concealing),
-                   max(df$Concealing),
-                   length.out = 10)))
-predicted <- psycho::get_predicted(fit, newdata=ref_grid)
+refgrid <- df %>% 
+  select(Concealing, Sex) %>% 
+  psycho::refdata(length.out=10)
+
+predicted <- psycho::get_predicted(fit, newdata=refgrid)
 predicted
 
 ## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
@@ -203,7 +199,7 @@ ggplot(predicted, aes(x=Concealing, y=Life_Satisfaction_Median, fill=Sex)) +
 
 ## ----message=FALSE, warning=FALSE, include=FALSE, results="hide"---------
 # Let's fit our model (it takes more time)
-fit <- rstanarm::stan_lmer(Concealing ~ Age + (1|Salary), data=df, iter=500, chains=2)
+fit <- rstanarm::stan_lmer(Concealing ~ Age + (1|Salary), data=df, iter=500, chains=2, seed=666)
 
 ## ---- message=FALSE, results="hide"--------------------------------------
 # Format the results using analyze()
@@ -216,13 +212,12 @@ summary(results, round = 2)
 kable(summary(results, round = 2))
 
 ## ----echo=T, message=FALSE, warning=FALSE--------------------------------
-ref_grid <- emmeans::ref_grid(fit, at = list(
-  Age = seq(min(df$Age),
-            max(df$Age),
-            length.out = 4)))
+refgrid <- df %>% 
+  select(Age) %>% 
+  psycho::refdata(length.out=10)
 
-# We name the predicted dataframe by adding _linear to keep it for further comparison (see next part)
-predicted_linear <- psycho::get_predicted(fit, newdata=ref_grid)
+# We name the predicted dataframe by adding '_linear' to keep it for further comparison (see next part)
+predicted_linear <- psycho::get_predicted(fit, newdata=refgrid)
 
 ## ---- fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA----
 ggplot(predicted_linear, aes(x=Age, y=Concealing_Median)) +
@@ -250,12 +245,11 @@ summary(results, round = 2)
 kable(summary(results, round = 2))
 
 ## ----echo=T, message=FALSE, warning=FALSE--------------------------------
-ref_grid <- emmeans::ref_grid(fit, at = list(
-  Age = seq(min(df$Age),
-            max(df$Age),
-            length.out = 20)))
+refgrid <- df %>% 
+  select(Age) %>% 
+  psycho::refdata(length.out=20)
 
-predicted_poly <- psycho::get_predicted(fit, newdata=ref_grid)
+predicted_poly <- psycho::get_predicted(fit, newdata=refgrid)
 
 ## ---- fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA----
 ggplot(predicted_poly, aes(x=Age, y=Concealing_Median)) +
@@ -326,13 +320,12 @@ fit <- rstanarm::stan_glm(Sex ~ Adjusting, data=df, family = "binomial")
 
 ## ---- fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE----
 # Generate a new refgrid
-ref_grid <- emmeans::ref_grid(fit, at = list(
-  Adjusting = seq(min(df$Adjusting),
-                   max(df$Adjusting),
-                   length.out = 10)))
+refgrid <- df %>% 
+  select(Adjusting) %>% 
+  psycho::refdata(length.out=10)
 
 # Get predictions and keep iterations
-predicted <- psycho::get_predicted(fit, newdata=ref_grid, keep_iterations=TRUE)
+predicted <- psycho::get_predicted(fit, newdata=refgrid, keep_iterations=TRUE)
 
 # Reshape this dataframe to have iterations as factor
 predicted <- predicted %>% 
