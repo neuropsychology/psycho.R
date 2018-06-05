@@ -40,7 +40,7 @@ The main goal of the `psycho` package is to provide tools for psychologists, neu
 **`psycho` is a young package in need of affection.** You can easily hop aboard the developpment of this open-source software and improve psychological science:
 
 - You need some help? You found a bug? You would like to request a new feature? Just open an [issue](https://github.com/neuropsychology/psycho.R/issues) :relaxed:
-- Want to add a feature? Correct a bug? You're more than welcome to [contribute](https://github.com/neuropsychology/psycho.R/.github/blob/master/.github/CONTRIBUTING.md)!
+- Want to add a feature? Correct a bug? You're more than welcome to [contribute](https://github.com/neuropsychology/psycho.R/blob/master/.github/CONTRIBUTING.md)!
 
 Don't be shy, try to code and submit a pull request (PR). Even if unperfect, we will help you to make a great PR!
 All contributors will be very graciously rewarded. One day.
@@ -51,7 +51,7 @@ Check examples in the following vignettes:
 - [Overview of the psycho package](https://CRAN.R-project.org/package=psycho/vignettes/overview.html)
 - [Bayesian Analysis in Psychology](https://CRAN.R-project.org/package=psycho/vignettes/bayesian.html)
 
-Or the following blog posts:
+Or blog posts:
 
 - [Fancy Plot (with Posterior Samples) for Bayesian Regressions](https://neuropsychology.github.io/psycho.R/2018/06/03/plot_bayesian_model.html)
 - [How Many Factors to Retain in Factor Analysis](https://neuropsychology.github.io/psycho.R/2018/05/24/n_factors.html)
