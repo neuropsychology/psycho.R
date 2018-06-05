@@ -8,11 +8,10 @@
 - Changed output of analyze.stanreg
 - effsize in analyze.stanreg default to TRUE
 - Fixed bug in `dprime`
-- `mellenbergh.test`, `crawford.test` and `crawford.test.freq` now return a psychobject
-- `assess` has been refactored to become a wrapper for `crawford.test`
-- `crawford.test` now computes the Bayesian version
-- `crawford.test` has been renamed to `crawford.test.freq`
 ### New functions / parameters
+- First iteration on custom rule's sets for effects sizes
+- Added `analyze.htest` for correlations and t-tests
+- Added `interpret_R2` 
 - Added "bayesian" method for correlation matrix
 - Added `reorder_matrix`
 - Added `bayes_adj_R2` for loo-adjusted R2 in stanreg models
@@ -25,6 +24,19 @@
 - Added `bayesian_cor.test`, start to work on implementation of bayesian method for correlation
 - Added `find_matching_string` for fuzzy string matching
 - Added  `analyze` for psych::fa objects
+### Changes
+- Improvements on analyze.stanreg
+
+
+# [0.2.3](https://github.com/neuropsychology/psycho.R/releases/tag/0.2.0) (2018-05-11)
+
+
+### Breaking changes
+- `mellenbergh.test`, `crawford.test` and `crawford.test.freq` now return a psychobject
+- `assess` has been refactored to become a wrapper for `crawford.test`
+- `crawford.test` now computes the Bayesian version
+- `crawford.test` has been renamed to `crawford.test.freq`
+### New functions / parameters
 - Added `i_am_cheating` parameter to `correlation` to prevent p-hacking
 - Added `percentile` and `percentile_to_z` functions
 - Added `as.data.frame` method for density objects
@@ -34,6 +46,10 @@
 - Improvements on analyze.stanreg
 - Fixed `draws` parameter in get_predicted.stanreg
 - logo
+
+
+
+
 
 
 

@@ -4,6 +4,7 @@
 #'
 #' @param x lm object.
 #' @param CI Confidence interval bounds. Set to NULL turn off their computation.
+#' @param effsize_rules Grid for effect size interpretation. See \link[=interpret_d]{interpret_d}.
 #' @param ... Arguments passed to or from other methods.
 #'
 #' @return output
@@ -22,7 +23,7 @@
 #' @importFrom stats formula
 #' @importFrom stringr str_squish
 #' @export
-analyze.lm <- function(x, CI=95, ...) {
+analyze.lm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
 
 
   # Processing
@@ -50,7 +51,7 @@ analyze.lm <- function(x, CI=95, ...) {
   stdz <- as.data.frame(MuMIn::std.coef(fit, partial.sd = FALSE))
   fitsum$Coef.std <- stdz$Estimate
   fitsum$SE.std <- stdz$`Std. Error`
-  fitsum$Effect_Size <- interpret_d(fitsum$Coef.std)
+  fitsum$Effect_Size <- interpret_d(fitsum$Coef.std, rules = effsize_rules)
 
   fitsum <- dplyr::select_(
     fitsum, "Variable", "Coef", "SE", "t", "Coef.std", "SE.std",

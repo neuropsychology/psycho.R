@@ -5,6 +5,7 @@
 #' @param x A stanreg model.
 #' @param CI Credible interval bounds.
 #' @param effsize Compute Effect Sizes according to Cohen (1988). For linear models only.
+#' @param effsize_rules Grid for effect size interpretation. See \link[=interpret_d]{interpret_d}.
 #' @param ... Arguments passed to or from other methods.
 #'
 #' @return Contains the following indices:
@@ -51,7 +52,7 @@
 #' @importFrom broom tidy
 #' @importFrom stringr str_squish str_replace
 #' @export
-analyze.stanreg <- function(x, CI=90, effsize=TRUE, ...) {
+analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", ...) {
   fit <- x
 
   # Info --------------------------------------------------------------------
@@ -147,7 +148,8 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, ...) {
         info_priors,
         predictors,
         CI = CI,
-        effsize = effsize
+        effsize = effsize,
+        effsize_rules = effsize_rules
       )
     }
   }
@@ -175,13 +177,6 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, ...) {
   # -------------------------------------------------------------------------
 
   # Model
-  if (effsize == TRUE) {
-    info_effsize <- " Effect sizes are based on Cohen (1988) recommandations."
-  } else {
-    info_effsize <- ""
-  }
-
-
   info <- paste0(
     "We fitted a Markov Chain Monte Carlo ",
     fit$family$family,
@@ -190,9 +185,7 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, ...) {
     ") model to predict ",
     outcome,
     " (formula = ", stringr::str_squish(paste0(format(fit$formula), collapse = "")),
-    ").",
-    info_effsize,
-    " The model's priors were set as follows: "
+    "). The model's priors were set as follows: "
   )
 
   # Priors
@@ -564,7 +557,7 @@ bayes_adj_R2 <- function(fit) {
 
 
 #' @keywords internal
-.process_effect <- function(varname, posteriors, posteriors_std, info_priors, predictors, CI=90, effsize=FALSE) {
+.process_effect <- function(varname, posteriors, posteriors_std, info_priors, predictors, CI=90, effsize=FALSE, effsize_rules=FALSE) {
   values <- .get_info_priors(varname, info_priors, predictors)
   posterior <- posteriors[, varname]
 
@@ -640,7 +633,7 @@ bayes_adj_R2 <- function(fit) {
     values$std_CI_values <- c(values$std_CI_values$values$HDImin, values$std_CI_values$values$HDImax)
 
 
-    EffSize <- interpret_d_posterior(posterior_std)
+    EffSize <- interpret_d_posterior(posterior_std, rules = effsize_rules)
 
     EffSize_table <- EffSize$summary
     EffSize_table$Variable <- varname

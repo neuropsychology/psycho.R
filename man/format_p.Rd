@@ -4,10 +4,12 @@
 \alias{format_p}
 \title{Format p values.}
 \usage{
-format_p(pvalues)
+format_p(pvalues, stars = TRUE)
 }
 \arguments{
 \item{pvalues}{P values (scalar or vector).}
+
+\item{stars}{Add stars.}
 }
 \description{
 Format p values.

@@ -6,6 +6,8 @@
 #' @param y Second continuous variable.
 #' @param CI Credible interval bounds.
 #' @param iterations The number of iterations to sample.
+#' @param effsize_rules_r Grid for effect size interpretation. See \link[=interpret_r]{interpret_r}.
+#' @param effsize_rules_bf Grid for effect size interpretation. See \link[=interpret_bf]{interpret_bf}.
 #'
 #' @return A psychobject.
 #'
@@ -25,7 +27,7 @@
 #' @importFrom stats complete.cases cor.test
 #' @import dplyr
 #' @export
-bayes_cor.test <- function(x, y, CI=90, iterations = 10000) {
+bayes_cor.test <- function(x, y, CI=90, iterations = 10000, effsize_rules_r="cohen1988", effsize_rules_bf="jeffreys1961") {
 
 
   # Varnames ----------------------------------------------------------------
@@ -51,10 +53,12 @@ bayes_cor.test <- function(x, y, CI=90, iterations = 10000) {
 
   # Correlation -------------------------------------------------------------
 
-
+  # Stop if same variable
   if (cor.test(var_x, var_y)$estimate > 0.999) {
     return(1)
   }
+
+
   cor <- BayesFactor::correlationBF(var_x, var_y)
   posterior <- as.vector(suppressMessages(BayesFactor::posterior(cor, iterations = iterations, progress = FALSE)))
 
@@ -94,9 +98,9 @@ bayes_cor.test <- function(x, y, CI=90, iterations = 10000) {
   )
   rownames(summary) <- paste0(var1, " / ", var2)
 
-  values$effect_size <- interpret_r_posterior(posterior)
-  interpretation_r <- interpret_r(values$median, strength = FALSE)
-  interpretation_bf <- interpret_bf(values$bf)
+  values$effect_size <- interpret_r_posterior(posterior, rules = effsize_rules_r)
+  interpretation_r <- interpret_r(values$median, strength = FALSE, rules = effsize_rules_r)
+  interpretation_bf <- interpret_bf(values$bf, rules = effsize_rules_bf)
 
   text <- paste0(
     "Results of the Bayesian correlation indicate ",

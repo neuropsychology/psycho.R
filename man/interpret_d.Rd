@@ -2,24 +2,24 @@
 % Please edit documentation in R/interpret_d.R
 \name{interpret_d}
 \alias{interpret_d}
-\title{Return the interpretation of a Cohen's d or a standardized coefficient following Cohen (1988).}
+\title{Standardized difference (Cohen's d) interpreation.}
 \usage{
-interpret_d(x, direction = FALSE)
+interpret_d(x, direction = FALSE, rules = "cohen1988")
 }
 \arguments{
-\item{x}{Cohen's d value of standardized coefficient.}
+\item{x}{Standardized difference.}
 
-\item{direction}{Return effect direction (positive / negative).}
-}
-\value{
-The interpretation according to Cohen (1988).
+\item{direction}{Return direction.}
+
+\item{rules}{Can be "cohen1988" (default), "sawilowsky2009", or a custom list.}
 }
 \description{
-Return the interpretation of a Cohen's d or a standardized coefficient following Cohen (1988).
+Interpret d with a set of rules.
 }
 \examples{
 library(psycho)
 interpret_d(-0.42)
+interpret_d(-0.62)
 
 }
 \author{

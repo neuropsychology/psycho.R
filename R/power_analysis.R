@@ -11,6 +11,7 @@
 #' @param verbose Print progress.
 #' @param CI Argument for \link[=analyze]{analyze}.
 #' @param effsize Argument for \link[=analyze]{analyze}.
+#' @param effsize_rules Argument for \link[=analyze]{analyze}.
 #' @param bayes_factor Argument for \link[=analyze]{analyze}.
 #' @param overlap rgument for \link[=analyze]{analyze}.
 #'
@@ -38,7 +39,7 @@
 #' @importFrom stats model.frame
 #' @import dplyr
 #' @export
-power_analysis <- function(fit, n_max, n_min=NULL, step=1, n_batch=1, groups=NULL, verbose=TRUE, CI=90, effsize=FALSE, bayes_factor=FALSE, overlap=FALSE) {
+power_analysis <- function(fit, n_max, n_min=NULL, step=1, n_batch=1, groups=NULL, verbose=TRUE, CI=90, effsize=FALSE, effsize_rules="cohen1988", bayes_factor=FALSE, overlap=FALSE) {
 
   # Parameters
   df <- model.frame(fit)
@@ -69,7 +70,7 @@ power_analysis <- function(fit, n_max, n_min=NULL, step=1, n_batch=1, groups=NUL
 
       # Fit new model
       newfit <- update(fit, data = newdf)
-      newfit <- analyze(newfit, CI = CI, effsize = effsize, bayes_factor = bayes_factor, overlap = overlap)
+      newfit <- analyze(newfit, CI = CI, effsize = effsize, bayes_factor = bayes_factor, overlap = overlap, effsize_rules = effsize_rules)
 
       # Store results
       newresults <- summary(newfit)

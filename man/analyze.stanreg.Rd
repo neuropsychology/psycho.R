@@ -4,7 +4,8 @@
 \alias{analyze.stanreg}
 \title{Analyze stanreg objects.}
 \usage{
-\method{analyze}{stanreg}(x, CI = 90, effsize = TRUE, ...)
+\method{analyze}{stanreg}(x, CI = 90, effsize = TRUE,
+  effsize_rules = "cohen1988", ...)
 }
 \arguments{
 \item{x}{A stanreg model.}
@@ -12,6 +13,8 @@
 \item{CI}{Credible interval bounds.}
 
 \item{effsize}{Compute Effect Sizes according to Cohen (1988). For linear models only.}
+
+\item{effsize_rules}{Grid for effect size interpretation. See \link[=interpret_d]{interpret_d}.}
 
 \item{...}{Arguments passed to or from other methods.}
 }

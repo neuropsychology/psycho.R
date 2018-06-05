@@ -4,7 +4,8 @@
 \alias{bayes_cor.test}
 \title{Performs a Bayesian correlation.}
 \usage{
-bayes_cor.test(x, y, CI = 90, iterations = 10000)
+bayes_cor.test(x, y, CI = 90, iterations = 10000,
+  effsize_rules_r = "cohen1988", effsize_rules_bf = "jeffreys1961")
 }
 \arguments{
 \item{x}{First continuous variable.}
@@ -14,6 +15,10 @@ bayes_cor.test(x, y, CI = 90, iterations = 10000)
 \item{CI}{Credible interval bounds.}
 
 \item{iterations}{The number of iterations to sample.}
+
+\item{effsize_rules_r}{Grid for effect size interpretation. See \link[=interpret_r]{interpret_r}.}
+
+\item{effsize_rules_bf}{Grid for effect size interpretation. See \link[=interpret_bf]{interpret_bf}.}
 }
 \value{
 A psychobject.

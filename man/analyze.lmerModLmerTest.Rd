@@ -4,12 +4,15 @@
 \alias{analyze.lmerModLmerTest}
 \title{Analyze lmerModLmerTest objects.}
 \usage{
-\method{analyze}{lmerModLmerTest}(x, CI = 95, ...)
+\method{analyze}{lmerModLmerTest}(x, CI = 95, effsize_rules = "cohen1988",
+  ...)
 }
 \arguments{
 \item{x}{lmerModLmerTest object.}
 
 \item{CI}{Bootsrapped confidence interval bounds (slow). Set to NULL turn off their computation.}
+
+\item{effsize_rules}{Grid for effect size interpretation. See \link[=interpret_d]{interpret_d}.}
 
 \item{...}{Arguments passed to or from other methods.}
 }

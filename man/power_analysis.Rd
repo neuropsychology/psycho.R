@@ -6,7 +6,7 @@
 \usage{
 power_analysis(fit, n_max, n_min = NULL, step = 1, n_batch = 1,
   groups = NULL, verbose = TRUE, CI = 90, effsize = FALSE,
-  bayes_factor = FALSE, overlap = FALSE)
+  effsize_rules = "cohen1988", bayes_factor = FALSE, overlap = FALSE)
 }
 \arguments{
 \item{fit}{A lm or stanreg model.}
@@ -26,6 +26,8 @@ power_analysis(fit, n_max, n_min = NULL, step = 1, n_batch = 1,
 \item{CI}{Argument for \link[=analyze]{analyze}.}
 
 \item{effsize}{Argument for \link[=analyze]{analyze}.}
+
+\item{effsize_rules}{Argument for \link[=analyze]{analyze}.}
 
 \item{bayes_factor}{Argument for \link[=analyze]{analyze}.}
 

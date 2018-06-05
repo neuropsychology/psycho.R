@@ -4,7 +4,7 @@
 \alias{interpret_bf}
 \title{Bayes Factor Interpretation}
 \usage{
-interpret_bf(x, direction = TRUE, bf = TRUE)
+interpret_bf(x, direction = TRUE, bf = TRUE, rules = "jeffreys1961")
 }
 \arguments{
 \item{x}{Bayes Factor.}
@@ -12,6 +12,8 @@ interpret_bf(x, direction = TRUE, bf = TRUE)
 \item{direction}{Include direction (against / in favour).}
 
 \item{bf}{Include Bayes Factor.}
+
+\item{rules}{Can be "jeffreys1961" (default), "raftery1995", or a custom list.}
 }
 \value{
 The interpretation according to Jeffreys (1961).
@@ -21,7 +23,7 @@ Return the interpretation of a Bayes Factor.
 }
 \examples{
 library(psycho)
-interpret_bf(10)
+interpret_bf(x=10)
 
 }
 \references{
