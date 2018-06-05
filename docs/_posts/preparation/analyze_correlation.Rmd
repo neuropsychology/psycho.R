@@ -1,0 +1,68 @@
+---
+title: "APA Formatted Correlation"
+layout: post
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+  md_document:
+    toc: yes
+    variant: markdown_github
+author: "Dominique Makowski"
+date: "`r Sys.Date()`"
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(knitr)
+```
+
+One of the most time-consuming part of data analysis in psychology is the copy-pasting of specific values of some R outputs to a manuscript or a report. This task is frustrating, prone to errors, and increase de variability of statistical reporting, while standardization of what and how to report is crucial for reproducibility and clarity. The `psycho` package was designed specifically to ease this part, at first for complex Bayesian mixed models, but is now also compatible with basic methods, such as **correlation**.
+
+# Do a correlation
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+df <- iris
+cor_results <- cor.test(df$Sepal.Length, df$Petal.Length)
+```
+
+
+# APA formatted output
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+# devtools::install_github("neuropsychology/psycho.R")  # Install the latest psycho version
+
+# Load packages
+library(psycho)
+psycho::analyze(cor_results)
+```
+
+
+The formatted output includes **direction**, **effect size** (interpreted by default with **Cohen's (1988)** rules) and **confidence intervals**. Now you can just copy and paste this line into your report and focus on what's important.
+
+# Dataframe of Values
+
+It is also possible to have all the values stored in a dataframe by running a **summary** on the analyzed object.
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='hide', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+results <- analyze(cor_results)
+summary(results)
+```
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, echo=FALSE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+knitr::kable(summary(results), digits=2)
+```
+
+# Bayesian Correlation
+
+Nevertheless, we recommand doing a **Bayesian correlation**, which is even [easier and quicker to do](blogpostlink)!
+
+
+
+# Credits
+
+This package helped you? Don't forget to cite the various packages you used :)
+
+You can cite `psycho` as follows:
+
+- Makowski, (2018). *The psycho Package: An Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470

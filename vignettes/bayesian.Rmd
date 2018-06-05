@@ -172,7 +172,7 @@ For each parameter of the model, the summary shows:
 - the **Median Absolute Deviation (MAD)**, a robust measure of dispertion (could be seen as a robust version of SD).
 - the **Credible Interval (CI)** (by default, the 90\% CI; see Kruschke, 2018), representing a range of possible parameter values.
 - the **Maximum Probability of Effect (MPE)**, the probability that the effect is positive or negative (depending on the median’s direction).
-- the **Overlap (O)*}**, the percentage of overlap between the posterior distribution and a normal distribution of mean 0 and same SD than the posterior. Can be interpreted as the probability that a value from the posterior distribution comes from a null distribution.
+- the **Overlap (O)**, the percentage of overlap between the posterior distribution and a normal distribution of mean 0 and same SD than the posterior. Can be interpreted as the probability that a value from the posterior distribution comes from a null distribution of same uncertainty (width).
 
 It also returns the (unadjusted) R2 (which represents the *percentage of variance of the outcome explained by the model*). In the Bayesian framework, the R2 is also estimated with probabilities. As such, characteristics of its posterior distribution are returned.
 
@@ -692,7 +692,7 @@ This package helped you? Don't forget to cite the various packages you used :)
 
 You can cite `psycho` as follows:
 
-- Makowski, (2018). *The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470
+- Makowski, (2018). *The psycho Package: An Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470
 
 ## Contribution
 

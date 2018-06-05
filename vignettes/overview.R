@@ -54,6 +54,9 @@ summary(pcor)
 ## ---- results='markup', comment=NA---------------------------------------
 print(pcor)
 
+## ---- results='markup', comment=NA---------------------------------------
+psycho::bayes_cor.test(iris$Petal.Width, iris$Sepal.Width)
+
 ## ---- out.width=8, eval = TRUE, fig.align='center', results='markup', comment=NA----
 library(psycho)
 library(dplyr)
