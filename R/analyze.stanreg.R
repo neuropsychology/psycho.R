@@ -31,9 +31,6 @@
 #' plot(results)
 #'
 #'
-#' results <- analyze(fit, effsize=FALSE)
-#' print(results)
-#'
 #'
 #' fit <- rstanarm::stan_glmer(Sepal.Length ~ Sepal.Width + (1|Species), data=iris)
 #' results <- analyze(fit)
@@ -48,7 +45,7 @@
 #' @import dplyr
 #' @import ggplot2
 #' @importFrom stats quantile as.formula
-#' @importFrom utils head tail
+#' @importFrom utils head tail capture.output
 #' @importFrom broom tidy
 #' @importFrom stringr str_squish str_replace
 #' @export
@@ -57,15 +54,22 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
 
   # Info --------------------------------------------------------------------
 
-  predictors <- all.vars(as.formula(fit$formula))
-  outcome <- predictors[[1]]
-  predictors <- tail(predictors, -1)
-
+  # Computations
+  computations <- capture.output(fit$stanfit)
+  computations <- paste0(computations[2], computations[3], collapse = "")
+  computations <- stringr::str_remove_all(computations, ", total post-warmup draws.*")
+  computations <- stringr::str_remove_all(computations, " draws per chain")
+  computations <- stringr::str_replace_all(computations, "=" , " = ")
 
   # Extract posterior distributions
   posteriors <- as.data.frame(fit)
 
+
   # Varnames
+  predictors <- all.vars(as.formula(fit$formula))
+  outcome <- predictors[[1]]
+  predictors <- tail(predictors, -1)
+
   varnames <- names(fit$coefficients)
   varnames <- varnames[grepl("b\\[", varnames) == FALSE]
 
@@ -175,14 +179,19 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
 
   # Text --------------------------------------------------------------------
   # -------------------------------------------------------------------------
+  alrogithm <-
 
   # Model
   info <- paste0(
-    "We fitted a Markov Chain Monte Carlo ",
+    "We fitted a ",
+    ifelse(fit$algorithm == "sampling", "Markov Chain Monte Carlo", fit$algorithm),
+    " ",
     fit$family$family,
     " (link = ",
     fit$family$link,
-    ") model to predict ",
+    ") model (",
+    computations,
+    ") to predict ",
     outcome,
     " (formula = ", stringr::str_squish(paste0(format(fit$formula), collapse = "")),
     "). The model's priors were set as follows: "
@@ -229,19 +238,33 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
   }
 
   # Text
-  text <- c(
-    info,
-    "",
-    info_priors_text,
-    "",
-    "",
-    paste0(
-      tail(coefs_text, 1),
-      head(coefs_text, 1)
-    ),
-    "",
-    head(tail(coefs_text, -1), -1)
-  )
+  if("R2" %in% varnames){
+    text <- c(
+      info,
+      "",
+      info_priors_text,
+      "",
+      "",
+      paste0(
+        tail(coefs_text, 1),
+        head(coefs_text, 1)
+      ),
+      "",
+      head(tail(coefs_text, -1), -1)
+    )
+  } else{
+    text <- c(
+      info,
+      "",
+      info_priors_text,
+      "",
+      "",
+      head(coefs_text, 1),
+      "",
+      tail(coefs_text, 1)
+      )
+  }
+
 
 
 

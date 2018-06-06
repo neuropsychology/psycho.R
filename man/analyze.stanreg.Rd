@@ -45,9 +45,6 @@ print(results)
 plot(results)
 
 
-results <- analyze(fit, effsize=FALSE)
-print(results)
-
 
 fit <- rstanarm::stan_glmer(Sepal.Length ~ Sepal.Width + (1|Species), data=iris)
 results <- analyze(fit)

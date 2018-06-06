@@ -38,7 +38,7 @@ test_that("If it works.", {
   data <- psycho::standardize(attitude)
   fit <- rstanarm::stan_glm(rating ~ advance + privileges,
     data = data,
-    prior = rstanarm::normal(0, 1, autoscale = F),
+    prior = rstanarm::normal(0, 1, autoscale = FALSE),
     chains = 1, iter = 1000, seed = 666
   )
   results <- psycho::analyze(fit)
@@ -50,7 +50,7 @@ test_that("If it works.", {
   data <- standardize(attitude)
   fit <- rstanarm::stan_glm(rating ~ advance + privileges,
     data = data,
-    prior = rstanarm::normal(0, 1, autoscale = T),
+    prior = rstanarm::normal(0, 1),
     chains = 1, iter = 1000, seed = 666
   )
   results <- analyze(fit)
@@ -66,8 +66,8 @@ test_that("If it works.", {
     algorithm = "meanfield"
   )
 
-  model <- psycho::analyze(fit, effsize = T)
-  values <- psycho::values(model)
+  results <- psycho::analyze(fit)
+  values <- psycho::values(results)
   testthat::expect_equal(
     round(values$effects$Sepal.Width$median, 2), -0.46,
     tolerance = 0.1
