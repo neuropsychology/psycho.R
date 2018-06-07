@@ -139,7 +139,7 @@
 ### New functions / parameters
 ### Major changes
 ### Minor changes
-- Added [`CONTRIBUTING.md`](https://github.com/neuropsychology/psycho.R/blob/master/CONTRIBUTING.md)
+- Added `CONTRIBUTING.md`
 - Changed `format_digit`
 - Added `except` parameter to `normalize`
 
