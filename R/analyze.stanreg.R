@@ -54,12 +54,15 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
 
   # Info --------------------------------------------------------------------
 
-  # Computations
+  # Algorithm
+  if (fit$algorithm == "optimizing") {
+    stop("Can't analyze models fitted with 'optimizing' algorithm.")
+  }
   computations <- capture.output(fit$stanfit)
   computations <- paste0(computations[2], computations[3], collapse = "")
   computations <- stringr::str_remove_all(computations, ", total post-warmup draws.*")
   computations <- stringr::str_remove_all(computations, " draws per chain")
-  computations <- stringr::str_replace_all(computations, "=" , " = ")
+  computations <- stringr::str_replace_all(computations, "=", " = ")
 
   # Extract posterior distributions
   posteriors <- as.data.frame(fit)
@@ -181,21 +184,21 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
   # -------------------------------------------------------------------------
   alrogithm <-
 
-  # Model
-  info <- paste0(
-    "We fitted a ",
-    ifelse(fit$algorithm == "sampling", "Markov Chain Monte Carlo", fit$algorithm),
-    " ",
-    fit$family$family,
-    " (link = ",
-    fit$family$link,
-    ") model (",
-    computations,
-    ") to predict ",
-    outcome,
-    " (formula = ", stringr::str_squish(paste0(format(fit$formula), collapse = "")),
-    "). The model's priors were set as follows: "
-  )
+    # Model
+    info <- paste0(
+      "We fitted a ",
+      ifelse(fit$algorithm == "sampling", "Markov Chain Monte Carlo", fit$algorithm),
+      " ",
+      fit$family$family,
+      " (link = ",
+      fit$family$link,
+      ") model (",
+      computations,
+      ") to predict ",
+      outcome,
+      " (formula = ", stringr::str_squish(paste0(format(fit$formula), collapse = "")),
+      "). The model's priors were set as follows: "
+    )
 
   # Priors
   text_priors <- rstanarm::prior_summary(fit)
@@ -238,7 +241,7 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
   }
 
   # Text
-  if("R2" %in% varnames){
+  if ("R2" %in% varnames) {
     text <- c(
       info,
       "",
@@ -252,7 +255,7 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
       "",
       head(tail(coefs_text, -1), -1)
     )
-  } else{
+  } else {
     text <- c(
       info,
       "",
@@ -262,7 +265,7 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
       head(coefs_text, 1),
       "",
       tail(coefs_text, 1)
-      )
+    )
   }
 
 

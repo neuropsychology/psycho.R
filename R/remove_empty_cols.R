@@ -8,6 +8,6 @@
 #'
 #' @export
 remove_empty_cols <- function(df) {
-  df <- df[, colSums(is.na(df))<nrow(df)]
+  df <- df[, colSums(is.na(df)) < nrow(df)]
   return(df)
 }

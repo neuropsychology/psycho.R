@@ -57,26 +57,36 @@ analyze.fa <- function(x, labels=NULL, treshold="max", ...) {
   variance <- as.data.frame(variance)
   n_factors <- ncol(variance)
 
-  t <- as.data.frame(t(variance))
-  tot_var <- max(t$`Cumulative Var`)
+  if (ncol(variance) == 1) {
+    t <- as.data.frame(t(variance))
+    tot_var <- t$`Proportion Var`
+    text <- paste0(
+      "The unique component accounted for ",
+      format_digit(tot_var * 100),
+      "% of the total variance."
+    )
+  } else {
+    t <- as.data.frame(t(variance))
+    tot_var <- max(t$`Cumulative Var`)
 
-  factors <- names(variance)
-  var <- variance["Proportion Var", ]
-  text_var <- paste0(factors,
-    " = ",
-    format_digit(var * 100),
-    "%",
-    collapse = ", "
-  )
+    factors <- names(variance)
+    var <- variance["Proportion Var", ]
+    text_var <- paste0(factors,
+      " = ",
+      format_digit(var * 100),
+      "%",
+      collapse = ", "
+    )
 
-  text <- paste0(
-    "The ",
-    n_factors,
-    " components accounted for ",
-    format_digit(tot_var * 100),
-    "% of the total variance ("
-  )
-  text <- paste0(text, text_var, ")")
+    text <- paste0(
+      "The ",
+      n_factors,
+      " components accounted for ",
+      format_digit(tot_var * 100),
+      "% of the total variance ("
+    )
+    text <- paste0(text, text_var, ").")
+  }
 
   return(text)
 }
@@ -239,10 +249,14 @@ get_cfa_model <- function(loadings, treshold="max") {
 #' @import dplyr
 #' @export
 plot_loadings <- function(loadings) {
+  if (all(loadings$Label != loadings$N)) {
+    loadings$Item <- paste0(loadings$Label, " (", loadings$Item, ")")
+  }
+
   p <- loadings %>%
     gather("Component", "Loading", matches("\\d$")) %>%
     mutate_("Loading" = "abs(Loading)") %>%
-    mutate_("Item" = "factor(Item, levels=get_loadings_max(loadings)$Item)") %>%
+    mutate_("Item" = "factor(Item, levels=rev(get_loadings_max(loadings)$Item))") %>%
     ggplot(aes_string(y = "Loading", x = "Item", fill = "Component")) +
     geom_bar(stat = "identity") +
     coord_flip() +

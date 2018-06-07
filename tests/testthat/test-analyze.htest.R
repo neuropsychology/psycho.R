@@ -16,5 +16,4 @@ test_that("If it works.", {
   x <- t.test(df$Adjusting ~ df$Sex)
   rez <- psycho::analyze(x)
   testthat::expect_equal(ncol(summary(rez)), 6)
-
-  })
+})

@@ -72,4 +72,27 @@ test_that("If it works.", {
     round(values$effects$Sepal.Width$median, 2), -0.46,
     tolerance = 0.1
   )
+
+  fit <- rstanarm::stan_glm(
+    Sepal.Length ~ Sepal.Width,
+    data = iris,
+    seed = 666,
+    algorithm = "fullrank"
+  )
+
+  results <- psycho::analyze(fit)
+  values <- psycho::values(results)
+  testthat::expect_equal(
+    round(values$effects$Sepal.Width$median, 2), -0.12,
+    tolerance = 0.1
+  )
+
+  fit <- rstanarm::stan_glm(
+    Sepal.Length ~ Sepal.Width,
+    data = iris,
+    seed = 666,
+    algorithm = "optimizing"
+  )
+
+  testthat::expect_error(psycho::analyze(fit))
 })

@@ -30,8 +30,7 @@
 #' @importFrom stats update
 #' @importFrom rstanarm normal
 #' @export
-model_to_priors <- function(fit){
-
+model_to_priors <- function(fit) {
   posteriors <- as.data.frame(fit)
 
   # Varnames
@@ -46,15 +45,15 @@ model_to_priors <- function(fit){
   prior_intercept <- list()
   priors <- list()
   prior_aux <- list()
-  for(prior in varnames){
-    if(prior == "(Intercept)"){
+  for (prior in varnames) {
+    if (prior == "(Intercept)") {
       prior_intercept$mean <- mean(posteriors[[prior]])
       prior_intercept$sd <- sd(posteriors[[prior]])
-    } else if (prior %in% fixed_effects){
+    } else if (prior %in% fixed_effects) {
       priors[[prior]] <- list()
       priors[[prior]]$mean <- mean(posteriors[[prior]])
       priors[[prior]]$sd <- sd(posteriors[[prior]])
-    } else{
+    } else {
       prior_aux[[prior]] <- list()
       prior_aux[[prior]]$mean <- mean(posteriors[[prior]])
       prior_aux[[prior]]$sd <- sd(posteriors[[prior]])
@@ -65,16 +64,17 @@ model_to_priors <- function(fit){
   prior_intercept <- rstanarm::normal(
     prior_intercept$mean,
     prior_intercept$sd,
-    autoscale = FALSE)
+    autoscale = FALSE
+  )
   prior <- .format_priors(priors)
   prior_aux <- .format_priors(prior_aux)
 
-  return(list(prior_intercept=prior_intercept, prior=prior, priox_aux=prior_aux))
+  return(list(prior_intercept = prior_intercept, prior = prior, priox_aux = prior_aux))
 }
 
 
 #' @keywords internal
-.format_priors <- function(priors){
+.format_priors <- function(priors) {
   prior_mean <- data.frame(priors) %>%
     select(contains("mean")) %>%
     gather() %>%
@@ -90,6 +90,6 @@ model_to_priors <- function(fit){
   prior <- rstanarm::normal(
     prior_mean,
     prior_sd,
-    autoscale = FALSE)
+    autoscale = FALSE
+  )
 }
-

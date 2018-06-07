@@ -1,7 +1,7 @@
 Package: psycho
 Type: Package
 Title: Efficient and Publishing-Oriented Workflow for Psychological Science
-Version: 0.2.7
+Version: 0.2.8
 Authors@R: c(
     person("Dominique", 
         "Makowski", 
@@ -54,7 +54,8 @@ Imports:
     pbkrtest,
     BayesFactor (>= 0.9.1),
     scales,
-    loo (>= 2.0.0)
+    loo (>= 2.0.0),
+    lavaan
 Suggests:
     knitr,
     rmarkdown,

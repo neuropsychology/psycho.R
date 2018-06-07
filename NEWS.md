@@ -15,6 +15,8 @@
 - effsize in analyze.stanreg default to TRUE
 - Fixed bug in `dprime`
 ### New functions / parameters
+- Added `interpret_RMSEA`
+- Added `analyze.lavaan` and `analyze.aov`
 - Added `remove_empty_cols`
 - Added `model_to_priors`
 - First iteration on custom rule's sets for effects sizes
