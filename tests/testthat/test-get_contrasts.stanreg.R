@@ -11,6 +11,6 @@ test_that("If it works.", {
   means <- contrasts$means
   contrasts <- contrasts$contrasts
 
-  testthat::expect_equal(mean(means$Mean), 4.876, tolerance = 0.05)
-  testthat::expect_equal(mean(contrasts$Mean), -0.136, tolerance = 0.05)
+  testthat::expect_equal(mean(means$Median), 4.876, tolerance = 0.05)
+  testthat::expect_equal(mean(contrasts$Median), -0.134, tolerance = 0.05)
 })
