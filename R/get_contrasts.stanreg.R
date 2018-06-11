@@ -56,8 +56,6 @@ get_contrasts.stanreg <- function(fit, formula, prob=0.9, ...) {
       Level = name,
       Median = median(var),
       MAD = mad(var),
-      Mean = mean(var),
-      SD = sd(var),
       CI_lower = CI_values[seq(1, length(CI_values), 2)],
       CI_higher = CI_values[seq(2, length(CI_values), 2)]
     )
@@ -87,8 +85,6 @@ get_contrasts.stanreg <- function(fit, formula, prob=0.9, ...) {
       Contrast = stringr::str_remove(name, "contrast "),
       Median = median(var),
       MAD = mad(var),
-      Mean = mean(var),
-      SD = sd(var),
       CI_lower = CI_values[seq(1, length(CI_values), 2)],
       CI_higher = CI_values[seq(2, length(CI_values), 2)],
       MPE = mpe(var)$MPE

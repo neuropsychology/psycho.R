@@ -9,20 +9,19 @@ output:
     df_print: paged
     toc: yes
 author: "Dominique Makowski"
-date: "`r Sys.Date()`"
+date: "2018-06-11"
 editor_options: 
   chunk_output_type: console
 ---
 
 
-```{r message=FALSE, warning=FALSE, include=FALSE}
-library(knitr)
-```
+
 
 One of the most time-consuming part of data analysis in psychology is the copy-pasting of specific values of some R output to a manuscript or a report. This task is frustrating, prone to errors, and increase de variability of statistical reporting. At the sime time, standardizing practices of what and how to report is crucial for reproducibility and clarity. **The [psycho](https://github.com/neuropsychology/psycho.R) package was designed specifically to do this job**, at first for complex [Bayesian mixed models](https://cran.r-project.org/web/packages/psycho/vignettes/bayesian.html), but is now also compatible with basic methods, such as **correlation**.
 
 # Do a correlation
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+
+```r
 df <- iris
 cor_results <- cor.test(df$Sepal.Length, df$Petal.Length)
 ```
@@ -30,12 +29,17 @@ cor_results <- cor.test(df$Sepal.Length, df$Petal.Length)
 
 # APA formatted output
 
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+
+```r
 # devtools::install_github("neuropsychology/psycho.R")  # Install the latest psycho version
 
 # Load packages
 library(psycho)
 psycho::analyze(cor_results)
+```
+
+```
+The Pearson's product-moment correlation between df$Sepal.Length and df$Petal.Length is significantly large and positive (r(148) = 0.87, 95% CI [0.83, 0.91], p < .001)
 ```
 
 
@@ -45,13 +49,15 @@ The formatted output includes **direction**, **effect size** (interpreted by def
 
 It is also possible to have all the values stored in a dataframe by running a **summary** on the analyzed object.
 
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='hide', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+
+```r
 results <- analyze(cor_results)
 summary(results)
 ```
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, echo=FALSE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-knitr::kable(summary(results), digits=2)
-```
+
+ effect   statistic    df    p   CI_lower   CI_higher
+-------  ----------  ----  ---  ---------  ----------
+   0.87       21.65   148    0       0.83        0.91
 
 # Bayesian Correlation
 

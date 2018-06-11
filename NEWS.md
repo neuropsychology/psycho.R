@@ -5,7 +5,7 @@
 ### Changes
 
 
-# [0.2.7](https://github.com/neuropsychology/psycho.R/releases/tag/0.2.0) (2018-05-11)
+# [0.2.8](https://github.com/neuropsychology/psycho.R/releases/tag/0.2.8) (2018-06-11)
 
 
 ### Breaking changes
@@ -15,6 +15,9 @@
 - effsize in analyze.stanreg default to TRUE
 - Fixed bug in `dprime`
 ### New functions / parameters
+- Added `interpret_RMSEA`
+- Added `analyze.lavaan` and `analyze.aov`
+- Added `remove_empty_cols`
 - Added `model_to_priors`
 - First iteration on custom rule's sets for effects sizes
 - Added `analyze.htest` for correlations and t-tests
@@ -136,7 +139,7 @@
 ### New functions / parameters
 ### Major changes
 ### Minor changes
-- Added [`CONTRIBUTING.md`](https://github.com/neuropsychology/psycho.R/blob/master/CONTRIBUTING.md)
+- Added `CONTRIBUTING.md`
 - Changed `format_digit`
 - Added `except` parameter to `normalize`
 

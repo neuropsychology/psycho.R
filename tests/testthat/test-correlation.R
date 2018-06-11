@@ -1,6 +1,6 @@
 context("correlation")
 
-test_that("Ccorrelations work", {
+test_that("Correlations work", {
   df <- attitude[c("rating", "complaints", "privileges", "learning")]
 
 
@@ -25,7 +25,7 @@ test_that("Ccorrelations work", {
   testthat::expect_equal(value, 0.53, tol = 0.1)
 
   # glasso
-  testthat::expect_warning(psycho::correlation(df, type = "glasso", adjust = "none"))
+  # testthat::expect_warning(psycho::correlation(df, type = "glasso", adjust = "none"))
 
   # cor_auto
   output <- psycho::correlation(df, type = "cor_auto", adjust = "none")
