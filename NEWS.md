@@ -5,7 +5,7 @@
 ### Changes
 
 
-# [0.2.7](https://github.com/neuropsychology/psycho.R/releases/tag/0.2.0) (2018-05-11)
+# [0.2.8](https://github.com/neuropsychology/psycho.R/releases/tag/0.2.8) (2018-06-11)
 
 
 ### Breaking changes

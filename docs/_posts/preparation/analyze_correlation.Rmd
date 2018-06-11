@@ -19,7 +19,7 @@ editor_options:
 library(knitr)
 ```
 
-One of the most time-consuming part of data analysis in psychology is the copy-pasting of specific values of some R outputs to a manuscript or a report. This task is frustrating, prone to errors, and increase de variability of statistical reporting, while standardization of what and how to report is crucial for reproducibility and clarity. The `psycho` package was designed specifically to ease this part, at first for complex Bayesian mixed models, but is now also compatible with basic methods, such as **correlation**.
+One of the most time-consuming part of data analysis in psychology is the copy-pasting of specific values of some R output to a manuscript or a report. This task is frustrating, prone to errors, and increase de variability of statistical reporting. At the sime time, standardizing practices of what and how to report is crucial for reproducibility and clarity. **The [psycho](https://github.com/neuropsychology/psycho.R) package was designed specifically to do this job**, at first for complex [Bayesian mixed models](https://cran.r-project.org/web/packages/psycho/vignettes/bayesian.html), but is now also compatible with basic methods, such as **correlation**.
 
 # Do a correlation
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
@@ -39,7 +39,7 @@ psycho::analyze(cor_results)
 ```
 
 
-The formatted output includes **direction**, **effect size** (interpreted by default with **Cohen's (1988)** rules) and **confidence intervals**. Now you can just copy and paste this line into your report and focus on what's important.
+The formatted output includes **direction**, **effect size** (interpreted by default with **[Cohen's (1988)](https://github.com/neuropsychology/psycho.R/blob/master/R/interpret_r.R#L142)** rules) and **confidence intervals**. Now you can just copy and paste this line into your report and focus on what's important.
 
 # Dataframe of Values
 
