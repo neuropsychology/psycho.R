@@ -92,6 +92,13 @@ plot(density(posterior))
 
 <img src="https://raw.githubusercontent.com/neuropsychology/psycho.R/master/docs/_posts/2018-06-11-bayesian_correlation_files/figure-markdown_github/unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
 
+
+Contribute
+==========
+
+Of course, these reporting standards should change, depending on new expert recommandations or official guidelines. **The goal of this package is to flexibly adaptive to new changes and good practices evolution**. Therefore, if you have any advices, opinions or such, we encourage you to either let us know by opening an [issue](https://github.com/neuropsychology/psycho.R/issues) or, even better, try to implement them yourself by [contributing](https://github.com/neuropsychology/psycho.R/blob/master/.github/CONTRIBUTING.md) to the code.
+
+
 Credits
 =======
 
