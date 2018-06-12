@@ -15,9 +15,6 @@ interpret_bf(x, direction = TRUE, bf = TRUE, rules = "jeffreys1961")
 
 \item{rules}{Can be "jeffreys1961" (default), "raftery1995", or a custom list.}
 }
-\value{
-The interpretation according to Jeffreys (1961).
-}
 \description{
 Return the interpretation of a Bayes Factor.
 }

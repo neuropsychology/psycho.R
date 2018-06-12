@@ -3,6 +3,7 @@
 ### Breaking changes
 - Removed Mean and SD from summary in `bayes_cor.test`
 ### New functions / parameters
+- Added `omega_sq` and `interpret_omega_sq`
 ### Changes
 - Enhance print for `analyze.aov`
 
