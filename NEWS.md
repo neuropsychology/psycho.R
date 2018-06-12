@@ -1,8 +1,10 @@
 # Current Dev
 
 ### Breaking changes
+- Removed Mean and SD from summary in `bayes_cor.test`
 ### New functions / parameters
 ### Changes
+- Enhance print for `analyze.aov`
 
 
 # [0.2.8](https://github.com/neuropsychology/psycho.R/releases/tag/0.2.8) (2018-06-11)

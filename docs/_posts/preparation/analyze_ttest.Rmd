@@ -1,5 +1,5 @@
 ---
-title: "APA Formatted Correlation with effect sizes"
+title: "Copy/paste formated t-tests directly to manuscripts"
 layout: post
 output:
   md_document:
@@ -15,16 +15,21 @@ editor_options:
 ---
 
 
+
+ADD PSYCHO LOGO AS IMAGE
+
+
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 library(knitr)
 ```
 
-One of the most time-consuming part of data analysis in psychology is the copy-pasting of specific values of some R output to a manuscript or a report. This task is frustrating, prone to errors, and increase de variability of statistical reporting. At the sime time, standardizing practices of what and how to report is crucial for reproducibility and clarity. **The [psycho](https://github.com/neuropsychology/psycho.R) package was designed specifically to do this job**, at first for complex [Bayesian mixed models](https://cran.r-project.org/web/packages/psycho/vignettes/bayesian.html), but is now also compatible with basic methods, such as **correlation**.
+One of the most time-consuming part of data analysis in psychology is the copy-pasting of specific values of some R output to a manuscript or a report. This task is frustrating, prone to errors, and increases the variability of statistical reporting. This is an important issue, as standardizing practices of what and how to report might be a key to overcome the reproducibility crisis of psychology. **The [psycho](https://github.com/neuropsychology/psycho.R) package was designed specifically to do this job**. At first, for complex [Bayesian mixed models](https://cran.r-project.org/web/packages/psycho/vignettes/bayesian.html), but the package is now compatible with basic methods, such as **t-tests**.
 
-# Do a correlation
+# Do a t-test
+
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 df <- iris
-cor_results <- cor.test(df$Sepal.Length, df$Petal.Length)
+results <- t.test(df$Sepal.Length, df$Petal.Length)
 ```
 
 
@@ -35,31 +40,47 @@ cor_results <- cor.test(df$Sepal.Length, df$Petal.Length)
 
 # Load packages
 library(psycho)
-psycho::analyze(cor_results)
+psycho::analyze(results)
 ```
 
+# Flexibility
 
-The formatted output includes **direction**, **effect size** (interpreted by default with **[Cohen's (1988)](https://github.com/neuropsychology/psycho.R/blob/master/R/interpret_r.R#L142)** rules) and **confidence intervals**. Now you can just copy and paste this line into your report and focus on what's important.
+It works for all kinds of different t-tests versions.
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+df <- psycho::affective
+psycho::analyze(t.test(df$Age ~ df$Sex))
+```
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+t.test(df$Age ~ df$Sex,
+       var.equal=TRUE, 
+       conf.level = .90) %>% 
+  psycho::analyze()
+```
 
 # Dataframe of Values
 
 It is also possible to have all the values stored in a dataframe by running a **summary** on the analyzed object.
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='hide', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-results <- analyze(cor_results)
-summary(results)
+library(tidyverse)
+
+t.test(df$Age ~ df$Sex) %>% 
+  psycho::analyze() %>% 
+  summary()
 ```
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, echo=FALSE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-knitr::kable(summary(results), digits=2)
+t.test(df$Age ~ df$Sex) %>% 
+  psycho::analyze() %>% 
+  summary() %>% 
+  knitr::kable()
 ```
 
-# Bayesian Correlation
-
-Nevertheless, we recommand doing a **Bayesian correlation**, which is even [easier and quicker to do](blogpostlink)!
 
 # Contribute
 
-Of course, these reporting standards should change, depending on new expert recommandations or official guidelines. **The goal of this package is to flexibly adaptive to new changes and good practices evolution**. Therefore, if you have any advices, opinions or such, we encourage you to either let us know by opening an [issue](https://github.com/neuropsychology/psycho.R/issues), or even better, try to implement them yourself by [contributing](https://github.com/neuropsychology/psycho.R/blob/master/.github/CONTRIBUTING.md) to the code. 
+Of course, these reporting standards should change, depending on new expert recommandations or official guidelines. **The goal of this package is to flexibly adapt to new changes and accompany the evolution of good practices**. Therefore, if you have any advices, opinions or ideas, we encourage you to let us know by opening an [issue](https://github.com/neuropsychology/psycho.R/issues) or, even better, to try to implement changes yourself by [contributing](https://github.com/neuropsychology/psycho.R/blob/master/.github/CONTRIBUTING.md) to the code. 
 
 
 # Credits
@@ -69,7 +90,6 @@ This package helped you? Don't forget to cite the various packages you used :)
 You can cite `psycho` as follows:
 
 - Makowski, (2018). *The psycho Package: An Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470
-
 
 # Previous blogposts
 

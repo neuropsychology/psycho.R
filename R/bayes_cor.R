@@ -87,8 +87,6 @@ bayes_cor.test <- function(x, y, CI=90, iterations = 10000, effsize_rules_r="coh
   summary <- data.frame(
     Median = values$median,
     MAD = values$mad,
-    Mean = values$mean,
-    SD = values$sd,
     CI_lower = values$CI_values[1],
     CI_higher = values$CI_values[2],
     MPE = values$MPE,

@@ -60,7 +60,7 @@
 get_predicted.stanreg <- function(fit, newdata="model", prob=0.9, keep_iterations=FALSE, draws=NULL, odds_to_probs=TRUE, posterior_predict=FALSE, seed=NULL, ...) {
 
   # Extract names
-  predictors <- all.vars(fit$formula)
+  predictors <- all.vars(as.formula(fit$formula))
   outcome <- predictors[[1]]
   predictors <- tail(predictors, -1)
 

@@ -22,7 +22,8 @@ library(psycho)
 
 df <- psycho::affective
 
-x <- aov(df$Tolerating ~ df$Sex)
+x <- aov(df$Tolerating ~ df$Salary)
+x <- aov(df$Tolerating ~ df$Salary * df$Sex)
 
 summary(analyze(x))
 
