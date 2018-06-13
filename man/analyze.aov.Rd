@@ -20,6 +20,7 @@ output
 Analyze aov objects.
 }
 \examples{
+\dontrun{
 library(psycho)
 
 df <- psycho::affective
@@ -29,6 +30,7 @@ x <- aov(df$Tolerating ~ df$Salary * df$Sex)
 
 summary(analyze(x))
 print(analyze(x))
+}
 
 
 }

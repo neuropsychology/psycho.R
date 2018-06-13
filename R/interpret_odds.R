@@ -8,7 +8,7 @@
 #'
 #' @examples
 #' library(psycho)
-#' interpret_odds(x=0.05)
+#' interpret_odds(x=2)
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
@@ -27,6 +27,11 @@ interpret_odds <- function(x, log=TRUE, rules="chen2010") {
 
 #' @keywords internal
 .interpret_odds <- function(x, log=TRUE, rules="chen2010", return_rules=TRUE) {
+
+  if(log == TRUE){
+    x <- exp(abs(x))
+  }
+
   if (!is.list(rules)) {
     if (rules == "chen2010") {
       rules <- list(

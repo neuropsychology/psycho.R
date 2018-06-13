@@ -1,24 +1,25 @@
-#' Analyze aov and anova objects.
+#' Analyze aov objects.
 #'
-#' Analyze aov and anova objects.
+#' Analyze aov objects.
 #'
-#' @param x aov or anova object.
+#' @param x aov object.
 #' @param effsize_rules Grid for effect size interpretation. See \link[=interpret_omega_sq]{interpret_omega_sq}.
 #' @param ... Arguments passed to or from other methods.
 #'
 #' @return output
 #'
 #' @examples
+#' \dontrun{
 #' library(psycho)
 #'
 #' df <- psycho::affective
 #'
 #' x <- aov(df$Tolerating ~ df$Salary)
 #' x <- aov(df$Tolerating ~ df$Salary * df$Sex)
-#' x <- anova(lm(df$Tolerating ~ df$Salary * df$Sex))
 #'
 #' summary(analyze(x))
 #' print(analyze(x))
+#' }
 #'
 #'
 #' @references
@@ -32,11 +33,16 @@
 #' @import broom
 #'
 #' @export
-analyze.aov <- analyze.anova <- function(x, effsize_rules="field2013", ...) {
+analyze.aov <- function(x, effsize_rules="field2013", ...) {
 
-
-  if(!is.null(x$Within)){
-    stop("Cannot deal with repeated measures. Please use mixed-models.")
+  if(!"aov" %in% class(x)){
+    if(!"Residuals" %in% row.names(x)){
+      stop("Cannot deal with this object. You should use mixed-models.")
+    }
+  } else{
+    if(!is.null(x$Within)){
+      stop("Cannot deal with repeated measures. Please use mixed-models.")
+    }
   }
 
 
@@ -44,9 +50,7 @@ analyze.aov <- analyze.anova <- function(x, effsize_rules="field2013", ...) {
 
   # Processing
   # -------------
-  # if(!"data.frame" %in% class(x)){
-  #   x <- x)
-  # }
+
 
   all_values <- x %>%
     broom::tidy() %>%

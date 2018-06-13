@@ -31,8 +31,11 @@
 #' plot(results)
 #'
 #'
-#'
 #' fit <- rstanarm::stan_glmer(Sepal.Length ~ Sepal.Width + (1|Species), data=iris)
+#' results <- analyze(fit)
+#' summary(results)
+#'
+#' fit <- rstanarm::stan_glmer(Sex ~ Adjusting, data=psycho::affective, family="binomial")
 #' results <- analyze(fit)
 #' summary(results)
 #' }

@@ -4,24 +4,26 @@
 \alias{interpret_odds}
 \title{Omega Squared Interpretation}
 \usage{
-interpret_odds(x, log = TRUE, rules = "field2013")
+interpret_odds(x, log = TRUE, rules = "chen2010")
 }
 \arguments{
-\item{x}{Omega Squared.}
+\item{x}{Odds ratio.}
 
-\item{rules}{Can be "field2013" (default), or a custom list.}
+\item{log}{Are these log odds ratio?}
+
+\item{rules}{Can be "chen2010" (default), or a custom list.}
 }
 \description{
 Return the interpretation of Omegas Squared.
 }
 \examples{
 library(psycho)
-interpret_odds(x=0.05)
+interpret_odds(x=2)
 
 }
 \references{
 \itemize{
- \item{Field, A (2013) Discovering statistics using IBM SPSS Statistics. Fourth Edition. Sage:London.}
+ \item{Chen, H., Cohen, P., & Chen, S. (2010). How big is a big odds ratio? Interpreting the magnitudes of odds ratios in epidemiological studies. Communications in Statistics—Simulation and Computation®, 39(4), 860-864.}
  }
 }
 \seealso{
