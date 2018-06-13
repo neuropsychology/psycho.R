@@ -21,6 +21,11 @@ format_digit <- function(x, digits = 2, null_treshold = 0.001, inf_treshold = 9e
 #' @keywords internal
 .format_digit <- function(x, digits = 2, null_treshold = 0.001, inf_treshold = 9e+8) {
 
+  # if x is NA
+  if (is.na(x)) {
+    return("NA")
+  }
+
   # if x is inf
   if (x > inf_treshold) {
     return("Inf.")

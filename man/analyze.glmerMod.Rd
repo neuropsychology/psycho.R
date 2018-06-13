@@ -4,10 +4,14 @@
 \alias{analyze.glmerMod}
 \title{Analyze glmerMod objects.}
 \usage{
-\method{analyze}{glmerMod}(x, ...)
+\method{analyze}{glmerMod}(x, CI = 95, effsize_rules = "chen2010", ...)
 }
 \arguments{
 \item{x}{merModLmerTest object.}
+
+\item{CI}{Bootsrapped confidence interval bounds (slow). Set to NULL turn off their computation.}
+
+\item{effsize_rules}{Grid for effect size interpretation. See \link[=interpret_odds]{interpret_odds}.}
 
 \item{...}{Arguments passed to or from other methods.}
 }

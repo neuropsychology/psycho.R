@@ -19,14 +19,14 @@
 #'  \item{Chen, H., Cohen, P., & Chen, S. (2010). How big is a big odds ratio? Interpreting the magnitudes of odds ratios in epidemiological studies. Communications in Statistics—Simulation and Computation®, 39(4), 860-864.}
 #'  }
 #' @export
-interpret_odds <- function(x, log=TRUE, rules="chen2010") {
+interpret_odds <- function(x, log=FALSE, rules="chen2010") {
   interpretation <- sapply(x, .interpret_odds, log=log, rules = rules, return_rules = FALSE)
   return(interpretation)
 }
 
 
 #' @keywords internal
-.interpret_odds <- function(x, log=TRUE, rules="chen2010", return_rules=TRUE) {
+.interpret_odds <- function(x, log=FALSE, rules="chen2010", return_rules=TRUE) {
 
   if(log == TRUE){
     x <- exp(abs(x))

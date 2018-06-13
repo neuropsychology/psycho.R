@@ -4,7 +4,7 @@
 \alias{interpret_odds}
 \title{Omega Squared Interpretation}
 \usage{
-interpret_odds(x, log = TRUE, rules = "chen2010")
+interpret_odds(x, log = FALSE, rules = "chen2010")
 }
 \arguments{
 \item{x}{Odds ratio.}
