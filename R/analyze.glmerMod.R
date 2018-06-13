@@ -63,11 +63,16 @@ analyze.glmerMod <- function(x, CI=95, effsize_rules="chen2010", ...) {
   summary$SE <- summary$`Std..Error`
   summary$z <- summary$`z.value`
   summary$p <- summary$`Pr...z..`
-  summary$Effect_Size <- c(NA, interpret_odds(tail(summary$Coef, -1), log=TRUE, rules=effsize_rules))
+
+  # standardized coefficients
+  stdz <- as.data.frame(MuMIn::std.coef(fit, partial.sd = FALSE))
+  summary$Coef.std <- stdz$Estimate
+  summary$SE.std <- stdz$`Std. Error`
+  summary$Effect_Size <- c(NA, interpret_odds(tail(summary$Coef.std, -1), log=TRUE, rules=effsize_rules))
 
 
   # Summary
-  summary <- dplyr::select_(summary, "Coef", "SE", "z", "p", "Effect_Size")
+  summary <- dplyr::select_(summary, "Coef", "SE", "z", "p", "Coef.std", "SE.std", "Effect_Size")
 
 
   if (!is.null(CI)) {
@@ -138,7 +143,11 @@ analyze.glmerMod <- function(x, CI=95, effsize_rules="chen2010", ...) {
         format_p(summary[varname, "p"]),
         ") and can be considered as ",
         tolower(summary[varname, "Effect_Size"]),
-        "."
+        " (std. beta = ",
+        format_digit(summary[varname, "Coef.std"], 2),
+        ", std. SE = ",
+        format_digit(summary[varname, "SE.std"], 2),
+        ")."
       )
     }
 

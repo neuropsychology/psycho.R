@@ -69,8 +69,7 @@ analyze.lmerModLmerTest <- function(x, CI=95, effsize_rules="cohen1988", ...) {
   summary$Effect_Size <- c(NA, interpret_d(tail(summary$Coef.std, -1), rules = effsize_rules))
 
   summary <- dplyr::select_(
-    summary, "Variable", "Coef", "SE", "t", "df", "Coef.std", "SE.std",
-    "p", "Effect_Size"
+    summary, "Variable", "Coef", "SE", "t", "df", "p", "Coef.std", "SE.std", "Effect_Size"
   )
 
   if (!is.null(CI)) {
