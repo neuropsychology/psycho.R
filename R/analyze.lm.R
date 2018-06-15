@@ -39,35 +39,35 @@ analyze.lm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
 
   # Summary
   # -------------
-  fitsum <- data.frame(summary(fit)$coefficients)
+  summary <- data.frame(summary(fit)$coefficients)
 
-  fitsum$Variable <- rownames(fitsum)
-  fitsum$Coef <- fitsum$Estimate
-  fitsum$SE <- fitsum$`Std..Error`
-  fitsum$t <- fitsum$`t.value`
-  fitsum$p <- fitsum$`Pr...t..`
+  summary$Variable <- rownames(summary)
+  summary$Coef <- summary$Estimate
+  summary$SE <- summary$`Std..Error`
+  summary$t <- summary$`t.value`
+  summary$p <- summary$`Pr...t..`
 
   # standardized coefficients
   stdz <- as.data.frame(MuMIn::std.coef(fit, partial.sd = FALSE))
-  fitsum$Coef.std <- stdz$Estimate
-  fitsum$SE.std <- stdz$`Std. Error`
-  fitsum$Effect_Size <- interpret_d(fitsum$Coef.std, rules = effsize_rules)
+  summary$Coef.std <- stdz$Estimate
+  summary$SE.std <- stdz$`Std. Error`
+  summary$Effect_Size <- interpret_d(summary$Coef.std, rules = effsize_rules)
 
-  fitsum <- dplyr::select_(
-    fitsum, "Variable", "Coef", "SE", "t", "Coef.std", "SE.std",
+  summary <- dplyr::select_(
+    summary, "Variable", "Coef", "SE", "t", "Coef.std", "SE.std",
     "p", "Effect_Size"
   )
 
   if (!is.null(CI)) {
     CI_values <- confint(fit, level = CI / 100)
-    CI_values <- tail(CI_values, n = length(rownames(fitsum)))
-    fitsum$CI_lower <- CI_values[, 1]
-    fitsum$CI_higher <- CI_values[, 2]
+    CI_values <- tail(CI_values, n = length(rownames(summary)))
+    summary$CI_lower <- CI_values[, 1]
+    summary$CI_higher <- CI_values[, 2]
   }
 
 
   # Varnames
-  varnames <- rownames(fitsum)
+  varnames <- rownames(summary)
 
 
 
@@ -81,7 +81,7 @@ analyze.lm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
 
   # Loop over all variables
   for (varname in varnames) {
-    if (fitsum[varname, "p"] < .1) {
+    if (summary[varname, "p"] < .1) {
       significance <- " "
     } else {
       significance <- " not "
@@ -91,9 +91,9 @@ analyze.lm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
       CI_text <- paste0(
         ", ",
         CI, "% CI [",
-        format_digit(fitsum[varname, "CI_lower"], null_treshold = 0.0001),
+        format_digit(summary[varname, "CI_lower"], null_treshold = 0.0001),
         ", ",
-        format_digit(fitsum[varname, "CI_higher"], null_treshold = 0.0001),
+        format_digit(summary[varname, "CI_higher"], null_treshold = 0.0001),
         "]"
       )
     } else {
@@ -108,41 +108,41 @@ analyze.lm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
       " is",
       significance,
       "significant (beta = ",
-      format_digit(fitsum[varname, "Coef"], 2), ", SE = ",
-      format_digit(fitsum[varname, "SE"], 2),
+      format_digit(summary[varname, "Coef"], 2), ", SE = ",
+      format_digit(summary[varname, "SE"], 2),
       CI_text,
       ", t = ",
-      format_digit(fitsum[varname, "t"], 2), ", p ",
-      format_p(fitsum[varname, "p"]),
+      format_digit(summary[varname, "t"], 2), ", p ",
+      format_p(summary[varname, "p"]),
       ") and can be considered as ",
-      tolower(fitsum[varname, "Effect_Size"]),
+      tolower(summary[varname, "Effect_Size"]),
       " (std. beta = ",
-      format_digit(fitsum[varname, "Coef.std"], 2),
+      format_digit(summary[varname, "Coef.std"], 2),
       ", std. SE = ",
-      format_digit(fitsum[varname, "SE.std"], 2), ")."
+      format_digit(summary[varname, "SE.std"], 2), ")."
     )
 
     if (varname == "(Intercept)") {
       text <- paste0(
         "The model's intercept is at ",
-        format_digit(fitsum[varname, "Coef"], 2),
+        format_digit(summary[varname, "Coef"], 2),
         " (SE = ",
-        format_digit(fitsum[varname, "SE"], 2),
+        format_digit(summary[varname, "SE"], 2),
         CI_text,
         "). Within this model:"
       )
     }
 
     values$effects[[varname]] <- list(
-      Coef = fitsum[varname, "Coef"],
-      SE = fitsum[varname, "SE"],
-      CI_lower = fitsum[varname, "CI_lower"],
-      CI_higher = fitsum[varname, "CI_higher"],
-      t = fitsum[varname, "t"],
-      Coef.std = fitsum[varname, "Coef.std"],
-      SE.std = fitsum[varname, "SE.std"],
-      p = fitsum[varname, "p"],
-      Effect_Size = fitsum[varname, "Effect_Size"],
+      Coef = summary[varname, "Coef"],
+      SE = summary[varname, "SE"],
+      CI_lower = summary[varname, "CI_lower"],
+      CI_higher = summary[varname, "CI_higher"],
+      t = summary[varname, "t"],
+      Coef.std = summary[varname, "Coef.std"],
+      SE.std = summary[varname, "SE.std"],
+      p = summary[varname, "p"],
+      Effect_Size = summary[varname, "Effect_Size"],
       Text = text
     )
   }
@@ -177,7 +177,7 @@ analyze.lm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
   # -------------
   plot <- "Not available yet"
 
-  output <- list(text = text, plot = plot, summary = fitsum, values = values)
+  output <- list(text = text, plot = plot, summary = summary, values = values)
 
   class(output) <- c("psychobject", "list")
   return(output)
