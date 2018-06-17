@@ -39,7 +39,7 @@ library(rstanarm)
 data <- attitude
 fit <- rstanarm::stan_glm(rating ~ advance + privileges, data=data)
 
-results <- analyze(fit, effsize=TRUE)
+results <- analyze(fit)
 summary(results)
 print(results)
 plot(results)

@@ -23,6 +23,8 @@
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
+#' @references Nakagawa, S., & Schielzeth, H. (2013). A general and simple method for obtaining R2 from generalized linear mixed‐effects models. Methods in Ecology and Evolution, 4(2), 133-142.
+#'
 #' @importFrom MuMIn r.squaredGLMM
 #' @importFrom MuMIn std.coef
 #' @importFrom stringr str_squish
@@ -65,14 +67,12 @@ analyze.glmerMod <- function(x, CI=95, effsize_rules="chen2010", ...) {
   summary$p <- summary$`Pr...z..`
 
   # standardized coefficients
-  stdz <- as.data.frame(MuMIn::std.coef(fit, partial.sd = FALSE))
-  summary$Coef.std <- stdz$Estimate
-  summary$SE.std <- stdz$`Std. Error`
+  summary <- cbind(summary, standardize(fit, method="agresti"))
   summary$Effect_Size <- c(NA, interpret_odds(tail(summary$Coef.std, -1), log=TRUE, rules=effsize_rules))
 
 
   # Summary
-  summary <- dplyr::select_(summary, "Coef", "SE", "z", "p", "Coef.std", "SE.std", "Effect_Size")
+  summary <- dplyr::select_(summary, "Variable", "Coef", "SE", "z", "p", "Coef.std", "SE.std", "Effect_Size")
 
 
   if (!is.null(CI)) {
@@ -170,7 +170,7 @@ analyze.glmerMod <- function(x, CI=95, effsize_rules="chen2010", ...) {
     outcome,
     " (formula = ",
     stringr::str_squish(format(fit@call$formula)),
-    ") successfully converged and explained ",
+    ") explains ",
     format_digit(R2c * 100, 2), "% of the variance of the",
     " endogen (the conditional R2). ",
     "The variance explained by the fixed effects was of ",

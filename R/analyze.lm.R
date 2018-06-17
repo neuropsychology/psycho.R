@@ -48,9 +48,7 @@ analyze.lm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
   summary$p <- summary$`Pr...t..`
 
   # standardized coefficients
-  stdz <- as.data.frame(MuMIn::std.coef(fit, partial.sd = FALSE))
-  summary$Coef.std <- stdz$Estimate
-  summary$SE.std <- stdz$`Std. Error`
+  summary <- cbind(summary, standardize(fit, partial.sd = TRUE))
   summary$Effect_Size <- interpret_d(summary$Coef.std, rules = effsize_rules)
 
   summary <- dplyr::select_(
@@ -156,10 +154,9 @@ analyze.lm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
     outcome,
     " (formula = ",
     stringr::str_squish(paste0(format(stats::formula(fit)), collapse = "")),
-    ") successfully converged",
-    " and explained ",
+    ") explains ",
     format_digit(R2 * 100, 2),
-    "% of the variance of the endogen (adjusted R2 = ",
+    "% of the variance of the endogen (adj. R2 = ",
     format_digit(R2adj * 100, 2),
     "). ",
     values$effects[["(Intercept)"]]$Text

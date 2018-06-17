@@ -4,12 +4,14 @@
 \alias{interpret_odds}
 \title{Omega Squared Interpretation}
 \usage{
-interpret_odds(x, log = FALSE, rules = "chen2010")
+interpret_odds(x, log = FALSE, direction = FALSE, rules = "chen2010")
 }
 \arguments{
 \item{x}{Odds ratio.}
 
 \item{log}{Are these log odds ratio?}
+
+\item{direction}{Return direction.}
 
 \item{rules}{Can be "chen2010" (default), or a custom list.}
 }

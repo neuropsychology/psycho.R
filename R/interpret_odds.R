@@ -4,6 +4,7 @@
 #'
 #' @param x Odds ratio.
 #' @param log Are these log odds ratio?
+#' @param direction Return direction.
 #' @param rules Can be "chen2010" (default), or a custom list.
 #'
 #' @examples
@@ -32,7 +33,7 @@ interpret_odds <- function(x, log=FALSE, direction=FALSE, rules="chen2010") {
 #'
 #' Interpret odds with a set of rules.
 #'
-#' @param x Odds ratio.
+#' @param posterior Posterior distribution of odds ratio.
 #' @param log Are these log odds ratio?
 #' @param rules Can be "chen2010" (default), or a custom list.
 #'

@@ -32,7 +32,7 @@
 
 ## Goal
 
-The main goal of the `psycho` package is to provide tools for psychologists, neuropsychologists and neuroscientists, to facilitate and speed up the time spent on data analysis. Implementing best practices, it formats the output of statistical methods to directly paste them into a manuscript, ensuring standardization of statistical reporting.
+The main goal of the `psycho` package is to provide tools for psychologists, neuropsychologists and neuroscientists, to facilitate and speed up the time spent on data analysis. It aims at supporting best practices and tools to format the output of statistical methods to directly paste them into a manuscript, ensuring standardization of statistical reporting.
 
 
 ## Contribute

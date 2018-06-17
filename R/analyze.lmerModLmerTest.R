@@ -20,6 +20,8 @@
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
+#' @references Nakagawa, S., & Schielzeth, H. (2013). A general and simple method for obtaining R2 from generalized linear mixed‐effects models. Methods in Ecology and Evolution, 4(2), 133-142.
+#'
 #' @importFrom MuMIn r.squaredGLMM
 #' @importFrom MuMIn std.coef
 #' @importFrom stringr str_squish
@@ -63,9 +65,7 @@ analyze.lmerModLmerTest <- function(x, CI=95, effsize_rules="cohen1988", ...) {
   summary$p <- summary$`Pr...t..`
 
   # standardized coefficients
-  stdz <- as.data.frame(MuMIn::std.coef(fit, partial.sd = FALSE))
-  summary$Coef.std <- stdz$Estimate
-  summary$SE.std <- stdz$`Std. Error`
+  summary <- cbind(summary, standardize(fit, partial.sd = TRUE))
   summary$Effect_Size <- c(NA, interpret_d(tail(summary$Coef.std, -1), rules = effsize_rules))
 
   summary <- dplyr::select_(
@@ -178,7 +178,7 @@ analyze.lmerModLmerTest <- function(x, CI=95, effsize_rules="cohen1988", ...) {
     outcome,
     " (formula = ",
     stringr::str_squish(paste0(format(eval(fit@call$formula)), collapse = "")),
-    ") successfully converged and explained ",
+    ") explains ",
     format_digit(R2c * 100, 2),
     "% of the variance of the endogen (the conditional R2). ",
     "The variance explained by the fixed effects was of ",

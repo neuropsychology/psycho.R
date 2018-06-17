@@ -2,41 +2,24 @@
 % Please edit documentation in R/standardize.R
 \name{standardize}
 \alias{standardize}
-\title{Standardize (scale and reduce) numeric variables.}
+\title{Standardize.}
 \usage{
-standardize(df, subset = NULL, except = NULL)
+standardize(x, ...)
 }
 \arguments{
-\item{df}{Dataframe.}
+\item{x}{Object.}
 
-\item{subset}{Character or list of characters of column names to be
-standardized.}
-
-\item{except}{Character or list of characters of column names to be excluded
-from standardization.}
-}
-\value{
-Dataframe.
+\item{...}{Arguments passed to or from other methods.}
 }
 \description{
-Select numeric variables and standardize (Z-score, "normalize") them.
-}
-\examples{
-df <- data.frame(
-  Participant = as.factor(rep(1:50,each=2)),
-  Condition = base::rep_len(c("A", "B"), 100),
-  V1 = rnorm(100, 30, .2),
-  V2 = runif(100, 3, 5),
-  V3 = rnorm(100, 100, 10)
-  )
-
-dfZ <- standardize(df)
-dfZ <- standardize(df, except="V3")
-dfZ <- standardize(df, except=c("V1", "V2"))
-dfZ <- standardize(df, subset="V3")
-dfZ <- standardize(df, subset=c("V1", "V2"))
-
-
+Standardize objects. See the documentation for your object's class:
+\itemize{
+\item{\link[=standardize.numeric]{standardize.numeric}}
+\item{\link[=standardize.data.frame]{standardize.data.frame}}
+\item{\link[=standardize.stanreg]{standardize.stanreg}}
+\item{\link[=standardize.lm]{standardize.lm}}
+\item{\link[=standardize.glm]{standardize.glm}}
+ }
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
