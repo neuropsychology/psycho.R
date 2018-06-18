@@ -3,7 +3,7 @@ layout: post
 title: "Copy/paste t-tests Directly to Manuscripts"
 author: Dominique Makowski
 author_web: https://dominiquemakowski.github.io/
-date: 2018-05-01
+date: 2018-06-19
 summary: APA formatting for t-tests.
 ---
 
