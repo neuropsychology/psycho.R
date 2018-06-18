@@ -4,10 +4,12 @@
 \alias{model_to_priors}
 \title{Model to Prior.}
 \usage{
-model_to_priors(fit)
+model_to_priors(fit, autoscale = FALSE)
 }
 \arguments{
 \item{fit}{A stanreg model.}
+
+\item{autoscale}{Set autoscale.}
 }
 \description{
 Convert a Bayesian model's results to priors.
