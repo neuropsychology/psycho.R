@@ -43,15 +43,14 @@ analyze.glmerMod <- function(x, CI=95, effsize_rules="chen2010", ...) {
   predictors <- tail(predictors, -1)
 
   R2 <- tryCatch({
-    suppressMessages(MuMIn::r.squaredGLMM(fit))
+    get_R2(fit)
   }, error = function(e) {
     warning("Couldn't compute R2. Might be caused by the presence of missing data.")
-    R2 <- c(NA, NA)
-    names(R2) <- c("R2m", "R2c")
+    R2 <- list(R2m = NA, R2c = NA)
     return(R2)
   })
-  R2m <- R2["R2m"]
-  R2c <- R2["R2c"]
+  R2m <- R2$R2m
+  R2c <- R2$R2c
 
 
 

@@ -41,7 +41,7 @@ analyze.glm <- function(x, CI=95, effsize_rules="chen2010", ...) {
   predictors <- tail(predictors, -1)
 
   # R2 <- tjur_D(fit)
-  R2 <- MuMIn::r.squaredGLMM(fit)[1]
+  R2 <- get_R2(fit)
 
   # Summary
   # -------------

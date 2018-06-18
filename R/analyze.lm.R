@@ -34,8 +34,9 @@ analyze.lm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
   outcome <- predictors[[1]]
   predictors <- tail(predictors, -1)
 
-  R2 <- summary(fit)$r.squared
-  R2adj <- summary(fit)$adj.r.squared
+  R2 <- get_R2(fit)
+  R2adj <- R2$R2.adj
+  R2 <- R2$R2
 
   # Summary
   # -------------

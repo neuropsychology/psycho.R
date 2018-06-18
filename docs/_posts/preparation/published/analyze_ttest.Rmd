@@ -1,13 +1,13 @@
 ---
-title: "Copy/paste formated t-tests directly to manuscripts"
+title: "Copy/paste formatted t-tests directly to manuscripts"
 layout: post
 output:
-  html_document:
-    df_print: paged
-    toc: yes
   md_document:
     toc: yes
     variant: markdown_github
+  html_document:
+    df_print: paged
+    toc: yes
 author: "Dominique Makowski"
 date: "`r Sys.Date()`"
 editor_options: 
@@ -42,6 +42,8 @@ results <- t.test(df$Age ~ df$Sex)  # Perform a simple t-test
 
 
 # APA formatted output
+
+You simply run the `analyze()` function on the t-test object.
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 psycho::analyze(results)
@@ -85,7 +87,7 @@ t.test(df$Adjusting ~ df$Sex) %>%
 
 # Contribute
 
-Of course, these reporting standards should change, depending on new expert recommandations or official guidelines. **The goal of this package is to flexibly adapt to new changes and accompany the evolution of good practices**. Therefore, if you have any advices, opinions or ideas, we encourage you to let us know by opening an [issue](https://github.com/neuropsychology/psycho.R/issues) or, even better, to try to implement changes yourself by [contributing](https://github.com/neuropsychology/psycho.R/blob/master/.github/CONTRIBUTING.md) to the code. 
+Of course, these reporting standards should change, depending on new expert recommandations or official guidelines. **The goal of this package is to flexibly adapt to new changes and accompany the evolution of best practices**. Therefore, if you have any advices, opinions or ideas, we encourage you to let us know by opening an [issue](https://github.com/neuropsychology/psycho.R/issues) or, even better, to try to implement changes yourself by [contributing](https://github.com/neuropsychology/psycho.R/blob/master/.github/CONTRIBUTING.md) to the code. 
 
 
 # Credits

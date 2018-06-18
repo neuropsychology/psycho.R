@@ -38,9 +38,9 @@ analyze.lmerModLmerTest <- function(x, CI=95, effsize_rules="cohen1988", ...) {
   outcome <- predictors[[1]]
   predictors <- tail(predictors, -1)
 
-  R2 <- MuMIn::r.squaredGLMM(fit)
-  R2m <- R2["R2m"]
-  R2c <- R2["R2c"]
+  R2 <- get_R2(fit)
+  R2m <- R2$R2m
+  R2c <- R2$R2c
 
 
   # TODO: Bootstrapped p values

@@ -67,8 +67,8 @@ model_to_priors <- function(fit, autoscale=FALSE) {
     prior_intercept$sd,
     autoscale = autoscale
   )
-  prior <- .format_priors(priors, autoscale=autoscale)
-  prior_aux <- .format_priors(prior_aux, autoscale=autoscale)
+  prior <- .format_priors(priors, autoscale = autoscale)
+  prior_aux <- .format_priors(prior_aux, autoscale = autoscale)
 
   return(list(prior_intercept = prior_intercept, prior = prior, priox_aux = prior_aux))
 }

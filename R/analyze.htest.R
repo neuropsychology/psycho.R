@@ -18,7 +18,7 @@
 #' x <- t.test(df$Tolerating, mu=2)
 #' x <- cor.test(df$Tolerating, df$Adjusting)
 #'
-#' results <- analyze(x, data=df)
+#' results <- analyze(x)
 #' summary(results)
 #' print(results)
 #'
@@ -69,14 +69,14 @@ analyze.htest <- function(x, effsize_rules="cohen1988", ...) {
       ")."
     )
   } else if (grepl("t-test", values$method)) {
-
-    if(names(x$null.value) == "mean"){
-      values$names <- paste0(values$names, " and mu = ", x$null.value)
+    if (names(x$null.value) == "mean") {
       means <- paste0(
-        names(values$effect), " = ",
-        format_digit(values$effect)
+        " (mean = ",
+        format_digit(values$effect),
+        ")"
       )
-    } else{
+      vars <- paste0(values$names, means, " and mu = ", x$null.value)
+    } else {
       means <- paste0(
         c(
           paste0(
@@ -87,11 +87,12 @@ analyze.htest <- function(x, effsize_rules="cohen1988", ...) {
             "difference = ",
             format_digit(values$effect[1] - values$effect[2])
           )
-
         ),
         collapse = ", "
       )
+      vars <- paste0(values$names, " (", means, ")")
     }
+
 
 
 
@@ -103,10 +104,8 @@ analyze.htest <- function(x, effsize_rules="cohen1988", ...) {
       values$method,
       " suggests that the difference ",
       ifelse(grepl(" by ", values$names), "of ", "between "),
-      values$names,
-      " (",
-      means,
-      ") is ",
+      vars,
+      " is ",
       values$signif,
       " (t(",
       format_digit(values$df),

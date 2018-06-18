@@ -71,7 +71,7 @@ get_R2.lm <- function(fit, ...) {
 #' @export
 get_R2.glm <- function(fit, method="nakagawa", ...) {
   if (method == "nakagawa") {
-    R2 <- R2_nakagawa(fit)$R2m
+    R2 <- as.numeric(R2_nakagawa(fit)$R2m)
   } else if (method == "tjur") {
     R2 <- R2_tjur(fit)
   } else {
@@ -134,6 +134,31 @@ get_R2.stanreg <- function(fit, silent=FALSE, ...) {
 
 
 
+#' R2 and adjusted R2 for GLMMs.
+#'
+#' R2 and adjusted R2 for GLMMs.
+#'
+#' @param fit A GLMM.
+#' @param ... Arguments passed to or from other methods.
+#'
+#' @examples
+#' \dontrun{
+#' library(psycho)
+#'
+#' fit <- lmerTest::lmer(Tolerating ~ Adjusting + (1|Sex), data=psycho::affective)
+#' fit <- lme4::glmer(Sex ~ Adjusting + (1|Salary), data=na.omit(psycho::affective), family="binomial")
+#'
+#' get_R2(fit)
+#'
+#' }
+#'
+#' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
+#' @export
+get_R2.merMod <- function(fit, ...) {
+  out <- suppressMessages(R2_nakagawa(fit))
+  return(out)
+}
+
 
 
 
@@ -164,8 +189,8 @@ get_R2.stanreg <- function(fit, silent=FALSE, ...) {
 R2_nakagawa <- function(fit) {
   out <- MuMIn::r.squaredGLMM(fit)
   out <- list(
-    R2m = out[1],
-    R2c = out[2]
+    R2m = as.numeric(out[1]),
+    R2c = as.numeric(out[2])
   )
   return(out)
 }

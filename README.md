@@ -43,7 +43,7 @@ The main goal of the `psycho` package is to provide tools for psychologists, neu
 - Want to add a feature? Correct a bug? You're more than welcome to [contribute](https://github.com/neuropsychology/psycho.R/blob/master/.github/CONTRIBUTING.md)!
 
 Don't be shy, try to code and submit a pull request (PR). Even if unperfect, we will help you to make a great PR!
-All contributors will be very graciously rewarded. One day.
+All contributors will be very graciously rewarded. Someday.
 
 ## Examples
 

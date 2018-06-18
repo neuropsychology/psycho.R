@@ -13,5 +13,4 @@ test_that("If it works.", {
   # test summary
   summa <- summary(model, round = 2)
   testthat::expect_equal(nrow(summa), 2)
-
 })

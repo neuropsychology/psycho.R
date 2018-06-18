@@ -98,10 +98,10 @@ bayes_cor.test <- function(x, y, CI=90, iterations = 10000, effsize_rules_r="coh
 
   values$effect_size <- interpret_r_posterior(posterior, rules = effsize_rules_r)
   interpretation_r <- interpret_r(values$median, strength = FALSE, rules = effsize_rules_r)
-  interpretation_bf <- interpret_bf(values$bf, direction=FALSE, rules = effsize_rules_bf)
-  if(values$bf < 1){
+  interpretation_bf <- interpret_bf(values$bf, direction = FALSE, rules = effsize_rules_bf)
+  if (values$bf < 1) {
     interpretation_bf <- paste(interpretation_bf, "in favour of an absence of a ")
-  } else{
+  } else {
     interpretation_bf <- paste(interpretation_bf, "in favour of the existence of a ")
   }
 
