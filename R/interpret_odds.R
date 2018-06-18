@@ -1,21 +1,27 @@
-#' Standardized difference (Cohen's d) interpreation.
+#' Omega Squared Interpretation
 #'
-#' Interpret d with a set of rules.
+#' Return the interpretation of Omegas Squared.
 #'
-#' @param x Standardized difference.
+#' @param x Odds ratio.
+#' @param log Are these log odds ratio?
 #' @param direction Return direction.
-#' @param rules Can be "cohen1988" (default), "sawilowsky2009", or a custom list.
+#' @param rules Can be "chen2010" (default), or a custom list.
 #'
 #' @examples
 #' library(psycho)
-#' interpret_d(-0.42)
-#' interpret_d(-0.62)
+#' interpret_odds(x=2)
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
+#' @seealso http://imaging.mrc-cbu.cam.ac.uk/statswiki/FAQ/effectSize
+#'
+#' @references
+#' \itemize{
+#'  \item{Chen, H., Cohen, P., & Chen, S. (2010). How big is a big odds ratio? Interpreting the magnitudes of odds ratios in epidemiological studies. Communications in Statistics—Simulation and Computation®, 39(4), 860-864.}
+#'  }
 #' @export
-interpret_d <- function(x, direction=FALSE, rules="cohen1988") {
-  interpretation <- sapply(x, .interpret_d, direction = direction, rules = rules, return_rules = FALSE)
+interpret_odds <- function(x, log=FALSE, direction=FALSE, rules="chen2010") {
+  interpretation <- sapply(x, .interpret_odds, log = log, direction = direction, rules = rules, return_rules = FALSE)
   return(interpretation)
 }
 
@@ -23,26 +29,26 @@ interpret_d <- function(x, direction=FALSE, rules="cohen1988") {
 
 
 
-
-
-#' Standardized difference (Cohen's d) interpreation for a posterior distribution.
+#' Odds ratio interpreation for a posterior distribution.
 #'
-#' Interpret d with a set of rules.
+#' Interpret odds with a set of rules.
 #'
-#' @param posterior Posterior distribution of standardized differences.
-#' @param rules Can be "cohen1988" (default), "sawilowsky2009", or a custom list.
+#' @param posterior Posterior distribution of odds ratio.
+#' @param log Are these log odds ratio?
+#' @param rules Can be "chen2010" (default), or a custom list.
 #'
 #' @examples
 #' library(psycho)
 #' posterior <- rnorm(1000, 0.6, 0.05)
-#' interpret_d_posterior(posterior)
-#' interpret_d_posterior(rnorm(1000, 0.1, 1))
+#' interpret_odds_posterior(posterior)
+#' interpret_odds_posterior(rnorm(1000, 0.1, 1))
+#' interpret_odds_posterior(rnorm(1000, 3, 1.5))
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-interpret_d_posterior <- function(posterior, rules="cohen1988") {
-  interpretation <- sapply(posterior, .interpret_d, rules = rules, direction = TRUE, return_rules = TRUE)
+interpret_odds_posterior <- function(posterior, log=FALSE, rules="chen2010") {
+  interpretation <- sapply(posterior, .interpret_odds, log = log, direction = TRUE, rules = rules, return_rules = TRUE)
   rules <- unlist(interpretation[, 1]$rules)
   interpretation <- as.data.frame(unlist(interpretation[1, ]))
   interpretation <- na.omit(interpretation)
@@ -122,51 +128,45 @@ interpret_d_posterior <- function(posterior, rules="cohen1988") {
 
 
 
+
+
 #' @keywords internal
-.interpret_d <- function(x, direction=FALSE, rules="cohen1988", return_rules=TRUE) {
-  if (!is.list(rules)) {
-    if (rules == "cohen1988") {
-      rules <- list(
-        "very small" = 0,
-        "small" = 0.2,
-        "medium" = 0.5,
-        "large" = 0.8
-      )
-    } else if (rules == "sawilowsky2009") {
-      rules <- list(
-        "tiny" = 0,
-        "very small" = 0.1,
-        "small" = 0.2,
-        "medium" = 0.5,
-        "large" = 0.8,
-        "very large" = 1.2,
-        "huge" = 2.0
-      )
-    } else {
-      stop("rules must be either a list or 'cohen1988' or 'sawilowsky2009'.")
-    }
-  }
-
-
+.interpret_odds <- function(x, log=FALSE, direction=FALSE, rules="chen2010", return_rules=TRUE) {
   if (x > 0) {
     d <- "positive"
   } else {
     d <- "negative"
   }
 
-  x <- (abs(x) - unlist(rules))
-  s <- names(which.min(x[x >= 0]))
+  if (log == TRUE) {
+    x <- exp(abs(x))
+  }
+
+  if (!is.list(rules)) {
+    if (rules == "chen2010") {
+      rules <- list(
+        "very small" = 0,
+        "small" = 1.68,
+        "medium" = 3.47,
+        "large" = 6.71
+      )
+    } else {
+      stop("rules must be either a list or 'field2013'.")
+    }
+  }
+
+
+  s <- (abs(x) - unlist(rules))
+  s <- names(which.min(s[s >= 0]))
   if (is.null(s)) {
     s <- NA
   }
-
 
   if (direction) {
     interpretation <- paste(s, "and", d)
   } else {
     interpretation <- s
   }
-
 
   if (return_rules) {
     return(list(interpretation = interpretation, rules = rules))

@@ -7,7 +7,6 @@
 #' @param bf Include Bayes Factor.
 #' @param rules Can be "jeffreys1961" (default), "raftery1995", or a custom list.
 #'
-#' @return The interpretation according to Jeffreys (1961).
 #'
 #' @examples
 #' library(psycho)
@@ -107,8 +106,8 @@ format_bf <- function(bf, max=100) {
     s <- paste(s, bf)
   }
   if (direction == TRUE) {
-    interpretation <- paste(s, dir)
+    s <- paste(s, dir)
   }
 
-  return(interpretation)
+  return(s)
 }

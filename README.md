@@ -32,18 +32,18 @@
 
 ## Goal
 
-The main goal of the `psycho` package is to provide tools for psychologists, neuropsychologists and neuroscientists, to facilitate and speed up the time spent on data analysis. It implements various useful functions with a special focus on the output, which becomes something readable that can be, almost directly, copied and pasted into a report or a manuscript.
+The main goal of the `psycho` package is to provide tools for psychologists, neuropsychologists and neuroscientists, to facilitate and speed up the time spent on data analysis. It aims at supporting best practices and tools to format the output of statistical methods to directly paste them into a manuscript, ensuring standardization of statistical reporting.
 
 
 ## Contribute
 
 **`psycho` is a young package in need of affection.** You can easily hop aboard the developpment of this open-source software and improve psychological science:
 
-- You need some help? You found a bug? You would like to request a new feature? Just open an [issue](https://github.com/neuropsychology/psycho.R/issues) :relaxed:
+- Need some help? Found a bug? Request a new feature? Just open an [issue](https://github.com/neuropsychology/psycho.R/issues) :relaxed:
 - Want to add a feature? Correct a bug? You're more than welcome to [contribute](https://github.com/neuropsychology/psycho.R/blob/master/.github/CONTRIBUTING.md)!
 
 Don't be shy, try to code and submit a pull request (PR). Even if unperfect, we will help you to make a great PR!
-All contributors will be very graciously rewarded. One day.
+All contributors will be very graciously rewarded. Someday.
 
 ## Examples
 
@@ -53,6 +53,7 @@ Check examples in the following vignettes:
 
 Or blog posts:
 
+- [APA Formatted Bayesian Correlation](https://neuropsychology.github.io/psycho.R/2018/06/11/bayesian_correlation.html)
 - [Fancy Plot (with Posterior Samples) for Bayesian Regressions](https://neuropsychology.github.io/psycho.R/2018/06/03/plot_bayesian_model.html)
 - [How Many Factors to Retain in Factor Analysis](https://neuropsychology.github.io/psycho.R/2018/05/24/n_factors.html)
 - [Beautiful and Powerful Correlation Tables](https://neuropsychology.github.io/psycho.R/2018/05/20/correlation.html)

@@ -12,9 +12,10 @@
 #' library(psycho)
 #'
 #' df <- psycho::affective
-
+#'
 #' x <- t.test(df$Tolerating, df$Adjusting)
 #' x <- t.test(df$Tolerating ~ df$Sex)
+#' x <- t.test(df$Tolerating, mu=2)
 #' x <- cor.test(df$Tolerating, df$Adjusting)
 #'
 #' results <- analyze(x)
@@ -44,6 +45,7 @@ analyze.htest <- function(x, effsize_rules="cohen1988", ...) {
   values$CI_format <- paste0(values$CI_level, "% CI [", format_digit(values$CI[1]), ", ", format_digit(values$CI[2]), "]")
 
 
+
   # Text
   # -------------
   if (grepl("correlation", values$method)) {
@@ -64,22 +66,36 @@ analyze.htest <- function(x, effsize_rules="cohen1988", ...) {
       values$CI_format,
       ", p ",
       format_p(values$p, stars = FALSE),
-      ")"
+      ")."
     )
   } else if (grepl("t-test", values$method)) {
-    means <- paste0(
-      c(
-        paste0(
-          names(values$effect), " = ",
-          format_digit(values$effect)
+    if (names(x$null.value) == "mean") {
+      means <- paste0(
+        " (mean = ",
+        format_digit(values$effect),
+        ")"
+      )
+      vars <- paste0(values$names, means, " and mu = ", x$null.value)
+    } else {
+      means <- paste0(
+        c(
+          paste0(
+            names(values$effect), " = ",
+            format_digit(values$effect)
+          ),
+          paste0(
+            "difference = ",
+            format_digit(values$effect[1] - values$effect[2])
+          )
         ),
-        paste0(
-          "difference = ",
-          format_digit(values$effect[1] - values$effect[2])
-        )
-      ),
-      collapse = ", "
-    )
+        collapse = ", "
+      )
+      vars <- paste0(values$names, " (", means, ")")
+    }
+
+
+
+
 
     values$effect <- values$effect[1] - values$effect[2]
 
@@ -88,10 +104,8 @@ analyze.htest <- function(x, effsize_rules="cohen1988", ...) {
       values$method,
       " suggests that the difference ",
       ifelse(grepl(" by ", values$names), "of ", "between "),
-      values$names,
-      " (",
-      means,
-      ") is ",
+      vars,
+      " is ",
       values$signif,
       " (t(",
       format_digit(values$df),
@@ -101,7 +115,7 @@ analyze.htest <- function(x, effsize_rules="cohen1988", ...) {
       values$CI_format,
       ", p ",
       format_p(values$p, stars = FALSE),
-      ")"
+      ")."
     )
   } else {
     stop(paste0("The ", values$method, " is not implemented yet."))

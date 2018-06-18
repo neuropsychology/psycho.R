@@ -25,14 +25,17 @@
 #' data <- attitude
 #' fit <- rstanarm::stan_glm(rating ~ advance + privileges, data=data)
 #'
-#' results <- analyze(fit, effsize=TRUE)
+#' results <- analyze(fit)
 #' summary(results)
 #' print(results)
 #' plot(results)
 #'
 #'
-#'
 #' fit <- rstanarm::stan_glmer(Sepal.Length ~ Sepal.Width + (1|Species), data=iris)
+#' results <- analyze(fit)
+#' summary(results)
+#'
+#' fit <- rstanarm::stan_glmer(Sex ~ Adjusting, data=psycho::affective, family="binomial")
 #' results <- analyze(fit)
 #' summary(results)
 #' }
@@ -89,25 +92,17 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
 
   # R2 ----------------------------------------------------------------------
 
-
-  if ("R2" %in% names(posteriors)) {
-    varnames <- c(varnames, "R2")
+  R2 <- get_R2(fit, silent = TRUE)
+  if (is.list(R2)) {
+    posteriors$R2 <- R2$R2_posterior
+    R2.adj <- R2$R2.adj
+    if (!"R2" %in% varnames) {
+      varnames <- c("R2", varnames)
+    }
     R2 <- TRUE
   } else {
-    tryCatch({
-      posteriors$R2 <- rstanarm::bayes_R2(fit)
-      R2 <- TRUE
-      varnames <- c(varnames, "R2")
-    }, error = function(e) {
-      R2 <- FALSE
-    })
+    R2 <- FALSE
   }
-
-  adj_rsquared <- tryCatch({
-    suppressWarnings(bayes_adj_R2(fit))
-  }, error = function(e) {
-    NULL
-  })
 
   # Random effect info --------------------------------------------
   if (is.mixed(fit)) {
@@ -121,7 +116,7 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
 
   # Standardized posteriors --------------------------------------------
   if (fit$family$family == "gaussian") {
-    posteriors_std <- get_std_posteriors(fit)
+    posteriors_std <- standardize(fit)
   } else {
     posteriors_std <- NA
     effsize <- FALSE
@@ -136,7 +131,7 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
       values$effects[[varname]] <- .process_R2(varname,
         posteriors,
         info_priors,
-        adj_rsquared = adj_rsquared,
+        R2.adj = R2.adj,
         CI = CI,
         effsize = effsize
       )
@@ -182,23 +177,21 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
 
   # Text --------------------------------------------------------------------
   # -------------------------------------------------------------------------
-  alrogithm <-
-
-    # Model
-    info <- paste0(
-      "We fitted a ",
-      ifelse(fit$algorithm == "sampling", "Markov Chain Monte Carlo", fit$algorithm),
-      " ",
-      fit$family$family,
-      " (link = ",
-      fit$family$link,
-      ") model (",
-      computations,
-      ") to predict ",
-      outcome,
-      " (formula = ", stringr::str_squish(paste0(format(fit$formula), collapse = "")),
-      "). The model's priors were set as follows: "
-    )
+  # Model
+  info <- paste0(
+    "We fitted a ",
+    ifelse(fit$algorithm == "sampling", "Markov Chain Monte Carlo", fit$algorithm),
+    " ",
+    fit$family$family,
+    " (link = ",
+    fit$family$link,
+    ") model (",
+    computations,
+    ") to predict ",
+    outcome,
+    " (formula = ", stringr::str_squish(paste0(format(fit$formula), collapse = "")),
+    "). The model's priors were set as follows: "
+  )
 
   # Priors
   text_priors <- rstanarm::prior_summary(fit)
@@ -306,104 +299,11 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
 
 
 
-#' Compute standardized posteriors.
-#'
-#' Compute standardized posteriors from which to get standardized coefficients.
-#'
-#' @param fit A stanreg model.
-#' @param method "posterior" (default, based on estimated SD) or "sample" (based on the sample SD).
-#'
-#' @examples
-#' \dontrun{
-#' library(psycho)
-#' library(rstanarm)
-#'
-#' data <- attitude
-#' fit <- rstanarm::stan_glm(rating ~ advance + privileges, data=data)
-#'
-#' posteriors <- get_std_posteriors(fit)
-#'
-#' }
-#'
-#' @author \href{https://github.com/jgabry}{Jonah Gabry}, \href{https://github.com/bgoodri}{bgoodri}
-#'
-#' @export
-get_std_posteriors <- function(fit, method="posterior") {
-  # See https://github.com/stan-dev/rstanarm/issues/298
-
-  if (method == "sample") {
-    # By jgabry
-    predictors <- all.vars(as.formula(fit$formula))
-    outcome <- predictors[[1]]
-    X <- as.matrix(model.matrix(fit)[, -1]) # -1 to drop column of 1s for intercept
-    sd_X_over_sd_y <- apply(X, 2, sd) / sd(fit$data[[outcome]])
-    beta <- as.matrix(fit, pars = colnames(X)) # posterior distribution of regression coefficients
-    posteriors_std <- sweep(beta, 2, sd_X_over_sd_y, "*") # multiply each row of b by sd_X_over_sd_y
-  } else {
-    # By bgoordi
-    X <- model.matrix(fit)
-    sd_X <- apply(X, MARGIN = 2, FUN = sd)[-1]
-    sd_Y <- apply(posterior_predict(fit), MARGIN = 1, FUN = sd)
-    beta <- as.matrix(fit)[, 2:ncol(X), drop = FALSE]
-    posteriors_std <- sweep(
-      sweep(beta, MARGIN = 2, STATS = sd_X, FUN = `*`),
-      MARGIN = 1, STATS = sd_Y, FUN = `/`
-    )
-  }
-
-  return(posteriors_std)
-}
 
 
 
 
-#' Compute LOO-adjusted R2.
-#'
-#' Compute LOO-adjusted R2.
-#'
-#' @param fit A stanreg model.
-#'
-#' @examples
-#' \dontrun{
-#' library(psycho)
-#' library(rstanarm)
-#'
-#' data <- attitude
-#' fit <- rstanarm::stan_glm(rating ~ advance + privileges, data=data)
-#'
-#' bayes_adj_R2(fit)
-#'
-#' }
-#'
-#' @author \href{https://github.com/strengejacke}{Daniel Luedecke}
-#'
-#' @import rstantools
-#'
-#' @export
-bayes_adj_R2 <- function(fit) {
-  predictors <- all.vars(as.formula(fit$formula))
-  y <- fit$data[[predictors[[1]]]]
-  ypred <- rstantools::posterior_linpred(fit)
-  ll <- rstantools::log_lik(fit)
 
-  nsamples <- 0
-  nchains <- length(fit$stanfit@stan_args)
-  for (chain in fit$stanfit@stan_args) {
-    nsamples <- nsamples + (chain$iter - chain$warmup)
-  }
-
-
-  r_eff <- loo::relative_eff(exp(ll),
-    chain_id = rep(1:nchains, each = nsamples / nchains)
-  )
-
-  psis_object <- loo::psis(log_ratios = -ll, r_eff = r_eff)
-  ypredloo <- loo::E_loo(ypred, psis_object, log_ratios = -ll)$value
-  eloo <- ypredloo - y
-
-  adj_r_squared <- 1 - stats::var(eloo) / stats::var(y)
-  return(adj_r_squared)
-}
 
 
 
@@ -449,7 +349,7 @@ bayes_adj_R2 <- function(fit) {
 
 
 #' @keywords internal
-.process_R2 <- function(varname, posteriors, info_priors, adj_rsquared=NULL, CI=90, effsize=FALSE) {
+.process_R2 <- function(varname, posteriors, info_priors, R2.adj=NULL, CI=90, effsize=FALSE) {
   values <- .get_info_priors(varname, info_priors)
   posterior <- posteriors[, varname]
 
@@ -464,7 +364,7 @@ bayes_adj_R2 <- function(fit) {
   values$MPE <- NA
   values$MPE_values <- NA
   values$overlap <- NA
-  values$adjusted_r_squared <- adj_rsquared
+  values$adjusted_r_squared <- R2.adj
 
   # Text
   values$text <- paste0(
@@ -481,7 +381,7 @@ bayes_adj_R2 <- function(fit) {
     "]"
   )
 
-  if (is.null(adj_rsquared) | is.na(adj_rsquared)) {
+  if (is.null(R2.adj) | is.na(R2.adj)) {
     values$text <- paste0(
       values$text,
       ")."
@@ -489,8 +389,8 @@ bayes_adj_R2 <- function(fit) {
   } else {
     values$text <- paste0(
       values$text,
-      ", Adj. R2 = ",
-      format_digit(adj_rsquared),
+      ", adj. R2 = ",
+      format_digit(R2.adj),
       ")."
     )
   }

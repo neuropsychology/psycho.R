@@ -90,138 +90,25 @@ knitr::include_graphics("images/workflow.PNG")
 
 ------
 
-# Examples 
+# Guides
 
-## Correlation Table and Plot
-
-It is possible to quickly run a correlation analysis on a dataframe with the flexible and powerful `correlation()` function.
-
-### Basic Correlations
-```{r, fig.width=8, eval = TRUE, fig.align='center', results='hide'}
-library(psycho)
-
-df <- iris
-
-cor <- psycho::correlation(df,
-  type = "full",
-  method = "pearson",
-  adjust = "none"
-)
-
-summary(cor)
-```
-
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-kable(summary(cor))
-```
+- [Bayesian Analysis in Psychology](https://CRAN.R-project.org/package=psycho/vignettes/bayesian.html)
 
 
-You can save this correlation matrix using `write.csv(print(cor), "correlation_table.csv")`. That is very useful to *copy/paste* it from excel to a paper or a report :) 
+# Examples
 
-You can also draw a quick visualization:
-```{r, fig.width=8, eval = TRUE, fig.align='center'}
-plot(cor)
-```
- 
-
-
-### Partial, Corrected, Correlations
-
-`correlation()` offers the possibility to run partial or semi-partial 
-correleations, as well as printing them pairwise.
-
-```{r, fig.width=8, eval = TRUE, fig.align='center', results='markup', comment=NA}
-library(psycho)
-
-df <- iris
-
-pcor <- psycho::correlation(df,
-  type = "partial",
-  method = "pearson",
-  adjust = "bonferroni"
-)
-
-summary(pcor)
-```
-
-You can also have access to the individual correlations as follows:
-
-```{r, results='markup', comment=NA}
-print(pcor)
-```
-
-### Bayesian Correlations
-
-Bayesian correlations can be performed very simply as following:
+- [APA Formatted Bayesian Correlation](https://neuropsychology.github.io/psycho.R/2018/06/11/bayesian_correlation.html)
+- [Fancy Plot (with Posterior Samples) for Bayesian Regressions](https://neuropsychology.github.io/psycho.R/2018/06/03/plot_bayesian_model.html)
+- [How Many Factors to Retain in Factor Analysis](https://neuropsychology.github.io/psycho.R/2018/05/24/n_factors.html)
+- [Beautiful and Powerful Correlation Tables](https://neuropsychology.github.io/psycho.R/2018/05/20/correlation.html)
+- [Format and Interpret Linear Mixed Models](https://neuropsychology.github.io/psycho.R/2018/05/10/interpret_mixed_models.html)
+- [How to do Repeated Measures ANOVAs](https://neuropsychology.github.io/psycho.R/2018/05/01/repeated_measure_anovas.html)
+- [Standardize (Z-score) a dataframe](https://neuropsychology.github.io/psycho.R/2018/03/29/standardize.html)
+- [Compute Signal Detection Theory Indices](https://neuropsychology.github.io/psycho.R/2018/03/29/SDT.html)
 
 
-```{r, results='markup', comment=NA}
-psycho::bayes_cor.test(iris$Petal.Width, iris$Sepal.Width)
-```
+# Other 
 
-
-
-
-------
-
-## Standardize / Normalize / Z-score / Scale
-
-The `standardize()` function allows you to easily scale and center all numeric variables of a dataframe. It is similar to the base function `scale()`, but presents some advantages: it is tidyverse-friendly, data-type friendly (*i.e.*, does not transform it into a matrix) and can handle dataframes with categorical data.
-
-```{r, out.width=8, eval = TRUE, fig.align='center', results='markup', comment=NA}
-library(psycho)
-library(dplyr)
-
-iris %>%
-  dplyr::select(Species, Sepal.Length, Petal.Length) %>%
-  psycho::standardize() %>%
-  summary()
-```
-
-
-------
-
-## Signal Detection Theory Indices (dprime, beta...)
-
-Signal detection theory (SDT) is used when psychologists want to measure the way we make decisions under conditions of uncertainty. SDT assumes that the decision maker is not a passive receiver of information, but an active decision-maker who makes difficult perceptual judgments under conditions of uncertainty. To apply signal detection theory to a data set where stimuli were either present or absent, and the observer categorized each trial as having the stimulus present or absent, the trials are sorted into one of four categories: **Hit**, **Miss**, **Correct Rejection** and **False Alarm**.
-
-![*Anderson (2015)*](https://www.frontiersin.org/files/Articles/147101/fpsyg-06-00762-HTML/image_m/fpsyg-06-00762-g001.jpg)
-
-Based on the proportions of these types of trials, we can compute indices of sensitivity and response bias:
-
-- **d'** (*d prime*): The sensitivity. Reflects the distance between the two distributions: signal, and signal+noise and corresponds to the Z value of the hit-rate minus that of the false-alarm rate.
-- **beta**: The bias (criterion). The value for beta is the ratio of the normal density functions at the criterion of the Z values used in the computation of d'. This reflects an observer's bias to say 'yes' or 'no' with the unbiased observer having a value around 1.0. As the bias to say 'yes' increases (liberal), resulting in a higher hit-rate and false-alarm-rate, beta approaches 0.0. As the bias to say 'no' increases (conservative), resulting in a lower hit-rate and false-alarm rate, beta increases over 1.0 on an open-ended scale.
-- **A'** (*aprime*): Non-parametric estimate of discriminability. An A' near 1.0 indicates good discriminability, while a value near 0.5 means chance performance.
-- **B'\'D** (*b prime prime d*): Non-parametric estimate of bias. A B''D equal to 0.0 indicates no bias, positive numbers represent conservative bias (*i.e.*, a tendency to answer 'no'), negative numbers represent liberal bias (i.e. a tendency to answer 'yes'). The maximum absolute value is 1.0.
-- **c**: Another index of bias. the number of standard deviations from the midpoint between these two distributions, *i.e.*, a measure on a continuum from "conservative" to "liberal".
-
-To compute them with `psycho`, simply run the following:
-
-```{r, out.width=8, eval = TRUE, fig.align='center', results='hide', comment=NA}
-library(psycho)
-
-# Let's simulate three participants with different results at a perceptual detection task
-df <- data.frame(
-  Participant = c("A", "B", "C"),
-  n_hit = c(1, 2, 5),
-  n_fa = c(1, 3, 5),
-  n_miss = c(6, 8, 1),
-  n_cr = c(4, 8, 9)
-)
-
-indices <- psycho::dprime(df$n_hit, df$n_fa, df$n_miss, df$n_cr)
-df <- cbind(df, indices)
-```
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-kable(df)
-```
-
-
-
-
-
-
-------
 
 ## Custom Plots
 
@@ -306,152 +193,6 @@ rez <- mellenbergh.test(t0, t1, controls = controls)
 rez <- mellenbergh.test(t0, t1, controls = 15)
 ```
 
-
-------
-
-## How many factors/components to retain?
-
-The `n_factors()` function is useful in before running principal component (PCA) or factor (FA) analysis. As many statistical methods exists to that purpose, this function gathers them together and gives an overview on the most frequent result. It also draw a nice plot with the eigenvalues and the proportion of explained  variance.
-
-
-```{r echo=TRUE, message=FALSE, warning=FALSE, results='hide'}
-results <- attitude %>%
-  dplyr::select_if(is.numeric) %>%
-  psycho::n_factors()
-
-# Get a summary
-summary(results)
-```
-
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-kable(summary(results))
-```
-
-We can also extract the final result (the optimal number of factors) for each method:
-
-```{r echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
-psycho::values(results)$methods
-```
-
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-kable(psycho::values(results)$methods)
-```
-
-And, of course, plot it :)
-
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center'}
-plot(results)
-```
-     
-     
-------
-
-## Analyze the Mixed-Modelling Framework
-
-This is possibly the most important function of the `psycho` package. Its goal is to transform complex outputs of complex statistical routines into something readable, interpretable, and formatted. It is designed to work with frequentist and Bayesian mixed models, which is the central statistical method for psychological science.
-
-### Data Creation
-
-Let's start by selecting a dataframe similar to those found in psychological science, included in the `psycho` package.
-
-```{r, results='hide'}
-df <- psycho::emotion
-
-# Stabdardize the outcome
-df$Subjective_Arousal <- psycho::standardize(df$Subjective_Arousal)
-
-# Take a look  at the first 10 rows
-head(df)
-```
-
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-knitr::kable(head(df))
-```
-
-This dataframe contains the data of 19 participants. Each participant underwent 48 trials (therefore, there are 48 lines per participant), consisting in viewing negative and neutral pictures. We measured, for each item, the emotional arousal felt by the participant.
-
-### Ancient Approach
-
-In order to investigate the effect of the emotional condition on the subjective arousal, the traditional, ancient and obsolete routine is 1) to compute the mean for each participant, and 2) run an ANOVA.
-
-```{r message=FALSE, warning=FALSE, results='markup', comment=NA}
-# Format data
-df_for_anova <- df %>%
-  dplyr::group_by(Participant_ID, Emotion_Condition) %>%
-  dplyr::summarise(Subjective_Arousal = mean(Subjective_Arousal))
-
-# Run the anova
-aov_results <- aov(Subjective_Arousal ~ Emotion_Condition + Error(Participant_ID), df_for_anova)
-summary(aov_results)
-```
-
-As we can see, the effect of the condition is significant. One of the many flaws of this approach is that we lose information about intra-individual and item-related variability.
-
-
-### Mixed Linear Regressions (lme4, lmerTest)
-
-The use of the mixed-modelling framework allows us to add the items as random factors to account for the variance they induce.
-
-```{r fig.align='center', message=FALSE, warning=FALSE, val=TRUE, results='markup', comment=NA}
-library(lmerTest)
-
-fit <- lmerTest::lmer(Subjective_Arousal ~ Emotion_Condition + (1|Participant_ID) + (1|Item_Name), data = df)
-
-# Traditional output
-summary(fit)
-```
-
-As the output is a bit messy, the `analyze()` function will munge this into something nicely formatted.
-
-```{r, message=FALSE, results="hide"}
-results <- psycho::analyze(fit)
-
-# We can extract a formatted summary table
-summary(results, round = 2)
-```
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-knitr::kable(summary(results, round = 2))
-```
-
-
-We can also print it in a text format!
-
-```{r, results='markup', comment=NA}
-print(results)
-```
-
-
-### Bayesian Mixed Linear Regressions (rstanarm)
-
-However, as the frequentist framework is criticized, it is advised to switch to the Bayesian framework. Unfortunately, interpretation of these models remain unfamiliar to regular psychologists. But don't worry, because `analyze()` handles this for you. 
-
-```{r fig.align='center', message=FALSE, warning=FALSE, val=TRUE, results='hide'}
-library(rstanarm)
-
-fit <- rstanarm::stan_lmer(Subjective_Arousal ~ Emotion_Condition + (1|Participant_ID) + (1|Item_Name), data = df)
-
-# Traditional output
-results <- psycho::analyze(fit, effsize = TRUE)
-summary(results, round = 2)
-```
-
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-knitr::kable(summary(results, round = 2))
-```
-
-```{r, results='markup', comment=NA}
-print(results)
-```
-
-We can also plot the effects:
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center'}
-plot(results)
-```
-
-Obviously, you need to learn more about Bayesian analyses before running them. You can find more information in the rstanarm's [vignettes](https://CRAN.R-project.org/package=rstanarm/vignettes/rstanarm.html).
-
-
-Critically, see [**THIS**](https://CRAN.R-project.org/package=psycho/vignettes/bayesian.html) vignette for a guide to bayesian statistics for psychology.
 
 
 

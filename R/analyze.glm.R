@@ -1,17 +1,17 @@
-#' Analyze lm objects.
+#' Analyze glm objects.
 #'
-#' Analyze lm objects.
+#' Analyze glm objects.
 #'
-#' @param x lm object.
+#' @param x glm object.
 #' @param CI Confidence interval bounds. Set to NULL turn off their computation.
-#' @param effsize_rules Grid for effect size interpretation. See \link[=interpret_d]{interpret_d}.
+#' @param effsize_rules Grid for effect size interpretation. See \link[=interpret_odds]{interpret_odds}.
 #' @param ... Arguments passed to or from other methods.
 #'
 #' @return output
 #'
 #' @examples
 #' library(psycho)
-#' fit <- lm(Sepal.Length ~ Sepal.Width, data=iris)
+#' fit <- glm(Sex ~ Adjusting, data=psycho::affective, family="binomial")
 #'
 #' results <- analyze(fit)
 #' summary(results)
@@ -19,24 +19,29 @@
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
+#' @references Nakagawa, S., & Schielzeth, H. (2013). A general and simple method for obtaining R2 from generalized linear mixed-effects models. Methods in Ecology and Evolution, 4(2), 133-142.
+#'
 #' @import dplyr
 #' @importFrom stats formula
 #' @importFrom stringr str_squish
 #' @export
-analyze.lm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
+analyze.glm <- function(x, CI=95, effsize_rules="chen2010", ...) {
 
 
   # Processing
   # -------------
   fit <- x
 
+  if (fit$family$family != "binomial") {
+    stop(paste("Models of family", fit$family$family, "not supported yet."))
+  }
+
   predictors <- all.vars(stats::formula(fit))
   outcome <- predictors[[1]]
   predictors <- tail(predictors, -1)
 
+  # R2 <- tjur_D(fit)
   R2 <- get_R2(fit)
-  R2adj <- R2$R2.adj
-  R2 <- R2$R2
 
   # Summary
   # -------------
@@ -45,20 +50,20 @@ analyze.lm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
   summary$Variable <- rownames(summary)
   summary$Coef <- summary$Estimate
   summary$SE <- summary$`Std..Error`
-  summary$t <- summary$`t.value`
-  summary$p <- summary$`Pr...t..`
+  summary$z <- summary$`z.value`
+  summary$p <- summary$`Pr...z..`
 
   # standardized coefficients
-  summary <- cbind(summary, standardize(fit, partial.sd = TRUE))
-  summary$Effect_Size <- interpret_d(summary$Coef.std, rules = effsize_rules)
+  summary <- cbind(summary, standardize(fit, method = "agresti"))
+  summary$Effect_Size <- interpret_odds(summary$Coef.std, log = TRUE, rules = effsize_rules)
 
   summary <- dplyr::select_(
-    summary, "Variable", "Coef", "SE", "t", "Coef.std", "SE.std",
+    summary, "Variable", "Coef", "SE", "z", "Coef.std", "SE.std",
     "p", "Effect_Size"
   )
 
   if (!is.null(CI)) {
-    CI_values <- confint(fit, level = CI / 100)
+    CI_values <- suppressMessages(confint(fit, level = CI / 100))
     CI_values <- tail(CI_values, n = length(rownames(summary)))
     summary$CI_lower <- CI_values[, 1]
     summary$CI_higher <- CI_values[, 2]
@@ -74,9 +79,6 @@ analyze.lm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
   # -------------
   # Initialize empty values
   values <- list(model = list(), effects = list())
-  values$model$R2 <- R2
-  values$model$R2adj <- R2adj
-
 
   # Loop over all variables
   for (varname in varnames) {
@@ -110,8 +112,8 @@ analyze.lm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
       format_digit(summary[varname, "Coef"], 2), ", SE = ",
       format_digit(summary[varname, "SE"], 2),
       CI_text,
-      ", t = ",
-      format_digit(summary[varname, "t"], 2), ", p ",
+      ", z = ",
+      format_digit(summary[varname, "z"], 2), ", p ",
       format_p(summary[varname, "p"]),
       ") and can be considered as ",
       tolower(summary[varname, "Effect_Size"]),
@@ -137,7 +139,7 @@ analyze.lm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
       SE = summary[varname, "SE"],
       CI_lower = summary[varname, "CI_lower"],
       CI_higher = summary[varname, "CI_higher"],
-      t = summary[varname, "t"],
+      z = summary[varname, "z"],
       Coef.std = summary[varname, "Coef.std"],
       SE.std = summary[varname, "SE.std"],
       p = summary[varname, "p"],
@@ -155,11 +157,9 @@ analyze.lm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
     outcome,
     " (formula = ",
     stringr::str_squish(paste0(format(stats::formula(fit)), collapse = "")),
-    ") explains ",
+    ") has an explanatory power of ",
     format_digit(R2 * 100, 2),
-    "% of the variance of the endogen (adj. R2 = ",
-    format_digit(R2adj * 100, 2),
-    "). ",
+    "%. ",
     values$effects[["(Intercept)"]]$Text
   ))
 

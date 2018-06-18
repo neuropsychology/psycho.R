@@ -1,12 +1,13 @@
 Package: psycho
 Type: Package
 Title: Efficient and Publishing-Oriented Workflow for Psychological Science
-Version: 0.2.8
+Version: 0.3.0
 Authors@R: c(
     person("Dominique", 
         "Makowski", 
         email = "dom.makowski@gmail.com",
-        role = c("aut", "cre", "cph")), 
+        role = c("aut", "cre", "cph"), 
+        comment = c(ORCID = "0000-0001-5375-9967")),
     person("Viliam",
         "Simko",
         role = "ctb",
@@ -19,10 +20,9 @@ Authors@R: c(
 Maintainer: Dominique Makowski <dom.makowski@gmail.com>
 URL: https://github.com/neuropsychology/psycho.R
 BugReports: https://github.com/neuropsychology/psycho.R/issues
-Description: Toolbox for psychologists, neuropsychologists and neuroscientists. 
- It implements methods to create report-ready outputs for many statistical models, 
- as well as various convenient statistical functions used in psychological science, 
- such as correlation matrices and standardization.
+Description: The main goal of the `psycho` package is to provide tools for psychologists, neuropsychologists and neuroscientists, 
+   to facilitate and speed up the time spent on data analysis. It aims at supporting best practices and tools to format the output 
+   of statistical methods to directly paste them into a manuscript, ensuring standardization of statistical reporting.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -45,6 +45,7 @@ Imports:
     rstanarm,
     rstantools,
     MuMIn,
+    lme4,
     lmerTest,
     coda,
     emmeans,
@@ -61,6 +62,5 @@ Suggests:
     rmarkdown,
     testthat,
     covr,
-    lme4,
     plotly
 VignetteBuilder: knitr

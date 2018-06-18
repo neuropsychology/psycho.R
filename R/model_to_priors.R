@@ -3,6 +3,7 @@
 #' Convert a Bayesian model's results to priors.
 #'
 #' @param fit A stanreg model.
+#' @param autoscale Set autoscale.
 #' @examples
 #' \dontrun{
 #' library(rstanarm)
@@ -30,7 +31,7 @@
 #' @importFrom stats update
 #' @importFrom rstanarm normal
 #' @export
-model_to_priors <- function(fit) {
+model_to_priors <- function(fit, autoscale=FALSE) {
   posteriors <- as.data.frame(fit)
 
   # Varnames
@@ -64,17 +65,17 @@ model_to_priors <- function(fit) {
   prior_intercept <- rstanarm::normal(
     prior_intercept$mean,
     prior_intercept$sd,
-    autoscale = FALSE
+    autoscale = autoscale
   )
-  prior <- .format_priors(priors)
-  prior_aux <- .format_priors(prior_aux)
+  prior <- .format_priors(priors, autoscale = autoscale)
+  prior_aux <- .format_priors(prior_aux, autoscale = autoscale)
 
   return(list(prior_intercept = prior_intercept, prior = prior, priox_aux = prior_aux))
 }
 
 
 #' @keywords internal
-.format_priors <- function(priors) {
+.format_priors <- function(priors, autoscale=FALSE) {
   prior_mean <- data.frame(priors) %>%
     select(contains("mean")) %>%
     gather() %>%
@@ -90,6 +91,6 @@ model_to_priors <- function(fit) {
   prior <- rstanarm::normal(
     prior_mean,
     prior_sd,
-    autoscale = FALSE
+    autoscale = autoscale
   )
 }

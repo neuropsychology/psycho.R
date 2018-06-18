@@ -39,14 +39,17 @@ library(rstanarm)
 data <- attitude
 fit <- rstanarm::stan_glm(rating ~ advance + privileges, data=data)
 
-results <- analyze(fit, effsize=TRUE)
+results <- analyze(fit)
 summary(results)
 print(results)
 plot(results)
 
 
-
 fit <- rstanarm::stan_glmer(Sepal.Length ~ Sepal.Width + (1|Species), data=iris)
+results <- analyze(fit)
+summary(results)
+
+fit <- rstanarm::stan_glmer(Sex ~ Adjusting, data=psycho::affective, family="binomial")
 results <- analyze(fit)
 summary(results)
 }

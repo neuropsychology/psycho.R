@@ -87,8 +87,6 @@ bayes_cor.test <- function(x, y, CI=90, iterations = 10000, effsize_rules_r="coh
   summary <- data.frame(
     Median = values$median,
     MAD = values$mad,
-    Mean = values$mean,
-    SD = values$sd,
     CI_lower = values$CI_values[1],
     CI_higher = values$CI_values[2],
     MPE = values$MPE,
@@ -100,12 +98,16 @@ bayes_cor.test <- function(x, y, CI=90, iterations = 10000, effsize_rules_r="coh
 
   values$effect_size <- interpret_r_posterior(posterior, rules = effsize_rules_r)
   interpretation_r <- interpret_r(values$median, strength = FALSE, rules = effsize_rules_r)
-  interpretation_bf <- interpret_bf(values$bf, rules = effsize_rules_bf)
+  interpretation_bf <- interpret_bf(values$bf, direction = FALSE, rules = effsize_rules_bf)
+  if (values$bf < 1) {
+    interpretation_bf <- paste(interpretation_bf, "in favour of an absence of a ")
+  } else {
+    interpretation_bf <- paste(interpretation_bf, "in favour of the existence of a ")
+  }
 
   text <- paste0(
     "Results of the Bayesian correlation indicate ",
     interpretation_bf,
-    " a ",
     interpretation_r,
     " association between ",
     var1,
