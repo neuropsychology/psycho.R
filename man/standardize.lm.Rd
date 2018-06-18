@@ -28,5 +28,5 @@ standardize(fit)
 
 }
 \author{
-Kamil Bartoń
+Kamil Barton
 }

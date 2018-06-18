@@ -4,14 +4,14 @@
 
 #' @examples
 #' library(psycho)
-#' extract_random_effects("Y ~ X + (1|Group)")
+#' find_random_effects("Y ~ X + (1|Group)")
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @importFrom stringr str_remove_all
 #' @importFrom lme4 findbars
 #' @export
-extract_random_effects <- function(formula) {
+find_random_effects <- function(formula) {
   random <- lme4::findbars(as.formula(formula))
   random <- paste0("(", random, ")")
   random <- stringr::str_remove_all(random, " ")

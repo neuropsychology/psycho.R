@@ -23,6 +23,7 @@ Analyze htest (correlation, t-test...) objects.
 library(psycho)
 
 df <- psycho::affective
+
 x <- t.test(df$Tolerating, df$Adjusting)
 x <- t.test(df$Tolerating ~ df$Sex)
 x <- cor.test(df$Tolerating, df$Adjusting)

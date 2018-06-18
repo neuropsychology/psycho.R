@@ -2,12 +2,12 @@
 title: "Copy/paste formated t-tests directly to manuscripts"
 layout: post
 output:
-  md_document:
-    toc: yes
-    variant: markdown_github
   html_document:
     df_print: paged
     toc: yes
+  md_document:
+    toc: yes
+    variant: markdown_github
 author: "Dominique Makowski"
 date: "`r Sys.Date()`"
 editor_options: 
@@ -16,7 +16,7 @@ editor_options:
 
 
 
-ADD PSYCHO LOGO AS IMAGE
+![](https://raw.githubusercontent.com/neuropsychology/psycho.R/master/vignettes/images/logo.PNG)
 
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
@@ -28,18 +28,22 @@ One of the most time-consuming part of data analysis in psychology is the copy-p
 # Do a t-test
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-df <- iris
-results <- t.test(df$Sepal.Length, df$Petal.Length)
+# Load packages
+library(tidyverse)
+
+# devtools::install_github("neuropsychology/psycho.R")  # Install the latest psycho version
+library(psycho)
+
+df <- psycho::affective  # Load the data
+
+
+results <- t.test(df$Age ~ df$Sex)  # Perform a simple t-test
 ```
 
 
 # APA formatted output
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-# devtools::install_github("neuropsychology/psycho.R")  # Install the latest psycho version
-
-# Load packages
-library(psycho)
 psycho::analyze(results)
 ```
 
@@ -47,14 +51,15 @@ psycho::analyze(results)
 
 It works for all kinds of different t-tests versions.
 
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-df <- psycho::affective
-psycho::analyze(t.test(df$Age ~ df$Sex))
-```
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-t.test(df$Age ~ df$Sex,
+t.test(df$Adjusting ~ df$Sex,
        var.equal=TRUE, 
+       conf.level = .90) %>% 
+  psycho::analyze()
+
+t.test(df$Adjusting,
+       mu=0,
        conf.level = .90) %>% 
   psycho::analyze()
 ```
@@ -66,12 +71,12 @@ It is also possible to have all the values stored in a dataframe by running a **
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='hide', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 library(tidyverse)
 
-t.test(df$Age ~ df$Sex) %>% 
+t.test(df$Adjusting ~ df$Sex) %>% 
   psycho::analyze() %>% 
   summary()
 ```
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, echo=FALSE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-t.test(df$Age ~ df$Sex) %>% 
+t.test(df$Adjusting ~ df$Sex) %>% 
   psycho::analyze() %>% 
   summary() %>% 
   knitr::kable()

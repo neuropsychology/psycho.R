@@ -42,7 +42,7 @@ get_R2.lm <- function(fit, ...) {
   R2.adj <- summary(fit)$adj.r.squared
 
   out <- list(R2 = R2, R2.adj = R2.adj)
-  return()
+  return(out)
 }
 
 

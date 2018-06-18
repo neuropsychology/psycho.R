@@ -24,7 +24,9 @@ library(knitr)
 To make sense of their data and effects, psychologists often standardize their variables. However, in repeated-measures designs, there are three ways of standardizing data:
 - **variable-wise**: The most common method. A simple scaling and reducing of each variable.
 - **participant-wise**: Variables are standardized "within" each participant.
+- **full**: Participant and variable wise.
 
+Unfortunately, the method used is often not explicitely stated. This is an issue as these methods can generate important discrepancies that contribute to the reproducibility crisis of psychological science. 
 
 In the following, we will see how to perform those methods and check for differences.
 

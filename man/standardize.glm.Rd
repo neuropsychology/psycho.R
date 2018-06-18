@@ -31,5 +31,5 @@ standardize(fit)
 https://think-lab.github.io/d/205/
 }
 \author{
-Kamil Bartoń
+Kamil Barton
 }
