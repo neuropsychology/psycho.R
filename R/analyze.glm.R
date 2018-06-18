@@ -19,7 +19,7 @@
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
-#' @references Nakagawa, S., & Schielzeth, H. (2013). A general and simple method for obtaining R2 from generalized linear mixed‐effects models. Methods in Ecology and Evolution, 4(2), 133-142.
+#' @references Nakagawa, S., & Schielzeth, H. (2013). A general and simple method for obtaining R2 from generalized linear mixed-effects models. Methods in Ecology and Evolution, 4(2), 133-142.
 #'
 #' @import dplyr
 #' @importFrom stats formula
@@ -32,7 +32,7 @@ analyze.glm <- function(x, CI=95, effsize_rules="chen2010", ...) {
   # -------------
   fit <- x
 
-  if(fit$family$family != "binomial"){
+  if (fit$family$family != "binomial") {
     stop(paste("Models of family", fit$family$family, "not supported yet."))
   }
 
@@ -54,8 +54,8 @@ analyze.glm <- function(x, CI=95, effsize_rules="chen2010", ...) {
   summary$p <- summary$`Pr...z..`
 
   # standardized coefficients
-  summary <- cbind(summary, standardize(fit, method="agresti"))
-  summary$Effect_Size <- interpret_odds(summary$Coef.std, log=TRUE, rules = effsize_rules)
+  summary <- cbind(summary, standardize(fit, method = "agresti"))
+  summary$Effect_Size <- interpret_odds(summary$Coef.std, log = TRUE, rules = effsize_rules)
 
   summary <- dplyr::select_(
     summary, "Variable", "Coef", "SE", "z", "Coef.std", "SE.std",
@@ -157,7 +157,7 @@ analyze.glm <- function(x, CI=95, effsize_rules="chen2010", ...) {
     outcome,
     " (formula = ",
     stringr::str_squish(paste0(format(stats::formula(fit)), collapse = "")),
-    ") has an explanatory power (tjur's D) of ",
+    ") has an explanatory power of ",
     format_digit(R2 * 100, 2),
     "%. ",
     values$effects[["(Intercept)"]]$Text
@@ -180,13 +180,3 @@ analyze.glm <- function(x, CI=95, effsize_rules="chen2010", ...) {
   class(output) <- c("psychobject", "list")
   return(output)
 }
-
-
-
-
-
-
-
-
-
-

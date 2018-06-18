@@ -20,7 +20,7 @@
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
-#' @references Nakagawa, S., & Schielzeth, H. (2013). A general and simple method for obtaining R2 from generalized linear mixed‐effects models. Methods in Ecology and Evolution, 4(2), 133-142.
+#' @references Nakagawa, S., & Schielzeth, H. (2013). A general and simple method for obtaining R2 from generalized linear mixed-effects models. Methods in Ecology and Evolution, 4(2), 133-142.
 #'
 #' @importFrom MuMIn r.squaredGLMM
 #' @importFrom MuMIn std.coef
@@ -126,8 +126,7 @@ analyze.lmerModLmerTest <- function(x, CI=95, effsize_rules="cohen1988", ...) {
         CI_text,
         "). Within this model:"
       )
-    } else{
-
+    } else {
       text <- paste0(
         "The effect of ",
         varname,
@@ -178,14 +177,10 @@ analyze.lmerModLmerTest <- function(x, CI=95, effsize_rules="cohen1988", ...) {
     outcome,
     " (formula = ",
     stringr::str_squish(paste0(format(eval(fit@call$formula)), collapse = "")),
-    ") explains ",
+    ") has an explanatory power (conditional R2) of ",
     format_digit(R2c * 100, 2),
-    "% of the variance of the endogen (the conditional R2). ",
-    "The variance explained by the fixed effects was of ",
-    format_digit(R2m * 100, 2),
-    "% (the marginal R2) and the one explained by the random",
-    " effects of ",
-    format_digit((R2c - R2m) * 100, 2), "%. ",
+    "%. The variance explained by fixed effects only (marginal R2) is ",
+    format_digit(R2m * 100, 2), "%. ",
     values$effects[["(Intercept)"]]$Text
   ))
 

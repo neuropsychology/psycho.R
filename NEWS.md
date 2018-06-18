@@ -3,6 +3,8 @@
 ### Breaking changes
 - Removed Mean and SD from summary in `bayes_cor.test`
 ### New functions / parameters
+- Extended `standardize` method
+- Added `get_R2` method
 - Added `interpret_odds` and logistic regression effect size interpretation
 - Added `omega_sq` and `interpret_omega_sq`
 ### Changes

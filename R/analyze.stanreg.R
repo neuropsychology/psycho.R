@@ -92,15 +92,15 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
 
   # R2 ----------------------------------------------------------------------
 
-  R2 <- get_R2(fit, silent=TRUE)
-  if(is.list(R2)){
+  R2 <- get_R2(fit, silent = TRUE)
+  if (is.list(R2)) {
     posteriors$R2 <- R2$R2_posterior
     R2.adj <- R2$R2.adj
-    if(!"R2" %in% varnames){
+    if (!"R2" %in% varnames) {
       varnames <- c("R2", varnames)
     }
     R2 <- TRUE
-  } else{
+  } else {
     R2 <- FALSE
   }
 

@@ -11,7 +11,7 @@
 #' @importFrom stringr str_remove_all
 #' @importFrom lme4 findbars
 #' @export
-extract_random_effects <- function(formula){
+extract_random_effects <- function(formula) {
   random <- lme4::findbars(as.formula(formula))
   random <- paste0("(", random, ")")
   random <- stringr::str_remove_all(random, " ")

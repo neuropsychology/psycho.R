@@ -106,8 +106,8 @@ format_bf <- function(bf, max=100) {
     s <- paste(s, bf)
   }
   if (direction == TRUE) {
-    interpretation <- paste(s, dir)
+    s <- paste(s, dir)
   }
 
-  return(interpretation)
+  return(s)
 }

@@ -21,7 +21,7 @@
 #'  }
 #' @export
 interpret_odds <- function(x, log=FALSE, direction=FALSE, rules="chen2010") {
-  interpretation <- sapply(x, .interpret_odds, log=log, direction=direction, rules = rules, return_rules = FALSE)
+  interpretation <- sapply(x, .interpret_odds, log = log, direction = direction, rules = rules, return_rules = FALSE)
   return(interpretation)
 }
 
@@ -48,7 +48,7 @@ interpret_odds <- function(x, log=FALSE, direction=FALSE, rules="chen2010") {
 #'
 #' @export
 interpret_odds_posterior <- function(posterior, log=FALSE, rules="chen2010") {
-  interpretation <- sapply(posterior, .interpret_odds, log=log, direction=TRUE, rules = rules, return_rules = TRUE)
+  interpretation <- sapply(posterior, .interpret_odds, log = log, direction = TRUE, rules = rules, return_rules = TRUE)
   rules <- unlist(interpretation[, 1]$rules)
   interpretation <- as.data.frame(unlist(interpretation[1, ]))
   interpretation <- na.omit(interpretation)
@@ -58,9 +58,9 @@ interpret_odds_posterior <- function(posterior, log=FALSE, rules="chen2010") {
     group_by_("Interpretation") %>%
     summarise_("Probability" = "n() / length(posterior)") %>%
     tidyr::separate("Interpretation",
-                    c("Size", "Direction"),
-                    " and ",
-                    remove = FALSE
+      c("Size", "Direction"),
+      " and ",
+      remove = FALSE
     ) %>%
     mutate_(
       "Median" = 'ifelse(median(posterior) > 0, "positive", "negative")',
@@ -132,14 +132,13 @@ interpret_odds_posterior <- function(posterior, log=FALSE, rules="chen2010") {
 
 #' @keywords internal
 .interpret_odds <- function(x, log=FALSE, direction=FALSE, rules="chen2010", return_rules=TRUE) {
-
   if (x > 0) {
     d <- "positive"
   } else {
     d <- "negative"
   }
 
-  if(log == TRUE){
+  if (log == TRUE) {
     x <- exp(abs(x))
   }
 

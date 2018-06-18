@@ -58,9 +58,7 @@ standardize <- function(x, ...) {
 #'
 #' @export
 standardize.numeric <- function(x, ...) {
-
   return(as.vector(scale(x)))
-
 }
 
 
@@ -122,11 +120,10 @@ standardize.numeric <- function(x, ...) {
 #' @import dplyr
 #' @export
 standardize.data.frame <- function(x, subset=NULL, except=NULL, ...) {
-
-  if(inherits(x, "grouped_df")){
+  if (inherits(x, "grouped_df")) {
     dfZ <- x %>% dplyr::do_(".standardize_df(., subset=subset, except=except)")
-  } else{
-    dfZ <- .standardize_df(x, subset=subset, except=except)
+  } else {
+    dfZ <- .standardize_df(x, subset = subset, except = except)
   }
 
   return(dfZ)
@@ -150,7 +147,6 @@ standardize.data.frame <- function(x, subset=NULL, except=NULL, ...) {
 
 #' @keywords internal
 .standardize_df <- function(x, subset=NULL, except=NULL) {
-
   df <- x
 
   # Variable order
@@ -285,20 +281,19 @@ standardize.stanreg <- function(x, method="posterior", ...) {
 #'
 #' }
 #'
-#' @author Kamil Bartoń
+#' @author Kamil Barton
 #' @importFrom stats model.frame model.response model.matrix
 #'
 #' @seealso https://think-lab.github.io/d/205/
 #'
 #' @export
 standardize.glm <- standardize.glmerMod <- function(x, method="agresti", ...) {
-
   fit <- x
 
   # agresti method
   coefs <- MuMIn::coefTable(fit)[, 1:2]
   X <- as.matrix(model.matrix(fit)[, -1]) # -1 to drop column of 1s for intercept
-  sd_X <- sd(X, na.rm=TRUE)
+  sd_X <- sd(X, na.rm = TRUE)
   coefs <- coefs * sd_X
 
   coefs <- as.data.frame(coefs)
@@ -329,18 +324,17 @@ standardize.glmerMod <- standardize.glm
 #'
 #' }
 #'
-#' @author Kamil Bartoń
+#' @author Kamil Barton
 #' @importFrom stats model.frame model.response model.matrix
 #'
 #' @export
 standardize.lm <- function(x, partial_SD=TRUE, ...) {
-
   fit <- x
 
   coefs <- MuMIn::coefTable(fit)[, 1:2]
   mm <- model.matrix(fit)
 
-  if(partial_SD == TRUE) {
+  if (partial_SD == TRUE) {
     bx <- MuMIn::partial.sd(fit)
   } else {
     response.sd <- sd(model.response(model.frame(fit)), na.rm = TRUE)

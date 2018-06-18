@@ -15,7 +15,7 @@
 #' @export
 get_R2 <- function(fit, ...) {
   UseMethod("get_R2")
-  }
+}
 
 
 #' R2 and adjusted R2 for Linear Models.
@@ -37,7 +37,7 @@ get_R2 <- function(fit, ...) {
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #' @export
-get_R2.lm <- function(fit, ...){
+get_R2.lm <- function(fit, ...) {
   R2 <- summary(fit)$r.squared
   R2.adj <- summary(fit)$adj.r.squared
 
@@ -69,12 +69,12 @@ get_R2.lm <- function(fit, ...){
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-get_R2.glm <- function(fit, method="nakagawa", ...){
-  if(method=="nakagawa"){
+get_R2.glm <- function(fit, method="nakagawa", ...) {
+  if (method == "nakagawa") {
     R2 <- R2_nakagawa(fit)$R2m
-  } else if(method == "tjur"){
+  } else if (method == "tjur") {
     R2 <- R2_tjur(fit)
-  } else{
+  } else {
     stop("Method must be 'nakagawa' or 'tjur'.")
   }
   return(R2)
@@ -105,27 +105,29 @@ get_R2.glm <- function(fit, method="nakagawa", ...){
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-get_R2.stanreg <- function(fit, silent=FALSE, ...){
+get_R2.stanreg <- function(fit, silent=FALSE, ...) {
   tryCatch({
     R2 <- rstanarm::bayes_R2(fit)
   }, error = function(e) {
     R2 <- "NA"
   })
 
-  if(!is.numeric(R2)){
-    if(silent){
+  if (!is.numeric(R2)) {
+    if (silent) {
       return(R2)
-    } else{
+    } else {
       stop("Couldn't compute R2 for this model.")
     }
   }
 
   R2.adj <- R2_LOO_Adjusted(fit)
 
-  out <- list(R2_median = median(R2),
-              R2_MAD = mad(R2),
-              R2_posterior = R2,
-              R2.adj = R2.adj)
+  out <- list(
+    R2_median = median(R2),
+    R2_MAD = mad(R2),
+    R2_posterior = R2,
+    R2.adj = R2.adj
+  )
 
   return(out)
 }
@@ -156,13 +158,15 @@ get_R2.stanreg <- function(fit, silent=FALSE, ...){
 #'
 #' @references
 #' Nakagawa, S., Johnson, P. C., & Schielzeth, H. (2017). The coefficient of determination R2 and intra-class correlation coefficient from generalized linear mixed-effects models revisited and expanded. Journal of the Royal Society Interface, 14(134), 20170213.
-#' Nakagawa, S., & Schielzeth, H. (2013). A general and simple method for obtaining R2 from generalized linear mixed‐effects models. Methods in Ecology and Evolution, 4(2), 133-142.
+#' Nakagawa, S., & Schielzeth, H. (2013). A general and simple method for obtaining R2 from generalized linear mixed-effects models. Methods in Ecology and Evolution, 4(2), 133-142.
 #'
 #' @export
-R2_nakagawa <- function(fit){
+R2_nakagawa <- function(fit) {
   out <- MuMIn::r.squaredGLMM(fit)
-  out <- list(R2m = out[1],
-              R2c = out[2])
+  out <- list(
+    R2m = out[1],
+    R2c = out[2]
+  )
   return(out)
 }
 
@@ -205,7 +209,7 @@ R2_LOO_Adjusted <- function(fit) {
 
 
   r_eff <- loo::relative_eff(exp(ll),
-                             chain_id = rep(1:nchains, each = nsamples / nchains)
+    chain_id = rep(1:nchains, each = nsamples / nchains)
   )
 
   psis_object <- loo::psis(log_ratios = -ll, r_eff = r_eff)
@@ -245,7 +249,7 @@ R2_LOO_Adjusted <- function(fit) {
 #' @references Tjur, T. (2009). Coefficients of determination in logistic regression models—A new proposal: The coefficient of discrimination. The American Statistician, 63(4), 366-372.
 #'
 #' @export
-R2_tjur <- function(fit){
+R2_tjur <- function(fit) {
   # check for valid object class
   if (!inherits(fit, c("glmerMod", "glm"))) {
     stop("`x` must be an object of class `glm` or `glmerMod`.", call. = F)
@@ -268,7 +272,7 @@ R2_tjur <- function(fit){
   m1 <- mean(pred[which(y == categories[1])], na.rm = T)
   m2 <- mean(pred[which(y == categories[2])], na.rm = T)
 
-  D = abs(m2 - m1)
+  D <- abs(m2 - m1)
   names(D) <- "Tjur's D"
 
   return(D)
