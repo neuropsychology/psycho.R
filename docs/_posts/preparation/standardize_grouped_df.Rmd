@@ -153,7 +153,7 @@ print_model <- function(data){
     summary() %>% 
     filter(Variable == "Autobiographical_Link") %>% 
     mutate(Type = deparse(substitute(data))) %>% 
-    select(Type, Coef.std, p)
+    select(Type, Coef, p)
 }
 
 rbind(print_model(df), 
@@ -169,7 +169,7 @@ print_model <- function(data){
     summary() %>% 
     filter(Variable == "Subjective_Valence") %>% 
     mutate(Type = deparse(substitute(data))) %>% 
-    select(Type, Coef.std, p)
+    select(Type, Coef, p)
 }
 
 rbind(print_model(df), 
@@ -183,9 +183,9 @@ print_model <- function(data){
   lmerTest::lmer(Subjective_Valence ~ Autobiographical_Link + (1|Participant_ID), data=data) %>% 
     analyze() %>% 
     summary() %>% 
-    filter(Variable == "Subjective_Valence") %>% 
+    filter(Variable == "Autobiographical_Link") %>% 
     mutate(Type = deparse(substitute(data))) %>% 
-    select(Type, Coef.std, p)
+    select(Type, Coef, p)
 }
 
 rbind(print_model(df), 
@@ -202,7 +202,7 @@ print_model <- function(data){
     summary() %>% 
     filter(Variable == "Subjective_Arousal") %>% 
     mutate(Type = deparse(substitute(data))) %>% 
-    select(Type, Coef.std, p)
+    select(Type, Coef, p)
 }
 
 rbind(print_model(df), 
@@ -210,6 +210,10 @@ rbind(print_model(df),
       print_model(dfZ_ParWise),
       print_model(dfZ_Full))
 ```
+
+# Conclusion
+
+
 
 # Contribute
 

@@ -1,0 +1,189 @@
+---
+title: "Psycho's Popularity"
+layout: post
+output:
+  md_document:
+    toc: yes
+    variant: markdown_github
+  html_document:
+    df_print: paged
+    toc: yes
+author: "Dominique Makowski"
+date: "`r Sys.Date()`"
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(knitr)
+```
+
+
+# Download data
+
+```{r message=FALSE, warning=FALSE, include=TRUE, results="hide"}
+# load packages & custom functions ---------------------------------------------
+
+library(tidyverse)
+library(httr)
+library(cranlogs)
+library(XML)
+library(ggrepel)
+library(scales)
+library(knitr)
+library(stringr)
+
+gh_from_url <- function(x){
+  if(!grepl(',', x)){
+    x <- strsplit(x, " ")[[1]]
+    x <- trimws(x[min(which(grepl(pattern='http://github.com|https://github.com|http://www.github.com', x, ignore.case=TRUE)))])    
+  } else {
+    x <- strsplit(x, ",")[[1]]
+    x <- trimws(x[min(which(grepl(pattern='http://github.com|https://github.com|http://www.github.com', x, ignore.case=TRUE)))])    
+  }
+  x <- gsub("http://", "https://", tolower(x))
+  x <- gsub("www\\.github\\.com", "github.com", x)
+  x <- gsub("/$", "", x)
+  x <- gsub("^github.com", "https://github.com", x)
+  x <- gsub("/issues", "", x)
+  x <- gsub("\\.git", "", x)
+  return(x)
+}
+
+aut_maintainer_from_details <- function(x){
+  x <- gsub("'|\"", "", x)
+  if(grepl(',', x)){
+    x <- strsplit(x, "\\],")[[1]]
+    aut_cre_ind <- grepl(pattern='\\[aut, cre|\\[cre, aut|\\[cre', x, ignore.case=TRUE)
+    if(any(aut_cre_ind)){
+      x <- x[min(which(aut_cre_ind))]
+      x <- gsub("\\[aut, cre|\\[cre, aut|\\[cre", "", x)
+    }
+    x <- strsplit(x, ",")[[1]][1]
+    x <- trimws(gsub("\\]", "", x))
+    x <- trimws(gsub(" \\[aut", "", x))
+  }
+  return(x)
+}
+
+gh_star_count <- function(url){
+  stars  <- tryCatch({
+    this_url <- gsub("https://github.com/", "https://api.github.com/repos/", url)
+    req <- GET(this_url, gtoken)
+    stop_for_status(req)
+    cont <- content(req)
+    cont$stargazers_count  
+  }, error = function(e){
+    return(NA_integer_)
+  })
+  return(stars)
+}
+
+
+
+# authenticate to github -------------------------------------------------------
+# use Hadley's key and secret
+myapp <- oauth_app("github",
+                   key = "56b637a5baffac62cad9",
+                   secret = "8e107541ae1791259e9987d544ca568633da2ebf")
+github_token <- oauth2.0_token(oauth_endpoints("github"), myapp)
+gtoken <- config(token = github_token)
+
+# pull list of packages --------------------------------------------------------
+
+# get list of currently available packages on CRAN
+pkgs <- readHTMLTable(readLines(file.path('https://cran.rstudio.com/src/contrib')),
+                      which = 1, 
+                      stringsAsFactors = FALSE)[,-1]
+
+# filter out lines that aren't really packages
+pkgs <- pkgs %>% 
+  filter(Size != "-", 
+         grepl('tar.gz$', Name)) %>%
+  mutate(Name = sub('^([a-zA-Z0-9\\.]*).*', '\\1', Name)) %>%
+  distinct(Name, .keep_all = TRUE)
+
+# get details for each package -------------------------------------------------
+
+all_pkg_details <- NULL
+
+# old fashioned looping! 
+# WARNING: This takes awhile to complete
+for(i in 1:nrow(pkgs)){
+  
+  if(i %% 100 == 0){
+    message(sprintf("Processing package #%s out of %s", i, nrow(pkgs)))
+  }
+  
+  pkg_details <- readHTMLTable(readLines(file.path(sprintf('https://cran.r-project.org/package=%s', pkgs[i,]$Name))), 
+                               header=FALSE, 
+                               which = 1, 
+                               stringsAsFactors = FALSE)
+  pkg_details <- pkg_details %>%
+    mutate(V1 = gsub(":", "", V1)) %>%
+    spread(V1, V2)
+  
+  this_url <- pkg_details$URL
+  on_github <- FALSE
+  this_github_url <- NA_character_
+  gh_stars <- NA_integer_
+  if(!is.null(this_url)){
+    on_github <- grepl('http://github.com|https://github.com|http://www.github.com', this_url)
+    if(on_github){
+      this_github_url <- gh_from_url(this_url)
+      gh_stars <- gh_star_count(this_github_url)
+    } else {
+      # check the BugReports URL as a backup (e.g. shiny package references GitHub this way)
+      issues_on_github <- grepl('http://github.com|https://github.com|http://www.github.com', pkg_details$BugReports)
+      if(length(issues_on_github) == 0 || !issues_on_github){
+        this_github_url <- NA_character_
+      } else {
+        this_github_url <- gh_from_url(pkg_details$BugReports)
+        gh_stars <- gh_star_count(this_github_url)  
+        on_github <- TRUE
+      }
+    }
+  } else {
+    this_url <- NA_character_
+  }
+  
+  downloads <- cran_downloads(pkgs[i,]$Name, from = "2014-01-01", to = "2018-06-15")
+  
+  all_pkg_details <- rbind(all_pkg_details, 
+                           tibble(name = pkgs[i,]$Name, 
+                                  published = pkg_details$Published,
+                                  author = aut_maintainer_from_details(pkg_details$Author),
+                                  url = this_url,
+                                  github_ind = on_github, 
+                                  github_url = this_github_url,
+                                  downloads = sum(downloads$count),
+                                  stars = gh_stars
+                           )
+  )
+}
+
+# basic summary stats ----------------------------------------------------------
+
+# remove observations where the GitHub URL refers to a repository that 
+# is not specific to R and therefore might have an inflated star count
+all_pkg_details_clean <- all_pkg_details %>% 
+  filter(!(name %in% c('xgboost', 'h2o', 'feather'))) %>% 
+  mutate(downloads_per_star = downloads / stars, 
+         downloads_per_star = ifelse(!is.finite(downloads_per_star), NA_real_, downloads_per_star))
+
+```
+
+
+
+
+
+
+
+# Credits
+
+This package helped you? Don't forget to cite the various packages you used :)
+
+You can cite `psycho` as follows:
+
+- Makowski, (2018). *The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470

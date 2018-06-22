@@ -29,7 +29,7 @@ x <- t.test(df$Tolerating ~ df$Sex)
 x <- t.test(df$Tolerating, mu=2)
 x <- cor.test(df$Tolerating, df$Adjusting)
 
-results <- analyze(x, data=df)
+results <- analyze(x)
 summary(results)
 print(results)
 

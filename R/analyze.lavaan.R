@@ -75,7 +75,7 @@ analyze.lavaan <- function(x, ...) {
     Index = c("RMSEA", "CFI", "GFI", "TLI", "NFI", "Chisq"),
     Value = c(values$rmsea, values$cfi, values$gfi, values$tli, values$nfi, values$chisq),
     Interpretation = c(rmsea, cfi, gfi, tli, nfi, NA),
-    Treshold = c("< .08", "> .9", "> .9", "> .9", "> .9", NA)
+    Treshold = c("< .08", "> .90", "> 0.90", "> 0.90", "> 0.90", NA)
   )
 
 

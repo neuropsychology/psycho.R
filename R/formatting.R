@@ -100,3 +100,41 @@ format_p <- function(pvalues, stars=TRUE) {
 
   return(p)
 }
+
+
+
+
+
+
+
+
+#' Clean and format formula.
+#'
+#' Clean and format formula.
+#'
+#' @param formula formula
+#' @param ... Arguments passed to or from other methods.
+#'
+#'
+#' @examples
+#' library(psycho)
+#' library(lme4)
+#'
+#' fit <- lme4::glmer(vs ~ wt + (1|gear), data=mtcars, family="binomial")
+#' fit <- lm(hp ~ wt, data=mtcars)
+#'
+#' format_formula(get_formula(fit))
+#'
+#'
+#' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
+#'
+#' @export
+format_formula <- function(formula){
+  formula <- tryCatch({
+    stringr::str_squish(paste(format(eval(formula)), collapse=""))
+  }, error = function(e) {
+    formula <- stringr::str_squish(paste(format(formula), collapse=""))
+  })
+
+  return(formula)
+}
