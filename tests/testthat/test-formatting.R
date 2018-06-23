@@ -15,4 +15,6 @@ test_that("Formatting works as expected", {
 
   testthat::expect_equal(format_p(0.00000), "< .001***")
   testthat::expect_equal(format_p(0.00000, stars = FALSE), "< .001")
+
+  testthat::expect_equal(format_formula(paste("A", "~   B")), "A ~ B")
 })
