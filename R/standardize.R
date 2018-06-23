@@ -331,7 +331,7 @@ standardize.glmerMod <- standardize.glm
 standardize.lm <- function(x, partial_SD=TRUE, ...) {
   fit <- x
 
-  coefs <- MuMIn::std.coef(fit, partial.sd=partial_SD)[, 1:2]
+  coefs <- MuMIn::std.coef(fit, partial.sd = partial_SD)[, 1:2]
 
   coefs <- as.data.frame(coefs)
   names(coefs) <- c("Coef.std", "SE.std")

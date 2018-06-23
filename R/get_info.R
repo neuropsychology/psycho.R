@@ -58,7 +58,6 @@ get_info <- function(x, ...) {
 #'
 #' @export
 get_info.lmerModLmerTest <- function(x, ...) {
-
   fit <- x
 
   info <- tryCatch({
@@ -70,10 +69,11 @@ get_info.lmerModLmerTest <- function(x, ...) {
     outcome <- predictors[[1]]
     predictors <- tail(predictors, -1)
 
-    return(list(formula = formula,
-                predictors = predictors,
-                outcome = outcome))
-
+    return(list(
+      formula = formula,
+      predictors = predictors,
+      outcome = outcome
+    ))
   }, error = function(e) {
 
     # Get formula
@@ -82,13 +82,23 @@ get_info.lmerModLmerTest <- function(x, ...) {
     predictors <- NA
     outcome <- "Y"
 
-    return(list(formula = formula,
-                predictors = predictors,
-                outcome = outcome))
+    return(list(
+      formula = formula,
+      predictors = predictors,
+      outcome = outcome
+    ))
   })
 
   return(info)
 }
 
 #' @export
-get_info.glmerMod <- get_info.stanreg <- get_info.lm <- get_info.glm <- get_info.lmerModLmerTest
+get_info.glmerMod <- get_info.lmerModLmerTest
+#' @export
+get_info.lmerMod <- get_info.lmerModLmerTest
+#' @export
+get_info.stanreg <- get_info.lmerModLmerTest
+#' @export
+get_info.lm <- get_info.lmerModLmerTest
+#' @export
+get_info.glm <- get_info.lmerModLmerTest

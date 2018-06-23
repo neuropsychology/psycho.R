@@ -129,11 +129,11 @@ format_p <- function(pvalues, stars=TRUE) {
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-format_formula <- function(formula){
+format_formula <- function(formula) {
   formula <- tryCatch({
-    stringr::str_squish(paste(format(eval(formula)), collapse=""))
+    stringr::str_squish(paste(format(eval(formula)), collapse = ""))
   }, error = function(e) {
-    formula <- stringr::str_squish(paste(format(formula), collapse=""))
+    formula <- stringr::str_squish(paste(format(formula), collapse = ""))
   })
 
   return(formula)

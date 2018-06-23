@@ -77,11 +77,11 @@ analyze.lmerModLmerTest <- function(x, CI=95, effsize_rules="cohen1988", ...) {
       CI_values <- NA
       return(CI_values)
     })
-    if(!all(is.na(CI_values))){
+    if (!all(is.na(CI_values))) {
       CI_values <- tail(CI_values, n = length(rownames(summary)))
       summary$CI_lower <- CI_values[, 1]
       summary$CI_higher <- CI_values[, 2]
-    } else{
+    } else {
       CI <- NULL
     }
   }

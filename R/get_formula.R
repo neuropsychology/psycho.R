@@ -36,8 +36,9 @@ get_formula.lmerModLmerTest <- function(x, ...) {
   return(x@call$formula)
 }
 #' @export
-get_formula.glmerMod  <- get_formula.lmerModLmerTest
-
+get_formula.glmerMod <- get_formula.lmerModLmerTest
+#' @export
+get_formula.lmerMod <- get_formula.lmerModLmerTest
 
 
 #' @export
@@ -45,7 +46,7 @@ get_formula.lm <- function(x, ...) {
   return(stats::formula(x))
 }
 #' @export
-get_formula.glm  <- get_formula.lm
+get_formula.glm <- get_formula.lm
 
 
 
@@ -53,4 +54,3 @@ get_formula.glm  <- get_formula.lm
 get_formula.stanreg <- function(x, ...) {
   return(x$formula)
 }
-
