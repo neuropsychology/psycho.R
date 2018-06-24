@@ -6,7 +6,7 @@
 #' @param target String or list of strings to indicate target columns. Can be "all".
 #' @param length.out Length of numeric target variables.
 #' @param factors Type of summary for factors. Can be "combination" or "reference".
-#' @param numerics Type of summary for numerics Can be "combination" or any function ("mean", "median", ...).
+#' @param numerics Type of summary for numerics Can be "combination", any function ("mean", "median", ...) or a value.
 #'
 #' @examples
 #' library(psycho)
@@ -15,6 +15,7 @@
 #' newdata <- refdata(df, target="Sex")
 #' newdata <- refdata(df, target="Sex", factors="combinations")
 #' newdata <- refdata(df, target=c("Sex", "Salary", "Tolerating"), length.out=3)
+#' newdata <- refdata(df, target=c("Sex", "Salary", "Tolerating"), numerics=0)
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
@@ -57,21 +58,24 @@ refdata <- function(df, target="all", length.out=10, factors="reference", numeri
 
 
   if (factors == "reference") {
-    facs <- summarise_all(facs, smart_summary)
+    facs <- dplyr::summarise_all(facs, smart_summary)
   } else {
     facs <- tidyr::expand_(facs, names(facs))
   }
 
-  if (numerics != "combination") {
-    nums <- summarise_all(nums, smart_summary, numerics)
-  } else {
+  if (is.numeric(numerics)) {
+    nums[1, ] <- numerics
+    nums <- nums[1, ]
+  } else if(numerics == "combination"){
     nums <- tidyr::expand_(nums, names(nums))
+  } else {
+    nums <- dplyr::summarise_all(nums, smart_summary, numerics)
   }
 
 
-  if (nrow(facs) == 0) {
+  if (nrow(facs) == 0 | ncol(facs) == 0) {
     refrest <- nums
-  } else if (nrow(nums) == 0) {
+  } else if (nrow(nums) == 0 | ncol(nums) == 0) {
     refrest <- facs
   } else {
     refrest <- merge(facs, nums)
