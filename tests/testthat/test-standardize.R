@@ -4,12 +4,12 @@ test_that("Correct Value", {
   library(psycho)
 
   df <- data.frame(
-    Participant = as.factor(rep(1:25,each=4)),
+    Participant = as.factor(rep(1:25, each = 4)),
     Condition = base::rep_len(c("A", "B", "C", "D"), 100),
     V1 = rnorm(100, 30, .2),
     V2 = runif(100, 3, 5),
     V3 = rnorm(100, 100, 10)
-    )
+  )
 
   dfZ <- standardize(df)
   testthat::expect_equal(mean(dfZ$V1), 0)
@@ -31,5 +31,4 @@ test_that("Correct Value", {
 
   dfZ <- standardize(dplyr::group_by(df, Participant))
   testthat::expect_equal(mean(dfZ$V1), 0)
-
 })

@@ -287,7 +287,7 @@ correlation <- function(df,
     p <- corr$p
     p[lower.tri(p)] <- p.adjust(p[lower.tri(p)], method = adjust, n = choose(nrow(p), 2))
     p[upper.tri(p)] <- p.adjust(p[upper.tri(p)], method = adjust, n = choose(nrow(p), 2))
-    warning("Due to the presence of two dataframes, the plot might be incorrect. Consider with caution.")
+    # warning("Due to the presence of two dataframes, the plot might be incorrect. Consider with caution.")
   }
 
   if (type == "semi") {

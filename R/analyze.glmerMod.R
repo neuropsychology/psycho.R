@@ -38,10 +38,7 @@ analyze.glmerMod <- function(x, CI=95, effsize_rules="chen2010", ...) {
   # -------------
   fit <- x
 
-  predictors <- all.vars(as.formula(fit@call$formula))
-  outcome <- predictors[[1]]
-  predictors <- tail(predictors, -1)
-
+  info <- get_info(fit)
   R2 <- tryCatch({
     get_R2(fit)
   }, error = function(e) {
@@ -49,8 +46,9 @@ analyze.glmerMod <- function(x, CI=95, effsize_rules="chen2010", ...) {
     R2 <- list(R2m = NA, R2c = NA)
     return(R2)
   })
-  R2m <- R2$R2m
-  R2c <- R2$R2c
+
+
+
 
 
 
@@ -73,12 +71,22 @@ analyze.glmerMod <- function(x, CI=95, effsize_rules="chen2010", ...) {
   # Summary
   summary <- dplyr::select_(summary, "Variable", "Coef", "SE", "z", "p", "Coef.std", "SE.std", "Effect_Size")
 
-
+  # CI computation
   if (!is.null(CI)) {
-    CI_values <- suppressMessages(confint(fit, level = CI / 100))
-    CI_values <- tail(CI_values, n = length(rownames(summary)))
-    summary$CI_lower <- CI_values[, 1]
-    summary$CI_higher <- CI_values[, 2]
+    CI_values <- tryCatch({
+      suppressMessages(confint(fit, level = CI / 100))
+    }, error = function(e) {
+      warning("Couldn't compute CI. Skipping.")
+      CI_values <- NA
+      return(CI_values)
+    })
+    if (!all(is.na(CI_values))) {
+      CI_values <- tail(CI_values, n = length(rownames(summary)))
+      summary$CI_lower <- CI_values[, 1]
+      summary$CI_higher <- CI_values[, 2]
+    } else {
+      CI <- NULL
+    }
   }
 
 
@@ -90,8 +98,8 @@ analyze.glmerMod <- function(x, CI=95, effsize_rules="chen2010", ...) {
   # -------------
   # Initialize empty values
   values <- list(model = list(), effects = list())
-  values$model$R2m <- R2m
-  values$model$R2c <- R2c
+  values$model$R2m <- R2$R2m
+  values$model$R2c <- R2$R2c
 
   # Loop over all variables
   for (varname in varnames) {
@@ -166,13 +174,13 @@ analyze.glmerMod <- function(x, CI=95, effsize_rules="chen2010", ...) {
   # -------------
   text <- c(paste0(
     "The overall model predicting ",
-    outcome,
+    info$outcome,
     " (formula = ",
-    stringr::str_squish(format(fit@call$formula)),
+    info$formula,
     ") has an explanatory power (conditional R2) of ",
-    format_digit(R2c * 100, 2),
-    "%. The variance explained by fixed effects only (marginal R2) is ",
-    format_digit(R2m * 100, 2), "%. ",
+    format_digit(R2$R2c * 100, 2),
+    "%, in which the fixed effects' part is ",
+    format_digit(R2$R2m * 100, 2), "% (marginal R2). ",
     values$effects[["(Intercept)"]]$Text
   ))
 

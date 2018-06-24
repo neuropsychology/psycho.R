@@ -331,15 +331,7 @@ standardize.glmerMod <- standardize.glm
 standardize.lm <- function(x, partial_SD=TRUE, ...) {
   fit <- x
 
-  coefs <- MuMIn::coefTable(fit)[, 1:2]
-  mm <- model.matrix(fit)
-
-  if (partial_SD == TRUE) {
-    bx <- MuMIn::partial.sd(fit)
-  } else {
-    response.sd <- sd(model.response(model.frame(fit)), na.rm = TRUE)
-    bx <- apply(mm, 2L, sd) / response.sd
-  }
+  coefs <- MuMIn::std.coef(fit, partial.sd = partial_SD)[, 1:2]
 
   coefs <- as.data.frame(coefs)
   names(coefs) <- c("Coef.std", "SE.std")

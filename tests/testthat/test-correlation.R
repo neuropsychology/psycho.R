@@ -34,8 +34,10 @@ test_that("Correlations work", {
 
   # Dual
   df2 <- attitude[c("raises", "critical")]
+  output <- psycho::correlation(df, df2, type = "full", adjust = "none")
+  value <- output$values$r[2, 1]
+  testthat::expect_equal(value, 0.67, tol = 0.1)
 
-  testthat::expect_warning(psycho::correlation(df, df2, type = "full", adjust = "none"))
 
 
   type <- "semi"

@@ -6,8 +6,9 @@
 #'  \item{\link[=analyze.lmerModLmerTest]{analyze.merModLmerTest}}
 #'  \item{\link[=analyze.glmerMod]{analyze.glmerMod}}
 #'  \item{\link[=analyze.lm]{analyze.lm}}
+#'  \item{\link[=analyze.lm]{analyze.glm}}
 #'  }
-#'  #' \itemize{
+#'  \itemize{
 #'  \item{\link[=analyze.htest]{analyze.htest}}
 #'  \item{\link[=analyze.aov]{analyze.aov}}
 #'  }
