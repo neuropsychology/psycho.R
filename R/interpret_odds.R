@@ -21,9 +21,9 @@
 #'  }
 #' @export
 interpret_odds <- function(x, log=FALSE, direction=FALSE, rules="chen2010") {
-  if(rules %in% c("cohen1988", "sawilowsky2009")){
+  if (rules %in% c("cohen1988", "sawilowsky2009")) {
     interpretation <- sapply(odds_to_d(x, log = log), .interpret_d, direction = direction, rules = rules, return_rules = FALSE)
-  } else{
+  } else {
     interpretation <- sapply(x, .interpret_odds, log = log, direction = direction, rules = rules, return_rules = FALSE)
   }
   return(interpretation)
@@ -160,7 +160,7 @@ interpret_odds_posterior <- function(posterior, log=FALSE, rules="chen2010") {
         "large" = 6.71
       )
     } else {
-      stop("rules must be either a list or 'field2013'.")
+      stop("rules must be either a list or 'chen2010'.")
     }
   }
 
@@ -221,9 +221,9 @@ interpret_odds_posterior <- function(posterior, log=FALSE, rules="chen2010") {
 #'  }
 #' @export
 odds_to_d <- function(x, log=TRUE) {
-  if(log==FALSE){
+  if (log == FALSE) {
     x <- log(x)
   }
-  d = x * (sqrt(3)/pi)
+  d <- x * (sqrt(3) / pi)
   return(d)
 }
