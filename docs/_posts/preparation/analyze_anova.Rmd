@@ -1,5 +1,5 @@
 ---
-title: "APA Formatted Correlation with effect sizes"
+title: "The end of errors in ANOVA reporting"
 layout: post
 output:
   md_document:
@@ -19,12 +19,17 @@ editor_options:
 library(knitr)
 ```
 
-One of the most time-consuming part of data analysis in psychology is the copy-pasting of specific values of some R output to a manuscript or a report. This task is frustrating, prone to errors, and increase de variability of statistical reporting. At the sime time, standardizing practices of what and how to report is crucial for reproducibility and clarity. **The [psycho](https://github.com/neuropsychology/psycho.R) package was designed specifically to do this job**, at first for complex [Bayesian mixed models](https://cran.r-project.org/web/packages/psycho/vignettes/bayesian.html), but is now also compatible with basic methods, such as **correlation**.
+Psychology is still massively using analysis of variance (ANOVA). Despite its relative simplicity, I am very often confronted to errors in its reporting. Many can be found in student's theses, but also in manuscripts! Beyond the incomplete, uncomprehensible or just wrong reporting, one can find a tremendous amount of errors (even in published papers! See the excellent [statcheck](http://statcheck.io/) to quickly check the stats of a paper). Moreover, the reporting, copy/pasting of values from any statistical softwares to manuscripts is often a pain in the rear.
 
-# Do a correlation
+**How to end it?**
+
+We believe that this could be solved (at least, partially) by the default implementation of current best practices of statistical reporting. A tool that automatically transforms a statistical result into a copy/pastable text. Of course, this automation cannot ne suitable for each and every advanced use, but will be satisfying to a good proportion of the use cases. Implementing this unified, end-user oriented pipeline is the goal of the [psycho](https://github.com/neuropsychology/psycho.R) package.
+
+# Fit an anova
+
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-df <- iris
-cor_results <- cor.test(df$Sepal.Length, df$Petal.Length)
+aov_results <- aov(qsec ~ cyl * gear, data=mtcars)
+summary(aov_results)
 ```
 
 
@@ -35,27 +40,22 @@ cor_results <- cor.test(df$Sepal.Length, df$Petal.Length)
 
 # Load packages
 library(psycho)
-psycho::analyze(cor_results)
+
+psycho::analyze(aov_results)
 ```
+
 
 
 The formatted output includes **direction**, **effect size** (interpreted by default with **[Cohen's (1988)](https://github.com/neuropsychology/psycho.R/blob/master/R/interpret_r.R#L142)** rules) and **confidence intervals**. Now you can just copy and paste this line into your report and focus on what's important.
 
-# Dataframe of Values
+It returns the partial omega-squared as an index of effect size (better than the eta2, see REFERENCE)
 
-It is also possible to have all the values stored in a dataframe by running a **summary** on the analyzed object.
+# t-tests, correlations, linear models...
 
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='hide', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-results <- analyze(cor_results)
-summary(results)
-```
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, echo=FALSE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-knitr::kable(summary(results), digits=2)
-```
+This method also exists for other statistical procudures.
 
-# Bayesian Correlation
 
-Nevertheless, we recommand doing a **Bayesian correlation**, which is even [easier and quicker to do](blogpostlink)!
+
 
 # Contribute
 

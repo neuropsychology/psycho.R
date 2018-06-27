@@ -13,7 +13,7 @@ interpret_odds(x, log = FALSE, direction = FALSE, rules = "chen2010")
 
 \item{direction}{Return direction.}
 
-\item{rules}{Can be "chen2010" (default), or a custom list.}
+\item{rules}{Can be "chen2010" (default), "cohen1988" (through \link[=odds_to_d]{log odds to Cohen's d transformation}) or a custom list.}
 }
 \description{
 Return the interpretation of Omegas Squared.

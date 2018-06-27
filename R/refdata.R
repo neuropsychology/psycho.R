@@ -66,7 +66,7 @@ refdata <- function(df, target="all", length.out=10, factors="reference", numeri
   if (is.numeric(numerics)) {
     nums[1, ] <- numerics
     nums <- nums[1, ]
-  } else if(numerics == "combination"){
+  } else if (numerics == "combination") {
     nums <- tidyr::expand_(nums, names(nums))
   } else {
     nums <- dplyr::summarise_all(nums, smart_summary, numerics)

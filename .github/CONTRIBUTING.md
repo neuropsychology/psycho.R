@@ -7,3 +7,4 @@
 - Authors of code contribution will be added within the [**authors**](https://github.com/neuropsychology/psycho.R/blob/master/DESCRIPTION) section within the package description.
 - Please document and comment your code, so that the purpose of each step (or code line) is stated in a clear and understandable way.
 - Before submitting a change, please use [**styler**](https://github.com/r-lib/styler) to nicely format your code.
+- Before you start to code, make sure you're on the "dev" branch. First of all, you have access to the newest changes (and will not change something already changed) and your PR will be merged into the dev branch, which is safer.

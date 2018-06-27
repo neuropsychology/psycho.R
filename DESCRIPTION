@@ -1,7 +1,7 @@
 Package: psycho
 Type: Package
 Title: Efficient and Publishing-Oriented Workflow for Psychological Science
-Version: 0.3.1
+Version: 0.3.2
 Authors@R: c(
     person("Dominique", 
         "Makowski", 
@@ -48,7 +48,7 @@ Imports:
     lme4,
     lmerTest,
     coda,
-    emmeans,
+    emmeans (>= 1.2.2),
     broom,
     tibble,
     DescTools,
