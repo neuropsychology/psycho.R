@@ -93,7 +93,7 @@ events <- left_join(events, data, by="date")
 library(rstanarm)
 library(psycho)
 
-fit<- rstanarm::stan_glm(count~poly(day_num, 2), data=data)
+fit<- rstanarm::stan_glm(count~poly(day_num, 3), data=data)
 
 psycho::get_predicted(fit, data) %>% 
   ggplot(aes(x=date, group=1)) +

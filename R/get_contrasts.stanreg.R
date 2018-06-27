@@ -38,8 +38,8 @@ get_contrasts.stanreg <- function(fit, formula, prob=0.9, ...) {
 
   # emmeans ---------------------------------------------------------------
   means_posterior <- fit %>%
-    emmeans::emmeans(formula) %>%
-    coda::as.mcmc() %>%
+    emmeans::emmeans(formula, ...) %>%
+    emmeans::as.mcmc.emmGrid() %>%
     as.matrix() %>%
     coda::as.mcmc() %>%
     as.data.frame()
@@ -66,9 +66,9 @@ get_contrasts.stanreg <- function(fit, formula, prob=0.9, ...) {
 
   # Contrasts ---------------------------------------------------------------
   contrasts_posterior <- fit %>%
-    emmeans::emmeans(formula) %>%
+    emmeans::emmeans(formula, ...) %>%
     graphics::pairs() %>%
-    coda::as.mcmc() %>%
+    emmeans::as.mcmc.emmGrid() %>%
     as.matrix() %>%
     coda::as.mcmc() %>%
     as.data.frame()

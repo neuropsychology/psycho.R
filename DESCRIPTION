@@ -48,7 +48,7 @@ Imports:
     lme4,
     lmerTest,
     coda,
-    emmeans,
+    emmeans (>= 1.2.2),
     broom,
     tibble,
     DescTools,

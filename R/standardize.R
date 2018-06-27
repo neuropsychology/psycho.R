@@ -287,7 +287,7 @@ standardize.stanreg <- function(x, method="posterior", ...) {
 #' @seealso https://think-lab.github.io/d/205/
 #'
 #' @export
-standardize.glm <- standardize.glmerMod <- function(x, method="agresti", ...) {
+standardize.glm <- function(x, method="agresti", ...) {
   fit <- x
 
   # agresti method

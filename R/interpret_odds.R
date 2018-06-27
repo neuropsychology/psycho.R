@@ -5,7 +5,7 @@
 #' @param x Odds ratio.
 #' @param log Are these log odds ratio?
 #' @param direction Return direction.
-#' @param rules Can be "chen2010" (default), or a custom list.
+#' @param rules Can be "chen2010" (default), "cohen1988" (through \link[=odds_to_d]{log odds to Cohen's d transformation}) or a custom list.
 #'
 #' @examples
 #' library(psycho)
@@ -21,9 +21,18 @@
 #'  }
 #' @export
 interpret_odds <- function(x, log=FALSE, direction=FALSE, rules="chen2010") {
-  interpretation <- sapply(x, .interpret_odds, log = log, direction = direction, rules = rules, return_rules = FALSE)
+  if(rules %in% c("cohen1988", "sawilowsky2009")){
+    interpretation <- sapply(odds_to_d(x, log = log), .interpret_d, direction = direction, rules = rules, return_rules = FALSE)
+  } else{
+    interpretation <- sapply(x, .interpret_odds, log = log, direction = direction, rules = rules, return_rules = FALSE)
+  }
   return(interpretation)
 }
+
+
+
+
+
 
 
 
@@ -173,4 +182,48 @@ interpret_odds_posterior <- function(posterior, log=FALSE, rules="chen2010") {
   } else {
     return(interpretation)
   }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#' (Log) odds ratio to Cohen's d
+#'
+#' (Log) odds ratio to Cohen's d.
+#'
+#' @param x Odds ratio.
+#' @param log Are these log odds ratio?
+#'
+#' @examples
+#' library(psycho)
+#' odds_to_d(x=2)
+#'
+#' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
+#'
+#' @seealso https://www.meta-analysis.com/downloads/Meta-analysis%20Converting%20among%20effect%20sizes.pdf
+#'
+#' @references
+#' \itemize{
+#'  \item{Sánchez-Meca, J., Marín-Martínez, F., & Chacón-Moscoso, S. (2003). Effect-size indices for dichotomized outcomes in meta-analysis. Psychological methods, 8(4), 448.}
+#'  }
+#' @export
+odds_to_d <- function(x, log=TRUE) {
+  if(log==FALSE){
+    x <- log(x)
+  }
+  d = x * (sqrt(3)/pi)
+  return(d)
 }
