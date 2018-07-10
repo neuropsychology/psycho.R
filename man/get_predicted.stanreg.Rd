@@ -5,7 +5,7 @@
 \title{Compute predicted values of stanreg models.}
 \usage{
 \method{get_predicted}{stanreg}(fit, newdata = "model", prob = 0.9,
-  keep_iterations = FALSE, draws = NULL, odds_to_probs = TRUE,
+  odds_to_probs = TRUE, keep_iterations = FALSE, draws = NULL,
   posterior_predict = FALSE, seed = NULL, ...)
 }
 \arguments{
@@ -15,11 +15,11 @@
 
 \item{prob}{Probability of credible intervals (0.9 (default) will compute 5-95\% CI). Can also be a list of probs (e.g., c(0.90, 0.95)).}
 
+\item{odds_to_probs}{Transform log odds ratios in logistic models to probabilies.}
+
 \item{keep_iterations}{Keep all prediction iterations.}
 
 \item{draws}{An integer indicating the number of draws to return. The default and maximum number of draws is the size of the posterior sample.}
-
-\item{odds_to_probs}{Transform log odds ratios in logistic models to probabilies.}
 
 \item{posterior_predict}{Posterior draws of the outcome instead of the link function (i.e., the regression "line").}
 
@@ -39,11 +39,9 @@ library(psycho)
 library(ggplot2)
 require(rstanarm)
 
-fit <- rstanarm::stan_glm(Tolerating ~ Adjusting, data=affective, iter=500)
+fit <- rstanarm::stan_glm(Tolerating ~ Adjusting, data=affective)
 
-refgrid <- emmeans::ref_grid(fit, at=list(
-    Adjusting=seq(min(affective$Adjusting), max(affective$Adjusting), length.out=10)))
-
+refgrid <- psycho::refdata(affective, "Adjusting")
 predicted <- get_predicted(fit, newdata=refgrid)
 
 ggplot(predicted, aes(x=Adjusting, y=Tolerating_Median)) +
@@ -52,11 +50,9 @@ ggplot(predicted, aes(x=Adjusting, y=Tolerating_Median)) +
                   ymax=Tolerating_CI_95),
                   alpha=0.1)
 
-fit <- rstanarm::stan_glm(Sex ~ Adjusting, data=affective, family="binomial", iter=500)
+fit <- rstanarm::stan_glm(Sex ~ Adjusting, data=affective, family="binomial")
 
-refgrid <- emmeans::ref_grid(fit, at=list(
-    Adjusting=seq(min(affective$Adjusting), max(affective$Adjusting), length.out=10)))
-
+refgrid <- psycho::refdata(affective, "Adjusting")
 predicted <- get_predicted(fit, newdata=refgrid)
 
 ggplot(predicted, aes(x=Adjusting, y=Sex_Median)) +

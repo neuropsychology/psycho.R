@@ -1,5 +1,5 @@
 ---
-title: "The end of errors in ANOVA reporting"
+title: "Rules of Thumb for Effect Sizes in Logistic Regressions"
 layout: post
 output:
   md_document:
@@ -41,12 +41,20 @@ simulate_logistic_data <- function(n=1000, noise=0){
 }
 
 
+
+
+
+noise <- 0
 data <- data.frame()
-for(n in seq(10, 100)){
+for(n in seq(6, 250)){
   print(n)
   
-  for(i in seq(10)){
-      df <- simulate_logistic_data(n, noise=0)
+  for(i in seq(20)){
+      # Generate data
+      df <- simulate_logistic_data(n, noise=noise)
+      
+      # Change scale randomly
+      df$x <- df$x * runif(1, 0, 1000) + runif(1, 0, 1000)
       
       fit = tryCatch({
         glm(y~x,data=df, family="binomial")
@@ -63,7 +71,7 @@ for(n in seq(10, 100)){
     }
       
     for(method in c("chen2010", "cohen1988")){
-      rez <- analyze(fit, effsize_rules = method)
+      rez <- psycho::analyze(fit, effsize_rules = method)
       rez <- rez$summary[2,] %>% 
         select(Coef, Coef.std, p, Effect_Size) %>% 
         mutate(Method = method,
@@ -76,10 +84,19 @@ for(n in seq(10, 100)){
 }
 
 data %>% 
-  mutate(Coef = abs(Coef),
+  mutate(Coef.std = abs(Coef.std),
          Effect_Size = forcats::fct_rev(Effect_Size)) %>% 
-  ggplot(aes(y=Coef, x=Effect_Size, fill=Method)) +
+  ggplot(aes(y=Coef.std, x=Effect_Size, fill=Method)) +
   geom_violin() +
+  ylab("Standardized Log Odds") +
+  ylim(0, 4)
+  
+data %>% 
+  mutate(Coef.std = abs(Coef.std),
+         Effect_Size = forcats::fct_rev(Effect_Size)) %>% 
+  ggplot(aes(y=Coef.std, x=n, colour=Effect_Size)) +
+  geom_point() +
+  ylab("Standardized Log Odds") +
   ylim(0, 4)
 ```
 

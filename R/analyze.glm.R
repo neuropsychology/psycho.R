@@ -25,7 +25,7 @@
 #' @importFrom stats formula
 #' @importFrom stringr str_squish
 #' @export
-analyze.glm <- function(x, CI=95, effsize_rules="chen2010", ...) {
+analyze.glm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
 
 
   # Processing
@@ -36,9 +36,9 @@ analyze.glm <- function(x, CI=95, effsize_rules="chen2010", ...) {
     stop(paste("Models of family", fit$family$family, "not supported yet."))
   }
 
-  predictors <- all.vars(stats::formula(fit))
-  outcome <- predictors[[1]]
-  predictors <- tail(predictors, -1)
+  info <- get_info(fit)
+  outcome <- info$outcome
+  predictors <- info$predictors
 
   # R2 <- tjur_D(fit)
   R2 <- get_R2(fit)

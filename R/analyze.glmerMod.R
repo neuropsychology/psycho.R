@@ -31,7 +31,7 @@
 #' @import lmerTest
 #' @import dplyr
 #' @export
-analyze.glmerMod <- function(x, CI=95, effsize_rules="chen2010", ...) {
+analyze.glmerMod <- function(x, CI=95, effsize_rules="cohen1988", ...) {
 
 
   # Processing

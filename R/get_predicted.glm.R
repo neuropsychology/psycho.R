@@ -1,15 +1,11 @@
-#' Compute predicted values of stanreg models.
+#' Compute predicted values of lm models.
 #'
-#' Compute predicted from a stanreg model.
+#' Compute predicted from a lm model.
 #'
-#' @param fit A stanreg model.
+#' @param fit An lm model.
 #' @param newdata A data frame in which to look for variables with which to predict. If omitted, the model matrix is used. If "model", the model's data is used.
 #' @param prob Probability of credible intervals (0.9 (default) will compute 5-95\% CI). Can also be a list of probs (e.g., c(0.90, 0.95)).
 #' @param odds_to_probs Transform log odds ratios in logistic models to probabilies.
-#' @param keep_iterations Keep all prediction iterations.
-#' @param draws An integer indicating the number of draws to return. The default and maximum number of draws is the size of the posterior sample.
-#' @param posterior_predict Posterior draws of the outcome instead of the link function (i.e., the regression "line").
-#' @param seed An optional seed to use.
 #' @param ... Arguments passed to or from other methods.
 #'
 #'
@@ -20,28 +16,16 @@
 #' \dontrun{
 #' library(psycho)
 #' library(ggplot2)
-#' require(rstanarm)
 #'
-#' fit <- rstanarm::stan_glm(Tolerating ~ Adjusting, data=affective)
-#'
-#' refgrid <- psycho::refdata(affective, "Adjusting")
-#' predicted <- get_predicted(fit, newdata=refgrid)
-#'
-#' ggplot(predicted, aes(x=Adjusting, y=Tolerating_Median)) +
-#'   geom_line() +
-#'   geom_ribbon(aes(ymin=Tolerating_CI_5,
-#'                   ymax=Tolerating_CI_95),
-#'                   alpha=0.1)
-#'
-#' fit <- rstanarm::stan_glm(Sex ~ Adjusting, data=affective, family="binomial")
+#' fit <- glm(Sex ~ Adjusting, data=affective, family="binomial")
 #'
 #' refgrid <- psycho::refdata(affective, "Adjusting")
 #' predicted <- get_predicted(fit, newdata=refgrid)
 #'
-#' ggplot(predicted, aes(x=Adjusting, y=Sex_Median)) +
+#' ggplot(predicted, aes(x=Adjusting, y=Sex_Predicted)) +
 #'   geom_line() +
-#'   geom_ribbon(aes(ymin=Sex_CI_5,
-#'                   ymax=Sex_CI_95),
+#'   geom_ribbon(aes(ymin=Sex_CI_2.5,
+#'                   ymax=Sex_CI_97.5),
 #'                   alpha=0.1)
 #'
 #' }
@@ -52,25 +36,18 @@
 #' @importFrom dplyr bind_cols
 #' @importFrom tibble rownames_to_column
 #' @export
-get_predicted.stanreg <- function(fit, newdata="model", prob=0.9, odds_to_probs=TRUE, keep_iterations=FALSE, draws=NULL, posterior_predict=FALSE, seed=NULL, ...) {
+get_predicted.glm <- function(fit, newdata="model", prob=0.95, odds_to_probs=TRUE, ...) {
+
 
   # Extract names
-  predictors <- all.vars(as.formula(fit$formula))
-  outcome <- predictors[[1]]
-  predictors <- tail(predictors, -1)
+  info <- get_info(fit)
+  outcome <- info$outcome
+  predictors <- info$predictors
 
   # Set newdata if refgrid
   if ("emmGrid" %in% class(newdata)) {
     newdata <- newdata@grid
     newdata[".wgt."] <- NULL
-  }
-
-  # Deal with potential random
-  re.form <- NULL
-  if (!is.null(newdata)) {
-    if (!is.character(newdata) & is.mixed(fit)) {
-      re.form <- NA
-    }
   }
 
   # Set newdata to actual data
@@ -85,34 +62,25 @@ get_predicted.stanreg <- function(fit, newdata="model", prob=0.9, odds_to_probs=
     }
   }
 
-  # Generate draws -------------------------------------------------------
-  if (posterior_predict == FALSE) {
-    posterior <- rstanarm::posterior_linpred(fit, newdata = newdata, re.form = re.form, seed = seed, draws = draws)
-  } else {
-    posterior <- rstanarm::posterior_predict(fit, newdata = newdata, re.form = re.form, seed = seed, draws = draws)
-  }
 
-  # Format -------------------------------------------------------
+  # Compute ----------------------------------------------------------
 
   # Predicted Y
-  pred_y <- as.data.frame(apply(posterior, 2, median))
-  names(pred_y) <- paste0(outcome, "_Median")
+  prediction <- as.data.frame(predict(fit, newdata = newdata, type = "link", se.fit = TRUE))
+  SE <- as.data.frame(prediction$se.fit)
+  pred_y <- as.data.frame(prediction$fit)
+  names(pred_y) <- paste0(outcome, "_Predicted")
 
   # Credible Interval
   for (CI in c(prob)) {
-    pred_y_interval <- hdi(posterior, prob = CI)
+    pred_y_interval <- data.frame(
+      lwr = prediction$fit - (qnorm(CI) * SE),
+      upr = prediction$fit + (qnorm(CI) * SE)
+    )
     names(pred_y_interval) <- paste(outcome, "CI", c((1 - CI) / 2 * 100, 100 - ((1 - CI) / 2 * 100)), sep = "_")
     pred_y <- cbind(pred_y, pred_y_interval)
   }
 
-
-  # Keep iterations ---------------------------------------------------------
-
-  if (keep_iterations == TRUE) {
-    iterations <- as.data.frame(t(posterior))
-    names(iterations) <- paste0("iter_", seq_len(length(names(iterations))))
-    pred_y <- cbind(pred_y, iterations)
-  }
 
   # Transform odds to probs ----------------------------------------------------------
 

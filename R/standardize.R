@@ -60,14 +60,14 @@ standardize <- function(x, ...) {
 #'
 #' @export
 standardize.numeric <- function(x, normalize=FALSE, ...) {
-  if(all(is.na(x))){
+  if (all(is.na(x))) {
     return(x)
   }
 
-  if(normalize == FALSE){
+  if (normalize == FALSE) {
     return(as.vector(scale(x, ...)))
-  } else{
-    return(as.vector((x-min(x, na.rm=TRUE)) / diff(range(x, na.rm=TRUE), na.rm=TRUE)))
+  } else {
+    return(as.vector((x - min(x, na.rm = TRUE)) / diff(range(x, na.rm = TRUE), na.rm = TRUE)))
   }
 }
 
@@ -135,7 +135,7 @@ standardize.data.frame <- function(x, subset=NULL, except=NULL, normalize=FALSE,
   if (inherits(x, "grouped_df")) {
     dfZ <- x %>% dplyr::do_(".standardize_df(., subset=subset, except=except, normalize=normalize, ...)")
   } else {
-    dfZ <- .standardize_df(x, subset = subset, except = except, normalize=normalize, ...)
+    dfZ <- .standardize_df(x, subset = subset, except = except, normalize = normalize, ...)
   }
 
   return(dfZ)
@@ -188,7 +188,7 @@ standardize.data.frame <- function(x, subset=NULL, except=NULL, normalize=FALSE,
   dfnum <- purrr::keep(df, is.numeric)
 
   # Scale
-  dfnum <- as.data.frame(sapply(dfnum, standardize, normalize=normalize))
+  dfnum <- as.data.frame(sapply(dfnum, standardize, normalize = normalize))
 
   # Add non-numerics
   if (is.null(ncol(dfother))) {

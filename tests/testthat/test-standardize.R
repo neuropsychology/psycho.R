@@ -31,4 +31,7 @@ test_that("Correct Value", {
 
   dfZ <- standardize(dplyr::group_by(df, Participant))
   testthat::expect_equal(mean(dfZ$V1), 0)
+
+  dfN <- standardize(df, except = "V3", normalize = TRUE)
+  testthat::expect_equal(mean(dfN$V2), 0.56, tol = 0.1)
 })

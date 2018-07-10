@@ -16,6 +16,7 @@ Compute predicted values from models. See the
 documentation for your model's class:
 \itemize{
  \item{\link[=get_predicted.stanreg]{get_predicted.stanreg}}
+ \item{\link[=get_predicted.lm]{get_predicted.lm}}
  }
 }
 \author{

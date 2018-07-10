@@ -4,7 +4,7 @@
 \alias{analyze.glm}
 \title{Analyze glm objects.}
 \usage{
-\method{analyze}{glm}(x, CI = 95, effsize_rules = "chen2010", ...)
+\method{analyze}{glm}(x, CI = 95, effsize_rules = "cohen1988", ...)
 }
 \arguments{
 \item{x}{glm object.}

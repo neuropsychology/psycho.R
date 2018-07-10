@@ -30,9 +30,9 @@ analyze.lm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
   # -------------
   fit <- x
 
-  predictors <- all.vars(stats::formula(fit))
-  outcome <- predictors[[1]]
-  predictors <- tail(predictors, -1)
+  info <- get_info(fit)
+  outcome <- info$outcome
+  predictors <- info$predictors
 
   R2 <- get_R2(fit)
   R2adj <- R2$R2.adj
