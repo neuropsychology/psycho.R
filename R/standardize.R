@@ -47,18 +47,28 @@ standardize <- function(x, ...) {
 #' Standardize (Z-score, "normalize") a vector.
 #'
 #' @param x Numeric vector.
+#' @param normalize Will perform a normalization instead of a standardization. This scales all numeric variables in the range 0 - 1.
 #' @param ... Arguments passed to or from other methods.
 #'
 #' @examples
-#' dfZ <- standardize(x=c(1, 4, 6, 2))
+#' standardize(x=c(1, 4, 6, 2))
+#' standardize(x=c(1, 4, 6, 2), normalize=TRUE)
 #'
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #'
 #' @export
-standardize.numeric <- function(x, ...) {
-  return(as.vector(scale(x)))
+standardize.numeric <- function(x, normalize=FALSE, ...) {
+  if(all(is.na(x))){
+    return(x)
+  }
+
+  if(normalize == FALSE){
+    return(as.vector(scale(x, ...)))
+  } else{
+    return(as.vector((x-min(x, na.rm=TRUE)) / diff(range(x, na.rm=TRUE), na.rm=TRUE)))
+  }
 }
 
 
@@ -87,6 +97,7 @@ standardize.numeric <- function(x, ...) {
 #' standardized.
 #' @param except Character or list of characters of column names to be excluded
 #' from standardization.
+#' @param normalize Will perform a normalization instead of a standardization. This scales all numeric variables in the range 0 - 1.
 #' @param ... Arguments passed to or from other methods.
 #'
 #' @return Dataframe.
@@ -106,6 +117,7 @@ standardize.numeric <- function(x, ...) {
 #' dfZ <- standardize(df, except=c("V1", "V2"))
 #' dfZ <- standardize(df, subset="V3")
 #' dfZ <- standardize(df, subset=c("V1", "V2"))
+#' dfZ <- standardize(df, normalize=TRUE)
 #'
 #' # Respects grouping
 #' dfZ <- df %>%
@@ -119,11 +131,11 @@ standardize.numeric <- function(x, ...) {
 #' @importFrom purrr keep discard
 #' @import dplyr
 #' @export
-standardize.data.frame <- function(x, subset=NULL, except=NULL, ...) {
+standardize.data.frame <- function(x, subset=NULL, except=NULL, normalize=FALSE, ...) {
   if (inherits(x, "grouped_df")) {
-    dfZ <- x %>% dplyr::do_(".standardize_df(., subset=subset, except=except)")
+    dfZ <- x %>% dplyr::do_(".standardize_df(., subset=subset, except=except, normalize=normalize, ...)")
   } else {
-    dfZ <- .standardize_df(x, subset = subset, except = except)
+    dfZ <- .standardize_df(x, subset = subset, except = except, normalize=normalize, ...)
   }
 
   return(dfZ)
@@ -146,7 +158,7 @@ standardize.data.frame <- function(x, subset=NULL, except=NULL, ...) {
 
 
 #' @keywords internal
-.standardize_df <- function(x, subset=NULL, except=NULL) {
+.standardize_df <- function(x, subset=NULL, except=NULL, normalize=FALSE, ...) {
   df <- x
 
   # Variable order
@@ -176,7 +188,7 @@ standardize.data.frame <- function(x, subset=NULL, except=NULL, ...) {
   dfnum <- purrr::keep(df, is.numeric)
 
   # Scale
-  dfnum <- as.data.frame(scale(dfnum))
+  dfnum <- as.data.frame(sapply(dfnum, standardize, normalize=normalize))
 
   # Add non-numerics
   if (is.null(ncol(dfother))) {

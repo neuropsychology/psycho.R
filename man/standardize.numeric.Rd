@@ -4,10 +4,12 @@
 \alias{standardize.numeric}
 \title{Standardize (scale and reduce) numeric variables.}
 \usage{
-\method{standardize}{numeric}(x, ...)
+\method{standardize}{numeric}(x, normalize = FALSE, ...)
 }
 \arguments{
 \item{x}{Numeric vector.}
+
+\item{normalize}{Will perform a normalization instead of a standardization. This scales all numeric variables in the range 0 - 1.}
 
 \item{...}{Arguments passed to or from other methods.}
 }
@@ -15,7 +17,8 @@
 Standardize (Z-score, "normalize") a vector.
 }
 \examples{
-dfZ <- standardize(x=c(1, 4, 6, 2))
+standardize(x=c(1, 4, 6, 2))
+standardize(x=c(1, 4, 6, 2), normalize=TRUE)
 
 
 }

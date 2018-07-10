@@ -14,6 +14,8 @@
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
+#' @seealso Page 88 of APA's 6th Edition
+#'
 #' @export
 interpret_r <- function(x, direction=TRUE, strength=TRUE, rules="cohen1988") {
   interpretation <- sapply(x, .interpret_r, direction = direction, strength = strength, rules = rules, return_rules = FALSE)
@@ -42,6 +44,8 @@ interpret_r <- function(x, direction=TRUE, strength=TRUE, rules="cohen1988") {
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
+#' @seealso Page 88 of APA's 6th Edition
+#'
 #' @export
 interpret_r_posterior <- function(posterior, rules="cohen1988") {
   interpretation <- sapply(posterior, .interpret_r, rules = rules)
@@ -55,7 +59,7 @@ interpret_r_posterior <- function(posterior, rules="cohen1988") {
     summarise_("Probability" = "n() / length(posterior)") %>%
     separate("Interpretation",
       c("Strength", "Direction"),
-      " and ",
+      ", and ",
       remove = FALSE
     ) %>%
     mutate_(
@@ -167,7 +171,7 @@ interpret_r_posterior <- function(posterior, rules="cohen1988") {
 
 
   if (strength & direction) {
-    interpretation <- paste(s, "and", d)
+    interpretation <- paste0(s, ", and ", d)
   } else if (strength & direction == FALSE) {
     interpretation <- s
   } else {

@@ -1,7 +1,7 @@
 Package: psycho
 Type: Package
 Title: Efficient and Publishing-Oriented Workflow for Psychological Science
-Version: 0.3.2
+Version: 0.3.3
 Authors@R: c(
     person("Dominique", 
         "Makowski", 
@@ -62,5 +62,6 @@ Suggests:
     rmarkdown,
     testthat,
     covr,
-    plotly
+    plotly,
+    GPArotation
 VignetteBuilder: knitr

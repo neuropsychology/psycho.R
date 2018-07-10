@@ -56,7 +56,7 @@ analyze.htest <- function(x, effsize_rules="cohen1988", ...) {
       values$names,
       " is ",
       values$signif,
-      "ly ",
+      ", ",
       interpret_r(values$effect, rules = effsize_rules),
       " (r(",
       format_digit(values$df),

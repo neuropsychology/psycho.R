@@ -20,209 +20,193 @@ library(knitr)
 ```
 
 
+To make sense of their data and effects, psychologists often standardize (Z-score) their variables. However, in repeated-measures designs, there are three ways of standardizing data:
 
-To make sense of their data and effects, psychologists often standardize their variables. However, in repeated-measures designs, there are three ways of standardizing data:
-- **variable-wise**: The most common method. A simple scaling and reducing of each variable.
-- **participant-wise**: Variables are standardized "within" each participant.
-- **full**: Participant and variable wise.
+-   **Variable-wise**: The most common method. A simple scaling and reducing of each variable.
+-   **Participant-wise**: Variables are standardized "within" each participant.
+-   **Full**: Participant and variable wise.
 
-Unfortunately, the method used is often not explicitely stated. This is an issue as these methods can generate important discrepancies that contribute to the reproducibility crisis of psychological science. 
+Unfortunately, the method used is often not explicitly stated. This is an issue as these methods can generate important discrepancies that contribute to the reproducibility crisis of psychological science.
 
-In the following, we will see how to perform those methods and check for differences.
+In the following, we will see how to perform those methods and look for differences.
 
-# The data
+The data
+========
+
+We will take a dataset in which participants were exposed to negative pictures and had to rate their emotions (**valence**) and the amount of memories associated with the picture (**autobiographical link**). One could make the hypothesis that in a young participant with no general context of war or violence, the most negative pictures (mutilations) are less related to memories than less negative pictures (involving for example car crashes or sick people).
+
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='hide', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(psycho)
 
 df <- psycho::emotion %>% 
-  filter(Emotion_Condition == "Negative")
+  filter(Emotion_Condition == "Negative")  # Discard neutral pictures
 
 df %>% 
   group_by(Participant_ID) %>% 
   summarise(n_Trials = n(),
-            Subjective_Arousal_Mean = format_digit(mean(Subjective_Arousal, na.rm=TRUE)),
-            Subjective_Arousal_SD = format_digit(sd(Subjective_Arousal, na.rm=TRUE)),
+            Valence_Mean = format_digit(mean(Subjective_Valence, na.rm=TRUE)),
+            Valence_SD = format_digit(sd(Subjective_Valence, na.rm=TRUE)),
             Autobiographical_Link_Mean = format_digit(mean(Autobiographical_Link, na.rm=TRUE)),
             Autobiographical_Link_SD = format_digit(sd(Autobiographical_Link, na.rm=TRUE))) %>% 
-  mutate(Subjective_Arousal = paste(Subjective_Arousal_Mean, Subjective_Arousal_SD, sep=" +- "),
+  mutate(Valence = paste(Valence_Mean, Valence_SD, sep=" +- "),
          Autobiographical_Link = paste(Autobiographical_Link_Mean, Autobiographical_Link_SD, sep=" +- ")) %>% 
   select(-ends_with("SD"), -ends_with("Mean"))
 ```
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+```{r, fig.width=7, fig.height=4.5, echo = FALSE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 df %>% 
   group_by(Participant_ID) %>% 
   summarise(n_Trials = n(),
-            Subjective_Arousal_Mean = format_digit(mean(Subjective_Arousal, na.rm=TRUE)),
-            Subjective_Arousal_SD = format_digit(sd(Subjective_Arousal, na.rm=TRUE)),
+            Valence_Mean = format_digit(mean(Subjective_Valence, na.rm=TRUE)),
+            Valence_SD = format_digit(sd(Subjective_Valence, na.rm=TRUE)),
             Autobiographical_Link_Mean = format_digit(mean(Autobiographical_Link, na.rm=TRUE)),
             Autobiographical_Link_SD = format_digit(sd(Autobiographical_Link, na.rm=TRUE))) %>% 
-  mutate(Subjective_Arousal = paste(Subjective_Arousal_Mean, Subjective_Arousal_SD, sep=" +- "),
+  mutate(Valence = paste(Valence_Mean, Valence_SD, sep=" +- "),
          Autobiographical_Link = paste(Autobiographical_Link_Mean, Autobiographical_Link_SD, sep=" +- ")) %>% 
   select(-ends_with("SD"), -ends_with("Mean")) %>%  
-  knitr::kable() %>% 
-  head(10)
+  head(10) %>% 
+  knitr::kable() 
 ```
 
-
+As we can see from the means and SDs, there is a lot of variability **between and within** participants.
 
 # Standardize
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-dfZ_VarWise <- df %>% 
+Z_VarWise <- df %>% 
   standardize()
 
-dfZ_ParWise <- df %>% 
+Z_ParWise <- df %>% 
   group_by(Participant_ID) %>% 
-  standardize()
+  standardize() 
 
-dfZ_Full <- df %>% 
+Z_Full <- df %>% 
   group_by(Participant_ID) %>% 
   standardize() %>% 
   ungroup() %>% 
-  standardize()
+  standardize() 
 ```
 
 
+# Check 
 
+Let's see how these standardization techniques worked on the **Valence** variable.
+
+## Characteristics at a general level
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-print_summary <- function(data, var){
+print_summary <- function(data){
   paste(deparse(substitute(data)), ":", 
-        format_digit(mean(data[[var]])),
+        format_digit(mean(data[["Subjective_Valence"]])),
         "+-",
-        format_digit(sd(data[[var]])),
-        "[", format_digit(min(data[[var]])),
-        ",", format_digit(max(data[[var]])),
+        format_digit(sd(data[["Subjective_Valence"]])),
+        "[", format_digit(min(data[["Subjective_Valence"]])),
+        ",", format_digit(max(data[["Subjective_Valence"]])),
         "]")
 }
-print_summary(dfZ_VarWise, "Subjective_Arousal")
-print_summary(dfZ_ParWise, "Subjective_Arousal")
-print_summary(dfZ_Full, "Subjective_Arousal")
+
+print_summary(Z_VarWise)
+print_summary(Z_ParWise)
+print_summary(Z_Full)
 ```
 
-
+## Characteristics at a participant level
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 print_participants <- function(data){
   data %>% 
     group_by(Participant_ID) %>% 
-    summarise(Mean = mean(Subjective_Arousal), 
-              SD = sd(Subjective_Arousal)) %>% 
+    summarise(Mean = mean(Subjective_Valence), 
+              SD = sd(Subjective_Valence)) %>% 
     mutate_if(is.numeric, round, 2) %>% 
     head() 
     
 }
-print_participants(dfZ_VarWise)
-print_participants(dfZ_ParWise)
-print_participants(dfZ_Full)
+print_participants(Z_VarWise)
+print_participants(Z_ParWise)
+print_participants(Z_Full)
 ```
 
 
-
-
-
+##  Distribution
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-data.frame(VarWise = dfZ_VarWise$Subjective_Arousal,
-           ParWise = dfZ_ParWise$Subjective_Arousal,
-           Full = dfZ_Full$Subjective_Arousal) %>% 
+data.frame(VarWise = Z_VarWise$Subjective_Valence,
+           ParWise = Z_ParWise$Subjective_Valence,
+           Full = Z_Full$Subjective_Valence) %>% 
   gather(Method, Variable) %>% 
+
   ggplot(aes(x=Variable, fill=Method)) +
-  geom_density(alpha=0.2) +
+  geom_density(alpha=0.5) +
+  theme_minimal() 
+```
+
+The distributions appear to be similar...
+
+# Correlation
+
+Let's do a correlation between the variable and participant-wise methods.
+
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+psycho::bayes_cor.test(Z_VarWise$Subjective_Valence, Z_ParWise$Subjective_Valence)
+
+data.frame(Original = df$Subjective_Valence,
+           VarWise = Z_VarWise$Subjective_Valence,
+           ParWise = Z_ParWise$Subjective_Valence) %>% 
+  ggplot(aes(x=VarWise, y=ParWise, colour=Original)) +
+  geom_point() +
+  geom_smooth(method="lm") +
   theme_minimal()
 ```
 
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-data.frame(Original = df$Subjective_Arousal,
-           VarWise = dfZ_VarWise$Subjective_Arousal,
-           ParWise = dfZ_ParWise$Subjective_Arousal,
-           Full = dfZ_Full$Subjective_Arousal) %>% 
-  ggplot(aes(x=Original)) +
-  geom_point(aes(y=VarWise)) +
-  geom_point(aes(y=ParWise), colour="red") +
-  geom_point(aes(y=Full), colour="blue") +
-  theme_minimal()
-```
+
+**While the three standardization methods roughly present the same characteristics at a general level (mean 0 and SD 1), their values are very different and completely uncorrelated!**
 
 
 # Test
 
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-print_model <- function(data){
-  lmerTest::lmer(Subjective_Arousal ~ Autobiographical_Link + (1|Participant_ID), data=data) %>% 
-    analyze() %>% 
-    summary() %>% 
-    filter(Variable == "Autobiographical_Link") %>% 
-    mutate(Type = deparse(substitute(data))) %>% 
-    select(Type, Coef, p)
-}
+Let's now answer to the original question by investigating the **linear relationship between valence and autobiographical link**. We can do this by running a mixed model with participants entered as random effects.
 
-rbind(print_model(df), 
-      print_model(dfZ_VarWise),
-      print_model(dfZ_ParWise),
-      print_model(dfZ_Full))
-```
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 print_model <- function(data){
-  lmerTest::lmer(Subjective_Arousal ~ Subjective_Valence + (1|Participant_ID), data=data) %>% 
-    analyze() %>% 
-    summary() %>% 
-    filter(Variable == "Subjective_Valence") %>% 
-    mutate(Type = deparse(substitute(data))) %>% 
-    select(Type, Coef, p)
-}
+  type_name <- deparse(substitute(data)) 
 
-rbind(print_model(df), 
-      print_model(dfZ_VarWise),
-      print_model(dfZ_ParWise),
-      print_model(dfZ_Full))
-```
-
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-print_model <- function(data){
   lmerTest::lmer(Subjective_Valence ~ Autobiographical_Link + (1|Participant_ID), data=data) %>% 
-    analyze() %>% 
+    psycho::analyze(CI=NULL) %>%
     summary() %>% 
     filter(Variable == "Autobiographical_Link") %>% 
-    mutate(Type = deparse(substitute(data))) %>% 
+    mutate(Type = type_name,
+           Coef = round(Coef, 2),
+           p = format_p(p)) %>% 
     select(Type, Coef, p)
 }
 
 rbind(print_model(df), 
-      print_model(dfZ_VarWise),
-      print_model(dfZ_ParWise),
-      print_model(dfZ_Full))
+      print_model(Z_VarWise),
+      print_model(Z_ParWise),
+      print_model(Z_Full))
 ```
 
-
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-print_model <- function(data){
-  lme4::glmer(Recall ~ Subjective_Arousal + (1|Participant_ID), data=data, family="binomial") %>% 
-    analyze() %>% 
-    summary() %>% 
-    filter(Variable == "Subjective_Arousal") %>% 
-    mutate(Type = deparse(substitute(data))) %>% 
-    select(Type, Coef, p)
-}
-
-rbind(print_model(df), 
-      print_model(dfZ_VarWise),
-      print_model(dfZ_ParWise),
-      print_model(dfZ_Full))
-```
+As we can see, in our case, using participant-wise standardization resulted in significant (at p = .1) effect! But keep in mind that **this is not always the case**. In can be the contrary, or generate very similar results. **No method is better or more justified, and its choice depends on the specific case, context, data and goal**.
 
 # Conclusion
 
 
+1.  **Standardization can be useful in *some* cases and should be justified**
+2.  **Variable and Participant-wise standardization methods produce "in appearance" similar data**
+3.  **Variable and Participant-wise standardization can lead to different and uncorrelated results**
+4.  **The choice of the method can strongly influence the results and thus, should be explicitly stated**
 
-# Contribute
+We showed here yet another way of **sneakily tweaking the data** that can change the results. To prevent its use for *p*-hacking, we can only support the generalization of preregistration.
 
-Of course, these reporting standards should change, depending on new expert recommandations or official guidelines. **The goal of this package is to flexibly adaptive to new changes and good practices evolution**. Therefore, if you have any advices, opinions or such, we encourage you to either let us know by opening an [issue](https://github.com/neuropsychology/psycho.R/issues), or even better, try to implement them yourself by [contributing](https://github.com/neuropsychology/psycho.R/blob/master/.github/CONTRIBUTING.md) to the code. 
+
+
+
 
 
 # Credits
 
-This package helped you? Don't forget to cite the various packages you used :)
+The psycho package helped you? Don't forget to cite the various packages you used :)
 
 You can cite `psycho` as follows:
 
@@ -231,7 +215,10 @@ You can cite `psycho` as follows:
 
 # Previous blogposts
 
-- [APA Formatted Bayesian Correlation](https://neuropsychology.github.io/psycho.R/2018/06/11/bayesian_correlation.html)
+- [Formatted Correlation with Effect Size](https://neuropsychology.github.io/psycho.R/2018/06/28/analyze_correlation.html)
+- [Extracting a Reference Grid of your Data for Machine Learning Models Visualization](https://neuropsychology.github.io/psycho.R/2018/06/25/refdata.html)
+- [Copy/paste t-tests Directly to Manuscripts](https://neuropsychology.github.io/psycho.R/2018/06/19/analyze_ttest.html)
+- [Easy APA Formatted Bayesian Correlation](https://neuropsychology.github.io/psycho.R/2018/06/11/bayesian_correlation.html)
 - [Fancy Plot (with Posterior Samples) for Bayesian Regressions](https://neuropsychology.github.io/psycho.R/2018/06/03/plot_bayesian_model.html)
 - [How Many Factors to Retain in Factor Analysis](https://neuropsychology.github.io/psycho.R/2018/05/24/n_factors.html)
 - [Beautiful and Powerful Correlation Tables](https://neuropsychology.github.io/psycho.R/2018/05/20/correlation.html)
@@ -239,3 +226,4 @@ You can cite `psycho` as follows:
 - [How to do Repeated Measures ANOVAs](https://neuropsychology.github.io/psycho.R/2018/05/01/repeated_measure_anovas.html)
 - [Standardize (Z-score) a dataframe](https://neuropsychology.github.io/psycho.R/2018/03/29/standardize.html)
 - [Compute Signal Detection Theory Indices](https://neuropsychology.github.io/psycho.R/2018/03/29/SDT.html)
+- [Installing R, R Studio and psycho](https://neuropsychology.github.io/psycho.R/2018/03/21/installingR.html)

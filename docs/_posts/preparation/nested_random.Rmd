@@ -1,5 +1,5 @@
 ---
-title: "Factor Analysis: Get Formatted Table of Loadings, Plot and CFA model"
+title: "GLMs: Nested Effects or Interaction?"
 layout: post
 output:
   md_document:
@@ -19,7 +19,7 @@ editor_options:
 library(knitr)
 ```
 
-Interested in quicky creating tables and plots for factor analysis?
+When I started doing statistics, after a bachelor in psychology, there was, to me, no such things as nested effects. You tested a model (often directly the ANOVA) with the interaction or without.
 
 # Do a correlation
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
@@ -27,13 +27,9 @@ library(tidyverse)
 library(psycho)
 library(psych)
 
+df <- psycho::emotion 
 
-df <- psych::bfi %>%
-  select(-gender, -education, -age) %>%
-  na.omit() %>%
-  mutate_all(as.numeric)
-
-psycho::n_factors(df)
+summary(aov(Autobiographical_Link ~ Emotion_Condition * Recall + Error(Participant_ID), data=df))
 ```
 
 The [Method Agreement Procedure](https://neuropsychology.github.io/psycho.R/2018/05/24/n_factors.html) suggests to retain 5 factors.
