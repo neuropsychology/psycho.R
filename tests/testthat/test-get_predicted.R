@@ -4,7 +4,7 @@ test_that("If it works.", {
 
 
 
-# Rstanarm ----------------------------------------------------------------
+  # Rstanarm ----------------------------------------------------------------
 
 
   library(psycho)
@@ -68,7 +68,7 @@ test_that("If it works.", {
 
 
 
-# GLM and LM --------------------------------------------------------------
+  # GLM and LM --------------------------------------------------------------
 
   fit <- glm(vs ~ mpg, data = mtcars, family = binomial(link = "logit"))
   data <- psycho::get_predicted(fit)
@@ -82,5 +82,4 @@ test_that("If it works.", {
   data <- psycho::get_predicted(fit)
   r <- as.numeric(cor.test(mtcars$cyl, data$cyl_Predicted)$estimate)
   testthat::expect_equal(r, 0.85, tolerance = 0.02)
-
 })
