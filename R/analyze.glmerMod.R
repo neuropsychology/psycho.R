@@ -147,7 +147,7 @@ analyze.glmerMod <- function(x, CI=95, effsize_rules="cohen1988", ...) {
         ", z = ",
         format_digit(summary[varname, "z"], 2),
         ", p ",
-        format_p(summary[varname, "p"]),
+        format_p(summary[varname, "p"], stars=FALSE),
         ") and can be considered as ",
         tolower(summary[varname, "Effect_Size"]),
         " (std. beta = ",

@@ -29,7 +29,7 @@ x <- aov(df$Tolerating ~ df$Salary)
 x <- aov(df$Tolerating ~ df$Salary * df$Sex)
 
 x <- anova(lm(df$Tolerating ~ df$Salary * df$Sex))
-x <- anova(lmerTest::lmer(Tolerating ~ Salary + (1|Sex), data=df))
+
 
 summary(analyze(x))
 print(analyze(x))
@@ -37,10 +37,10 @@ print(analyze(x))
 df <- psycho::emotion \%>\%
   mutate(Recall = ifelse(Recall == TRUE, 1, 0)) \%>\%
   group_by(Participant_ID, Emotion_Condition) \%>\%
-  summarise(Recall = sum(Recall) / n()) \%>\%
-  aov(Recall ~ Emotion_Condition + Error(Participant_ID), data=.)
+  summarise(Recall = sum(Recall) / n())
 
-x <- aov(Recall ~ Emotion_Condition + Error(Participant_ID), data=df_aov)
+x <- aov(Recall ~ Emotion_Condition + Error(Participant_ID), data=df)
+x <- anova(lmerTest::lmer(Recall ~ Emotion_Condition + (1|Participant_ID), data=df))
 analyze(x)
 summary(x)
 }

@@ -340,7 +340,7 @@ standardize.glmerMod <- standardize.glm
 #' @importFrom stats model.frame model.response model.matrix
 #'
 #' @export
-standardize.lm <- function(x, partial_SD=TRUE, ...) {
+standardize.lm <- function(x, partial_SD=FALSE, ...) {
   fit <- x
 
   coefs <- MuMIn::std.coef(fit, partial.sd = partial_SD)[, 1:2]

@@ -4,7 +4,7 @@
 \alias{standardize.lm}
 \title{Standardize Coefficients.}
 \usage{
-\method{standardize}{lm}(x, partial_SD = TRUE, ...)
+\method{standardize}{lm}(x, partial_SD = FALSE, ...)
 }
 \arguments{
 \item{x}{A linear model.}

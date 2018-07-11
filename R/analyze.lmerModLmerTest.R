@@ -61,7 +61,7 @@ analyze.lmerModLmerTest <- function(x, CI=95, effsize_rules="cohen1988", ...) {
   summary$p <- summary$`Pr...t..`
 
   # standardized coefficients
-  summary <- cbind(summary, standardize(fit, partial.sd = TRUE))
+  summary <- cbind(summary, standardize(fit, partial.sd = FALSE))
   summary$Effect_Size <- c(NA, interpret_d(tail(summary$Coef.std, -1), rules = effsize_rules))
 
   summary <- dplyr::select_(
@@ -145,11 +145,11 @@ analyze.lmerModLmerTest <- function(x, CI=95, effsize_rules="cohen1988", ...) {
         format_digit(summary[varname, "SE"], 2),
         CI_text,
         ", t(",
-        format_digit(summary[varname, "df"], 2),
+        format_digit(summary[varname, "df"], 0),
         ") = ",
         format_digit(summary[varname, "t"], 2),
         ", p ",
-        format_p(summary[varname, "p"]),
+        format_p(summary[varname, "p"], stars=FALSE),
         ") and can be considered as ",
         tolower(summary[varname, "Effect_Size"]),
         " (std. beta = ",

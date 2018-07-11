@@ -49,19 +49,107 @@ We started by loading an available dataset from the psycho package, selecting va
 df_aov <- df %>% 
   mutate(Recall = ifelse(Recall == TRUE, 1, 0)) %>% 
   group_by(Participant_ID, Emotion_Condition) %>% 
-  summarise(Recall = sum(Recall) / n())
+  summarise(Recall_Ratio = sum(Recall) / n())
 
 head(df_aov)  # We can see the 10 first rows of a dataframe by running the "head()" function
 ```
 
+### ANOVA
+
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-aov_result <- aov(Recall ~ Emotion_Condition + Error(Participant_ID), data=df_aov)
+aov_result <- aov(Recall_Ratio ~ Emotion_Condition + Error(Participant_ID), data=df_aov)
 analyze(aov_result)
-summary(aov_result)
-t.test(df_aov$)
 ```
 
 
+### Mixed Model
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+library(lmerTest)
+
+fit <- lmer(Recall_Ratio ~ Emotion_Condition + (1|Participant_ID), data=df_aov)
+
+aov_result <- anova(fit)
+analyze(aov_result)
+```
+
+As you can see, the results are close. Nevertheless, it's better to analyze the full model.
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+fit <- lmer(Recall_Ratio ~ Emotion_Condition + (1|Participant_ID), data=df_aov)
+analyze(fit)
+```
+
+
+**And yet, what we just is wrong! Indeed, we treated ratios (that have 0-1 bounds) as regular **
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+Zdf_aov <- standardize(ungroup(df_aov))
+fit <- lmer(Recall_Ratio ~ Emotion_Condition + (1|Participant_ID), data=Zdf_aov)
+analyze(fit)
+
+fit <- rstanarm::stan_glmer(Recall_Ratio ~ Emotion_Condition + (1|Participant_ID), data=Zdf_aov)
+analyze(fit)
+
+
+
+dummies <- scale(contrasts(df$Species)[df$Species,])
+fit <- lm(Sepal.Length ~ dummies, data = df)
+summary(fit)
+round(coef(fit), 2)
+round(MuMIn::std.coef(fit, partial.sd = FALSE), 2)
+
+
+library(tidyverse)
+library(MuMIn) # For stds coefs
+
+df <- iris %>% 
+  select(Sepal.Length, Sepal.Width) %>% 
+  scale() %>% 
+  as.data.frame() %>% 
+  mutate(Species = iris$Species)
+
+fit <- lm(Sepal.Length ~ Sepal.Width, data=df)
+round(coef(fit), 2)
+round(MuMIn::std.coef(fit, partial.sd = TRUE), 2)
+
+fit <- lm(Sepal.Length ~ Species, data=df)
+round(coef(fit), 2)
+round(MuMIn::std.coef(fit, partial.sd = TRUE), 2)
+
+
+
+
+library(rstanarm)
+
+std_posteriors <- function(fit){
+      X <- model.matrix(fit)
+    sd_X <- apply(X, MARGIN = 2, FUN = sd)[-1]
+    sd_Y <- apply(posterior_predict(fit), MARGIN = 1, FUN = sd)
+    beta <- as.matrix(fit)[, 2:ncol(X), drop = FALSE]
+    posteriors_std <- sweep(
+      sweep(beta, MARGIN = 2, STATS = sd_X, FUN = `*`),
+      MARGIN = 1, STATS = sd_Y, FUN = `/`
+    )
+    return(posteriors_std)
+}
+
+df <- iris %>% 
+  select(Sepal.Length, Sepal.Width) %>% 
+  scale() %>% 
+  as.data.frame() %>% 
+  mutate(Species = iris$Species)
+  
+  
+
+fit <- rstanarm::stan_glm(Sepal.Length ~ Species, data=df)
+post <- data.frame(fit)$Speciesversicolor
+std_post <- as.data.frame(std_posteriors(fit))$Speciesversicolor
+
+paste("Median = ", round(median(post), 2), ", MAD = ", round(mad(post), 2))
+paste("Std. Median = ", round(median(std_post), 2), ", Std. MAD = ", round(mad(std_post), 2))
+
+```
 
 # Inter-individual Analysis
 
