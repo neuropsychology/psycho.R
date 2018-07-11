@@ -19,9 +19,133 @@ editor_options:
 library(knitr)
 ```
 
+# The Data
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(psycho)
+
+df <- psycho::affective %>%  # Load the dataset available in the psycho package
+  select(Sex, Life_Satisfaction)  # Select two variables
+
+summary(df)  # Print a summary
+```
+
+# The Model
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+fit <- glm(Sex ~ Life_Satisfaction, data=df, family="binomial")
+```
+
+# Inspect the model
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+analyze(fit)
+```
+
+This shows the Nakagawa's R2 (Nakagawa & Schielzeth, 2013) of the total model (the "explanatory power", as speaking of \% of variance explained hardly makes sense in the context of binomial data). It also returns the intercept (the value of the dependent variable when all variables are 0). It returns the estimations of the parameters, including the coefficient, standart error, confidence interval, z and p value. Critically, it also computes standardized coefficients and uses them as effect size indices, categorized using Cohen 1988's heuristics (by [default](https://www.rdocumentation.org/packages/psycho/versions/0.2.8/topics/interpret_odds)).
+
+# Plot the model
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+refdata <- psycho::refdata(df, "Life_Satisfaction")
+
+predicted_data <- psycho::get_predicted(fit, newdata=refdata)
+
+# Plot
+predicted_data %>% 
+  ggplot(aes(y=Sex_Predicted, x=Life_Satisfaction)) +
+  geom_line()
+```
+
+# Better Plot
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+predicted_data %>% 
+  ggplot(aes(y=Sex_Predicted, x=Life_Satisfaction)) +
+  geom_line() +
+  geom_ribbon(aes(ymin=Sex_CI_2.5,
+                  ymax=Sex_CI_97.5),
+                  alpha=0.1) +
+  theme_classic() +
+  ylab("Probability of being a Male")
+```
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+refdata <- psycho::refdata(df, "Life_Satisfaction", length.out = 100)
+
+predicted_data <- psycho::get_predicted(fit, newdata=refdata, prob=c(0.8, 0.9, 0.95, 0.99))
+
+predicted_data %>% 
+  ggplot(aes(y=Sex_Predicted, x=Life_Satisfaction)) +
+  geom_line() +
+  geom_ribbon(aes(ymin=Sex_CI_10,
+                  ymax=Sex_CI_90),
+                  alpha=0.1) +
+  geom_ribbon(aes(ymin=Sex_CI_5,
+                  ymax=Sex_CI_95),
+                  alpha=0.1) +
+  geom_ribbon(aes(ymin=Sex_CI_2.5,
+                  ymax=Sex_CI_97.5),
+                  alpha=0.1) +
+    geom_ribbon(aes(ymin=Sex_CI_0.5,
+                  ymax=Sex_CI_99.5),
+                  alpha=0.1) +
+  theme_classic() +
+  ylab("Probability of being a Male") +
+  xlab("Life Satisfaction")
+```
 
 
-# Fit an anova
+
+# Mixed-Model Logistic Regression
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(lme4)
+library(psycho)
+
+df <- psycho::emotion %>%  # Load the dataset available in the psycho package
+  select(Participant_ID, Participant_Sex, Recall, Subjective_Arousal)  # Select two variables
+
+summary(df)  # Print a summary
+```
+
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+fit <- lme4::glmer(Recall ~ Subjective_Arousal + (1|Participant_ID), data=df, family="binomial")
+
+analyze(fit)
+```
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+refdata <- psycho::refdata(df, "Subjective_Arousal")
+
+predicted_data <- psycho::get_predicted(fit, newdata=refdata, prob=c(0.8, 0.9, 0.95, 0.99))
+
+predicted_data %>% 
+  ggplot(aes(y=Sex_Median, x=Life_Satisfaction)) +
+  geom_line() +
+  geom_ribbon(aes(ymin=Sex_CI_10,
+                  ymax=Sex_CI_90),
+                  alpha=0.1) +
+  geom_ribbon(aes(ymin=Sex_CI_5,
+                  ymax=Sex_CI_95),
+                  alpha=0.1) +
+  geom_ribbon(aes(ymin=Sex_CI_2.5,
+                  ymax=Sex_CI_97.5),
+                  alpha=0.1) +
+    geom_ribbon(aes(ymin=Sex_CI_0.5,
+                  ymax=Sex_CI_99.5),
+                  alpha=0.1) +
+  theme_classic() +
+  ylab("Probability of being a Male") +
+  xlab("Life Satisfaction")
+```
+
+
+
+# Simulation
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 library(tidyverse)

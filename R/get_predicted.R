@@ -4,7 +4,9 @@
 #' documentation for your model's class:
 #' \itemize{
 #'  \item{\link[=get_predicted.stanreg]{get_predicted.stanreg}}
+#'  \item{\link[=get_predicted.merMod]{get_predicted.merMod}}
 #'  \item{\link[=get_predicted.lm]{get_predicted.lm}}
+#'  \item{\link[=get_predicted.glm]{get_predicted.glm}}
 #'  }
 #'
 #' @param fit Model.

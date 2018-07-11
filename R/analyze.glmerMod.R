@@ -176,7 +176,7 @@ analyze.glmerMod <- function(x, CI=95, effsize_rules="cohen1988", ...) {
     "The overall model predicting ",
     info$outcome,
     " (formula = ",
-    info$formula,
+    format(info$formula),
     ") has an explanatory power (conditional R2) of ",
     format_digit(R2$R2c * 100, 2),
     "%, in which the fixed effects' part is ",

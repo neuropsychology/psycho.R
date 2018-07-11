@@ -28,6 +28,9 @@ get_R2(fit)
 }
 
 }
+\seealso{
+\link[=bayes_R2.stanreg]{"bayes_R2.stanreg"}
+}
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 }

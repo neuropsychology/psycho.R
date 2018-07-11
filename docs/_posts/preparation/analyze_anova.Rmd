@@ -19,11 +19,11 @@ editor_options:
 library(knitr)
 ```
 
-Psychology is still massively using analysis of variance (ANOVA). Despite its relative simplicity, I am very often confronted to errors in its reporting. Many can be found in student's theses, but also in manuscripts! Beyond the incomplete, uncomprehensible or just wrong reporting, one can find a tremendous amount of errors (even in published papers! See the excellent [statcheck](http://statcheck.io/) to quickly check the stats of a paper). Moreover, the reporting, copy/pasting of values from any statistical softwares to manuscripts is often a pain in the rear.
+Psychology is still ([unfortunately](https://neuropsychology.github.io/psycho.R/2018/05/01/repeated_measure_anovas.html)) massively using analysis of variance (ANOVA). Despite its relative simplicity, I am very often confronted to errors in its reporting, in student's theses or manuscripts. Beyond the incomplete, uncomprehensible or just wrong reporting, one can find a tremendous amount of true errors (even in published papers! See the excellent [statcheck](http://statcheck.io/) to quickly check the stats of a paper). This error proneness can be at least partially explained by the fact that copy/pasting the (appropriate) values of any statistical software and formatting them textually is a very annoying process.
 
 **How to end it?**
 
-We believe that this could be solved (at least, partially) by the default implementation of current best practices of statistical reporting. A tool that automatically transforms a statistical result into a copy/pastable text. Of course, this automation cannot ne suitable for each and every advanced use, but will be satisfying to a good proportion of the use cases. Implementing this unified, end-user oriented pipeline is the goal of the [psycho](https://github.com/neuropsychology/psycho.R) package.
+We believe that this could be solved (at least, partially) by the default implementation of current best practices of statistical reporting. A tool that automatically transforms a statistical result into a copy/pastable text. Of course, this automation cannot ne suitable for each and every advanced usage, but will be satisfying to a good proportion of the use cases. Implementing this unified, end-user oriented pipeline is the goal of the [psycho](https://github.com/neuropsychology/psycho.R) package.
 
 # Fit an anova
 
@@ -45,15 +45,11 @@ psycho::analyze(aov_results)
 ```
 
 
-
-The formatted output includes **direction**, **effect size** (interpreted by default with **[Cohen's (1988)](https://github.com/neuropsychology/psycho.R/blob/master/R/interpret_r.R#L142)** rules) and **confidence intervals**. Now you can just copy and paste this line into your report and focus on what's important.
-
-It returns the partial omega-squared as an index of effect size (better than the eta2, see REFERENCE)
+It formats the results and returns the partial omega-squared as an index of effect size (better than the eta2, see [Levine et al. 2002](https://academic.oup.com/hcr/article-abstract/28/4/612/4331349), [Pierce et al. 2004](http://journals.sagepub.com/doi/abs/10.1177/0013164404264848)) as well as its [interpretation](http://imaging.mrc-cbu.cam.ac.uk/statswiki/FAQ/effectSize).
 
 # t-tests, correlations, linear models...
 
 This method also exists for other statistical procudures.
-
 
 
 

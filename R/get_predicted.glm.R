@@ -4,7 +4,7 @@
 #'
 #' @param fit An lm model.
 #' @param newdata A data frame in which to look for variables with which to predict. If omitted, the model matrix is used. If "model", the model's data is used.
-#' @param prob Probability of credible intervals (0.9 (default) will compute 5-95\% CI). Can also be a list of probs (e.g., c(0.90, 0.95)).
+#' @param prob Probability of confidence intervals (0.9 (default) will compute 2.5-97.5\% CI). Can also be a list of probs (e.g., c(0.90, 0.95)).
 #' @param odds_to_probs Transform log odds ratios in logistic models to probabilies.
 #' @param ... Arguments passed to or from other methods.
 #'
@@ -31,8 +31,6 @@
 #' }
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
-#' @import rstanarm
-#' @importFrom stats median family model.matrix
 #' @importFrom dplyr bind_cols
 #' @importFrom tibble rownames_to_column
 #' @export

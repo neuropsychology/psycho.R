@@ -33,6 +33,16 @@ x <- anova(lmerTest::lmer(Tolerating ~ Salary + (1|Sex), data=df))
 
 summary(analyze(x))
 print(analyze(x))
+
+df <- psycho::emotion \%>\%
+  mutate(Recall = ifelse(Recall == TRUE, 1, 0)) \%>\%
+  group_by(Participant_ID, Emotion_Condition) \%>\%
+  summarise(Recall = sum(Recall) / n()) \%>\%
+  aov(Recall ~ Emotion_Condition + Error(Participant_ID), data=.)
+
+x <- aov(Recall ~ Emotion_Condition + Error(Participant_ID), data=df_aov)
+analyze(x)
+summary(x)
 }
 
 
@@ -40,8 +50,11 @@ print(analyze(x))
 \references{
 \itemize{
  \item{Levine, T. R., & Hullett, C. R. (2002). Eta squared, partial eta squared, and misreporting of effect size in communication research. Human Communication Research, 28(4), 612-625.}
- \item{JPierce, C. A., Block, R. A., & Aguinis, H. (2004). Cautionary note on reporting eta-squared values from multifactor ANOVA designs. Educational and psychological measurement, 64(6), 916-924.}
+ \item{Pierce, C. A., Block, R. A., & Aguinis, H. (2004). Cautionary note on reporting eta-squared values from multifactor ANOVA designs. Educational and psychological measurement, 64(6), 916-924.}
 }
+}
+\seealso{
+http://imaging.mrc-cbu.cam.ac.uk/statswiki/FAQ/os2
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

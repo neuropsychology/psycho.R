@@ -21,6 +21,8 @@
 #'
 #' @references Nakagawa, S., & Schielzeth, H. (2013). A general and simple method for obtaining R2 from generalized linear mixed-effects models. Methods in Ecology and Evolution, 4(2), 133-142.
 #'
+#' @seealso \link[=get_R2.glm]{"get_R2.glm"}
+#'
 #' @import dplyr
 #' @importFrom stats formula
 #' @importFrom stringr str_squish
@@ -41,7 +43,7 @@ analyze.glm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
   predictors <- info$predictors
 
   # R2 <- tjur_D(fit)
-  R2 <- get_R2(fit)
+  R2 <- get_R2(fit, method="nakagawa")
 
   # Summary
   # -------------

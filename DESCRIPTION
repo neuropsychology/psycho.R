@@ -1,7 +1,7 @@
 Package: psycho
 Type: Package
 Title: Efficient and Publishing-Oriented Workflow for Psychological Science
-Version: 0.3.3
+Version: 0.3.4
 Authors@R: c(
     person("Dominique", 
         "Makowski", 
@@ -20,9 +20,9 @@ Authors@R: c(
 Maintainer: Dominique Makowski <dom.makowski@gmail.com>
 URL: https://github.com/neuropsychology/psycho.R
 BugReports: https://github.com/neuropsychology/psycho.R/issues
-Description: The main goal of the `psycho` package is to provide tools for psychologists, neuropsychologists and neuroscientists, 
+Description: The main goal of the psycho package is to provide tools for psychologists, neuropsychologists and neuroscientists, 
    to facilitate and speed up the time spent on data analysis. It aims at supporting best practices and tools to format the output 
-   of statistical methods to directly paste them into a manuscript, ensuring standardization of statistical reporting.
+   of statistical methods to directly paste them into a manuscript, ensuring statistical reporting standardization and conformity.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

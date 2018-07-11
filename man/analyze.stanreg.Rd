@@ -49,11 +49,19 @@ fit <- rstanarm::stan_glmer(Sepal.Length ~ Sepal.Width + (1|Species), data=iris)
 results <- analyze(fit)
 summary(results)
 
-fit <- rstanarm::stan_glmer(Sex ~ Adjusting, data=psycho::affective, family="binomial")
+fit <- rstanarm::stan_glm(Sex ~ Adjusting, data=psycho::affective, family="binomial")
+results <- analyze(fit)
+summary(results)
+
+fit <- rstanarm::stan_glmer(Sex ~ Adjusting + (1|Salary), data=psycho::affective, family="binomial")
 results <- analyze(fit)
 summary(results)
 }
 
+}
+\seealso{
+\link[=get_R2.stanreg]{"get_R2.stanreg"}
+\link[=bayes_R2.stanreg]{"bayes_R2.stanreg"}
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

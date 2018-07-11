@@ -35,12 +35,20 @@
 #' results <- analyze(fit)
 #' summary(results)
 #'
-#' fit <- rstanarm::stan_glmer(Sex ~ Adjusting, data=psycho::affective, family="binomial")
+#' fit <- rstanarm::stan_glm(Sex ~ Adjusting, data=psycho::affective, family="binomial")
+#' results <- analyze(fit)
+#' summary(results)
+#'
+#' fit <- rstanarm::stan_glmer(Sex ~ Adjusting + (1|Salary), data=psycho::affective, family="binomial")
 #' results <- analyze(fit)
 #' summary(results)
 #' }
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
+#'
+#' @seealso
+#' \link[=get_R2.stanreg]{"get_R2.stanreg"}
+#' \link[=bayes_R2.stanreg]{"bayes_R2.stanreg"}
 #'
 #' @import rstanarm
 #' @import loo
@@ -72,9 +80,9 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
 
 
   # Varnames
-  predictors <- all.vars(as.formula(fit$formula))
-  outcome <- predictors[[1]]
-  predictors <- tail(predictors, -1)
+  info <- get_info(fit)
+  outcome <- info$outcome
+  predictors <- info$predictors
 
   varnames <- names(fit$coefficients)
   varnames <- varnames[grepl("b\\[", varnames) == FALSE]
@@ -242,11 +250,11 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
       "",
       "",
       paste0(
-        tail(coefs_text, 1),
-        head(coefs_text, 1)
+        coefs_text[1],
+        coefs_text[2]
       ),
       "",
-      head(tail(coefs_text, -1), -1)
+      tail(coefs_text, -2)
     )
   } else {
     text <- c(
@@ -255,9 +263,9 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
       info_priors_text,
       "",
       "",
-      head(coefs_text, 1),
+      coefs_text[1],
       "",
-      tail(coefs_text, 1)
+      tail(coefs_text, -1)
     )
   }
 
@@ -368,9 +376,9 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
 
   # Text
   values$text <- paste0(
-    "The model explains about ",
+    "The model has an explanatory power (R2) of about ",
     format_digit(values$median * 100),
-    "% of the outcome's variance (MAD = ",
+    "% (MAD = ",
     format_digit(values$mad),
     ", ",
     CI,
@@ -540,8 +548,8 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
     "% CI [",
     format_digit(values$CI_values[1], null_treshold = 0.0001), ", ",
     format_digit(values$CI_values[2], null_treshold = 0.0001), "], ",
-    "O = ",
-    format_digit(values$overlap),
+    "Overlap = ",
+    format_digit(values$overlap, null_treshold = 0.01),
     "%)."
   )
 

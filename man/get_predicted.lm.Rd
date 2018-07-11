@@ -11,7 +11,7 @@
 
 \item{newdata}{A data frame in which to look for variables with which to predict. If omitted, the model matrix is used. If "model", the model's data is used.}
 
-\item{prob}{Probability of credible intervals (0.9 (default) will compute 5-95\% CI). Can also be a list of probs (e.g., c(0.90, 0.95)).}
+\item{prob}{Probability of confidence intervals (0.95 (default) will compute 2.5-97.5\% CI). Can also be a list of probs (e.g., c(0.90, 0.95)).}
 
 \item{...}{Arguments passed to or from other methods.}
 }
