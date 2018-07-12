@@ -98,14 +98,14 @@ get_predicted.merMod <- function(fit, newdata="model", prob=NULL, odds_to_probs=
   pred_y <- as.data.frame(predict(fit, newdata = newdata, re.form = re.form))
   names(pred_y) <- paste0(outcome, "_Predicted")
 
-  if(!is.null(prob)){
+  if (!is.null(prob)) {
     predFun <- function(fit) {
       predict(fit, newdata)
     }
-    predMat <- lme4::bootMer(fit, nsim=iter, FUN=predFun, use.u = use.u, seed=seed)$t
+    predMat <- lme4::bootMer(fit, nsim = iter, FUN = predFun, use.u = use.u, seed = seed)$t
 
-    for (CI in c(prob)){
-      pred_y_interval <- as.data.frame(t(apply(predMat, 2, quantile, c((1-CI)/2, CI+(1-CI)/2), na.rm=TRUE)))
+    for (CI in c(prob)) {
+      pred_y_interval <- as.data.frame(t(apply(predMat, 2, quantile, c((1 - CI) / 2, CI + (1 - CI) / 2), na.rm = TRUE)))
       names(pred_y_interval) <- paste(outcome, "CI", c((1 - CI) / 2 * 100, 100 - ((1 - CI) / 2 * 100)), sep = "_")
       pred_y <- cbind(pred_y, pred_y_interval)
     }

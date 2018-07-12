@@ -82,21 +82,19 @@ test_that("If it works.", {
   # glmerMod ----------------------------------------------------------------
   library(lme4)
 
-  fit <- lme4::glmer(vs ~ mpg + (1|cyl), data = mtcars, family = binomial(link = "logit"))
+  fit <- lme4::glmer(vs ~ mpg + (1 | cyl), data = mtcars, family = binomial(link = "logit"))
   data <- psycho::get_predicted(fit)
   r <- as.numeric(cor.test(data$vs, data$vs_Predicted)$estimate)
   testthat::expect_equal(r, 0.79, tolerance = 0.02)
 
-  fit <- lme4::lmer(Tolerating ~ Adjusting + (1|Salary), data=affective)
+  fit <- lme4::lmer(Tolerating ~ Adjusting + (1 | Salary), data = affective)
   data <- psycho::get_predicted(fit)
   r <- as.numeric(cor.test(data$Tolerating, data$Tolerating_Predicted)$estimate)
   testthat::expect_equal(r, 0.3, tolerance = 0.02)
 
   library(lmerTest)
-  fit <- lmerTest::lmer(Tolerating ~ Adjusting + (1|Salary), data=affective)
+  fit <- lmerTest::lmer(Tolerating ~ Adjusting + (1 | Salary), data = affective)
   data <- psycho::get_predicted(fit)
   r <- as.numeric(cor.test(data$Tolerating, data$Tolerating_Predicted)$estimate)
   testthat::expect_equal(r, 0.3, tolerance = 0.02)
 })
-
-

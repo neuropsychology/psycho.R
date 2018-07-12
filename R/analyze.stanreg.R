@@ -125,9 +125,9 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, effsize_rules="cohen1988", 
   }
 
   # Standardized posteriors --------------------------------------------
-  if(effsize == TRUE){
-    posteriors_std <- standardize(fit, method="posterior", preserve_factors=TRUE)
-  } else{
+  if (effsize == TRUE) {
+    posteriors_std <- standardize(fit, method = "refit")
+  } else {
     posteriors_std <- as.data.frame(fit)
   }
 
@@ -160,7 +160,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, effsize_rules="cohen1988", 
         CI = CI,
         effsize = effsize,
         effsize_rules = effsize_rules,
-        fit=fit
+        fit = fit
       )
     }
   }
@@ -185,7 +185,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, effsize_rules="cohen1988", 
     )
   }
 
-  if(effsize == FALSE){
+  if (effsize == FALSE) {
     summary <- select_(summary, "-Median_std", "-MAD_std")
   }
 
@@ -428,7 +428,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, effsize_rules="cohen1988", 
     values$EffSize_Small <- NA
     values$EffSize_VerySmall <- NA
     values$EffSize_Opposite <- NA
-  } else{
+  } else {
     values$std_median <- NA
     values$std_mad <- NA
   }
@@ -491,7 +491,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, effsize_rules="cohen1988", 
     values$EffSize_Small <- NA
     values$EffSize_VerySmall <- NA
     values$EffSize_Opposite <- NA
-  } else{
+  } else {
     values$std_median <- NA
     values$std_mad <- NA
   }
@@ -579,16 +579,15 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, effsize_rules="cohen1988", 
     values$std_CI_values <- c(values$std_CI_values$values$HDImin, values$std_CI_values$values$HDImax)
 
     if (fit$family$family == "binomial" & fit$family$link == "logit") {
-      EffSize <- interpret_odds_posterior(posterior_std, log=TRUE, rules=effsize_rules)
-    } else{
+      EffSize <- interpret_odds_posterior(posterior_std, log = TRUE, rules = effsize_rules)
+    } else {
       EffSize <- interpret_d_posterior(posterior_std, rules = effsize_rules)
     }
 
     values$EffSize <- EffSize$summary
     values$EffSize$Variable <- varname
     values$EffSize_text <- EffSize$text
-
-  } else{
+  } else {
     values$std_median <- NA
     values$std_mad <- NA
   }

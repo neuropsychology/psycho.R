@@ -128,9 +128,9 @@ get_R2.stanreg <- function(fit, silent=FALSE, ...) {
     R2_posterior = R2
   )
 
-  if(fit$family$family == "gaussian"){
+  if (fit$family$family == "gaussian") {
     out$R2.adj <- R2_LOO_Adjusted(fit)
-  } else{
+  } else {
     out$R2.adj <- NA
   }
 

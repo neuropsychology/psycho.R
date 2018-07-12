@@ -19,48 +19,29 @@ editor_options:
 library(knitr)
 ```
 
-When I started doing statistics, after a bachelor in psychology, there was, to me, no such things as nested effects. You tested a model (often directly the ANOVA) with the interaction or without.
+When I started doing statistics, after a bachelor in psychology, there was, to me, no such things as nested effects. You tested a model (often directly the ANOVA) with the interaction or without. 
 
-# Do a correlation
+Let's take interest in the relationship between life satisfaction, salary and adjusting (the tendency to flexibly regulate ones emotions)
+
+# The Data
+
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(psycho)
-library(psych)
 
-df <- psycho::emotion 
+df <- psycho::affective %>% 
+  select(Salary, Life_Satisfaction, Adjusting)
 
-summary(aov(Autobiographical_Link ~ Emotion_Condition * Recall + Error(Participant_ID), data=df))
+summary(df)
 ```
 
-The [Method Agreement Procedure](https://neuropsychology.github.io/psycho.R/2018/05/24/n_factors.html) suggests to retain 5 factors.
-
+# Interaction Effect
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-fa <- psych::fa(df, nfactors=5)
-results <- analyze(fa)
+fit <- lm(Life_Satisfaction ~ Salary * Adjusting, data=df)
+
+analyze(anova(fit))
 ```
 
-
-# Loadings Table
-
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-summary(results)
-```
-
-
-
-# Lavaan-ready Model for CFA
-
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-print(results)
-
-analyze(fa, treshold=0.2)
-```
-
-# Lavaan-ready Model for CFA
-
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-plot(results)
-```
 
 
 # Contribute

@@ -50,8 +50,8 @@ analyze.lm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
   summary$p <- summary$`Pr...t..`
 
   # standardized coefficients
-  standardized <- tibble::rownames_to_column(standardize(fit, clean=TRUE), "Variable")
-  summary <- merge(summary, standardized, by="Variable", all.x=TRUE, sort=FALSE)
+  standardized <- tibble::rownames_to_column(standardize(fit, clean = TRUE), "Variable")
+  summary <- merge(summary, standardized, by = "Variable", all.x = TRUE, sort = FALSE)
   summary$Effect_Size <- c(NA, interpret_d(tail(summary$Coef_std, -1), rules = effsize_rules))
 
   summary <- dplyr::select_(
@@ -115,7 +115,7 @@ analyze.lm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
       CI_text,
       ", t = ",
       format_digit(summary[varname, "t"], 2), ", p ",
-      format_p(summary[varname, "p"], stars=FALSE),
+      format_p(summary[varname, "p"], stars = FALSE),
       ") and can be considered as ",
       tolower(summary[varname, "Effect_Size"]),
       " (std. beta = ",

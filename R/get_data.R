@@ -26,14 +26,13 @@
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #' @export
 get_data <- function(fit, ...) {
-
   info <- get_info(fit)
 
   outcome <- info$outcome
   predictors <- info$predictors
 
   numerics <- predictors[predictors %in% names(MuMIn::coeffs(fit))]
-  if(length(unique(model.response(model.frame(fit)))) > 2){
+  if (length(unique(model.response(model.frame(fit)))) > 2) {
     numerics <- c(outcome, numerics)
   }
 
@@ -41,5 +40,4 @@ get_data <- function(fit, ...) {
   data[!names(data) %in% numerics] <- lapply(data[!names(data) %in% numerics], as.factor)
 
   return(as.data.frame(data))
-
 }

@@ -18,7 +18,7 @@ test_that("If it works.", {
   values <- psycho::values(model)
   testthat::expect_equal(round(values$effects$mpg$median, 2), -0.6, tolerance = 0.10)
 
-  model <- psycho::analyze(fit, effsize=TRUE)
+  model <- psycho::analyze(fit, effsize = TRUE)
   values <- psycho::values(model)
   testthat::expect_equal(round(values$effects$mpg$std_median, 2), 0.13, tolerance = 0.10)
 
@@ -48,12 +48,12 @@ test_that("If it works.", {
   )
   results <- psycho::analyze(fit)
   testthat::expect_equal(
-    round(results$values$effects$Sepal.Width$median,2), 0.21,
+    round(results$values$effects$Sepal.Width$median, 2), 0.21,
     tolerance = 0.025
   )
-  results <- psycho::analyze(fit, effsize=TRUE)
+  results <- psycho::analyze(fit, effsize = TRUE)
   testthat::expect_equal(
-    round(results$values$effects$Sepal.Width$median,2), 0.21,
+    round(results$values$effects$Sepal.Width$median, 2), 0.21,
     tolerance = 0.025
   )
 

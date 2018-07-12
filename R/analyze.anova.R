@@ -51,10 +51,10 @@
 analyze.aov <- function(x, effsize_rules="field2013", ...) {
   if (!"aov" %in% class(x)) {
     if (!"Residuals" %in% row.names(x)) {
-      if(!is.null(x$Within)){
+      if (!is.null(x$Within)) {
         x <- x$Within
         message("(Repeated measures ANOVAs are bad, you should use mixed-models...)")
-      } else{
+      } else {
         return(.analyze.anova_lmer(x))
       }
     }
@@ -189,8 +189,8 @@ analyze.aovlist <- analyze.aov
 
 
 #' @keywords internal
-.analyze.anova_lmer <- function(x){
-  if(!"NumDF" %in% colnames(x)){
+.analyze.anova_lmer <- function(x) {
+  if (!"NumDF" %in% colnames(x)) {
     stop("Cannot analyze the anova from lme4. Please refit the model using lmerTest.")
   }
 
@@ -225,7 +225,7 @@ analyze.aovlist <- analyze.aov
 
     if (current_values$p < .05) {
       significance <- "significant"
-    } else{
+    } else {
       significance <- "not significant"
     }
 
@@ -237,24 +237,24 @@ analyze.aovlist <- analyze.aov
       effect <- "effect of"
     }
 
-      values[[var]]$text <- paste0(
-        "The ",
-        effect,
-        " ",
-        varname,
-        " is ",
-        significance,
-        " (F(",
-        current_values$df,
-        ", ",
-        format_digit(current_values$df_Residuals, 0),
-        ") = ",
-        format_digit(current_values$F),
-        ", p ",
-        format_p(current_values$p, stars = FALSE),
-        ")."
-      )
-    }
+    values[[var]]$text <- paste0(
+      "The ",
+      effect,
+      " ",
+      varname,
+      " is ",
+      significance,
+      " (F(",
+      current_values$df,
+      ", ",
+      format_digit(current_values$df_Residuals, 0),
+      ") = ",
+      format_digit(current_values$F),
+      ", p ",
+      format_p(current_values$p, stars = FALSE),
+      ")."
+    )
+  }
 
 
   # Text

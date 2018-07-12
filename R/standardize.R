@@ -225,7 +225,6 @@ standardize.data.frame <- function(x, subset=NULL, except=NULL, normalize=FALSE,
 #' Compute standardized posteriors from which to get standardized coefficients.
 #'
 #' @param x A stanreg model.
-#' @param clean
 #' @param method "refit" (default) will entirely refit the model based on standardized data. Can take a long time. Other post-hoc methods are "posterior" (based on estimated SD) or "sample" (based on the sample SD).
 #' @param ... Arguments passed to or from other methods.
 #'
@@ -242,7 +241,10 @@ standardize.data.frame <- function(x, subset=NULL, except=NULL, normalize=FALSE,
 #' }
 #'
 #' @author \href{https://github.com/jgabry}{Jonah Gabry}, \href{https://github.com/bgoodri}{bgoodri}
+#'
 #' @seealso https://github.com/stan-dev/rstanarm/issues/298
+#'
+#' @importFrom utils capture.output
 #' @export
 standardize.stanreg <- function(x, method="refit", ...) {
   fit <- x
@@ -273,9 +275,9 @@ standardize.stanreg <- function(x, method="refit", ...) {
       sweep(beta, MARGIN = 2, STATS = sd_X, FUN = `*`),
       MARGIN = 1, STATS = sd_Y, FUN = `/`
     )
-  } else{
-      useless_output <- capture.output(fit_std <- update(fit, data=standardize(fit$data)))
-      posteriors_std <- as.data.frame(fit_std)
+  } else {
+    useless_output <- capture.output(fit_std <- update(fit, data = standardize(fit$data)))
+    posteriors_std <- as.data.frame(fit_std)
   }
 
   return(posteriors_std)
@@ -315,11 +317,11 @@ standardize.stanreg <- function(x, method="refit", ...) {
 standardize.glm <- function(x, clean=TRUE, method="agresti", ...) {
   fit <- x
 
-  if(clean == TRUE){
+  if (clean == TRUE) {
     data <- get_data(fit)
-    fit_std <- update(fit, data=standardize(data))
+    fit_std <- update(fit, data = standardize(data))
     coefs <- MuMIn::coefTable(fit_std)[, 1:2]
-  } else{
+  } else {
     # agresti method
     coefs <- MuMIn::coefTable(fit)[, 1:2]
     X <- as.matrix(model.matrix(fit)[, -1]) # -1 to drop column of 1s for intercept
@@ -369,12 +371,12 @@ standardize.glmerMod <- standardize.glm
 standardize.lm <- function(x, clean=TRUE, partial_sd=FALSE, preserve_factors=TRUE, ...) {
   fit <- x
 
-  if(clean == TRUE){
+  if (clean == TRUE) {
     data <- get_data(fit)
-    fit_std <- update(fit, data=standardize(data))
+    fit_std <- update(fit, data = standardize(data))
     coefs <- MuMIn::coefTable(fit_std)[, 1:2]
-  } else{
-    coefs <- .standardize_coefs(fit, partial_sd = partial_sd, preserve_factors=preserve_factors)
+  } else {
+    coefs <- .standardize_coefs(fit, partial_sd = partial_sd, preserve_factors = preserve_factors)
   }
 
   coefs <- as.data.frame(coefs)
@@ -405,7 +407,7 @@ standardize.lmerMod <- standardize.lm
 #' @keywords internal
 .partialsd <-
   function(x, sd, vif, n, p = length(x) - 1) {
-    sd * sqrt(1 / vif) * sqrt((n - 1)/(n - p))
+    sd * sqrt(1 / vif) * sqrt((n - 1) / (n - p))
   }
 
 
@@ -415,15 +417,23 @@ standardize.lmerMod <- standardize.lm
   function(x) {
     v <- vcov(x)
     nam <- dimnames(v)[[1L]]
-    if(dim(v)[1L] < 2L) return(structure(rep_len(1, dim(v)[1L]),
-                                         names = dimnames(v)[[1L]]))
-    if ((ndef <- sum(is.na(MuMIn::coeffs(x)))) > 0L)
-      stop(sprintf(ngettext(ndef, "one coefficient is not defined",
-                            "%d coefficients are not defined"), ndef))
+    if (dim(v)[1L] < 2L) {
+      return(structure(rep_len(1, dim(v)[1L]),
+        names = dimnames(v)[[1L]]
+      ))
+    }
+    if ((ndef <- sum(is.na(MuMIn::coeffs(x)))) > 0L) {
+      stop(sprintf(ngettext(
+        ndef, "one coefficient is not defined",
+        "%d coefficients are not defined"
+      ), ndef))
+    }
     o <- attr(model.matrix(x), "assign")
-    if (any(int <-(o == 0))) {
+    if (any(int <- (o == 0))) {
       v <- v[!int, !int, drop = FALSE]
-    } else warning("no intercept: VIFs may not be sensible")
+    } else {
+      warning("no intercept: VIFs may not be sensible")
+    }
     d <- sqrt(diag(v))
     rval <- numeric(length(nam))
     names(rval) <- nam
@@ -437,54 +447,51 @@ standardize.lmerMod <- standardize.lm
 #' @importFrom stats nobs vcov
 #' @keywords internal
 .standardize_coefs <- function(fit, partial_sd = FALSE, preserve_factors=TRUE, ...) {
-    # coefs <- MuMIn::coefTable(fit, ...)
-    coefs <- as.data.frame(MuMIn::coefTable(fit))
-    model_matrix <- model.matrix(fit)
+  # coefs <- MuMIn::coefTable(fit, ...)
+  coefs <- as.data.frame(MuMIn::coefTable(fit))
+  model_matrix <- model.matrix(fit)
 
-    predictors <- get_info(fit)$predictors
-    predictors <- c("(Intercept)", predictors)
+  predictors <- get_info(fit)$predictors
+  predictors <- c("(Intercept)", predictors)
 
-    if(preserve_factors == TRUE){
-      response_sd <- sd(model.response(model.frame(fit)))
-      factors <- as.data.frame(model_matrix)[!names(as.data.frame(model_matrix)) %in% predictors]
-      bx_factors <- rep(1/response_sd, length(names(factors)))
-      bx_factors <- data.frame(t(bx_factors))
-      names(bx_factors) <- names(factors)
-      coefs_factors <- coefs[names(factors), ]
-      model_matrix_factors <- as.matrix(factors)
+  if (preserve_factors == TRUE) {
+    response_sd <- sd(model.response(model.frame(fit)))
+    factors <- as.data.frame(model_matrix)[!names(as.data.frame(model_matrix)) %in% predictors]
+    bx_factors <- rep(1 / response_sd, length(names(factors)))
+    bx_factors <- data.frame(t(bx_factors))
+    names(bx_factors) <- names(factors)
+    coefs_factors <- coefs[names(factors), ]
+    model_matrix_factors <- as.matrix(factors)
 
-      coefs <- coefs[!rownames(coefs) %in% names(factors), ]
-      model_matrix <- as.matrix(as.data.frame(model_matrix)[names(as.data.frame(model_matrix)) %in% predictors])
-    }
+    coefs <- coefs[!rownames(coefs) %in% names(factors), ]
+    model_matrix <- as.matrix(as.data.frame(model_matrix)[names(as.data.frame(model_matrix)) %in% predictors])
+  }
 
-    if(partial_sd == TRUE) {
-      bx <- .partialsd(coefs[, 1L],
-                       apply(model_matrix, 2L, sd),
-                       .vif(fit),
-                       nobs(fit),
-                       sum(attr(model_matrix, "assign") != 0))
-    } else {
-      response_sd <- sd(model.response(model.frame(fit)))
-      bx <- apply(model_matrix, 2L, sd) / response_sd
-    }
-    bx <- as.data.frame(t(bx))
-    names(bx) <- row.names(coefs)
+  if (partial_sd == TRUE) {
+    bx <- .partialsd(
+      coefs[, 1L],
+      apply(model_matrix, 2L, sd),
+      .vif(fit),
+      nobs(fit),
+      sum(attr(model_matrix, "assign") != 0)
+    )
+  } else {
+    response_sd <- sd(model.response(model.frame(fit)))
+    bx <- apply(model_matrix, 2L, sd) / response_sd
+  }
+  bx <- as.data.frame(t(bx))
+  names(bx) <- row.names(coefs)
 
-    if(preserve_factors == TRUE){
-      bx <- cbind(bx, bx_factors)
-    }
-
-
-    # coefs <- MuMIn::coefTable(fit, ...)
-    coefs <- as.data.frame(MuMIn::coefTable(fit))
-    multiplier <- as.numeric(bx[row.names(coefs)])
-
-    coefs[, 1L:2L] <- coefs[, 1L:2L] * multiplier
-    colnames(coefs)[1L:2L] <- c("Coef.std", "SE.std")
-    return (coefs)
+  if (preserve_factors == TRUE) {
+    bx <- cbind(bx, bx_factors)
   }
 
 
+  # coefs <- MuMIn::coefTable(fit, ...)
+  coefs <- as.data.frame(MuMIn::coefTable(fit))
+  multiplier <- as.numeric(bx[row.names(coefs)])
 
-
-
+  coefs[, 1L:2L] <- coefs[, 1L:2L] * multiplier
+  colnames(coefs)[1L:2L] <- c("Coef.std", "SE.std")
+  return(coefs)
+}

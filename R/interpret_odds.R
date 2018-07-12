@@ -60,7 +60,7 @@ interpret_odds_posterior <- function(posterior, log=FALSE, rules="chen2010") {
   if (rules %in% c("cohen1988", "sawilowsky2009")) {
     posterior <- odds_to_d(posterior, log = log)
     interpretation <- sapply(posterior, .interpret_d, direction = TRUE, rules = rules, return_rules = TRUE)
-  } else{
+  } else {
     interpretation <- sapply(posterior, .interpret_odds, log = log, direction = TRUE, rules = rules, return_rules = TRUE)
   }
   rules <- unlist(interpretation[, 1]$rules)

@@ -43,7 +43,7 @@ analyze.glm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
   predictors <- info$predictors
 
   # R2 <- tjur_D(fit)
-  R2 <- get_R2(fit, method="nakagawa")
+  R2 <- get_R2(fit, method = "nakagawa")
 
   # Summary
   # -------------
@@ -56,9 +56,9 @@ analyze.glm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
   summary$p <- summary$`Pr...z..`
 
   # standardized coefficients
-  standardized <- tibble::rownames_to_column(standardize(fit, clean=TRUE), "Variable")
-  summary <- merge(summary, standardized, by="Variable", all.x=TRUE, sort=FALSE)
-  summary$Effect_Size <- c(NA, interpret_odds(tail(summary$Coef_std, -1), log=TRUE, rules = effsize_rules))
+  standardized <- tibble::rownames_to_column(standardize(fit, clean = TRUE), "Variable")
+  summary <- merge(summary, standardized, by = "Variable", all.x = TRUE, sort = FALSE)
+  summary$Effect_Size <- c(NA, interpret_odds(tail(summary$Coef_std, -1), log = TRUE, rules = effsize_rules))
 
   summary <- dplyr::select_(
     summary, "Variable", "Coef", "SE", "z", "Coef_std", "SE_std",
@@ -118,7 +118,7 @@ analyze.glm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
       CI_text,
       ", z = ",
       format_digit(summary[varname, "z"], 2), ", p ",
-      format_p(summary[varname, "p"], stars=FALSE),
+      format_p(summary[varname, "p"], stars = FALSE),
       ") and can be considered as ",
       tolower(summary[varname, "Effect_Size"]),
       " (std. beta = ",
