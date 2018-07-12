@@ -21,7 +21,7 @@ library(knitr)
 
 When I started doing statistics, after a bachelor in psychology, there was, to me, no such things as nested effects. You tested a model (often directly the ANOVA) with the interaction or without. 
 
-Let's take interest in the relationship between life satisfaction, salary and adjusting (the tendency to flexibly regulate ones emotions)
+Let's take interest in the relationship between **life satisfaction**, **sex** and **concealing** (the tendency to suppress or hide one's emotions)
 
 # The Data
 
@@ -35,14 +35,28 @@ df <- psycho::affective %>%
 summary(df)
 ```
 
-# Interaction Effect
+# Primitve Way
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-fit <- lm(Life_Satisfaction ~ Salary * Adjusting, data=df)
-
-analyze(anova(fit))
+anova_results <- aov(Life_Satisfaction ~ Sex * Concealing, data=df)
+analyze(anova_results)
 ```
 
+# Regression 
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+fit <- lm(Life_Satisfaction ~ Sex * Concealing, data=df)
+```
 
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+analyze(anova(fit)) 
+```
+
+First, note that running an anova on the linear model produces EXACTLY the same results. But we can to have a look at the model itself, which is richer than the ANOVA.
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+analyze(fit) 
+```
+
+Again, three lines of "effect". One could think these a similar to the one
 
 # Contribute
 

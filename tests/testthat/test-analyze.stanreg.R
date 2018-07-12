@@ -5,6 +5,7 @@ test_that("If it works.", {
   library(rstanarm)
   library(psycho)
 
+  seed <- 666
 
   fit <- rstanarm::stan_glm(
     vs ~ mpg * cyl,
