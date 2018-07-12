@@ -67,16 +67,20 @@ analyze(aov_result)
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 library(lmerTest)
 
-fit <- lmer(Recall_Ratio ~ Emotion_Condition + (1|Participant_ID), data=df_aov)
+fit <- lmerTest::lmer(Recall_Ratio ~ Emotion_Condition + (1|Participant_ID), data=df_aov)
 
 aov_result <- anova(fit)
 analyze(aov_result)
 ```
 
+You can note that in this version, no effect sizes are returned. This is because they are bad and make no really sense for mixed (repeated measures) designs.
+
 As you can see, the results are close. Nevertheless, it's better to analyze the full model.
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-fit <- lmer(Recall_Ratio ~ Emotion_Condition + (1|Participant_ID), data=df_aov)
+library(lme4)
+
+fit <- lmerTest::lmer(Recall_Ratio ~ Emotion_Condition + (1|Participant_ID), data=df_aov)
 analyze(fit)
 ```
 
@@ -84,72 +88,19 @@ analyze(fit)
 **And yet, what we just is wrong! Indeed, we treated ratios (that have 0-1 bounds) as regular **
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-Zdf_aov <- standardize(ungroup(df_aov))
-fit <- lmer(Recall_Ratio ~ Emotion_Condition + (1|Participant_ID), data=Zdf_aov)
+fit <- lme4::glmer(Recall ~ Emotion_Condition + (1|Participant_ID), data=df, family="binomial")
 analyze(fit)
-
-fit <- rstanarm::stan_glmer(Recall_Ratio ~ Emotion_Condition + (1|Participant_ID), data=Zdf_aov)
-analyze(fit)
-
-
-
-dummies <- scale(contrasts(df$Species)[df$Species,])
-fit <- lm(Sepal.Length ~ dummies, data = df)
-summary(fit)
-round(coef(fit), 2)
-round(MuMIn::std.coef(fit, partial.sd = FALSE), 2)
-
-
-library(tidyverse)
-library(MuMIn) # For stds coefs
-
-df <- iris %>% 
-  select(Sepal.Length, Sepal.Width) %>% 
-  scale() %>% 
-  as.data.frame() %>% 
-  mutate(Species = iris$Species)
-
-fit <- lm(Sepal.Length ~ Sepal.Width, data=df)
-round(coef(fit), 2)
-round(MuMIn::std.coef(fit, partial.sd = TRUE), 2)
-
-fit <- lm(Sepal.Length ~ Species, data=df)
-round(coef(fit), 2)
-round(MuMIn::std.coef(fit, partial.sd = TRUE), 2)
-
-
-
-
-library(rstanarm)
-
-std_posteriors <- function(fit){
-      X <- model.matrix(fit)
-    sd_X <- apply(X, MARGIN = 2, FUN = sd)[-1]
-    sd_Y <- apply(posterior_predict(fit), MARGIN = 1, FUN = sd)
-    beta <- as.matrix(fit)[, 2:ncol(X), drop = FALSE]
-    posteriors_std <- sweep(
-      sweep(beta, MARGIN = 2, STATS = sd_X, FUN = `*`),
-      MARGIN = 1, STATS = sd_Y, FUN = `/`
-    )
-    return(posteriors_std)
-}
-
-df <- iris %>% 
-  select(Sepal.Length, Sepal.Width) %>% 
-  scale() %>% 
-  as.data.frame() %>% 
-  mutate(Species = iris$Species)
-  
-  
-
-fit <- rstanarm::stan_glm(Sepal.Length ~ Species, data=df)
-post <- data.frame(fit)$Speciesversicolor
-std_post <- as.data.frame(std_posteriors(fit))$Speciesversicolor
-
-paste("Median = ", round(median(post), 2), ", MAD = ", round(mad(post), 2))
-paste("Std. Median = ", round(median(std_post), 2), ", Std. MAD = ", round(mad(std_post), 2))
-
 ```
+
+### Bayesian
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+fit <- rstanarm::stan_glmer(Recall ~ Emotion_Condition + (1|Participant_ID), data=df, family="binomial", chains=1)
+analyze(fit, effsize=TRUE)
+
+fit <- rstanarm::stan_glmer(Recall ~ Autobiographical_Link + (1|Participant_ID), data=df, family="binomial", chains=1)
+analyze(fit, effsize=TRUE)
+```
+
 
 # Inter-individual Analysis
 

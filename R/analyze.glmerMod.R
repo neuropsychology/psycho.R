@@ -64,12 +64,13 @@ analyze.glmerMod <- function(x, CI=95, effsize_rules="cohen1988", ...) {
   summary$p <- summary$`Pr...z..`
 
   # standardized coefficients
-  summary <- cbind(summary, standardize(fit, method = "agresti"))
-  summary$Effect_Size <- c(NA, interpret_odds(tail(summary$Coef.std, -1), log = TRUE, rules = effsize_rules))
+  standardized <- tibble::rownames_to_column(standardize(fit, clean=TRUE), "Variable")
+  summary <- merge(summary, standardized, by="Variable", all.x=TRUE, sort=FALSE)
+  summary$Effect_Size <- c(NA, interpret_odds(tail(summary$Coef_std, -1), log=TRUE, rules = effsize_rules))
 
 
   # Summary
-  summary <- dplyr::select_(summary, "Variable", "Coef", "SE", "z", "p", "Coef.std", "SE.std", "Effect_Size")
+  summary <- dplyr::select_(summary, "Variable", "Coef", "SE", "z", "p", "Coef_std", "SE_std", "Effect_Size")
 
   # CI computation
   if (!is.null(CI)) {
@@ -91,7 +92,8 @@ analyze.glmerMod <- function(x, CI=95, effsize_rules="cohen1988", ...) {
 
 
   # Varnames
-  varnames <- rownames(summary)
+  varnames <- summary$Variable
+  row.names(summary) <- varnames
 
 
   # Values
@@ -151,9 +153,9 @@ analyze.glmerMod <- function(x, CI=95, effsize_rules="cohen1988", ...) {
         ") and can be considered as ",
         tolower(summary[varname, "Effect_Size"]),
         " (std. beta = ",
-        format_digit(summary[varname, "Coef.std"], 2),
+        format_digit(summary[varname, "Coef_std"], 2),
         ", std. SE = ",
-        format_digit(summary[varname, "SE.std"], 2),
+        format_digit(summary[varname, "SE_std"], 2),
         ")."
       )
     }

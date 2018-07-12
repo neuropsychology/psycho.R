@@ -25,7 +25,7 @@
 #' data <- attitude
 #' fit <- rstanarm::stan_glm(rating ~ advance + privileges, data=data)
 #'
-#' results <- analyze(fit)
+#' results <- analyze(fit, effsize=TRUE)
 #' summary(results)
 #' print(results)
 #' plot(results)
@@ -35,11 +35,13 @@
 #' results <- analyze(fit)
 #' summary(results)
 #'
-#' fit <- rstanarm::stan_glm(Sex ~ Adjusting, data=psycho::affective, family="binomial")
+#' fit <- rstanarm::stan_glm(Sex ~ Adjusting,
+#'     data=psycho::affective, family="binomial")
 #' results <- analyze(fit)
 #' summary(results)
 #'
-#' fit <- rstanarm::stan_glmer(Sex ~ Adjusting + (1|Salary), data=psycho::affective, family="binomial")
+#' fit <- rstanarm::stan_glmer(Sex ~ Adjusting + (1|Salary),
+#'     data=psycho::affective, family="binomial")
 #' results <- analyze(fit)
 #' summary(results)
 #' }
@@ -60,7 +62,7 @@
 #' @importFrom broom tidy
 #' @importFrom stringr str_squish str_replace
 #' @export
-analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", ...) {
+analyze.stanreg <- function(x, CI=90, effsize=FALSE, effsize_rules="cohen1988", ...) {
   fit <- x
 
   # Info --------------------------------------------------------------------
@@ -123,13 +125,11 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
   }
 
   # Standardized posteriors --------------------------------------------
-  if (fit$family$family == "gaussian") {
-    posteriors_std <- standardize(fit)
-  } else {
-    posteriors_std <- NA
-    effsize <- FALSE
+  if(effsize == TRUE){
+    posteriors_std <- standardize(fit, method="posterior", preserve_factors=TRUE)
+  } else{
+    posteriors_std <- as.data.frame(fit)
   }
-
 
   # Get indices of each variable --------------------------------------------
 
@@ -159,7 +159,8 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
         predictors,
         CI = CI,
         effsize = effsize,
-        effsize_rules = effsize_rules
+        effsize_rules = effsize_rules,
+        fit=fit
       )
     }
   }
@@ -176,12 +177,17 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
         MAD = values$effects[[varname]]$mad,
         CI_lower = values$effects[[varname]]$CI_values[1],
         CI_higher = values$effects[[varname]]$CI_values[2],
+        Median_std = values$effects[[varname]]$std_median,
+        MAD_std = values$effects[[varname]]$std_mad,
         MPE = values$effects[[varname]]$MPE,
         Overlap = values$effects[[varname]]$overlap
       )
     )
   }
 
+  if(effsize == FALSE){
+    summary <- select_(summary, "-Median_std", "-MAD_std")
+  }
 
   # Text --------------------------------------------------------------------
   # -------------------------------------------------------------------------
@@ -422,6 +428,9 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
     values$EffSize_Small <- NA
     values$EffSize_VerySmall <- NA
     values$EffSize_Opposite <- NA
+  } else{
+    values$std_median <- NA
+    values$std_mad <- NA
   }
 
   return(values)
@@ -482,6 +491,9 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
     values$EffSize_Small <- NA
     values$EffSize_VerySmall <- NA
     values$EffSize_Opposite <- NA
+  } else{
+    values$std_median <- NA
+    values$std_mad <- NA
   }
 
   return(values)
@@ -491,7 +503,7 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
 
 
 #' @keywords internal
-.process_effect <- function(varname, posteriors, posteriors_std, info_priors, predictors, CI=90, effsize=FALSE, effsize_rules=FALSE) {
+.process_effect <- function(varname, posteriors, posteriors_std, info_priors, predictors, CI=90, effsize=FALSE, effsize_rules=FALSE, fit) {
   values <- .get_info_priors(varname, info_priors, predictors)
   posterior <- posteriors[, varname]
 
@@ -566,20 +578,19 @@ analyze.stanreg <- function(x, CI=90, effsize=TRUE, effsize_rules="cohen1988", .
     values$std_CI_values <- hdi(posterior_std, prob = CI / 100)
     values$std_CI_values <- c(values$std_CI_values$values$HDImin, values$std_CI_values$values$HDImax)
 
+    if (fit$family$family == "binomial" & fit$family$link == "logit") {
+      EffSize <- interpret_odds_posterior(posterior_std, log=TRUE, rules=effsize_rules)
+    } else{
+      EffSize <- interpret_d_posterior(posterior_std, rules = effsize_rules)
+    }
 
-    EffSize <- interpret_d_posterior(posterior_std, rules = effsize_rules)
-
-    EffSize_table <- EffSize$summary
-    EffSize_table$Variable <- varname
-
-    values$EffSize <- EffSize_table
+    values$EffSize <- EffSize$summary
+    values$EffSize$Variable <- varname
     values$EffSize_text <- EffSize$text
-    values$EffSize_VeryLarge <- EffSize$values$`very large`
-    values$EffSize_Large <- EffSize$values$large
-    values$EffSize_Moderate <- EffSize$values$moderate
-    values$EffSize_Small <- EffSize$values$small
-    values$EffSize_VerySmall <- EffSize$values$`very small`
-    values$EffSize_Opposite <- EffSize$values$opposite
+
+  } else{
+    values$std_median <- NA
+    values$std_mad <- NA
   }
 
   return(values)

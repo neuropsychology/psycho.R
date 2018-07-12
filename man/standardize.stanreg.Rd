@@ -4,12 +4,12 @@
 \alias{standardize.stanreg}
 \title{Standardize Posteriors.}
 \usage{
-\method{standardize}{stanreg}(x, method = "posterior", ...)
+\method{standardize}{stanreg}(x, method = "refit", ...)
 }
 \arguments{
 \item{x}{A stanreg model.}
 
-\item{method}{"posterior" (default, based on estimated SD) or "sample" (based on the sample SD).}
+\item{method}{"refit" (default) will entirely refit the model based on standardized data. Can take a long time. Other post-hoc methods are "posterior" (based on estimated SD) or "sample" (based on the sample SD).}
 
 \item{...}{Arguments passed to or from other methods.}
 }
@@ -21,10 +21,10 @@ Compute standardized posteriors from which to get standardized coefficients.
 library(psycho)
 library(rstanarm)
 
-data <- attitude
-fit <- rstanarm::stan_glm(rating ~ advance + privileges, data=data)
-
+fit <- rstanarm::stan_glm(Sepal.Length ~ Sepal.Width * Species, data=iris)
+fit <- rstanarm::stan_glm(Sepal.Length ~ Sepal.Width * Species, data=standardize(iris))
 posteriors <- standardize(fit)
+posteriors <- standardize(fit, method="posterior")
 
 }
 

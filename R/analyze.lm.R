@@ -12,6 +12,7 @@
 #' @examples
 #' library(psycho)
 #' fit <- lm(Sepal.Length ~ Sepal.Width, data=iris)
+#' fit <- lm(Sepal.Length ~ Sepal.Width * Species, data=iris)
 #'
 #' results <- analyze(fit)
 #' summary(results)
@@ -49,11 +50,12 @@ analyze.lm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
   summary$p <- summary$`Pr...t..`
 
   # standardized coefficients
-  summary <- cbind(summary, standardize(fit, partial.sd = FALSE))
-  summary$Effect_Size <- interpret_d(summary$Coef.std, rules = effsize_rules)
+  standardized <- tibble::rownames_to_column(standardize(fit, clean=TRUE), "Variable")
+  summary <- merge(summary, standardized, by="Variable", all.x=TRUE, sort=FALSE)
+  summary$Effect_Size <- c(NA, interpret_d(tail(summary$Coef_std, -1), rules = effsize_rules))
 
   summary <- dplyr::select_(
-    summary, "Variable", "Coef", "SE", "t", "Coef.std", "SE.std",
+    summary, "Variable", "Coef", "SE", "t", "Coef_std", "SE_std",
     "p", "Effect_Size"
   )
 
@@ -66,7 +68,8 @@ analyze.lm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
 
 
   # Varnames
-  varnames <- rownames(summary)
+  varnames <- summary$Variable
+  row.names(summary) <- varnames
 
 
 
@@ -116,9 +119,9 @@ analyze.lm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
       ") and can be considered as ",
       tolower(summary[varname, "Effect_Size"]),
       " (std. beta = ",
-      format_digit(summary[varname, "Coef.std"], 2),
+      format_digit(summary[varname, "Coef_std"], 2),
       ", std. SE = ",
-      format_digit(summary[varname, "SE.std"], 2), ")."
+      format_digit(summary[varname, "SE_std"], 2), ")."
     )
 
     if (varname == "(Intercept)") {
@@ -138,8 +141,8 @@ analyze.lm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
       CI_lower = summary[varname, "CI_lower"],
       CI_higher = summary[varname, "CI_higher"],
       t = summary[varname, "t"],
-      Coef.std = summary[varname, "Coef.std"],
-      SE.std = summary[varname, "SE.std"],
+      Coef_std = summary[varname, "Coef_std"],
+      SE_std = summary[varname, "SE_std"],
       p = summary[varname, "p"],
       Effect_Size = summary[varname, "Effect_Size"],
       Text = text

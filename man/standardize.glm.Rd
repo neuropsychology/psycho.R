@@ -4,10 +4,12 @@
 \alias{standardize.glm}
 \title{Standardize Coefficients.}
 \usage{
-\method{standardize}{glm}(x, method = "agresti", ...)
+\method{standardize}{glm}(x, clean = TRUE, method = "agresti", ...)
 }
 \arguments{
 \item{x}{A linear model.}
+
+\item{clean}{Will entirely refit the model based on standardized data. Can take a long time.}
 
 \item{method}{The standardization method. Can be "agresti".}
 

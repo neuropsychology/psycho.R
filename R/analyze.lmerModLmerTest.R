@@ -61,11 +61,12 @@ analyze.lmerModLmerTest <- function(x, CI=95, effsize_rules="cohen1988", ...) {
   summary$p <- summary$`Pr...t..`
 
   # standardized coefficients
-  summary <- cbind(summary, standardize(fit, partial.sd = FALSE))
-  summary$Effect_Size <- c(NA, interpret_d(tail(summary$Coef.std, -1), rules = effsize_rules))
+  standardized <- tibble::rownames_to_column(standardize(fit, clean=TRUE), "Variable")
+  summary <- merge(summary, standardized, by="Variable", all.x=TRUE, sort=FALSE)
+  summary$Effect_Size <- c(NA, interpret_d(tail(summary$Coef_std, -1), rules = effsize_rules))
 
   summary <- dplyr::select_(
-    summary, "Variable", "Coef", "SE", "t", "df", "p", "Coef.std", "SE.std", "Effect_Size"
+    summary, "Variable", "Coef", "SE", "t", "df", "p", "Coef_std", "SE_std", "Effect_Size"
   )
 
   # CI computation
@@ -88,8 +89,8 @@ analyze.lmerModLmerTest <- function(x, CI=95, effsize_rules="cohen1988", ...) {
 
 
   # Varnames
-  varnames <- rownames(summary)
-
+  varnames <- summary$Variable
+  row.names(summary) <- varnames
 
 
   # Values
@@ -153,9 +154,9 @@ analyze.lmerModLmerTest <- function(x, CI=95, effsize_rules="cohen1988", ...) {
         ") and can be considered as ",
         tolower(summary[varname, "Effect_Size"]),
         " (std. beta = ",
-        format_digit(summary[varname, "Coef.std"], 2),
+        format_digit(summary[varname, "Coef_std"], 2),
         ", std. SE = ",
-        format_digit(summary[varname, "SE.std"], 2),
+        format_digit(summary[varname, "SE_std"], 2),
         ")."
       )
     }
@@ -167,8 +168,8 @@ analyze.lmerModLmerTest <- function(x, CI=95, effsize_rules="cohen1988", ...) {
       CI_higher = summary[varname, "CI_higher"],
       t = summary[varname, "t"],
       df = summary[varname, "df"],
-      Coef.std = summary[varname, "Coef.std"],
-      SE.std = summary[varname, "SE.std"],
+      Coef_std = summary[varname, "Coef_std"],
+      SE_std = summary[varname, "SE_std"],
       p = summary[varname, "p"],
       Effect_Size = summary[varname, "Effect_Size"],
       Text = text

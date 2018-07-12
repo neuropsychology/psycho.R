@@ -24,6 +24,7 @@ Analyze lm objects.
 \examples{
 library(psycho)
 fit <- lm(Sepal.Length ~ Sepal.Width, data=iris)
+fit <- lm(Sepal.Length ~ Sepal.Width * Species, data=iris)
 
 results <- analyze(fit)
 summary(results)
