@@ -4,13 +4,13 @@
 \alias{standardize.lm}
 \title{Standardize Coefficients.}
 \usage{
-\method{standardize}{lm}(x, clean = TRUE, partial_sd = FALSE,
+\method{standardize}{lm}(x, method = "refit", partial_sd = FALSE,
   preserve_factors = TRUE, ...)
 }
 \arguments{
 \item{x}{A linear model.}
 
-\item{clean}{Will entirely refit the model based on standardized data. Can take a long time.}
+\item{method}{The standardization method. Can be "refit" (will entirely refit the model based on standardized data. Can take some time) or "posthoc".}
 
 \item{partial_sd}{Logical, if set to TRUE, model coefficients are multiplied by partial SD, otherwise they are multiplied by the ratio of the standard deviations of the independent variable and dependent variable.}
 
