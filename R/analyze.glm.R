@@ -56,7 +56,7 @@ analyze.glm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
   summary$p <- summary$`Pr...z..`
 
   # standardized coefficients
-  standardized <- tibble::rownames_to_column(standardize(fit, clean = TRUE), "Variable")
+  standardized <- tibble::rownames_to_column(standardize(fit, method = "refit"), "Variable")
   summary <- merge(summary, standardized, by = "Variable", all.x = TRUE, sort = FALSE)
   summary$Effect_Size <- c(NA, interpret_odds(tail(summary$Coef_std, -1), log = TRUE, rules = effsize_rules))
 

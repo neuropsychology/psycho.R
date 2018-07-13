@@ -35,4 +35,28 @@ test_that("Correct Value", {
 
   dfN <- standardize(df, except = "V3", normalize = TRUE)
   testthat::expect_equal(mean(dfN$V2), 0.533, tol = 0.01)
+
+
+  # Models
+  fit <- rstanarm::stan_glm(
+    Sepal.Length ~ Sepal.Width,
+    data = iris,
+    seed = 666,
+    algorithm = "meanfield"
+  )
+
+  std <- standardize(fit, method="posterior")
+  testthat::expect_equal(mean(std), -0.24, tol = 0.02)
+
+  std <- standardize(fit, method="sample")
+  testthat::expect_equal(mean(std), 1.34, tol = 0.02)
+
+  fit <- lm(
+    Sepal.Length ~ Sepal.Width,
+    data = iris
+  )
+
+  std <- standardize(fit, method="posthoc")
+  testthat::expect_equal(mean(std$Coef_std), -0.059, tol = 0.01)
+
 })
