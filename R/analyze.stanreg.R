@@ -127,6 +127,10 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, effsize_rules="cohen1988", 
   # Standardized posteriors --------------------------------------------
   if (effsize == TRUE) {
     posteriors_std <- standardize(fit, method = "refit")
+    # Avoir some problems
+    if (length(setdiff(names(posteriors_std), varnames[varnames != "R2"])) != 0) {
+      names(posteriors_std) <- varnames[varnames != "R2"]
+    }
   } else {
     posteriors_std <- as.data.frame(fit)
   }

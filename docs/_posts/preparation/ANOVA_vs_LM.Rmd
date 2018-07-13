@@ -19,8 +19,6 @@ editor_options:
 library(knitr)
 ```
 
-When I started doing statistics, after a bachelor in psychology, there was, to me, no such things as nested effects. You tested a model (often directly the ANOVA) with the interaction or without. 
-
 Let's take interest in the relationship between **life satisfaction**, **sex** and **concealing** (the tendency to suppress or hide one's emotions)
 
 # The Data
@@ -30,7 +28,7 @@ library(tidyverse)
 library(psycho)
 
 df <- psycho::affective %>% 
-  select(Sex, Life_Satisfaction, Adjusting)
+  select(Sex, Life_Satisfaction, Concealing)
 
 summary(df)
 ```
@@ -41,6 +39,7 @@ anova_results <- aov(Life_Satisfaction ~ Sex * Concealing, data=df)
 analyze(anova_results)
 ```
 
+ANOVAs comes from a time where psychologists had to do their maths by hand.
 If we wanted to go deeper, we have to do something like post-hocs tests and stuff, which are messy and not the correct way to proceed. Instead, we will investigate the underlying linear regression model.
 
 
@@ -64,6 +63,7 @@ Again, three lines of "effect". One could think these a similar to the ones of A
 
 # Visualize the data 
 
+The traditional way of visualizing the daa in this case, is do to a scatter plot with the dependent variable as Y, the linear predictor as X and the factor as colour. We can then draw the regression lines.
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 df %>% 
@@ -72,6 +72,8 @@ df %>%
   geom_smooth(method="lm")
 ```
 
+As you can see, this plot is rather ugly. Many points are overlapping, so we lose the vision of density. We can introduce some jitter to our points as follows:
+
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 df %>% 
   ggplot(aes(x=Concealing, y=Life_Satisfaction, colour=Sex)) +
@@ -79,16 +81,28 @@ df %>%
   geom_smooth(method="lm")
 ```
 
+It's a bit better, but the plot is still ugly, and the data points aren't really intuitive.
+
 # Visualize the model
 
-This method is alright for simple models, but for more complex kind of stuffs wouldn't work, as your model infered things that cannot be directly represented with the data on a 2D panel. Nevertheless, one can directly plot the model's prediction.
+Visualizing the data is alright for simple models, but for more complex kind of stuffs, it wouldn't work, as your model infered things that cannot be directly represented with the data on a 2D panel. One of the way of creating models visualization, one can directly plot the model's prediction.
 
+## Reference Data
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 refdata <- df %>% 
   select(Sex, Concealing) %>% 
   refdata()
 
-get_predicted(fit, newdata=refdata) %>% 
+predicted <- get_predicted(fit, newdata=refdata)
+
+head(predicted)
+```
+
+## Predictions
+
+## Plot
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+predicted %>% 
   ggplot(aes(x=Concealing, y=Life_Satisfaction_Predicted)) +
   geom_line(aes(colour=Sex)) +
   geom_ribbon(aes(fill=Sex,
