@@ -1,0 +1,137 @@
+---
+title: "How to Analyze Memory Scores in Psychology"
+layout: post
+output:
+  md_document:
+    toc: yes
+    variant: markdown_github
+  html_document:
+    df_print: paged
+    toc: yes
+author: "Dominique Makowski"
+date: "`r Sys.Date()`"
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(knitr)
+```
+
+
+# The Problem
+
+# The data
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+library(tidyverse)  # Load a collection of useful packages 
+library(psycho)  # Load the psycho package
+
+df <- psycho::emotion %>% 
+  select(Participant_ID, Participant_Age, Participant_Sex, Emotion_Condition, Autobiographical_Link, Recall)
+
+summary(df)
+```
+
+We started by loading an available dataset from the psycho package, selecting variables that interest us, and storing the dataframe into an object called `df`. Then, to have a glimpse at the dataframe, we ran the `summary` function on it, that shows us the different variables, their type and some info about them.
+
+
+
+# Intra-individual Analysis
+
+## The Effect of Emotion on Free Recall
+
+### The Primitive Way
+
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+df_aov <- df %>% 
+  mutate(Recall = ifelse(Recall == TRUE, 1, 0)) %>% 
+  group_by(Participant_ID, Emotion_Condition) %>% 
+  summarise(Recall_Ratio = sum(Recall) / n())
+
+head(df_aov)  # We can see the 10 first rows of a dataframe by running the "head()" function
+```
+
+### ANOVA
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+aov_result <- aov(Recall_Ratio ~ Emotion_Condition + Error(Participant_ID), data=df_aov)
+analyze(aov_result)
+```
+
+
+### Mixed Model
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+library(lmerTest)
+
+fit <- lmerTest::lmer(Recall_Ratio ~ Emotion_Condition + (1|Participant_ID), data=df_aov)
+
+aov_result <- anova(fit)
+analyze(aov_result)
+```
+
+You can note that in this version, no effect sizes are returned. This is because they are bad and make no really sense for mixed (repeated measures) designs.
+
+As you can see, the results are close. Nevertheless, it's better to analyze the full model.
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+library(lme4)
+
+fit <- lmerTest::lmer(Recall_Ratio ~ Emotion_Condition + (1|Participant_ID), data=df_aov)
+analyze(fit)
+```
+
+
+**And yet, what we just is wrong! Indeed, we treated ratios (that have 0-1 bounds) as regular **
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+fit <- lme4::glmer(Recall ~ Emotion_Condition + (1|Participant_ID), data=df, family="binomial")
+analyze(fit)
+```
+
+### Bayesian
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+fit <- rstanarm::stan_glmer(Recall ~ Emotion_Condition + (1|Participant_ID), data=df, family="binomial", chains=1)
+analyze(fit, effsize=TRUE)
+
+fit <- rstanarm::stan_glmer(Recall ~ Autobiographical_Link + (1|Participant_ID), data=df, family="binomial", chains=1)
+analyze(fit, effsize=TRUE)
+```
+
+
+# Inter-individual Analysis
+
+## Signal Detection Theory
+
+See THIS blogpost.
+
+
+
+
+
+# Credits
+
+The psycho package helped you? Don't forget to cite the various packages you used :)
+
+You can cite `psycho` as follows:
+
+- Makowski, (2018). *The psycho Package: An Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470
+
+
+# Previous blogposts
+
+- [Formatted Correlation with Effect Size](https://neuropsychology.github.io/psycho.R/2018/06/28/analyze_correlation.html)
+- [Extracting a Reference Grid of your Data for Machine Learning Models Visualization](https://neuropsychology.github.io/psycho.R/2018/06/25/refdata.html)
+- [Copy/paste t-tests Directly to Manuscripts](https://neuropsychology.github.io/psycho.R/2018/06/19/analyze_ttest.html)
+- [Easy APA Formatted Bayesian Correlation](https://neuropsychology.github.io/psycho.R/2018/06/11/bayesian_correlation.html)
+- [Fancy Plot (with Posterior Samples) for Bayesian Regressions](https://neuropsychology.github.io/psycho.R/2018/06/03/plot_bayesian_model.html)
+- [How Many Factors to Retain in Factor Analysis](https://neuropsychology.github.io/psycho.R/2018/05/24/n_factors.html)
+- [Beautiful and Powerful Correlation Tables](https://neuropsychology.github.io/psycho.R/2018/05/20/correlation.html)
+- [Format and Interpret Linear Mixed Models](https://neuropsychology.github.io/psycho.R/2018/05/10/interpret_mixed_models.html)
+- [How to do Repeated Measures ANOVAs](https://neuropsychology.github.io/psycho.R/2018/05/01/repeated_measure_anovas.html)
+- [Standardize (Z-score) a dataframe](https://neuropsychology.github.io/psycho.R/2018/03/29/standardize.html)
+- [Compute Signal Detection Theory Indices](https://neuropsychology.github.io/psycho.R/2018/03/29/SDT.html)
+- [Installing R, R Studio and psycho](https://neuropsychology.github.io/psycho.R/2018/03/21/installingR.html)

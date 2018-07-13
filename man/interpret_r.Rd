@@ -23,6 +23,9 @@ library(psycho)
 interpret_r(-0.42)
 
 }
+\seealso{
+Page 88 of APA's 6th Edition
+}
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 }

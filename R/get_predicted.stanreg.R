@@ -5,9 +5,9 @@
 #' @param fit A stanreg model.
 #' @param newdata A data frame in which to look for variables with which to predict. If omitted, the model matrix is used. If "model", the model's data is used.
 #' @param prob Probability of credible intervals (0.9 (default) will compute 5-95\% CI). Can also be a list of probs (e.g., c(0.90, 0.95)).
+#' @param odds_to_probs Transform log odds ratios in logistic models to probabilies.
 #' @param keep_iterations Keep all prediction iterations.
 #' @param draws An integer indicating the number of draws to return. The default and maximum number of draws is the size of the posterior sample.
-#' @param odds_to_probs Transform log odds ratios in logistic models to probabilies.
 #' @param posterior_predict Posterior draws of the outcome instead of the link function (i.e., the regression "line").
 #' @param seed An optional seed to use.
 #' @param ... Arguments passed to or from other methods.
@@ -22,11 +22,9 @@
 #' library(ggplot2)
 #' require(rstanarm)
 #'
-#' fit <- rstanarm::stan_glm(Tolerating ~ Adjusting, data=affective, iter=500)
+#' fit <- rstanarm::stan_glm(Tolerating ~ Adjusting, data=affective)
 #'
-#' refgrid <- emmeans::ref_grid(fit, at=list(
-#'     Adjusting=seq(min(affective$Adjusting), max(affective$Adjusting), length.out=10)))
-#'
+#' refgrid <- psycho::refdata(affective, "Adjusting")
 #' predicted <- get_predicted(fit, newdata=refgrid)
 #'
 #' ggplot(predicted, aes(x=Adjusting, y=Tolerating_Median)) +
@@ -35,11 +33,9 @@
 #'                   ymax=Tolerating_CI_95),
 #'                   alpha=0.1)
 #'
-#' fit <- rstanarm::stan_glm(Sex ~ Adjusting, data=affective, family="binomial", iter=500)
+#' fit <- rstanarm::stan_glm(Sex ~ Adjusting, data=affective, family="binomial")
 #'
-#' refgrid <- emmeans::ref_grid(fit, at=list(
-#'     Adjusting=seq(min(affective$Adjusting), max(affective$Adjusting), length.out=10)))
-#'
+#' refgrid <- psycho::refdata(affective, "Adjusting")
 #' predicted <- get_predicted(fit, newdata=refgrid)
 #'
 #' ggplot(predicted, aes(x=Adjusting, y=Sex_Median)) +
@@ -51,13 +47,12 @@
 #' }
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
-#' @method get_predicted stanreg
 #' @import rstanarm
 #' @importFrom stats median family model.matrix
 #' @importFrom dplyr bind_cols
 #' @importFrom tibble rownames_to_column
 #' @export
-get_predicted.stanreg <- function(fit, newdata="model", prob=0.9, keep_iterations=FALSE, draws=NULL, odds_to_probs=TRUE, posterior_predict=FALSE, seed=NULL, ...) {
+get_predicted.stanreg <- function(fit, newdata="model", prob=0.9, odds_to_probs=TRUE, keep_iterations=FALSE, draws=NULL, posterior_predict=FALSE, seed=NULL, ...) {
 
   # Extract names
   predictors <- all.vars(as.formula(fit$formula))
@@ -122,7 +117,9 @@ get_predicted.stanreg <- function(fit, newdata="model", prob=0.9, keep_iteration
   # Transform odds to probs ----------------------------------------------------------
 
   if (family(fit)$family == "binomial" & family(fit)$link == "logit") {
-    pred_y <- odds_to_probs(pred_y)
+    if (odds_to_probs == TRUE) {
+      pred_y <- odds_to_probs(pred_y)
+    }
   }
 
 

@@ -21,10 +21,6 @@ vignette: >
 
 ------
 
-# Index
-
-- [Overview](https://CRAN.R-project.org/package=psycho/vignettes/overview.html)
-- Bayesian Analyses in Psychology
 
 # Overview
 
@@ -64,12 +60,12 @@ library(devtools)
 devtools::install_github("neuropsychology/psycho.R")
 ```
 
-**In case of error**: Sometimes the installation fails, and you might find in the redish output the following lines:
+**In case of error**: Sometimes the installation fails, and you might find in the red output the following lines:
 ```r
 there is no package called ‘**thenameofapackage**’
 ERROR: lazy loading failed for package ‘psycho’
 ```
-Try installing the missing packages (`install.packages("thenameofapackage")`) and try the installation of psycho again.
+Try installing the missing packages (`install.packages("thenameofapackage")`) and then, install psycho again (sometimes this can be done several times).
 
 Anyway, once you have `psycho`, just put this at the beginning of every script:
 ```{r}
@@ -80,7 +76,7 @@ library(psycho)
 ## General Workflow
 
 
-The package mainly revolves around the `psychobject`. Main functions from the package return this type, and the `analyze()` function transforms other R objects into psychobjects. Then, 4 functions can be applied on a psychobject: `summary()`, `print()`, `plot()` and `values()`.
+The package mainly revolves around the `psychobject`. Main functions from the package return this type, and the `analyze()` function transforms other R objects into psychobjects. 4 functions can be then applied on a psychobject: `summary()`, `print()`, `plot()` and `values()`.
 
 ```{r, out.width=700, echo = FALSE, eval = TRUE, fig.align='center'}
 knitr::include_graphics("images/workflow.PNG")
@@ -97,7 +93,10 @@ knitr::include_graphics("images/workflow.PNG")
 
 # Examples
 
-- [APA Formatted Bayesian Correlation](https://neuropsychology.github.io/psycho.R/2018/06/11/bayesian_correlation.html)
+- [Formatted Correlation with Effect Size](https://neuropsychology.github.io/psycho.R/2018/06/28/analyze_correlation.html)
+- [Extracting a Reference Grid of your Data for Machine Learning Models Visualization](https://neuropsychology.github.io/psycho.R/2018/06/25/refdata.html)
+- [Copy/paste t-tests Directly to Manuscripts](https://neuropsychology.github.io/psycho.R/2018/06/19/analyze_ttest.html)
+- [Easy APA Formatted Bayesian Correlation](https://neuropsychology.github.io/psycho.R/2018/06/11/bayesian_correlation.html)
 - [Fancy Plot (with Posterior Samples) for Bayesian Regressions](https://neuropsychology.github.io/psycho.R/2018/06/03/plot_bayesian_model.html)
 - [How Many Factors to Retain in Factor Analysis](https://neuropsychology.github.io/psycho.R/2018/05/24/n_factors.html)
 - [Beautiful and Powerful Correlation Tables](https://neuropsychology.github.io/psycho.R/2018/05/20/correlation.html)
@@ -105,6 +104,7 @@ knitr::include_graphics("images/workflow.PNG")
 - [How to do Repeated Measures ANOVAs](https://neuropsychology.github.io/psycho.R/2018/05/01/repeated_measure_anovas.html)
 - [Standardize (Z-score) a dataframe](https://neuropsychology.github.io/psycho.R/2018/03/29/standardize.html)
 - [Compute Signal Detection Theory Indices](https://neuropsychology.github.io/psycho.R/2018/03/29/SDT.html)
+- [Installing R, R Studio and psycho](https://neuropsychology.github.io/psycho.R/2018/03/21/installingR.html)
 
 
 # Other 

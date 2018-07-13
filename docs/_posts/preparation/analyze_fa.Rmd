@@ -1,5 +1,5 @@
 ---
-title: "Factor Analysis: Get Table of Loadings, Plot and CFA model"
+title: "Factor Analysis: Get Formatted Table of Loadings, Plot and CFA model"
 layout: post
 output:
   md_document:

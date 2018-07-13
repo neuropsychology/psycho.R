@@ -4,7 +4,8 @@
 \alias{standardize.data.frame}
 \title{Standardize (scale and reduce) Dataframe.}
 \usage{
-\method{standardize}{data.frame}(x, subset = NULL, except = NULL, ...)
+\method{standardize}{data.frame}(x, subset = NULL, except = NULL,
+  normalize = FALSE, ...)
 }
 \arguments{
 \item{x}{Dataframe.}
@@ -14,6 +15,8 @@ standardized.}
 
 \item{except}{Character or list of characters of column names to be excluded
 from standardization.}
+
+\item{normalize}{Will perform a normalization instead of a standardization. This scales all numeric variables in the range 0 - 1.}
 
 \item{...}{Arguments passed to or from other methods.}
 }
@@ -38,6 +41,7 @@ dfZ <- standardize(df, except="V3")
 dfZ <- standardize(df, except=c("V1", "V2"))
 dfZ <- standardize(df, subset="V3")
 dfZ <- standardize(df, subset=c("V1", "V2"))
+dfZ <- standardize(df, normalize=TRUE)
 
 # Respects grouping
 dfZ <- df \%>\%

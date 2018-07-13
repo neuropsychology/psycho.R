@@ -20,6 +20,9 @@ posterior <- rnorm(1000, 0.5, 0.5)
 interpret_r_posterior(posterior)
 
 }
+\seealso{
+Page 88 of APA's 6th Edition
+}
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 }

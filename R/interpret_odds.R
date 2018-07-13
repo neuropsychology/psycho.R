@@ -44,7 +44,7 @@ interpret_odds <- function(x, log=FALSE, direction=FALSE, rules="chen2010") {
 #'
 #' @param posterior Posterior distribution of odds ratio.
 #' @param log Are these log odds ratio?
-#' @param rules Can be "chen2010" (default), or a custom list.
+#' @param rules Can be "chen2010" (default), "cohen1988" (through \link[=odds_to_d]{log odds to Cohen's d transformation}) or a custom list.
 #'
 #' @examples
 #' library(psycho)
@@ -57,7 +57,12 @@ interpret_odds <- function(x, log=FALSE, direction=FALSE, rules="chen2010") {
 #'
 #' @export
 interpret_odds_posterior <- function(posterior, log=FALSE, rules="chen2010") {
-  interpretation <- sapply(posterior, .interpret_odds, log = log, direction = TRUE, rules = rules, return_rules = TRUE)
+  if (rules %in% c("cohen1988", "sawilowsky2009")) {
+    posterior <- odds_to_d(posterior, log = log)
+    interpretation <- sapply(posterior, .interpret_d, direction = TRUE, rules = rules, return_rules = TRUE)
+  } else {
+    interpretation <- sapply(posterior, .interpret_odds, log = log, direction = TRUE, rules = rules, return_rules = TRUE)
+  }
   rules <- unlist(interpretation[, 1]$rules)
   interpretation <- as.data.frame(unlist(interpretation[1, ]))
   interpretation <- na.omit(interpretation)

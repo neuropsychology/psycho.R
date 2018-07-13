@@ -21,11 +21,13 @@
 #'
 #' @references Nakagawa, S., & Schielzeth, H. (2013). A general and simple method for obtaining R2 from generalized linear mixed-effects models. Methods in Ecology and Evolution, 4(2), 133-142.
 #'
+#' @seealso \link[=get_R2.glm]{"get_R2.glm"}
+#'
 #' @import dplyr
 #' @importFrom stats formula
 #' @importFrom stringr str_squish
 #' @export
-analyze.glm <- function(x, CI=95, effsize_rules="chen2010", ...) {
+analyze.glm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
 
 
   # Processing
@@ -36,12 +38,12 @@ analyze.glm <- function(x, CI=95, effsize_rules="chen2010", ...) {
     stop(paste("Models of family", fit$family$family, "not supported yet."))
   }
 
-  predictors <- all.vars(stats::formula(fit))
-  outcome <- predictors[[1]]
-  predictors <- tail(predictors, -1)
+  info <- get_info(fit)
+  outcome <- info$outcome
+  predictors <- info$predictors
 
   # R2 <- tjur_D(fit)
-  R2 <- get_R2(fit)
+  R2 <- get_R2(fit, method = "nakagawa")
 
   # Summary
   # -------------
@@ -54,11 +56,12 @@ analyze.glm <- function(x, CI=95, effsize_rules="chen2010", ...) {
   summary$p <- summary$`Pr...z..`
 
   # standardized coefficients
-  summary <- cbind(summary, standardize(fit, method = "agresti"))
-  summary$Effect_Size <- interpret_odds(summary$Coef.std, log = TRUE, rules = effsize_rules)
+  standardized <- tibble::rownames_to_column(standardize(fit, method = "refit"), "Variable")
+  summary <- merge(summary, standardized, by = "Variable", all.x = TRUE, sort = FALSE)
+  summary$Effect_Size <- c(NA, interpret_odds(tail(summary$Coef_std, -1), log = TRUE, rules = effsize_rules))
 
   summary <- dplyr::select_(
-    summary, "Variable", "Coef", "SE", "z", "Coef.std", "SE.std",
+    summary, "Variable", "Coef", "SE", "z", "Coef_std", "SE_std",
     "p", "Effect_Size"
   )
 
@@ -71,7 +74,8 @@ analyze.glm <- function(x, CI=95, effsize_rules="chen2010", ...) {
 
 
   # Varnames
-  varnames <- rownames(summary)
+  varnames <- summary$Variable
+  row.names(summary) <- varnames
 
 
 
@@ -114,13 +118,13 @@ analyze.glm <- function(x, CI=95, effsize_rules="chen2010", ...) {
       CI_text,
       ", z = ",
       format_digit(summary[varname, "z"], 2), ", p ",
-      format_p(summary[varname, "p"]),
+      format_p(summary[varname, "p"], stars = FALSE),
       ") and can be considered as ",
       tolower(summary[varname, "Effect_Size"]),
       " (std. beta = ",
-      format_digit(summary[varname, "Coef.std"], 2),
+      format_digit(summary[varname, "Coef_std"], 2),
       ", std. SE = ",
-      format_digit(summary[varname, "SE.std"], 2), ")."
+      format_digit(summary[varname, "SE_std"], 2), ")."
     )
 
     if (varname == "(Intercept)") {
@@ -140,8 +144,8 @@ analyze.glm <- function(x, CI=95, effsize_rules="chen2010", ...) {
       CI_lower = summary[varname, "CI_lower"],
       CI_higher = summary[varname, "CI_higher"],
       z = summary[varname, "z"],
-      Coef.std = summary[varname, "Coef.std"],
-      SE.std = summary[varname, "SE.std"],
+      Coef_std = summary[varname, "Coef_std"],
+      SE_std = summary[varname, "SE_std"],
       p = summary[varname, "p"],
       Effect_Size = summary[varname, "Effect_Size"],
       Text = text

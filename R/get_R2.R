@@ -104,6 +104,8 @@ get_R2.glm <- function(fit, method="nakagawa", ...) {
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
+#' @seealso \link[=bayes_R2.stanreg]{"bayes_R2.stanreg"}
+#'
 #' @export
 get_R2.stanreg <- function(fit, silent=FALSE, ...) {
   tryCatch({
@@ -120,14 +122,17 @@ get_R2.stanreg <- function(fit, silent=FALSE, ...) {
     }
   }
 
-  R2.adj <- R2_LOO_Adjusted(fit)
-
   out <- list(
     R2_median = median(R2),
     R2_MAD = mad(R2),
-    R2_posterior = R2,
-    R2.adj = R2.adj
+    R2_posterior = R2
   )
+
+  if (fit$family$family == "gaussian") {
+    out$R2.adj <- R2_LOO_Adjusted(fit)
+  } else {
+    out$R2.adj <- NA
+  }
 
   return(out)
 }

@@ -31,7 +31,7 @@
 #' @import lmerTest
 #' @import dplyr
 #' @export
-analyze.glmerMod <- function(x, CI=95, effsize_rules="chen2010", ...) {
+analyze.glmerMod <- function(x, CI=95, effsize_rules="cohen1988", ...) {
 
 
   # Processing
@@ -64,12 +64,13 @@ analyze.glmerMod <- function(x, CI=95, effsize_rules="chen2010", ...) {
   summary$p <- summary$`Pr...z..`
 
   # standardized coefficients
-  summary <- cbind(summary, standardize(fit, method = "agresti"))
-  summary$Effect_Size <- c(NA, interpret_odds(tail(summary$Coef.std, -1), log = TRUE, rules = effsize_rules))
+  standardized <- tibble::rownames_to_column(standardize(fit, method = "refit"), "Variable")
+  summary <- merge(summary, standardized, by = "Variable", all.x = TRUE, sort = FALSE)
+  summary$Effect_Size <- c(NA, interpret_odds(tail(summary$Coef_std, -1), log = TRUE, rules = effsize_rules))
 
 
   # Summary
-  summary <- dplyr::select_(summary, "Variable", "Coef", "SE", "z", "p", "Coef.std", "SE.std", "Effect_Size")
+  summary <- dplyr::select_(summary, "Variable", "Coef", "SE", "z", "p", "Coef_std", "SE_std", "Effect_Size")
 
   # CI computation
   if (!is.null(CI)) {
@@ -91,7 +92,8 @@ analyze.glmerMod <- function(x, CI=95, effsize_rules="chen2010", ...) {
 
 
   # Varnames
-  varnames <- rownames(summary)
+  varnames <- summary$Variable
+  row.names(summary) <- varnames
 
 
   # Values
@@ -147,13 +149,13 @@ analyze.glmerMod <- function(x, CI=95, effsize_rules="chen2010", ...) {
         ", z = ",
         format_digit(summary[varname, "z"], 2),
         ", p ",
-        format_p(summary[varname, "p"]),
+        format_p(summary[varname, "p"], stars = FALSE),
         ") and can be considered as ",
         tolower(summary[varname, "Effect_Size"]),
         " (std. beta = ",
-        format_digit(summary[varname, "Coef.std"], 2),
+        format_digit(summary[varname, "Coef_std"], 2),
         ", std. SE = ",
-        format_digit(summary[varname, "SE.std"], 2),
+        format_digit(summary[varname, "SE_std"], 2),
         ")."
       )
     }
@@ -176,7 +178,7 @@ analyze.glmerMod <- function(x, CI=95, effsize_rules="chen2010", ...) {
     "The overall model predicting ",
     info$outcome,
     " (formula = ",
-    info$formula,
+    format(info$formula),
     ") has an explanatory power (conditional R2) of ",
     format_digit(R2$R2c * 100, 2),
     "%, in which the fixed effects' part is ",

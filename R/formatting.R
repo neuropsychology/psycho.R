@@ -39,6 +39,7 @@ format_digit <- function(x, digits = 2, null_treshold = 0.001, inf_treshold = 9e
     if (abs(x) < null_treshold) {
       formatted <- "0"
     } else {
+      x <- round(x, digits = 15) # Prevent edge cases where x is really close to 1
       # If x is close to trailing zeros
       if (abs(x) < 1) {
         formatted <- as.character(signif(x, digits))

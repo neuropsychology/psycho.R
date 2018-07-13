@@ -4,7 +4,7 @@
 \alias{analyze.stanreg}
 \title{Analyze stanreg objects.}
 \usage{
-\method{analyze}{stanreg}(x, CI = 90, effsize = TRUE,
+\method{analyze}{stanreg}(x, CI = 90, effsize = FALSE,
   effsize_rules = "cohen1988", ...)
 }
 \arguments{
@@ -39,7 +39,7 @@ library(rstanarm)
 data <- attitude
 fit <- rstanarm::stan_glm(rating ~ advance + privileges, data=data)
 
-results <- analyze(fit)
+results <- analyze(fit, effsize=TRUE)
 summary(results)
 print(results)
 plot(results)
@@ -49,11 +49,21 @@ fit <- rstanarm::stan_glmer(Sepal.Length ~ Sepal.Width + (1|Species), data=iris)
 results <- analyze(fit)
 summary(results)
 
-fit <- rstanarm::stan_glmer(Sex ~ Adjusting, data=psycho::affective, family="binomial")
+fit <- rstanarm::stan_glm(Sex ~ Adjusting,
+    data=psycho::affective, family="binomial")
+results <- analyze(fit)
+summary(results)
+
+fit <- rstanarm::stan_glmer(Sex ~ Adjusting + (1|Salary),
+    data=psycho::affective, family="binomial")
 results <- analyze(fit)
 summary(results)
 }
 
+}
+\seealso{
+\link[=get_R2.stanreg]{"get_R2.stanreg"}
+\link[=bayes_R2.stanreg]{"bayes_R2.stanreg"}
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

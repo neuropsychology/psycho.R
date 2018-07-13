@@ -11,7 +11,7 @@ interpret_odds_posterior(posterior, log = FALSE, rules = "chen2010")
 
 \item{log}{Are these log odds ratio?}
 
-\item{rules}{Can be "chen2010" (default), or a custom list.}
+\item{rules}{Can be "chen2010" (default), "cohen1988" (through \link[=odds_to_d]{log odds to Cohen's d transformation}) or a custom list.}
 }
 \description{
 Interpret odds with a set of rules.

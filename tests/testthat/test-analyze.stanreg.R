@@ -3,10 +3,12 @@ context("analyze.stanreg")
 test_that("If it works.", {
   # Fit
   library(rstanarm)
+  library(psycho)
 
+  set.seed(666)
 
   fit <- rstanarm::stan_glm(
-    vs ~ mpg * cyl,
+    vs ~ mpg * as.factor(cyl),
     data = mtcars,
     family = binomial(link = "logit"),
     prior = NULL,
@@ -15,7 +17,13 @@ test_that("If it works.", {
 
   model <- psycho::analyze(fit)
   values <- psycho::values(model)
-  testthat::expect_equal(round(values$effects$mpg$median, 2), -0.6, tolerance = 0.10)
+  testthat::expect_equal(round(values$effects$mpg$median, 2), 0.08, tolerance = 0.10)
+
+  model <- psycho::analyze(fit, effsize = TRUE)
+  values <- psycho::values(model)
+  testthat::expect_equal(round(values$effects$mpg$median, 2), 0.08, tolerance = 0.10)
+  # This needs to be fixed:
+  # testthat::expect_equal(round(values$effects$mpg$std_median, 2), 0.39, tolerance = 0.10)
 
 
   # Random
@@ -35,30 +43,26 @@ test_that("If it works.", {
 
 
   # standardized
-  data <- psycho::standardize(attitude)
-  fit <- rstanarm::stan_glm(rating ~ advance + privileges,
+  data <- psycho::standardize(iris)
+  fit <- rstanarm::stan_glm(Sepal.Length ~ Sepal.Width + Petal.Width,
     data = data,
     prior = rstanarm::normal(0, 1, autoscale = FALSE),
     chains = 1, iter = 1000, seed = 666
   )
   results <- psycho::analyze(fit)
   testthat::expect_equal(
-    round(results$values$effects$advance$median), 0.01,
+    round(results$values$effects$Sepal.Width$median, 2), 0.21,
     tolerance = 0.025
   )
-
-  data <- standardize(attitude)
-  fit <- rstanarm::stan_glm(rating ~ advance + privileges,
-    data = data,
-    prior = rstanarm::normal(0, 1),
-    chains = 1, iter = 1000, seed = 666
-  )
-  results <- analyze(fit)
+  results <- psycho::analyze(fit, effsize = TRUE)
   testthat::expect_equal(
-    round(results$values$effects$advance$median), 0,
+    round(results$values$effects$Sepal.Width$median, 2), 0.21,
     tolerance = 0.025
   )
 
+
+
+  # Other algorithms
   fit <- rstanarm::stan_glm(
     Sepal.Length ~ Sepal.Width,
     data = iris,
@@ -93,6 +97,5 @@ test_that("If it works.", {
     seed = 666,
     algorithm = "optimizing"
   )
-
   testthat::expect_error(psycho::analyze(fit))
 })

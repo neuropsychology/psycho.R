@@ -1,5 +1,5 @@
 ---
-title: "The end of errors in ANOVA reporting"
+title: "GLMs: Nested Effects or Interaction?"
 layout: post
 output:
   md_document:
@@ -19,39 +19,44 @@ editor_options:
 library(knitr)
 ```
 
-Psychology is still ([unfortunately](https://neuropsychology.github.io/psycho.R/2018/05/01/repeated_measure_anovas.html)) massively using analysis of variance (ANOVA). Despite its relative simplicity, I am very often confronted to errors in its reporting, in student's theses or manuscripts. Beyond the incomplete, uncomprehensible or just wrong reporting, one can find a tremendous amount of true errors (even in published papers! See the excellent [statcheck](http://statcheck.io/) to quickly check the stats of a paper). This error proneness can be at least partially explained by the fact that copy/pasting the (appropriate) values of any statistical software and formatting them textually is a very annoying process.
+When I started doing statistics, after a bachelor in psychology, there was, to me, no such things as nested effects. You tested a model (often directly the ANOVA) with the interaction or without. 
 
-**How to end it?**
+Let's take interest in the relationship between **life satisfaction**, **sex** and **concealing** (the tendency to suppress or hide one's emotions)
 
-We believe that this could be solved (at least, partially) by the default implementation of current best practices of statistical reporting. A tool that automatically transforms a statistical result into a copy/pastable text. Of course, this automation cannot ne suitable for each and every advanced usage, but will be satisfying to a good proportion of the use cases. Implementing this unified, end-user oriented pipeline is the goal of the [psycho](https://github.com/neuropsychology/psycho.R) package.
-
-# Fit an anova
+# The Data
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-aov_results <- aov(qsec ~ cyl * gear, data=mtcars)
-summary(aov_results)
-```
-
-
-# APA formatted output
-
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-# devtools::install_github("neuropsychology/psycho.R")  # Install the latest psycho version
-
-# Load packages
+library(tidyverse)
 library(psycho)
 
-psycho::analyze(aov_results)
+df <- psycho::affective %>% 
+  select(Salary, Life_Satisfaction, Adjusting)
+
+summary(df)
 ```
 
+# Primitve Way
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+anova_results <- aov(Life_Satisfaction ~ Sex * Concealing, data=df)
+analyze(anova_results)
+```
 
-It formats the results and returns the partial omega-squared as an index of effect size (better than the eta2, see [Levine et al. 2002](https://academic.oup.com/hcr/article-abstract/28/4/612/4331349), [Pierce et al. 2004](http://journals.sagepub.com/doi/abs/10.1177/0013164404264848)) as well as its [interpretation](http://imaging.mrc-cbu.cam.ac.uk/statswiki/FAQ/effectSize).
+# Regression 
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+fit <- lm(Life_Satisfaction ~ Sex * Concealing, data=df)
+```
 
-# t-tests, correlations, linear models...
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+analyze(anova(fit)) 
+```
 
-This method also exists for other statistical procudures.
+First, note that running an anova on the linear model produces EXACTLY the same results. But we can to have a look at the model itself, which is richer than the ANOVA.
 
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+analyze(fit) 
+```
 
+Again, three lines of "effect". One could think these a similar to the one
 
 # Contribute
 

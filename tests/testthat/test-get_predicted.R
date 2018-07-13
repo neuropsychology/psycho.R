@@ -1,7 +1,10 @@
-context("get_predicted.stanreg")
+context("get_predicted")
 
 test_that("If it works.", {
-  # Fit
+
+
+
+  # Rstanarm ----------------------------------------------------------------
   library(psycho)
   require(rstanarm)
 
@@ -56,4 +59,42 @@ test_that("If it works.", {
 
   predicted <- psycho::get_predicted(fit, newdata = ref_grid, keep_iterations = TRUE)
   testthat::expect_equal(length(predicted), 4004)
+
+
+
+
+
+
+
+  # GLM and LM --------------------------------------------------------------
+
+  fit <- glm(vs ~ mpg, data = mtcars, family = binomial(link = "logit"))
+  data <- psycho::get_predicted(fit)
+  r <- as.numeric(cor.test(data$vs, data$vs_Predicted)$estimate)
+  testthat::expect_equal(r, 0.68, tolerance = 0.2)
+
+
+  fit <- lm(cyl ~ mpg, data = mtcars)
+  data <- psycho::get_predicted(fit)
+  r <- as.numeric(cor.test(mtcars$cyl, data$cyl_Predicted)$estimate)
+  testthat::expect_equal(r, 0.85, tolerance = 0.02)
+
+  # glmerMod ----------------------------------------------------------------
+  library(lme4)
+
+  fit <- lme4::glmer(vs ~ mpg + (1 | cyl), data = mtcars, family = binomial(link = "logit"))
+  data <- psycho::get_predicted(fit)
+  r <- as.numeric(cor.test(data$vs, data$vs_Predicted)$estimate)
+  testthat::expect_equal(r, 0.79, tolerance = 0.02)
+
+  fit <- lme4::lmer(Tolerating ~ Adjusting + (1 | Salary), data = affective)
+  data <- psycho::get_predicted(fit)
+  r <- as.numeric(cor.test(data$Tolerating, data$Tolerating_Predicted)$estimate)
+  testthat::expect_equal(r, 0.3, tolerance = 0.02)
+
+  library(lmerTest)
+  fit <- lmerTest::lmer(Tolerating ~ Adjusting + (1 | Salary), data = affective)
+  data <- psycho::get_predicted(fit)
+  r <- as.numeric(cor.test(data$Tolerating, data$Tolerating_Predicted)$estimate)
+  testthat::expect_equal(r, 0.3, tolerance = 0.02)
 })
