@@ -30,14 +30,17 @@ get_data <- function(fit, ...) {
 
   outcome <- info$outcome
   predictors <- info$predictors
+  data <- as.data.frame(model.frame(fit))
 
-  numerics <- predictors[predictors %in% names(MuMIn::coeffs(fit))]
+  numerics <- predictors[predictors %in% names(MuMIn::coeffs(fit))[stringr::str_detect(names(MuMIn::coeffs(fit)), paste(predictors, collapse = "|"))]]
+  numerics <- numerics[!is.na(numerics)]
   if (length(unique(model.response(model.frame(fit)))) > 2) {
     numerics <- c(outcome, numerics)
   }
 
-  data <- as.data.frame(model.frame(fit))
+
   data[!names(data) %in% numerics] <- lapply(data[!names(data) %in% numerics], as.factor)
+  data[names(data) %in% numerics] <- lapply(data[names(data) %in% numerics], as.numeric)
 
   return(as.data.frame(data))
 }

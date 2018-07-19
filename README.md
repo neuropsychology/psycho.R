@@ -53,6 +53,7 @@ Check examples in the following vignettes:
 
 Or blog posts:
 
+- [Variable vs. Participant-wise Standardization](https://neuropsychology.github.io/psycho.R/2018/07/14/standardize_grouped_df.html)
 - [Formatted Correlation with Effect Size](https://neuropsychology.github.io/psycho.R/2018/06/28/analyze_correlation.html)
 - [Extracting a Reference Grid of your Data for Machine Learning Models Visualization](https://neuropsychology.github.io/psycho.R/2018/06/25/refdata.html)
 - [Copy/paste t-tests Directly to Manuscripts](https://neuropsychology.github.io/psycho.R/2018/06/19/analyze_ttest.html)
