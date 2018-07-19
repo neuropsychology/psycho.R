@@ -36,6 +36,7 @@ refdata <- function(df, target="all", length.out=10, factors="reference", numeri
   var_order <- names(df_rest)
 
   facs <- purrr::discard(df_rest, is.numeric)
+  facs <- mutate_all(facs, as.factor)
   nums <- purrr::keep(df_rest, is.numeric)
 
 
@@ -131,8 +132,8 @@ refdata <- function(df, target="all", length.out=10, factors="reference", numeri
 #' @keywords internal
 .refdata_var <- function(x, length.out=10, varname=NULL) {
   if (is.numeric(x)) {
-    out <- data.frame(seq(min(x),
-      max(x),
+    out <- data.frame(seq(min(x, na.rm=TRUE),
+      max(x, na.rm=TRUE),
       length.out = length.out
     ))
   } else if (is.factor(x)) {

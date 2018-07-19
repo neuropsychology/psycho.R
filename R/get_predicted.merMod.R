@@ -81,8 +81,7 @@ get_predicted.merMod <- function(fit, newdata="model", prob=NULL, odds_to_probs=
     if (is.character(newdata)) {
       if (newdata == "model") {
         original_data <- TRUE
-        newdata <- fit@frame[predictors]
-        newdata <- na.omit(fit@frame[predictors])
+        newdata <- na.omit(fit@frame)
       }
     }
   }
@@ -129,7 +128,7 @@ get_predicted.merMod <- function(fit, newdata="model", prob=NULL, odds_to_probs=
       predicted <- newdata %>%
         tibble::rownames_to_column() %>%
         dplyr::bind_cols(pred_y) %>%
-        dplyr::right_join(fit@frame[!names(fit@frame) %in% predictors] %>%
+        dplyr::right_join(fit@frame[!names(fit@frame) %in% names(newdata)] %>%
           tibble::rownames_to_column(),
         by = "rowname"
         ) %>%
