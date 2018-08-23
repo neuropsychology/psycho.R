@@ -6,7 +6,7 @@
 \usage{
 \method{get_predicted}{stanreg}(fit, newdata = "model", prob = 0.9,
   odds_to_probs = TRUE, keep_iterations = FALSE, draws = NULL,
-  posterior_predict = FALSE, seed = NULL, ...)
+  posterior_predict = FALSE, seed = NULL, transform = FALSE, ...)
 }
 \arguments{
 \item{fit}{A stanreg model.}
@@ -24,6 +24,8 @@
 \item{posterior_predict}{Posterior draws of the outcome instead of the link function (i.e., the regression "line").}
 
 \item{seed}{An optional seed to use.}
+
+\item{transform}{If posterior_predict is False, should the linear predictor be transformed using the inverse-link function? The default is FALSE, in which case the untransformed linear predictor is returned.}
 
 \item{...}{Arguments passed to or from other methods.}
 }

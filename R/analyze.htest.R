@@ -48,6 +48,8 @@ analyze.htest <- function(x, effsize_rules="cohen1988", ...) {
 
   # Text
   # -------------
+
+  # CORRELATION
   if (grepl("correlation", values$method)) {
     text <- paste0(
       "The ",
@@ -68,6 +70,8 @@ analyze.htest <- function(x, effsize_rules="cohen1988", ...) {
       format_p(values$p, stars = FALSE),
       ")."
     )
+
+  # T-TEST
   } else if (grepl("t-test", values$method)) {
     if (names(x$null.value) == "mean") {
       means <- paste0(
@@ -93,10 +97,6 @@ analyze.htest <- function(x, effsize_rules="cohen1988", ...) {
       vars <- paste0(values$names, " (", means, ")")
     }
 
-
-
-
-
     values$effect <- values$effect[1] - values$effect[2]
 
     text <- paste0(
@@ -117,6 +117,7 @@ analyze.htest <- function(x, effsize_rules="cohen1988", ...) {
       format_p(values$p, stars = FALSE),
       ")."
     )
+  # OTHER
   } else {
     stop(paste0("The ", values$method, " is not implemented yet."))
   }

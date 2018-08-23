@@ -4,7 +4,8 @@
 \alias{interpret_r}
 \title{Correlation coefficient r interpreation.}
 \usage{
-interpret_r(x, direction = TRUE, strength = TRUE, rules = "cohen1988")
+interpret_r(x, direction = TRUE, strength = TRUE,
+  rules = "cohen1988")
 }
 \arguments{
 \item{x}{Correlation coefficient.}

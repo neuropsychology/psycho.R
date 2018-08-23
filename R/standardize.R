@@ -60,7 +60,7 @@ standardize <- function(x, ...) {
 #'
 #' @export
 standardize.numeric <- function(x, normalize=FALSE, ...) {
-  if (all(is.na(x))) {
+  if (all(is.na(x)) | length(unique(x)) == 2) {
     return(x)
   }
 
@@ -326,6 +326,8 @@ standardize.glm <- function(x, method="refit", ...) {
     # refit method
     data <- get_data(fit)
     fit_std <- update(fit, data = standardize(data))
+
+
     coefs <- MuMIn::coefTable(fit_std)[, 1:2]
   }
 

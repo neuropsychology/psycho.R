@@ -49,7 +49,7 @@ get_contrasts.stanreg <- function(fit, formula, prob=0.9, ...) {
   for (name in names(means_posterior)) {
     var <- means_posterior[[name]]
 
-    CI_values <- hdi(var, prob = prob)
+    CI_values <- HDI(var, prob = prob)
     CI_values <- c(CI_values$values$HDImin, CI_values$values$HDImax)
 
     var <- data.frame(
@@ -78,7 +78,7 @@ get_contrasts.stanreg <- function(fit, formula, prob=0.9, ...) {
   for (name in names(contrasts_posterior)) {
     var <- contrasts_posterior[[name]]
 
-    CI_values <- hdi(var, prob = prob)
+    CI_values <- HDI(var, prob = prob)
     CI_values <- c(CI_values$values$HDImin, CI_values$values$HDImax)
 
     var <- data.frame(

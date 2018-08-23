@@ -16,6 +16,7 @@ Extract the dataframe used in a model.
 }
 \examples{
 \dontrun{
+library(tidyverse)
 library(psycho)
 
 df <- mtcars \%>\%
@@ -27,6 +28,7 @@ fit <- lm(wt ~ cyl, data=df)
 fit <- lm(wt ~ mpg * cyl, data=df)
 fit <- lm(wt ~ cyl * gear, data=df)
 fit <- lmerTest::lmer(wt ~ mpg * gear + (1|cyl), data=df)
+fit <- rstanarm::stan_lmer(wt ~ mpg * gear + (1|cyl), data=df)
 
 get_data(fit)
 

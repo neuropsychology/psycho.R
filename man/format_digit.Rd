@@ -4,7 +4,8 @@
 \alias{format_digit}
 \title{Format digits.}
 \usage{
-format_digit(x, digits = 2, null_treshold = 0.001, inf_treshold = 9e+08)
+format_digit(x, digits = 2, null_treshold = 0.001,
+  inf_treshold = 9e+08)
 }
 \arguments{
 \item{x}{A digit.}

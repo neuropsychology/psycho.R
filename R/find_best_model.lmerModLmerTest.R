@@ -29,12 +29,12 @@
 #' @importFrom stats update
 #' @import dplyr
 #'
-#' @method find_best_model merModLmerTest
+#' @method find_best_model lmerModLmerTest
 #' @export
-find_best_model.merModLmerTest <- function(fit, interaction=TRUE, fixed=NULL, ...) {
+find_best_model.lmerModLmerTest <- function(fit, interaction=TRUE, fixed=NULL, ...) {
 
   # Extract infos
-  combinations <- find_combinations(fit@call$formula, interaction = interaction, fixed = fixed)
+  combinations <- find_combinations(as.formula(get_formula(fit)), interaction = interaction, fixed = fixed)
 
   # fit models
   models <- c()

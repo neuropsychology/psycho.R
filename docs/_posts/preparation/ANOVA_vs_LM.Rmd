@@ -1,5 +1,5 @@
 ---
-title: "GLMs: Nested Effects or Interaction?"
+title: "ANOVA vs. Linear Model"
 layout: post
 output:
   md_document:
@@ -19,21 +19,40 @@ editor_options:
 library(knitr)
 ```
 
-Let's take interest in the relationship between **life satisfaction**, **sex** and **concealing** (the tendency to suppress or hide one's emotions)
+Let's take interest in the relationship between **life satisfaction**, **sex** and **concealing** (the tendency to suppress or hide one's emotions).
 
 # The Data
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+# import packages that we will use
 library(tidyverse)
 library(psycho)
 
+# import data and select variables that we will use
 df <- psycho::affective %>% 
   select(Sex, Life_Satisfaction, Concealing)
 
+# get a summmary of the data
 summary(df)
 ```
 
 # Primitve Way
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+# Splithalf method
+df$Concealing_Binary <- ifelse(df$Concealing > median(df$Concealing), "High", "Low")
+
+anova_results <- aov(Life_Satisfaction ~ Sex * Concealing_Binary, data=df)
+analyze(anova_results)
+```
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+df %>% 
+  ggplot(aes(x=Concealing_Binary, y=Life_Satisfaction, colour=Sex, group=Sex)) +
+  stat_summary(fun.data = "mean_se", geom="pointrange") +
+  stat_summary(fun.y = "mean", geom="line")
+```
+
+
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 anova_results <- aov(Life_Satisfaction ~ Sex * Concealing, data=df)
 analyze(anova_results)
@@ -53,13 +72,15 @@ First, note that running an anova on the linear model produces EXACTLY the same 
 analyze(anova(fit)) 
 ```
 
- But we can to have a look at the model itself, which is richer than the ANOVA.
+But we can to have a look at the model itself, which is richer than the ANOVA.
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 analyze(fit) 
 ```
 
 Again, three lines of "effect". One could think these a similar to the ones of ANOVA, with the main effect of Sex, the main effect of concealing and the interaction. But they are not exactly that! they refer to specific parameters (or "effects") of the model. 
+
+*So an ANOVA reports each mean and a p-value that says at least two are significantly different. A regression reports only one mean (as an intercept), and the differences between that one and all other means, but the p-values evaluate those specific comparisons.*
 
 # Visualize the data 
 
@@ -115,6 +136,7 @@ This is what our model predicted.
 
 
 # Effects
+
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 refdata <- df %>% 

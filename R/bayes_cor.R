@@ -69,8 +69,8 @@ bayes_cor.test <- function(x, y, CI=90, iterations = 10000, effsize_rules_r="coh
   values$mad <- mad(posterior)
   values$mean <- mean(posterior)
   values$sd <- sd(posterior)
-  values$CI <- hdi(posterior, prob = CI / 100)$text
-  values$CI_values <- hdi(posterior, prob = CI / 100)
+  values$CI <- HDI(posterior, prob = CI / 100)$text
+  values$CI_values <- HDI(posterior, prob = CI / 100)
   values$CI_values <- c(values$CI_values$values$HDImin, values$CI_values$values$HDImax)
   values$MPE <- mpe(posterior)$MPE
   values$MPE_values <- mpe(posterior)$values

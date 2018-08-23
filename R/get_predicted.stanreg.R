@@ -10,6 +10,7 @@
 #' @param draws An integer indicating the number of draws to return. The default and maximum number of draws is the size of the posterior sample.
 #' @param posterior_predict Posterior draws of the outcome instead of the link function (i.e., the regression "line").
 #' @param seed An optional seed to use.
+#' @param transform If posterior_predict is False, should the linear predictor be transformed using the inverse-link function? The default is FALSE, in which case the untransformed linear predictor is returned.
 #' @param ... Arguments passed to or from other methods.
 #'
 #'
@@ -52,7 +53,7 @@
 #' @importFrom dplyr bind_cols
 #' @importFrom tibble rownames_to_column
 #' @export
-get_predicted.stanreg <- function(fit, newdata="model", prob=0.9, odds_to_probs=TRUE, keep_iterations=FALSE, draws=NULL, posterior_predict=FALSE, seed=NULL, ...) {
+get_predicted.stanreg <- function(fit, newdata="model", prob=0.9, odds_to_probs=TRUE, keep_iterations=FALSE, draws=NULL, posterior_predict=FALSE, seed=NULL, transform=FALSE, ...) {
 
   # Extract names
   predictors <- all.vars(as.formula(fit$formula))
@@ -87,7 +88,7 @@ get_predicted.stanreg <- function(fit, newdata="model", prob=0.9, odds_to_probs=
 
   # Generate draws -------------------------------------------------------
   if (posterior_predict == FALSE) {
-    posterior <- rstanarm::posterior_linpred(fit, newdata = newdata, re.form = re.form, seed = seed, draws = draws)
+    posterior <- rstanarm::posterior_linpred(fit, newdata = newdata, re.form = re.form, seed = seed, draws = draws, transform=transform)
   } else {
     posterior <- rstanarm::posterior_predict(fit, newdata = newdata, re.form = re.form, seed = seed, draws = draws)
   }
@@ -100,7 +101,7 @@ get_predicted.stanreg <- function(fit, newdata="model", prob=0.9, odds_to_probs=
 
   # Credible Interval
   for (CI in c(prob)) {
-    pred_y_interval <- hdi(posterior, prob = CI)
+    pred_y_interval <- HDI(posterior, prob = CI)
     names(pred_y_interval) <- paste(outcome, "CI", c((1 - CI) / 2 * 100, 100 - ((1 - CI) / 2 * 100)), sep = "_")
     pred_y <- cbind(pred_y, pred_y_interval)
   }

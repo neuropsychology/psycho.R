@@ -377,7 +377,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, effsize_rules="cohen1988", 
   values$mad <- mad(posterior)
   values$mean <- mean(posterior)
   values$sd <- sd(posterior)
-  values$CI_values <- hdi(posterior, prob = CI / 100)
+  values$CI_values <- HDI(posterior, prob = CI / 100)
   values$CI_values <- c(values$CI_values$values$HDImin, values$CI_values$values$HDImax)
   values$MPE <- NA
   values$MPE_values <- NA
@@ -454,7 +454,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, effsize_rules="cohen1988", 
   values$mad <- mad(posterior)
   values$mean <- mean(posterior)
   values$sd <- sd(posterior)
-  values$CI_values <- hdi(posterior, prob = CI / 100)
+  values$CI_values <- HDI(posterior, prob = CI / 100)
   values$CI_values <- c(values$CI_values$values$HDImin, values$CI_values$values$HDImax)
   values$MPE <- NA
   values$MPE_values <- NA
@@ -518,7 +518,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, effsize_rules="cohen1988", 
   values$mad <- mad(posterior)
   values$mean <- mean(posterior)
   values$sd <- sd(posterior)
-  values$CI_values <- hdi(posterior, prob = CI / 100)
+  values$CI_values <- HDI(posterior, prob = CI / 100)
   values$CI_values <- c(values$CI_values$values$HDImin, values$CI_values$values$HDImax)
   values$MPE <- mpe(posterior)$MPE
   values$MPE_values <- mpe(posterior)$values
@@ -579,7 +579,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, effsize_rules="cohen1988", 
     values$std_mad <- mad(posterior_std)
     values$std_mean <- mean(posterior_std)
     values$std_sd <- sd(posterior_std)
-    values$std_CI_values <- hdi(posterior_std, prob = CI / 100)
+    values$std_CI_values <- HDI(posterior_std, prob = CI / 100)
     values$std_CI_values <- c(values$std_CI_values$values$HDImin, values$std_CI_values$values$HDImax)
 
     if (fit$family$family == "binomial" & fit$family$link == "logit") {

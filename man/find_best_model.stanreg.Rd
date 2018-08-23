@@ -4,8 +4,8 @@
 \alias{find_best_model.stanreg}
 \title{Returns the best combination of predictors based on LOO cross-validation indices.}
 \usage{
-\method{find_best_model}{stanreg}(fit, interaction = TRUE, fixed = NULL,
-  K = 10, k_treshold = NULL, ...)
+\method{find_best_model}{stanreg}(fit, interaction = TRUE,
+  fixed = NULL, K = 10, k_treshold = NULL, ...)
 }
 \arguments{
 \item{fit}{A stanreg object.}

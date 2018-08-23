@@ -7,6 +7,7 @@
 #'
 #' @examples
 #' \dontrun{
+#' library(tidyverse)
 #' library(psycho)
 #'
 #' df <- mtcars %>%
@@ -18,6 +19,7 @@
 #' fit <- lm(wt ~ mpg * cyl, data=df)
 #' fit <- lm(wt ~ cyl * gear, data=df)
 #' fit <- lmerTest::lmer(wt ~ mpg * gear + (1|cyl), data=df)
+#' fit <- rstanarm::stan_lmer(wt ~ mpg * gear + (1|cyl), data=df)
 #'
 #' get_data(fit)
 #'
@@ -26,11 +28,27 @@
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #' @export
 get_data <- function(fit, ...) {
+UseMethod("get_data")
+}
+
+
+#' @importFrom stats getCall
+#' @importFrom utils data
+#' @export
+get_data.lm <- function(fit, ...) {
+
+  tryCatch({
+    data <- eval(getCall(fit)$data, environment(formula(fit)))
+    return(data)
+  })
+
   info <- get_info(fit)
 
   outcome <- info$outcome
   predictors <- info$predictors
+
   data <- as.data.frame(model.frame(fit))
+
 
   effects <- names(MuMIn::coeffs(fit))
   effects <- unique(unlist(stringr::str_split(effects, ":")))
@@ -46,4 +64,17 @@ get_data <- function(fit, ...) {
   data[names(data) %in% numerics] <- lapply(data[names(data) %in% numerics], as.numeric)
 
   return(as.data.frame(data))
+}
+
+#' @export
+get_data.merMod <- get_data.lm
+
+
+
+
+
+#' @export
+get_data.stanreg <- function(fit, ...) {
+  data <- fit$data
+  return(data)
 }
