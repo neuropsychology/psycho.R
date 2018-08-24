@@ -4,12 +4,12 @@
 \alias{simulate_data_regression}
 \title{Simulates data for single or multiple regression.}
 \usage{
-simulate_data_regression(sample = 10, coefs = 0, error = 0)
+simulate_data_regression(coefs = 0.5, sample = 100, error = 0)
 }
 \arguments{
-\item{sample}{Desired sample size.}
-
 \item{coefs}{Desired theorethical coefs. Can be a single value or a list.}
+
+\item{sample}{Desired sample size.}
 
 \item{error}{The error (standard deviation of gaussian noise).}
 }
@@ -22,8 +22,10 @@ See https://stats.stackexchange.com/questions/59062/multiple-linear-regression-s
 \examples{
 library(psycho)
 
-data <- simulate_data_regression(sample=50, coefs=c(0, 0.5), error=0.1)
-lm(y ~ ., data=data)
+data <- simulate_data_regression(coefs=c(0, 0.8), sample=50, error=0)
+fit <- lm(y ~ ., data=data)
+coef(fit)
+analyze(fit)
 
 }
 \author{
