@@ -78,7 +78,7 @@ fit <- rstanarm::stan_glm(Y ~ X, seed=666, data=data.frame(Y,X))
 values <- values(analyze(fit))
 posterior <- values$effects$X$posterior
 density <- density(posterior, n = length(posterior))
-hdi <- hdi(posterior, 0.90)
+hdi <- HDI(posterior, 0.90)
 mpe <- mpe(posterior)$MPE
 ```
 

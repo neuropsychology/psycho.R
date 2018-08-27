@@ -95,7 +95,7 @@ crawford.test <- function(patient,
 
   pvalues <- pvalues / 2
   p <- mean(pvalues)
-  CI <- hdi(pvalues, prob = CI / 100)
+  CI <- HDI(pvalues, prob = CI / 100)
   # CI_1 <- sort(pvalues)[iter * (100 - CI) / 100]
 
 

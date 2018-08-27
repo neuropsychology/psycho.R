@@ -4,7 +4,8 @@
 \alias{find_matching_string}
 \title{Fuzzy string matching.}
 \usage{
-find_matching_string(x, y, value = TRUE, step = 0.1, ignore.case = TRUE)
+find_matching_string(x, y, value = TRUE, step = 0.1,
+  ignore.case = TRUE)
 }
 \arguments{
 \item{x}{Strings.}

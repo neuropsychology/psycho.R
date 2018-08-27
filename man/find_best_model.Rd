@@ -16,7 +16,7 @@ Returns the best model. See the
 documentation for your model's class:
 \itemize{
  \item{\link[=find_best_model.stanreg]{find_best_model.stanreg}}
- \item{\link[=find_best_model.merModLmerTest]{find_best_model.merModLmerTest}}
+ \item{\link[=find_best_model.lmerModLmerTest]{find_best_model.lmerModLmerTest}}
  }
 }
 \seealso{

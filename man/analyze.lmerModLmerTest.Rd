@@ -4,8 +4,8 @@
 \alias{analyze.lmerModLmerTest}
 \title{Analyze lmerModLmerTest objects.}
 \usage{
-\method{analyze}{lmerModLmerTest}(x, CI = 95, effsize_rules = "cohen1988",
-  ...)
+\method{analyze}{lmerModLmerTest}(x, CI = 95,
+  effsize_rules = "cohen1988", ...)
 }
 \arguments{
 \item{x}{lmerModLmerTest object.}

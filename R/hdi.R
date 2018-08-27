@@ -9,18 +9,18 @@
 #' library(psycho)
 #'
 #' distribution <- rnorm(1000, 0, 1)
-#' hdi_values <- hdi(distribution)
-#' print(hdi_values)
-#' plot(hdi_values)
-#' summary(hdi_values)
+#' HDI_values <- HDI(distribution)
+#' print(HDI_values)
+#' plot(HDI_values)
+#' summary(HDI_values)
 #'
 #' x <- matrix(rexp(200), 100)
-#' hdi_values <- hdi(x)
+#' HDI_values <- HDI(x)
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-hdi <- function(x, prob = .95) {
+HDI <- function(x, prob = .95) {
 
   # From CI to prob if necessary
   if (prob > 1 & prob <= 100) {
@@ -32,7 +32,7 @@ hdi <- function(x, prob = .95) {
     HDImin <- c()
     HDImax <- c()
     for (col in seq_len(ncol(x))) {
-      HDI <- .hdi(x[, col], prob = prob)
+      HDI <- .HDI(x[, col], prob = prob)
       HDImin <- c(HDImin, HDI[1])
       HDImax <- c(HDImax, HDI[2])
     }
@@ -43,7 +43,7 @@ hdi <- function(x, prob = .95) {
   } else {
     # Process
     # -------------
-    HDI <- .hdi(x, prob = prob)
+    HDI <- .HDI(x, prob = prob)
     HDImin <- HDI[1]
     HDImax <- HDI[2]
 
@@ -87,8 +87,42 @@ hdi <- function(x, prob = .95) {
   }
 }
 
+
+
+
+#' Highest Density Intervals (HDI)
+#'
+#' See \link[=HDI]{HDI}
+#'
+#' @param x A vector of values from a probability distribution (e.g., posterior probabilities from MCMC sampling).
+#' @param prob Scalar between 0 and 1, indicating the mass within the credible interval that is to be estimated.
+#'
+#' @export
+HDImin <- function(x, prob = .95) {
+  HDImin <- HDI(x, prob = prob)$values$HDImin
+  return(HDImin)
+}
+
+#' Highest Density Intervals (HDI)
+#'
+#' See \link[=HDI]{HDI}
+#'
+#' @param x A vector of values from a probability distribution (e.g., posterior probabilities from MCMC sampling).
+#' @param prob Scalar between 0 and 1, indicating the mass within the credible interval that is to be estimated.
+#'
+#' @export
+HDImax <- function(x, prob = .95) {
+  HDImax <- HDI(x, prob = prob)$values$HDImax
+  return(HDImax)
+}
+
+
+
+
+
+
 #' @keywords internal
-.hdi <- function(x, prob) {
+.HDI <- function(x, prob) {
   x <- sort(x)
   ci.index <- ceiling(prob * length(x))
   nCIs <- length(x) - ci.index
@@ -97,3 +131,4 @@ hdi <- function(x, prob = .95) {
   HDImax <- x[which.min(ci.width) + ci.index]
   return(c(HDImin, HDImax))
 }
+

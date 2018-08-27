@@ -58,8 +58,15 @@ find_best_model.stanreg <- function(fit, interaction=TRUE, fixed=NULL, K=10, k_t
     formula <- combinations[i]
     newfit <- update(fit, formula = formula, verbose = FALSE)
     R2s[[formula]] <- median(rstanarm::bayes_R2(newfit))
-
-    loo <- rstanarm::loo(newfit, k_treshold = k_treshold)
+    
+    
+    if (!is.null(k_treshold)) {
+      loo <- rstanarm::loo(newfit, k_treshold = k_treshold)
+    } else {
+      loo <- rstanarm::loo(newfit)
+    }
+    
+    
     complexities[[formula]] <- length(newfit$coefficients)
     loos[[formula]] <- loo
     if (K > 1) {
@@ -76,18 +83,19 @@ find_best_model.stanreg <- function(fit, interaction=TRUE, fixed=NULL, K=10, k_t
     loo <- loos[[formula]]
     kfold <- kfolds[[formula]]
     complexity <- complexities[[formula]]
+    Estimates <- loo[["estimates"]]
     model <- data.frame(
       formula = formula,
       complexity = complexity - 1,
       R2 = R2s[[formula]],
-      looic = loo$looic,
-      looic_se = loo$se_looic,
-      elpd_loo = loo$elpd_loo,
-      elpd_loo_se = loo$se_elpd_loo,
-      p_loo = loo$p_loo,
-      p_loo_se = loo$se_p_loo,
-      elpd_kfold = kfold$elpd_kfold,
-      elpd_kfold_se = kfold$se_elpd_kfold
+      looic = Estimates["looic","Estimate"],
+      looic_se = Estimates["looic","SE"],
+      elpd_loo = Estimates["elpd_loo","Estimate"],
+      elpd_loo_se = Estimates["elpd_loo","SE"],
+      p_loo = Estimates["p_loo","Estimate"],
+      p_loo_se = Estimates["p_loo","SE"],
+      elpd_kfold = Estimates["p_loo","Estimate"],
+      elpd_kfold_se = Estimates["p_loo","SE"]
     )
     comparison <- rbind(comparison, model)
   }

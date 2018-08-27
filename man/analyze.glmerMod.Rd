@@ -4,7 +4,8 @@
 \alias{analyze.glmerMod}
 \title{Analyze glmerMod objects.}
 \usage{
-\method{analyze}{glmerMod}(x, CI = 95, effsize_rules = "cohen1988", ...)
+\method{analyze}{glmerMod}(x, CI = 95, effsize_rules = "cohen1988",
+  ...)
 }
 \arguments{
 \item{x}{merModLmerTest object.}

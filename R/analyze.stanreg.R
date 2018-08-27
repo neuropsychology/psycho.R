@@ -4,6 +4,9 @@
 #'
 #' @param x A stanreg model.
 #' @param CI Credible interval bounds.
+#' @param index Index of effect existence to report. Can be 'overlap' or 'ROPE'.
+#' @param ROPE_bounds Bounds ot the ROPE. If NULL and effsize is TRUE, than the ROPE.
+#' will have default values c(-0.1, 0.1) and computed on the standardized posteriors.
 #' @param effsize Compute Effect Sizes according to Cohen (1988). For linear models only.
 #' @param effsize_rules Grid for effect size interpretation. See \link[=interpret_d]{interpret_d}.
 #' @param ... Arguments passed to or from other methods.
@@ -15,6 +18,7 @@
 #'  \item{the Credible Interval (CI) (by default, the 90\% CI; see Kruschke, 2018), representing a range of possible parameter.}
 #'  \item{the Maximum Probability of Effect (MPE), the probability that the effect is positive or negative (depending on the median’s direction).}
 #'  \item{the Overlap (O), the percentage of overlap between the posterior distribution and a normal distribution of mean 0 and same SD than the posterior. Can be interpreted as the probability that a value from the posterior distribution comes from a null distribution.}
+#'  \item{the ROPE, the proportion of the 95\% CI of the posterior distribution that lies within the region of practical equivalence.}
 #'  }
 #'
 #' @examples
@@ -62,7 +66,7 @@
 #' @importFrom broom tidy
 #' @importFrom stringr str_squish str_replace
 #' @export
-analyze.stanreg <- function(x, CI=90, effsize=FALSE, effsize_rules="cohen1988", ...) {
+analyze.stanreg <- function(x, CI=90, index="overlap", ROPE_bounds=NULL, effsize=FALSE, effsize_rules="cohen1988", ...) {
   fit <- x
 
   # Info --------------------------------------------------------------------
@@ -164,7 +168,9 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, effsize_rules="cohen1988", 
         CI = CI,
         effsize = effsize,
         effsize_rules = effsize_rules,
-        fit = fit
+        fit = fit,
+        index=index,
+        ROPE_bounds=ROPE_bounds
       )
     }
   }
@@ -377,7 +383,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, effsize_rules="cohen1988", 
   values$mad <- mad(posterior)
   values$mean <- mean(posterior)
   values$sd <- sd(posterior)
-  values$CI_values <- hdi(posterior, prob = CI / 100)
+  values$CI_values <- HDI(posterior, prob = CI / 100)
   values$CI_values <- c(values$CI_values$values$HDImin, values$CI_values$values$HDImax)
   values$MPE <- NA
   values$MPE_values <- NA
@@ -454,7 +460,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, effsize_rules="cohen1988", 
   values$mad <- mad(posterior)
   values$mean <- mean(posterior)
   values$sd <- sd(posterior)
-  values$CI_values <- hdi(posterior, prob = CI / 100)
+  values$CI_values <- HDI(posterior, prob = CI / 100)
   values$CI_values <- c(values$CI_values$values$HDImin, values$CI_values$values$HDImax)
   values$MPE <- NA
   values$MPE_values <- NA
@@ -507,7 +513,18 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, effsize_rules="cohen1988", 
 
 
 #' @keywords internal
-.process_effect <- function(varname, posteriors, posteriors_std, info_priors, predictors, CI=90, effsize=FALSE, effsize_rules=FALSE, fit) {
+.process_effect <- function(varname,
+                            posteriors,
+                            posteriors_std,
+                            info_priors,
+                            predictors,
+                            CI=90,
+                            effsize=FALSE,
+                            effsize_rules=FALSE,
+                            fit,
+                            index="overlap",
+                            ROPE_bounds=NULL) {
+
   values <- .get_info_priors(varname, info_priors, predictors)
   posterior <- posteriors[, varname]
 
@@ -518,10 +535,12 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, effsize_rules="cohen1988", 
   values$mad <- mad(posterior)
   values$mean <- mean(posterior)
   values$sd <- sd(posterior)
-  values$CI_values <- hdi(posterior, prob = CI / 100)
+  values$CI_values <- HDI(posterior, prob = CI / 100)
   values$CI_values <- c(values$CI_values$values$HDImin, values$CI_values$values$HDImax)
   values$MPE <- mpe(posterior)$MPE
   values$MPE_values <- mpe(posterior)$values
+
+  # Index
   values$overlap <- 100 * overlap(
     posterior,
     rnorm_perfect(
@@ -530,6 +549,48 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, effsize_rules="cohen1988", 
       sd(posterior)
     )
   )
+
+  if(!is.null(ROPE_bounds)){
+    rope <- rope(posterior, bounds=ROPE_bounds)
+    values$ROPE_decision <- rope$rope_decision
+    values$ROPE <- rope$rope_probability
+  }
+
+  if(index == "overlap"){
+    index <- paste0("Overlap = ",
+                    format_digit(values$overlap, null_treshold = 0.01),
+                    "%).")
+  } else if(index == "ROPE"){
+    if(!is.null(ROPE_bounds)){
+      index <- paste0("ROPE = ",
+                      format_digit(values$ROPE, null_treshold = 0.001),
+                      ").")
+    } else{
+      if(effsize == TRUE){
+        rope <- rope(posteriors_std[, varname], bounds=c(-0.1, 0.1))
+        values$ROPE_decision <- rope$rope_decision
+        values$ROPE <- rope$rope_probability
+        index <- paste0("ROPE = ",
+                        format_digit(values$ROPE, null_treshold = 0.001),
+                        ").")
+      } else{
+        warning("you need to specify ROPE_bounds (e.g. 'c(-0.1, 0.1)'). Computing overlap instead.")
+        index <- paste0("Overlap = ",
+                        format_digit(values$overlap, null_treshold = 0.01),
+                        "%).")
+      }
+    }
+
+  } else{
+    warning("Parameter 'index' should be 'overlap' or 'ROPE'. Computing overlap.")
+    index <- paste0("Overlap = ",
+                    format_digit(values$overlap, null_treshold = 0.01),
+                    "%).")
+  }
+
+
+
+
 
   # Text
   if (grepl(":", varname)) {
@@ -564,9 +625,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, effsize_rules="cohen1988", 
     "% CI [",
     format_digit(values$CI_values[1], null_treshold = 0.0001), ", ",
     format_digit(values$CI_values[2], null_treshold = 0.0001), "], ",
-    "Overlap = ",
-    format_digit(values$overlap, null_treshold = 0.01),
-    "%)."
+    index
   )
 
 
@@ -579,7 +638,7 @@ analyze.stanreg <- function(x, CI=90, effsize=FALSE, effsize_rules="cohen1988", 
     values$std_mad <- mad(posterior_std)
     values$std_mean <- mean(posterior_std)
     values$std_sd <- sd(posterior_std)
-    values$std_CI_values <- hdi(posterior_std, prob = CI / 100)
+    values$std_CI_values <- HDI(posterior_std, prob = CI / 100)
     values$std_CI_values <- c(values$std_CI_values$values$HDImin, values$std_CI_values$values$HDImax)
 
     if (fit$family$family == "binomial" & fit$family$link == "logit") {

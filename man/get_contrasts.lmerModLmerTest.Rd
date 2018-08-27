@@ -4,7 +4,8 @@
 \alias{get_contrasts.lmerModLmerTest}
 \title{Compute estimated marginal means and contrasts from lmerModLmerTest models.}
 \usage{
-\method{get_contrasts}{lmerModLmerTest}(fit, formula, adjust = "tukey", ...)
+\method{get_contrasts}{lmerModLmerTest}(fit, formula, adjust = "tukey",
+  ...)
 }
 \arguments{
 \item{fit}{A merModLmerTest model.}
