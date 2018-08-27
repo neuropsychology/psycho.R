@@ -36,18 +36,29 @@ find_best_model.lmerModLmerTest <- function(fit, interaction=TRUE, fixed=NULL, .
   # Extract infos
   combinations <- find_combinations(as.formula(get_formula(fit)), interaction = interaction, fixed = fixed)
 
+  
+  # Recreating the dataset without NA
+  dataComplete <- get_all_vars(fit)[complete.cases(get_all_vars(fit)), ]
+  
+  
   # fit models
   models <- c()
   for (formula in combinations) {
-    newfit <- update(fit, formula)
+    newfit <- update(fit, formula, data = dataComplete)
     models <- c(models, newfit)
   }
 
 
+  # No warning messages for this part
+  options(warn = -1)
+  
   # Model comparison
   comparison <- as.data.frame(do.call("anova", models))
   comparison$formula <- combinations
 
+  # Re-displaying warning messages
+  options(warn = 0)
+  
 
   # Best model by criterion
   best_aic <- dplyr::arrange_(comparison, "AIC") %>%
