@@ -38,7 +38,7 @@ find_best_model.lmerModLmerTest <- function(fit, interaction=TRUE, fixed=NULL, .
 
   
   # Recreating the dataset without NA
-  dataComplete <- get_all_vars(fit)[complete.cases(get_all_vars(fit)), ]
+  dataComplete <- fit@frame[complete.cases(fit@frame), ]
   
   
   # fit models
