@@ -54,7 +54,6 @@ Imports:
     broom,
     tibble,
     DescTools,
-    pbkrtest,
     BayesFactor (>= 0.9.1),
     scales,
     loo (>= 2.0.0),

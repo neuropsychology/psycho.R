@@ -17,7 +17,7 @@ fit <- rstanarm::stan_glm(Y ~ X, seed=666, data=data.frame(Y,X))
 values <- values(analyze(fit))
 posterior <- values$effects$X$posterior
 density <- density(posterior, n = length(posterior))
-hdi <- hdi(posterior, 0.90)
+hdi <- HDI(posterior, 0.90)
 mpe <- mpe(posterior)$MPE
 
 ## ----echo=FALSE, message=FALSE, warning=FALSE, fig.width=7, fig.height=4.5, fig.align='center', fig.cap="Posterior probability distribution of the correlation between X and Y"----
