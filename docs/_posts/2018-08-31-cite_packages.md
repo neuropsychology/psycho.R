@@ -19,24 +19,24 @@ summary: Citing the packages, modules and softwares you used for your analysis i
 What should I cite?
 ===================
 
-Ideally, you should indeed cite all the packages that you used. However, it's not very diegetic. Therefore, I would recommand the following.
+Ideally, you should indeed cite all the packages that you used. However, it's not very diegetic. Therefore, I would recommand the following:
 
 1.  Cite the main / important packages in the manuscript
 
-These are for the packages that were central to your specific analysis (*i.e.,* that got you the results that you reported) rather than data manipulation tools (even though these are as much important).
+This should be done for the packages that were central to your specific analysis (*i.e.,* that got you the results that you reported) rather than data manipulation tools (even though these are as much important).
 
 For example:
 
-> Statistics were done using R 3.5.0 (R Core Team, 2018), the *rstanarm* (*v2.13.1*; Gabry & Goodrich, 2016) and the *psycho* (*v0.3.4*; Makowski, 2018). The code is available in **Supplementary Materials**.
+> Statistics were done using R 3.5.0 (R Core Team, 2018), the *rstanarm* (*v2.13.1*; Gabry & Goodrich, 2016) and the *psycho* (*v0.3.4*; Makowski, 2018) packages. The full reproducible code is available in **Supplementary Materials**.
 
-1.  Present everything in Supplementary Materials
+2.  Present everything in Supplementary Materials
 
-Then, in Supplementary Materials, you show the packages and function to use. Moreover, in R, you can include (usually at the end) every used package and their version using the `sessionInfo()` version.
+Then, in Supplementary Materials, you show the packages and functions you used. Moreover, in R, you can include (usually at the end) every used package and their version using the `sessionInfo()` function.
 
 How should I cite it?
 =====================
 
-Finding the right citation information is sometimes complicated indeed. In R, this process is made quite easy, you simply run `citation("dplyr")`:
+Finding the right citation information is sometimes complicated. In R, this process is made quite easy, you simply run `citation("packagename")`. For instance, `citation("dplyr")`:
 
     To cite ‘dplyr’ in publications use:
 
@@ -53,7 +53,7 @@ Finding the right citation information is sometimes complicated indeed. In R, th
         url = {https://CRAN.R-project.org/package=dplyr},
       }
 
-For other languages, such as python, it might be a little trickier, but a **quick search on google (*or github*)** should provide you with all the necessary information (version, authors, date). **It's better to have a slightly incomplete citation than no citation at all.**
+For other languages, such as Python or Julia, it might be a little trickier, but a **quick search on google (*or github*)** should provide you with all the necessary information (version, authors, date). **It's better to have a slightly incomplete citation than no citation at all.**
 
 Previous blogposts
 ==================
