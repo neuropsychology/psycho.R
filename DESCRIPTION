@@ -1,17 +1,19 @@
 Package: psycho
 Type: Package
 Title: Efficient and Publishing-Oriented Workflow for Psychological Science
-Version: 0.3.5
+Version: 0.3.6
 Authors@R: c(
     person("Dominique", 
         "Makowski", 
         email = "dom.makowski@gmail.com",
         role = c("aut", "cre", "cph"), 
         comment = c(ORCID = "0000-0001-5375-9967")),
+    person("Hugo",
+        "Najberg",
+        role = "ctb"),
     person("Viliam",
         "Simko",
-        role = "ctb",
-        email = "viliam.simko@gmail.com"),
+        role = "ctb"),
     person("Sasha", 
         "Epskamp", 
         role = "rev",
@@ -26,7 +28,7 @@ Description: The main goal of the psycho package is to provide tools for psychol
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 Depends: 
     R (>= 3.4.0)
 Imports:
@@ -52,7 +54,6 @@ Imports:
     broom,
     tibble,
     DescTools,
-    pbkrtest,
     BayesFactor (>= 0.9.1),
     scales,
     loo (>= 2.0.0),

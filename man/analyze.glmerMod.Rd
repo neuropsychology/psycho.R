@@ -4,7 +4,8 @@
 \alias{analyze.glmerMod}
 \title{Analyze glmerMod objects.}
 \usage{
-\method{analyze}{glmerMod}(x, CI = 95, effsize_rules = "cohen1988", ...)
+\method{analyze}{glmerMod}(x, CI = 95, effsize_rules = "cohen1988",
+  ...)
 }
 \arguments{
 \item{x}{merModLmerTest object.}
@@ -22,6 +23,7 @@ output
 Analyze glmerMod objects.
 }
 \examples{
+\dontrun{
 library(psycho)
 library(lme4)
 
@@ -30,7 +32,7 @@ fit <- lme4::glmer(vs ~ wt + (1|gear), data=mtcars, family="binomial")
 results <- analyze(fit)
 summary(results)
 print(results)
-
+}
 
 
 }

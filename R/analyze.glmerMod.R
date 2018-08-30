@@ -10,6 +10,7 @@
 #' @return output
 #'
 #' @examples
+#' \dontrun{
 #' library(psycho)
 #' library(lme4)
 #'
@@ -18,7 +19,7 @@
 #' results <- analyze(fit)
 #' summary(results)
 #' print(results)
-#'
+#' }
 #'
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

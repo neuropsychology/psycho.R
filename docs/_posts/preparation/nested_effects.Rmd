@@ -1,5 +1,5 @@
 ---
-title: "GLMs: Nested Effects or Interaction?"
+title: "GLMs: Nested Variables or Interaction?"
 layout: post
 output:
   md_document:
@@ -19,7 +19,7 @@ editor_options:
 library(knitr)
 ```
 
-When I started doing statistics, after a bachelor in psychology, there was, to me, no such things as nested effects. You tested a model (often directly the ANOVA) with the interaction or without. 
+Psychologists are, for historical reasons, familiar with categorical predictors. These are reffered to as "effects" of different conditions upon an outcome variable. Interestingly, one of the first topic that is taught to first year students, in experimental psychology, is "interactions". When I started doing statistics, after a bachelor in psychology, there was, to me, no such things as nested effects or variables. You tested a model (often directly the ANOVA) with the interaction or without. 
 
 Let's take interest in the relationship between **life satisfaction**, **sex** and **concealing** (the tendency to suppress or hide one's emotions)
 
@@ -35,7 +35,7 @@ df <- psycho::affective %>%
 summary(df)
 ```
 
-# Primitve Way
+# Primitive Way
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 anova_results <- aov(Life_Satisfaction ~ Sex * Concealing, data=df)
 analyze(anova_results)
@@ -44,6 +44,7 @@ analyze(anova_results)
 # Regression 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 fit <- lm(Life_Satisfaction ~ Sex * Concealing, data=df)
+summary(fit)
 ```
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
@@ -57,6 +58,22 @@ analyze(fit)
 ```
 
 Again, three lines of "effect". One could think these a similar to the one
+
+
+
+# Visualize
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+fit <- lm(Life_Satisfaction ~ Adjusting / Concealing, data=df)
+summary(fit)
+df %>% 
+  refdata(c("Concealing", "Adjusting"), length.out = 5) %>% 
+  get_predicted(fit, .) %>% 
+  ggplot(aes(x=Adjusting, y=Life_Satisfaction_Predicted, alpha=Concealing, group=Concealing)) +
+  geom_line()
+```
+
+
 
 # Contribute
 

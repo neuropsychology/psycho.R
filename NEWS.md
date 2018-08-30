@@ -1,8 +1,10 @@
 # Current Dev
 
 ### Breaking changes
+- Changed `hdi` to `HDI`
 - Removed Mean and SD from summary in `bayes_cor.test`
 ### New functions / parameters
+- Added `simulate_data_regression`
 - Extended `standardize` method
 - Added `get_R2` method
 - Added `interpret_odds` and logistic regression effect size interpretation
@@ -163,7 +165,7 @@
 
 ### Breaking changes
 ### New functions / parameters
-- `hdi`: Compute highest density intervals
+- `HDI`: Compute highest density intervals
 - `format_string`: A tidyverse friendly version of `sprintf`
 ### Major changes
 - Changed credible interval computation in analyze.stanreg

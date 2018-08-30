@@ -19,9 +19,10 @@ editor_options:
 library(knitr)
 ```
 
-Interested in quicky creating tables and plots for factor analysis?
+Interested in quicky creating formatted tables and plots for factor analysis?
 
-# Do a correlation
+# The data
+
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(psycho)
@@ -36,7 +37,10 @@ df <- psych::bfi %>%
 psycho::n_factors(df)
 ```
 
+
 The [Method Agreement Procedure](https://neuropsychology.github.io/psycho.R/2018/05/24/n_factors.html) suggests to retain 5 factors.
+
+# Do the EFA
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 fa <- psych::fa(df, nfactors=5)
@@ -46,10 +50,20 @@ results <- analyze(fa)
 
 # Loadings Table
 
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='hide', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
 summary(results)
 ```
+```{r, fig.width=7, fig.height=4.5, echo=FALSE, message=FALSE, warning=FALSE}
+knitr::kable(summary(results), digits=2)
+```
 
+Running a summary on the analyzed `fa` object returns a dataframe, which is convenient to save, manipulate or enjoy.
+
+# Loadings Plot
+
+```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
+plot(results)
+```
 
 
 # Lavaan-ready Model for CFA
@@ -60,16 +74,10 @@ print(results)
 analyze(fa, treshold=0.2)
 ```
 
-# Lavaan-ready Model for CFA
-
-```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA, message=FALSE, warning=FALSE}
-plot(results)
-```
-
 
 # Contribute
 
-Of course, these reporting standards should change, depending on new expert recommandations or official guidelines. **The goal of this package is to flexibly adaptive to new changes and good practices evolution**. Therefore, if you have any advices, opinions or such, we encourage you to either let us know by opening an [issue](https://github.com/neuropsychology/psycho.R/issues), or even better, try to implement them yourself by [contributing](https://github.com/neuropsychology/psycho.R/blob/master/.github/CONTRIBUTING.md) to the code. 
+**psycho is a young package in need of affection**. Therefore, if you have any advices, opinions or such, we encourage you to either let us know by opening an [issue](https://github.com/neuropsychology/psycho.R/issues), or by [contributing](https://github.com/neuropsychology/psycho.R/blob/master/.github/CONTRIBUTING.md) to the code. 
 
 
 # Credits

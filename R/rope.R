@@ -26,15 +26,15 @@ rope <- function(posterior, bounds=c(-0.1, 0.1), CI=95, overlap=FALSE) {
   # Basic rope --------------------------------------------------------------
 
 
-  hdi_area <- hdi(posterior, CI / 100)
-  hdi_area <- posterior[dplyr::between(
+  HDI_area <- HDI(posterior, CI / 100)
+  HDI_area <- posterior[dplyr::between(
     posterior,
-    hdi_area$values$HDImin,
-    hdi_area$values$HDImax
+    HDI_area$values$HDImin,
+    HDI_area$values$HDImax
   )]
 
-  area_within <- hdi_area[dplyr::between(hdi_area, bounds[1], bounds[2])]
-  area_outside <- hdi_area[!dplyr::between(hdi_area, bounds[1], bounds[2])]
+  area_within <- HDI_area[dplyr::between(HDI_area, bounds[1], bounds[2])]
+  area_outside <- HDI_area[!dplyr::between(HDI_area, bounds[1], bounds[2])]
 
   p_within <- length(area_within) / length(posterior)
   p_outside <- length(area_outside) / length(posterior)

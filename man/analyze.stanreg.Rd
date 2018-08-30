@@ -4,13 +4,19 @@
 \alias{analyze.stanreg}
 \title{Analyze stanreg objects.}
 \usage{
-\method{analyze}{stanreg}(x, CI = 90, effsize = FALSE,
-  effsize_rules = "cohen1988", ...)
+\method{analyze}{stanreg}(x, CI = 90, index = "overlap",
+  ROPE_bounds = NULL, effsize = FALSE, effsize_rules = "cohen1988",
+  ...)
 }
 \arguments{
 \item{x}{A stanreg model.}
 
 \item{CI}{Credible interval bounds.}
+
+\item{index}{Index of effect existence to report. Can be 'overlap' or 'ROPE'.}
+
+\item{ROPE_bounds}{Bounds ot the ROPE. If NULL and effsize is TRUE, than the ROPE.
+will have default values c(-0.1, 0.1) and computed on the standardized posteriors.}
 
 \item{effsize}{Compute Effect Sizes according to Cohen (1988). For linear models only.}
 
@@ -26,6 +32,7 @@ Contains the following indices:
  \item{the Credible Interval (CI) (by default, the 90\% CI; see Kruschke, 2018), representing a range of possible parameter.}
  \item{the Maximum Probability of Effect (MPE), the probability that the effect is positive or negative (depending on the median’s direction).}
  \item{the Overlap (O), the percentage of overlap between the posterior distribution and a normal distribution of mean 0 and same SD than the posterior. Can be interpreted as the probability that a value from the posterior distribution comes from a null distribution.}
+ \item{the ROPE, the proportion of the 95\% CI of the posterior distribution that lies within the region of practical equivalence.}
  }
 }
 \description{
