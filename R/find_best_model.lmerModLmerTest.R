@@ -54,6 +54,8 @@ find_best_model.lmerModLmerTest <- function(fit, interaction=TRUE, fixed=NULL, .
   
   # Model comparison
   comparison <- as.data.frame(do.call("anova", models))
+  # Reordering the rows before implementing the combinations
+  comparison <- comparison[ order((row.names(comparison)),]
   comparison$formula <- combinations
 
   # Re-displaying warning messages
