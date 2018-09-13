@@ -119,11 +119,10 @@ dprime <- function(n_hit, n_fa, n_miss=NULL, n_cr=NULL, n_targets=NULL, n_distra
   aprime <- a
 
   # bppd
-  if(hit_rate >= fa_rate){
-    bppd <- (hit_rate * (1 - hit_rate) - fa_rate * (1 - fa_rate)) /(hit_rate * (1 - hit_rate) + fa_rate * (1 - fa_rate))
-  } else{
-    bppd <- (fa_rate * (1 - fa_rate) - hit_rate * (1 - hit_rate)) / (fa_rate * (1 - fa_rate) + hit_rate * (1 - hit_rate))
-  }
+  bppd <- (hit_rate * (1 - hit_rate) - fa_rate * (1 - fa_rate)) / (hit_rate * (1 - hit_rate) + fa_rate * (1 - fa_rate))
+  bppd_b <- (fa_rate * (1 - fa_rate) - hit_rate * (1 - hit_rate)) / (fa_rate * (1 - fa_rate) + hit_rate * (1 - hit_rate))
+  bppd[fa_rate > hit_rate] <- bppd_b[fa_rate > hit_rate]
+
 
 
   return(list(dprime = dprime, beta = beta, aprime = aprime, bppd = bppd, c = c))
