@@ -54,14 +54,22 @@ find_best_model.lmerModLmerTest <- function(fit, interaction=TRUE, fixed=NULL, .
   
   # Model comparison
   comparison <- as.data.frame(do.call("anova", models))
-  # Reordering the rows before implementing the combinations
-  comparison <- comparison[ order((row.names(comparison)),]
-  comparison$formula <- combinations
-
+  
   # Re-displaying warning messages
   options(warn = 0)
   
+  # Creating row names to the combinations array equivalent to the comparison data frame
+  combinations <- as.data.frame(combinations,row.names = paste0("MODEL", seq(1,length(combinations))))
 
+  # Reordering the rows in the same way for both combinations and comparison before implementing the formulas
+  comparison <- comparison[ order(row.names(comparison)),]
+  comparison$formula <- combinations[order(row.names(combinations)),]
+  
+  # Sorting the data frame by the AIC then BIC
+  comparison <- comparison[order(comparison$AIC,comparison$BIC),]
+  
+
+  
   # Best model by criterion
   best_aic <- dplyr::arrange_(comparison, "AIC") %>%
     dplyr::select_("formula") %>%
