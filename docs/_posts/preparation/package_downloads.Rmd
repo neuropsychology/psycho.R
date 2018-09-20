@@ -93,11 +93,12 @@ events <- left_join(events, data, by="date")
 library(rstanarm)
 library(psycho)
 
-fit <- rstanarm::stan_glm(count~poly(day_num, 5), data=data)
+fit <- rstanarm::stan_glm(count~poly(day_num, 5), data=data, algorithm="meanfield")
 # fit <- glm(count~poly(day_num, 5), data=data)
 
 psycho::get_predicted(fit, data) %>% 
   ggplot(aes(x=date, group=1)) +
+  geom_hline(yintercept=0) +
   geom_line(aes(y=count), size=1) +
   geom_line(aes(y=count_Median), size=1, colour="blue") +
   geom_vline(data=events, aes(xintercept = date), colour=events$color, size=1) +
