@@ -190,6 +190,7 @@ analyze.stanreg <- function(x, CI=90, index="overlap", ROPE_bounds=NULL, effsize
         Median_std = values$effects[[varname]]$std_median,
         MAD_std = values$effects[[varname]]$std_mad,
         MPE = values$effects[[varname]]$MPE,
+        ROPE = values$effects[[varname]]$ROPE,
         Overlap = values$effects[[varname]]$overlap
       )
     )
@@ -197,6 +198,12 @@ analyze.stanreg <- function(x, CI=90, index="overlap", ROPE_bounds=NULL, effsize
 
   if (effsize == FALSE) {
     summary <- select_(summary, "-Median_std", "-MAD_std")
+  }
+  
+  if (index == "ROPE") {
+    summary <- select_(summary, "-Overlap")
+  } else {
+    summary <- select_(summary, "-ROPE")
   }
 
   # Text --------------------------------------------------------------------
@@ -388,6 +395,7 @@ analyze.stanreg <- function(x, CI=90, index="overlap", ROPE_bounds=NULL, effsize
   values$MPE <- NA
   values$MPE_values <- NA
   values$overlap <- NA
+  values$ROPE <- NA
   values$adjusted_r_squared <- R2.adj
 
   # Text
@@ -465,9 +473,10 @@ analyze.stanreg <- function(x, CI=90, index="overlap", ROPE_bounds=NULL, effsize
   values$MPE <- NA
   values$MPE_values <- NA
   values$overlap <- NA
-
-
-
+  values$ROPE <- NA
+  
+  
+  
   # Text
   values$text <- paste0(
     " The intercept is at ",
@@ -554,6 +563,9 @@ analyze.stanreg <- function(x, CI=90, index="overlap", ROPE_bounds=NULL, effsize
     rope <- rope(posterior, bounds=ROPE_bounds)
     values$ROPE_decision <- rope$rope_decision
     values$ROPE <- rope$rope_probability
+  }else{
+    values$ROPE <- NA
+    values$ROPE_decision <- NA
   }
 
   if(index == "overlap"){
