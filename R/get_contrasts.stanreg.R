@@ -32,7 +32,7 @@
 #' @importFrom stats confint mad
 #'
 #' @export
-get_contrasts.stanreg <- function(fit, formula, prob=0.9, ...) {
+get_contrasts.stanreg <- function(fit, formula, prob = 0.9, ROPE = FALSE, ROPE_bounds = NULL, ...) {
   formula <- as.formula(paste0("~", formula))
 
 
@@ -75,6 +75,33 @@ get_contrasts.stanreg <- function(fit, formula, prob=0.9, ...) {
 
   contrasts <- data.frame()
 
+  if (ROPE == TRUE) {
+    if (!is.null(ROPE_bounds)) {
+      for (name in names(contrasts_posterior)) {
+        var <- contrasts_posterior[[name]]
+
+        CI_values <- HDI(var, prob = prob)
+        CI_values <- c(CI_values$values$HDImin, CI_values$values$HDImax)
+
+        var <- data.frame(
+          Contrast = stringr::str_remove(name, "contrast "),
+          Median = median(var),
+          MAD = mad(var),
+          CI_lower = CI_values[seq(1, length(CI_values), 2)],
+          CI_higher = CI_values[seq(2, length(CI_values), 2)],
+          MPE = mpe(var)$MPE,
+          ROPE = rope(var, ROPE_bounds)$rope_probability
+        )
+
+        contrasts <- rbind(contrasts, var)
+      }
+      output <- list(means = means, contrasts = contrasts)
+      return(output)
+    } else {
+      warning("you need to specify ROPE_bounds (e.g. 'c(-0.1, 0.1)'). ROPE is not computed.")
+    }
+  }
+
   for (name in names(contrasts_posterior)) {
     var <- contrasts_posterior[[name]]
 
@@ -92,8 +119,6 @@ get_contrasts.stanreg <- function(fit, formula, prob=0.9, ...) {
 
     contrasts <- rbind(contrasts, var)
   }
-
-
   output <- list(means = means, contrasts = contrasts)
   return(output)
 }
