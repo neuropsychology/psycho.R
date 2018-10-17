@@ -2,7 +2,7 @@
 % Please edit documentation in R/interpret_odds.R
 \name{interpret_odds}
 \alias{interpret_odds}
-\title{Omega Squared Interpretation}
+\title{Odds ratio interpreation for a posterior distribution.}
 \usage{
 interpret_odds(x, log = FALSE, direction = FALSE, rules = "chen2010")
 }
@@ -16,7 +16,7 @@ interpret_odds(x, log = FALSE, direction = FALSE, rules = "chen2010")
 \item{rules}{Can be "chen2010" (default), "cohen1988" (through \link[=odds_to_d]{log odds to Cohen's d transformation}) or a custom list.}
 }
 \description{
-Return the interpretation of Omegas Squared.
+Interpret odds with a set of rules.
 }
 \examples{
 library(psycho)

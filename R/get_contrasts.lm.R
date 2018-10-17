@@ -1,8 +1,8 @@
-#' Compute estimated marginal means and contrasts from lmerModLmerTest models.
+#' Compute estimated marginal means and contrasts from lm models.
 #'
-#' Compute estimated marginal means and contrasts from an lmerModLmerTest model.
+#' Compute estimated marginal means and contrasts from an lm model.
 #'
-#' @param fit An merModLmerTest model.
+#' @param fit An lm model.
 #' @param formula A character vector (formula like format, i.e., including
 #' interactions or nesting terms) specifying the names of the predictors over which EMMs are desired.
 #' @param adjust P value adjustment method. Default is "tukey". Can be "holm",
@@ -25,14 +25,14 @@
 #' }
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
-#' @method get_contrasts lmerModLmerTest
+#' @method get_contrasts lm
 #' @import dplyr
 #' @importFrom emmeans emmeans
 #' @importFrom graphics pairs
 #' @importFrom stats confint mad
 #'
 #' @export
-get_contrasts.lmerModLmerTest <- function(fit, formula, adjust="tukey", ...) {
+get_contrasts.lm <- function(fit, formula, adjust="tukey", ...) {
   formula <- as.formula(paste0("~", formula))
 
 

@@ -1,6 +1,6 @@
 #' Compute estimated marginal means and contrasts from glmerMod models.
 #'
-#' Compute estimated marginal means and contrasts from a glmerMod models.
+#' Compute estimated marginal means and contrasts from a glmerMod model.
 #'
 #' @param fit A glmerMod model.
 #' @param formula A character vector (formula like format, i.e., including

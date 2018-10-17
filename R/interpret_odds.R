@@ -1,6 +1,6 @@
-#' Omega Squared Interpretation
+#' Odds ratio interpreation for a posterior distribution.
 #'
-#' Return the interpretation of Omegas Squared.
+#' Interpret odds with a set of rules.
 #'
 #' @param x Odds ratio.
 #' @param log Are these log odds ratio?

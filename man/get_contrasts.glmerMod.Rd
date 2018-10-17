@@ -21,7 +21,7 @@ interactions or nesting terms) specifying the names of the predictors over which
 list with estimated marginal means (95% CI) and contrasts.
 }
 \description{
-Compute estimated marginal means and contrasts from a glmerMod models.
+Compute estimated marginal means and contrasts from a glmerMod model.
 }
 \examples{
 \dontrun{
