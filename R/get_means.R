@@ -144,9 +144,9 @@ get_means.lmerMod <- function(fit, formula=NULL, CI=95, ...){
 
   names(means) <- stringr::str_replace(names(means), "emmean", "Mean")
   names(means) <- stringr::str_replace(names(means), "lower.CL", "CI_lower")
-  names(means) <- stringr::str_replace(names(means), "upper.CL", "CI_upper")
+  names(means) <- stringr::str_replace(names(means), "upper.CL", "CI_higher")
   names(means) <- stringr::str_replace(names(means), "asymp.LCL", "CI_lower")
-  names(means) <- stringr::str_replace(names(means), "asymp.UCL", "CI_upper")
+  names(means) <- stringr::str_replace(names(means), "asymp.UCL", "CI_higher")
 
   return(means)
 }

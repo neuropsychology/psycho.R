@@ -227,9 +227,9 @@ get_contrasts.lmerMod <- function(fit, formula=NULL, CI=95, adjust="tukey", ...)
       "p" = "p.value"
     )
   names(contrasts) <- stringr::str_replace(names(contrasts), "lower.CL", "CI_lower")
-  names(contrasts) <- stringr::str_replace(names(contrasts), "upper.CL", "CI_upper")
+  names(contrasts) <- stringr::str_replace(names(contrasts), "upper.CL", "CI_higher")
   names(contrasts) <- stringr::str_replace(names(contrasts), "asymp.LCL", "CI_lower")
-  names(contrasts) <- stringr::str_replace(names(contrasts), "asymp.UCL", "CI_upper")
+  names(contrasts) <- stringr::str_replace(names(contrasts), "asymp.UCL", "CI_higher")
   names(contrasts) <- stringr::str_replace(names(contrasts), "t.ratio", "t")
   names(contrasts) <- stringr::str_replace(names(contrasts), "z.ratio", "z")
 
