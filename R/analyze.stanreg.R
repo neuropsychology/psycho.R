@@ -5,7 +5,7 @@
 #' @param x A stanreg model.
 #' @param CI Credible interval bounds.
 #' @param index Index of effect existence to report. Can be 'overlap' or 'ROPE'.
-#' @param ROPE_bounds Bounds ot the ROPE. If NULL and effsize is TRUE, than the ROPE.
+#' @param ROPE_bounds Bounds of the ROPE. If NULL and effsize is TRUE, than the ROPE.
 #' will have default values c(-0.1, 0.1) and computed on the standardized posteriors.
 #' @param effsize Compute Effect Sizes according to Cohen (1988). For linear models only.
 #' @param effsize_rules Grid for effect size interpretation. See \link[=interpret_d]{interpret_d}.

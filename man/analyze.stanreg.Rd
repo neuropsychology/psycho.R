@@ -15,7 +15,7 @@
 
 \item{index}{Index of effect existence to report. Can be 'overlap' or 'ROPE'.}
 
-\item{ROPE_bounds}{Bounds ot the ROPE. If NULL and effsize is TRUE, than the ROPE.
+\item{ROPE_bounds}{Bounds of the ROPE. If NULL and effsize is TRUE, than the ROPE.
 will have default values c(-0.1, 0.1) and computed on the standardized posteriors.}
 
 \item{effsize}{Compute Effect Sizes according to Cohen (1988). For linear models only.}
