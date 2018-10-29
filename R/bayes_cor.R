@@ -27,7 +27,7 @@
 #' @importFrom stats complete.cases cor.test
 #' @import dplyr
 #' @export
-bayes_cor.test <- function(x, y, CI=90, iterations = 10000, effsize_rules_r="cohen1988", effsize_rules_bf="jeffreys1961") {
+bayes_cor.test <- function(x, y, CI = 90, iterations = 10000, effsize_rules_r = "cohen1988", effsize_rules_bf = "jeffreys1961") {
 
 
   # Varnames ----------------------------------------------------------------
@@ -169,7 +169,7 @@ bayes_cor.test <- function(x, y, CI=90, iterations = 10000, effsize_rules_r="coh
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #' @export
-bayes_cor <- function(df, df2=NULL, reorder=TRUE) {
+bayes_cor <- function(df, df2 = NULL, reorder = TRUE) {
   df <- purrr::keep(df, is.numeric)
 
   if (!is.null(df2)) {
@@ -321,7 +321,7 @@ bayes_cor <- function(df, df2=NULL, reorder=TRUE) {
 #'
 #' @importFrom stats as.dist hclust
 #' @export
-reorder_matrix <- function(mat, dmat=NULL) {
+reorder_matrix <- function(mat, dmat = NULL) {
   if (is.null(dmat)) {
     dmat <- mat
   }

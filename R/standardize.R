@@ -59,7 +59,7 @@ standardize <- function(x, ...) {
 #'
 #'
 #' @export
-standardize.numeric <- function(x, normalize=FALSE, ...) {
+standardize.numeric <- function(x, normalize = FALSE, ...) {
   if (all(is.na(x)) | length(unique(x)) == 2) {
     return(x)
   }
@@ -131,7 +131,7 @@ standardize.numeric <- function(x, normalize=FALSE, ...) {
 #' @importFrom purrr keep discard
 #' @import dplyr
 #' @export
-standardize.data.frame <- function(x, subset=NULL, except=NULL, normalize=FALSE, ...) {
+standardize.data.frame <- function(x, subset = NULL, except = NULL, normalize = FALSE, ...) {
   if (inherits(x, "grouped_df")) {
     dfZ <- x %>% dplyr::do_(".standardize_df(., subset=subset, except=except, normalize=normalize, ...)")
   } else {
@@ -158,7 +158,7 @@ standardize.data.frame <- function(x, subset=NULL, except=NULL, normalize=FALSE,
 
 
 #' @keywords internal
-.standardize_df <- function(x, subset=NULL, except=NULL, normalize=FALSE, ...) {
+.standardize_df <- function(x, subset = NULL, except = NULL, normalize = FALSE, ...) {
   df <- x
 
   # Variable order
@@ -246,7 +246,7 @@ standardize.data.frame <- function(x, subset=NULL, except=NULL, normalize=FALSE,
 #'
 #' @importFrom utils capture.output
 #' @export
-standardize.stanreg <- function(x, method="refit", ...) {
+standardize.stanreg <- function(x, method = "refit", ...) {
   fit <- x
 
   predictors <- get_info(fit)$predictors
@@ -313,7 +313,7 @@ standardize.stanreg <- function(x, method="refit", ...) {
 #' @seealso https://think-lab.github.io/d/205/
 #'
 #' @export
-standardize.glm <- function(x, method="refit", ...) {
+standardize.glm <- function(x, method = "refit", ...) {
   fit <- x
 
   if (method == "agresti") {
@@ -321,7 +321,6 @@ standardize.glm <- function(x, method="refit", ...) {
     X <- as.matrix(model.matrix(fit)[, -1]) # -1 to drop column of 1s for intercept
     sd_X <- sd(X, na.rm = TRUE)
     coefs <- coefs * sd_X
-
   } else {
     # refit method
     data <- get_data(fit)
@@ -370,7 +369,7 @@ standardize.glmerMod <- standardize.glm
 #' @importFrom stats model.frame model.response model.matrix
 #'
 #' @export
-standardize.lm <- function(x, method="refit", partial_sd=FALSE, preserve_factors=TRUE, ...) {
+standardize.lm <- function(x, method = "refit", partial_sd = FALSE, preserve_factors = TRUE, ...) {
   fit <- x
 
   if (method == "posthoc") {
@@ -448,7 +447,7 @@ standardize.lmerMod <- standardize.lm
 
 #' @importFrom stats nobs vcov
 #' @keywords internal
-.standardize_coefs <- function(fit, partial_sd = FALSE, preserve_factors=TRUE, ...) {
+.standardize_coefs <- function(fit, partial_sd = FALSE, preserve_factors = TRUE, ...) {
   # coefs <- MuMIn::coefTable(fit, ...)
   coefs <- as.data.frame(MuMIn::coefTable(fit))
   model_matrix <- model.matrix(fit)

@@ -19,7 +19,7 @@
 #' @author TPArrow
 #'
 #' @export
-simulate_data_regression <- function(coefs=0.5, sample=100, error=0){
+simulate_data_regression <- function(coefs = 0.5, sample = 100, error = 0) {
 
   # Prevent error
   coefs[coefs == 0] <- 0.01
@@ -27,7 +27,7 @@ simulate_data_regression <- function(coefs=0.5, sample=100, error=0){
   y <- rnorm(sample, 0, 1)
 
   n_var <- length(coefs)
-  X <- scale(matrix(rnorm(sample*(n_var), 0, 1), ncol=n_var))
+  X <- scale(matrix(rnorm(sample * (n_var), 0, 1), ncol = n_var))
   X <- cbind(y, X)
 
   # find the current correlation matrix
@@ -36,15 +36,15 @@ simulate_data_regression <- function(coefs=0.5, sample=100, error=0){
   # cholesky decomposition to get independence
   chol_0 <- solve(chol(cor_0))
 
-  X <-  X %*% chol_0
+  X <- X %*% chol_0
 
   # create new correlation structure (zeros can be replaced with other r vals)
-  coefs_structure <- diag(x = 1, nrow=n_var+1, ncol=n_var+1, names = TRUE)
+  coefs_structure <- diag(x = 1, nrow = n_var + 1, ncol = n_var + 1, names = TRUE)
   coefs_structure[-1, 1] <- coefs
   coefs_structure[1, -1] <- coefs
 
   X <- X %*% chol(coefs_structure) * sd(y) + mean(y)
-  X <- X[,-1]
+  X <- X[, -1]
 
   # Add noise
   y <- y + rnorm(sample, 0, error)

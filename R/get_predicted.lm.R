@@ -34,7 +34,7 @@
 #' @importFrom dplyr bind_cols
 #' @importFrom tibble rownames_to_column
 #' @export
-get_predicted.lm <- function(fit, newdata="model", prob=0.95, ...) {
+get_predicted.lm <- function(fit, newdata = "model", prob = 0.95, ...) {
 
 
   # Extract names

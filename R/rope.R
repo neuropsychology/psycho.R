@@ -20,7 +20,7 @@
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-rope <- function(posterior, bounds=c(-0.1, 0.1), CI=95, overlap=FALSE) {
+rope <- function(posterior, bounds = c(-0.1, 0.1), CI = 95, overlap = FALSE) {
 
 
   # Basic rope --------------------------------------------------------------

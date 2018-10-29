@@ -69,7 +69,7 @@ get_R2.lm <- function(fit, ...) {
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-get_R2.glm <- function(fit, method="nakagawa", ...) {
+get_R2.glm <- function(fit, method = "nakagawa", ...) {
   if (method == "nakagawa") {
     R2 <- as.numeric(R2_nakagawa(fit)$R2m)
   } else if (method == "tjur") {
@@ -107,7 +107,7 @@ get_R2.glm <- function(fit, method="nakagawa", ...) {
 #' @seealso \link[=bayes_R2.stanreg]{"bayes_R2.stanreg"}
 #'
 #' @export
-get_R2.stanreg <- function(fit, silent=FALSE, ...) {
+get_R2.stanreg <- function(fit, silent = FALSE, ...) {
   tryCatch({
     R2 <- rstanarm::bayes_R2(fit)
   }, error = function(e) {

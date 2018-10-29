@@ -18,7 +18,7 @@
 #'
 #' @importFrom stats rnorm
 #' @export
-rnorm_perfect <- function(n, mean = 0, sd = 1, method="qnorm", iter=10000) {
+rnorm_perfect <- function(n, mean = 0, sd = 1, method = "qnorm", iter = 10000) {
   if (method == "average") {
     x <- rowMeans(replicate(iter, sort(rnorm(n, mean, sd))))
   } else {

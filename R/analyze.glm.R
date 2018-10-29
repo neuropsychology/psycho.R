@@ -27,7 +27,7 @@
 #' @importFrom stats formula
 #' @importFrom stringr str_squish
 #' @export
-analyze.glm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
+analyze.glm <- function(x, CI = 95, effsize_rules = "cohen1988", ...) {
 
 
   # Processing

@@ -57,7 +57,7 @@ get_contrasts <- function(fit, ...) {
 #' @param ... Arguments passed to or from other methods.
 #' @method get_contrasts stanreg
 #' @export
-get_contrasts.stanreg <- function(fit, formula=NULL, CI=90, ROPE_bounds=NULL, overlap=FALSE, ...){
+get_contrasts.stanreg <- function(fit, formula = NULL, CI = 90, ROPE_bounds = NULL, overlap = FALSE, ...) {
   .get_contrasts_bayes(fit, formula, CI, ROPE_bounds, overlap, ...)
 }
 
@@ -75,7 +75,7 @@ get_contrasts.stanreg <- function(fit, formula=NULL, CI=90, ROPE_bounds=NULL, ov
 #' @param ... Arguments passed to or from other methods.
 #' @method get_contrasts lm
 #' @export
-get_contrasts.lm <- function(fit, formula=NULL, CI=95, adjust="tukey", ...){
+get_contrasts.lm <- function(fit, formula = NULL, CI = 95, adjust = "tukey", ...) {
   .get_contrasts_freq(fit, formula, CI, adjust, ...)
 }
 
@@ -86,7 +86,7 @@ get_contrasts.lm <- function(fit, formula=NULL, CI=95, adjust="tukey", ...){
 #' @inheritParams get_contrasts.lm
 #' @method get_contrasts glm
 #' @export
-get_contrasts.glm <- function(fit, formula=NULL, CI=95, adjust="tukey", ...){
+get_contrasts.glm <- function(fit, formula = NULL, CI = 95, adjust = "tukey", ...) {
   .get_contrasts_freq(fit, formula, CI, adjust, ...)
 }
 
@@ -97,7 +97,7 @@ get_contrasts.glm <- function(fit, formula=NULL, CI=95, adjust="tukey", ...){
 #' @inheritParams get_contrasts.lm
 #' @method get_contrasts lmerModLmerTest
 #' @export
-get_contrasts.lmerModLmerTest <- function(fit, formula=NULL, CI=95, adjust="tukey", ...){
+get_contrasts.lmerModLmerTest <- function(fit, formula = NULL, CI = 95, adjust = "tukey", ...) {
   .get_contrasts_freq(fit, formula, CI, adjust, ...)
 }
 
@@ -108,7 +108,7 @@ get_contrasts.lmerModLmerTest <- function(fit, formula=NULL, CI=95, adjust="tuke
 #' @inheritParams get_contrasts.lm
 #' @method get_contrasts glmerMod
 #' @export
-get_contrasts.glmerMod <- function(fit, formula=NULL, CI=95, adjust="tukey", ...){
+get_contrasts.glmerMod <- function(fit, formula = NULL, CI = 95, adjust = "tukey", ...) {
   .get_contrasts_freq(fit, formula, CI, adjust, ...)
 }
 
@@ -119,7 +119,7 @@ get_contrasts.glmerMod <- function(fit, formula=NULL, CI=95, adjust="tukey", ...
 #' @inheritParams get_contrasts.lm
 #' @method get_contrasts lmerMod
 #' @export
-get_contrasts.lmerMod <- function(fit, formula=NULL, CI=95, adjust="tukey", ...){
+get_contrasts.lmerMod <- function(fit, formula = NULL, CI = 95, adjust = "tukey", ...) {
   .get_contrasts_freq(fit, formula, CI, adjust, ...)
 }
 
@@ -131,13 +131,12 @@ get_contrasts.lmerMod <- function(fit, formula=NULL, CI=95, adjust="tukey", ...)
 #' @importFrom graphics pairs
 #' @importFrom stats confint mad
 #' @keywords internal
-.get_contrasts_bayes <- function(fit, formula=NULL, CI=90, ROPE_bounds=NULL, overlap=FALSE, ...) {
-
-  if(is.null(formula)){
-    formula <- paste(get_info(fit)$predictors, collapse=" * ")
+.get_contrasts_bayes <- function(fit, formula = NULL, CI = 90, ROPE_bounds = NULL, overlap = FALSE, ...) {
+  if (is.null(formula)) {
+    formula <- paste(get_info(fit)$predictors, collapse = " * ")
   }
 
-  if(is.character(formula)){
+  if (is.character(formula)) {
     formula <- as.formula(paste0("~ ", formula))
   }
 
@@ -155,7 +154,7 @@ get_contrasts.lmerMod <- function(fit, formula=NULL, CI=95, adjust="tukey", ...)
   for (name in names(contrasts_posterior)) {
     posterior <- contrasts_posterior[[name]]
 
-    CI_values <- HDI(posterior, prob = CI/100)
+    CI_values <- HDI(posterior, prob = CI / 100)
     CI_values <- c(CI_values$values$HDImin, CI_values$values$HDImax)
 
     var <- data.frame(
@@ -167,7 +166,7 @@ get_contrasts.lmerMod <- function(fit, formula=NULL, CI=95, adjust="tukey", ...)
       MPE = mpe(posterior)$MPE
     )
 
-    if(overlap == TRUE){
+    if (overlap == TRUE) {
       var$Overlap <- 100 * overlap(
         posterior,
         rnorm_perfect(
@@ -178,7 +177,7 @@ get_contrasts.lmerMod <- function(fit, formula=NULL, CI=95, adjust="tukey", ...)
       )
     }
 
-    if(!is.null(ROPE_bounds)){
+    if (!is.null(ROPE_bounds)) {
       var$ROPE <- rope(posterior, ROPE_bounds, CI = 95)$rope_probability
     }
 
@@ -197,13 +196,12 @@ get_contrasts.lmerMod <- function(fit, formula=NULL, CI=95, adjust="tukey", ...)
 #' @importFrom graphics pairs
 #' @importFrom stats confint
 #' @keywords internal
-.get_contrasts_freq <- function(fit, formula=NULL, CI=95, adjust="tukey", ...) {
-
-  if(is.null(formula)){
-    formula <- paste(get_info(fit)$predictors, collapse=" * ")
+.get_contrasts_freq <- function(fit, formula = NULL, CI = 95, adjust = "tukey", ...) {
+  if (is.null(formula)) {
+    formula <- paste(get_info(fit)$predictors, collapse = " * ")
   }
 
-  if(is.character(formula)){
+  if (is.character(formula)) {
     formula <- as.formula(paste0("~ ", formula))
   }
 
@@ -214,7 +212,7 @@ get_contrasts.lmerMod <- function(fit, formula=NULL, CI=95, adjust="tukey", ...)
 
   # Confint
   CI <- contrasts %>%
-    confint(CI/100) %>%
+    confint(CI / 100) %>%
     select(contains("CL"))
 
 

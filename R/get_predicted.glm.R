@@ -34,7 +34,7 @@
 #' @importFrom dplyr bind_cols
 #' @importFrom tibble rownames_to_column
 #' @export
-get_predicted.glm <- function(fit, newdata="model", prob=0.95, odds_to_probs=TRUE, ...) {
+get_predicted.glm <- function(fit, newdata = "model", prob = 0.95, odds_to_probs = TRUE, ...) {
 
 
   # Extract names

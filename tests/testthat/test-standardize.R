@@ -45,10 +45,10 @@ test_that("Correct Value", {
     algorithm = "meanfield"
   )
 
-  std <- standardize(fit, method="posterior")
+  std <- standardize(fit, method = "posterior")
   testthat::expect_equal(mean(std), -0.24, tol = 0.02)
 
-  std <- standardize(fit, method="sample")
+  std <- standardize(fit, method = "sample")
   testthat::expect_equal(mean(std), 1.34, tol = 0.02)
 
   fit <- lm(
@@ -56,7 +56,6 @@ test_that("Correct Value", {
     data = iris
   )
 
-  std <- standardize(fit, method="posthoc")
+  std <- standardize(fit, method = "posthoc")
   testthat::expect_equal(mean(std$Coef_std), -0.059, tol = 0.01)
-
 })

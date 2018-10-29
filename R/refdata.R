@@ -22,7 +22,7 @@
 #' @importFrom purrr keep
 #' @import tidyr
 #' @export
-refdata <- function(df, target="all", length.out=10, factors="reference", numerics="mean") {
+refdata <- function(df, target = "all", length.out = 10, factors = "reference", numerics = "mean") {
 
   # Target
   if (all(target == "all") | ncol(df) == 1) {
@@ -98,7 +98,7 @@ refdata <- function(df, target="all", length.out=10, factors="reference", numeri
 
 
 #' @keywords internal
-.refdata_target <- function(target, length.out=10) {
+.refdata_target <- function(target, length.out = 10) {
   at_vars <- names(target)
   at_df <- data.frame()
   for (var in at_vars) {
@@ -130,10 +130,10 @@ refdata <- function(df, target="all", length.out=10, factors="reference", numeri
 
 
 #' @keywords internal
-.refdata_var <- function(x, length.out=10, varname=NULL) {
+.refdata_var <- function(x, length.out = 10, varname = NULL) {
   if (is.numeric(x)) {
-    out <- data.frame(seq(min(x, na.rm=TRUE),
-      max(x, na.rm=TRUE),
+    out <- data.frame(seq(min(x, na.rm = TRUE),
+      max(x, na.rm = TRUE),
       length.out = length.out
     ))
   } else if (is.factor(x)) {

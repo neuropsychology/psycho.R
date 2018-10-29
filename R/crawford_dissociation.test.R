@@ -25,7 +25,7 @@
 #'
 #' @importFrom stats sd pt
 #' @export
-crawford_dissociation.test <- function(case_X, case_Y, controls_X, controls_Y, verbose=TRUE) {
+crawford_dissociation.test <- function(case_X, case_Y, controls_X, controls_Y, verbose = TRUE) {
   X_mean <- mean(controls_X)
   X_sd <- sd(controls_X)
   Y_mean <- mean(controls_Y)

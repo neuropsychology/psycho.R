@@ -33,7 +33,7 @@
 #' @importFrom stats dnorm
 #' @importFrom stats qnorm
 #' @export
-n_factors <- function(df, rotate="varimax", fm="minres", n=NULL) {
+n_factors <- function(df, rotate = "varimax", fm = "minres", n = NULL) {
 
   # Copy the parallel function from nFactors to correct the use of mvrnorm
   parallel <- function(subject = 100, var = 10, rep = 100, cent = 0.05,
@@ -101,7 +101,7 @@ n_factors <- function(df, rotate="varimax", fm="minres", n=NULL) {
       "Exp.Variance" = "Prop",
       "Cum.Variance" = "Cumu"
     ) %>%
-    mutate_("n.Factors" = ~ seq_len(nrow(nS$Analysis)))
+    mutate_("n.Factors" = ~seq_len(nrow(nS$Analysis)))
 
 
 
@@ -190,15 +190,15 @@ n_factors <- function(df, rotate="varimax", fm="minres", n=NULL) {
 
   eigenvalues <- results %>%
     group_by_("n_optimal") %>%
-    summarise_("n_method" = ~ n()) %>%
-    mutate_("n_optimal" = ~ factor(n_optimal, levels = seq_len(nrow(eigenvalues)))) %>%
+    summarise_("n_method" = ~n()) %>%
+    mutate_("n_optimal" = ~factor(n_optimal, levels = seq_len(nrow(eigenvalues)))) %>%
     complete_("n_optimal", fill = list(n_method = 0)) %>%
     arrange_("n_optimal") %>%
     rename_(
       "n.Factors" = "n_optimal",
       "n.Methods" = "n_method"
     ) %>%
-    mutate_("n.Factors" = ~ as.integer(n.Factors)) %>%
+    mutate_("n.Factors" = ~as.integer(n.Factors)) %>%
     left_join(eigenvalues, by = "n.Factors") %>%
     select_("-Exp.Variance")
 
@@ -277,7 +277,7 @@ n_factors <- function(df, rotate="varimax", fm="minres", n=NULL) {
       size = 1
     ) +
     scale_y_continuous(sec.axis = sec_axis(
-      trans = ~ . * (max(plot_data$Cum.Variance) / max(plot_data$Eigenvalues)),
+      trans = ~. * (max(plot_data$Cum.Variance) / max(plot_data$Eigenvalues)),
       name = "Cumulative Variance\n"
     )) +
     ylab("Eigenvalues\n") +

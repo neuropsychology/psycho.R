@@ -24,7 +24,7 @@
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-analyze.fa <- function(x, labels=NULL, treshold="max", ...) {
+analyze.fa <- function(x, labels = NULL, treshold = "max", ...) {
   loadings <- format_loadings(x, labels)
 
   values <- list()
@@ -116,7 +116,7 @@ analyze.fa <- function(x, labels=NULL, treshold="max", ...) {
 #'
 #' @import dplyr
 #' @export
-format_loadings <- function(x, labels=NULL) {
+format_loadings <- function(x, labels = NULL) {
 
 
   # Check loadings and remove those inferior to a treshold
@@ -204,7 +204,7 @@ get_loadings_max <- function(loadings) {
 #'
 #' @import dplyr
 #' @export
-get_cfa_model <- function(loadings, treshold="max") {
+get_cfa_model <- function(loadings, treshold = "max") {
   if (treshold == "max") {
     filtered_loadings <- get_loadings_max(loadings)
   } else {

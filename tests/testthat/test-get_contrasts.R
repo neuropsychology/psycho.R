@@ -23,7 +23,7 @@ test_that("If it works.", {
 
   fit <- lme4::glmer(Sex ~ Birth_Season + (1 | Salary), data = psycho::affective, family = "binomial")
 
-  contrasts <- get_contrasts(fit, adjust="bonf")
+  contrasts <- get_contrasts(fit, adjust = "bonf")
   testthat::expect_equal(mean(contrasts$Difference), -0.0734, tolerance = 0.05)
 
   # glm

@@ -32,44 +32,44 @@
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-get_means <- function(fit, formula=NULL, CI=90, ...) {
+get_means <- function(fit, formula = NULL, CI = 90, ...) {
   UseMethod("get_means")
 }
 
 
 #' @method get_means stanreg
 #' @export
-get_means.stanreg <- function(fit, formula=NULL, CI=90, ...){
+get_means.stanreg <- function(fit, formula = NULL, CI = 90, ...) {
   .get_means_bayes(fit, formula, CI, ...)
 }
 
 #' @method get_means lm
 #' @export
-get_means.lm <- function(fit, formula=NULL, CI=95, ...){
+get_means.lm <- function(fit, formula = NULL, CI = 95, ...) {
   .get_means_freq(fit, formula, CI, ...)
 }
 
 #' @method get_means glm
 #' @export
-get_means.glm <- function(fit, formula=NULL, CI=95, ...){
+get_means.glm <- function(fit, formula = NULL, CI = 95, ...) {
   .get_means_freq(fit, formula, CI, ...)
 }
 
 #' @method get_means lmerModLmerTest
 #' @export
-get_means.lmerModLmerTest <- function(fit, formula=NULL, CI=95, ...){
+get_means.lmerModLmerTest <- function(fit, formula = NULL, CI = 95, ...) {
   .get_means_freq(fit, formula, CI, ...)
 }
 
 #' @method get_means glmerMod
 #' @export
-get_means.glmerMod <- function(fit, formula=NULL, CI=95, ...){
+get_means.glmerMod <- function(fit, formula = NULL, CI = 95, ...) {
   .get_means_freq(fit, formula, CI, ...)
 }
 
 #' @method get_means lmerMod
 #' @export
-get_means.lmerMod <- function(fit, formula=NULL, CI=95, ...){
+get_means.lmerMod <- function(fit, formula = NULL, CI = 95, ...) {
   .get_means_freq(fit, formula, CI, ...)
 }
 
@@ -80,13 +80,12 @@ get_means.lmerMod <- function(fit, formula=NULL, CI=95, ...){
 #' @importFrom emmeans emmeans
 #' @importFrom stats confint mad
 #' @keywords internal
-.get_means_bayes <- function(fit, formula=NULL, CI=90, ...) {
-
-  if(is.null(formula)){
-    formula <- paste(get_info(fit)$predictors, collapse=" * ")
+.get_means_bayes <- function(fit, formula = NULL, CI = 90, ...) {
+  if (is.null(formula)) {
+    formula <- paste(get_info(fit)$predictors, collapse = " * ")
   }
 
-  if(is.character(formula)){
+  if (is.character(formula)) {
     formula <- as.formula(paste0("~ ", formula))
   }
 
@@ -102,7 +101,7 @@ get_means.lmerMod <- function(fit, formula=NULL, CI=95, ...){
   for (name in names(means_posterior)) {
     var <- means_posterior[[name]]
 
-    CI_values <- HDI(var, prob = CI/100)
+    CI_values <- HDI(var, prob = CI / 100)
     CI_values <- c(CI_values$values$HDImin, CI_values$values$HDImax)
 
     var <- data.frame(
@@ -126,20 +125,19 @@ get_means.lmerMod <- function(fit, formula=NULL, CI=95, ...){
 #' @importFrom emmeans emmeans
 #' @importFrom stats confint
 #' @keywords internal
-.get_means_freq <- function(fit, formula=NULL, CI=95, ...) {
-
-  if(is.null(formula)){
-    formula <- paste(get_info(fit)$predictors, collapse=" * ")
+.get_means_freq <- function(fit, formula = NULL, CI = 95, ...) {
+  if (is.null(formula)) {
+    formula <- paste(get_info(fit)$predictors, collapse = " * ")
   }
 
-  if(is.character(formula)){
+  if (is.character(formula)) {
     formula <- as.formula(paste0("~ ", formula))
   }
 
   # Means ---------------------------------------------------------------
   means <- fit %>%
     emmeans::emmeans(formula, ...) %>%
-    confint(CI/100) %>%
+    confint(CI / 100) %>%
     as.data.frame()
 
   names(means) <- stringr::str_replace(names(means), "emmean", "Mean")

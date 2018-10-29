@@ -28,7 +28,7 @@
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #' @export
 get_data <- function(fit, ...) {
-UseMethod("get_data")
+  UseMethod("get_data")
 }
 
 
@@ -36,7 +36,6 @@ UseMethod("get_data")
 #' @importFrom utils data
 #' @export
 get_data.lm <- function(fit, ...) {
-
   tryCatch({
     data <- eval(getCall(fit)$data, environment(formula(fit)))
     return(data)

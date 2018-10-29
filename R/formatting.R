@@ -84,7 +84,7 @@ format_string <- function(x, fmt, ...) {
 #'
 #' @importFrom stringr str_remove_all
 #' @export
-format_p <- function(pvalues, stars=TRUE) {
+format_p <- function(pvalues, stars = TRUE) {
   p <- ifelse(pvalues < 0.001, "< .001***",
     ifelse(pvalues < 0.01, "< .01**",
       ifelse(pvalues < 0.05, "< .05*",

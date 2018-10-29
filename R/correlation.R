@@ -91,7 +91,6 @@ correlation <- function(df,
     t <- corr$t
     ci <- corr$ci
     ci.adj <- corr$ci.adj
-
   } else {
     if (is.null(df2) == FALSE) {
       df <- cbind(df, df2)
@@ -142,7 +141,7 @@ correlation <- function(df,
   if (is.null(p) == FALSE) {
     if (adjust != "none") {
       if ((type == "full" & is.null(df2) == FALSE) | (type == "semi")) {
-        p[,] <- p.adjust(p, method = adjust)
+        p[, ] <- p.adjust(p, method = adjust)
       } else {
         p[lower.tri(p)] <- p.adjust(p[lower.tri(p)], method = adjust, n = choose(nrow(p), 2))
         p[upper.tri(p)] <- p.adjust(p[upper.tri(p)], method = adjust, n = choose(nrow(p), 2))

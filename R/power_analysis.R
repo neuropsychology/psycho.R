@@ -39,7 +39,7 @@
 #' @importFrom stats model.frame
 #' @import dplyr
 #' @export
-power_analysis <- function(fit, n_max, n_min=NULL, step=1, n_batch=1, groups=NULL, verbose=TRUE, CI=90, effsize=FALSE, effsize_rules="cohen1988", bayes_factor=FALSE, overlap=FALSE) {
+power_analysis <- function(fit, n_max, n_min = NULL, step = 1, n_batch = 1, groups = NULL, verbose = TRUE, CI = 90, effsize = FALSE, effsize_rules = "cohen1988", bayes_factor = FALSE, overlap = FALSE) {
 
   # Parameters
   df <- model.frame(fit)

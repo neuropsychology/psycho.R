@@ -53,7 +53,7 @@
 #' @importFrom dplyr bind_cols
 #' @importFrom tibble rownames_to_column
 #' @export
-get_predicted.stanreg <- function(fit, newdata="model", prob=0.9, odds_to_probs=TRUE, keep_iterations=FALSE, draws=NULL, posterior_predict=FALSE, seed=NULL, transform=FALSE, ...) {
+get_predicted.stanreg <- function(fit, newdata = "model", prob = 0.9, odds_to_probs = TRUE, keep_iterations = FALSE, draws = NULL, posterior_predict = FALSE, seed = NULL, transform = FALSE, ...) {
 
   # Extract names
   predictors <- all.vars(as.formula(fit$formula))
@@ -88,7 +88,7 @@ get_predicted.stanreg <- function(fit, newdata="model", prob=0.9, odds_to_probs=
 
   # Generate draws -------------------------------------------------------
   if (posterior_predict == FALSE) {
-    posterior <- rstanarm::posterior_linpred(fit, newdata = newdata, re.form = re.form, seed = seed, draws = draws, transform=transform)
+    posterior <- rstanarm::posterior_linpred(fit, newdata = newdata, re.form = re.form, seed = seed, draws = draws, transform = transform)
   } else {
     posterior <- rstanarm::posterior_predict(fit, newdata = newdata, re.form = re.form, seed = seed, draws = draws)
   }

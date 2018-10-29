@@ -27,7 +27,7 @@
 #' @importFrom stringr str_squish
 #' @import dplyr
 #' @export
-analyze.lmerModLmerTest <- function(x, CI=95, effsize_rules="cohen1988", ...) {
+analyze.lmerModLmerTest <- function(x, CI = 95, effsize_rules = "cohen1988", ...) {
 
 
   # Processing

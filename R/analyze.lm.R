@@ -24,7 +24,7 @@
 #' @importFrom stats formula
 #' @importFrom stringr str_squish
 #' @export
-analyze.lm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
+analyze.lm <- function(x, CI = 95, effsize_rules = "cohen1988", ...) {
 
 
   # Processing
@@ -50,7 +50,7 @@ analyze.lm <- function(x, CI=95, effsize_rules="cohen1988", ...) {
   summary$p <- summary$`Pr...t..`
 
   # standardized coefficients
-  standardized <- tibble::rownames_to_column(standardize(fit, method = "refit", data=data), "Variable")
+  standardized <- tibble::rownames_to_column(standardize(fit, method = "refit", data = data), "Variable")
   summary <- merge(summary, standardized, by = "Variable", all.x = TRUE, sort = FALSE)
   summary$Effect_Size <- c(NA, interpret_d(tail(summary$Coef_std, -1), rules = effsize_rules))
 

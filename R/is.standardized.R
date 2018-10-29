@@ -20,7 +20,7 @@
 #'
 #' @import purrr
 #' @export
-is.standardized <- function(df, tol=0.1) {
+is.standardized <- function(df, tol = 0.1) {
   dfZ <- standardize(df)
   dfZnum <- purrr::keep(dfZ, is.numeric)
 

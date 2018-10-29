@@ -26,7 +26,7 @@
 #'
 #' @importFrom ggplot2 cut_interval cut_number
 #' @export
-create_intervals <- function(x, n=NULL, length=NULL, equal_range=TRUE, labels=NULL, dig.lab=3) {
+create_intervals <- function(x, n = NULL, length = NULL, equal_range = TRUE, labels = NULL, dig.lab = 3) {
   if (equal_range) {
     if (is.character(labels) && labels == "median") {
       cuts <- ggplot2::cut_interval(x, n = n, length = length, labels = FALSE)

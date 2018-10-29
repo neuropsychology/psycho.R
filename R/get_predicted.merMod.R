@@ -99,7 +99,7 @@ get_predicted.merMod <- function(fit, newdata="model", prob=NULL, odds_to_probs=
 
   if (!is.null(prob)) {
     predFun <- function(fit) {
-      predict(fit, newdata)
+      predict(fit, newdata, newdata = newdata, re.form = re.form)
     }
     predMat <- lme4::bootMer(fit, nsim = iter, FUN = predFun, use.u = use.u, seed = seed)$t
 

@@ -48,7 +48,7 @@
 #' @import broom
 #'
 #' @export
-analyze.aov <- function(x, effsize_rules="field2013", ...) {
+analyze.aov <- function(x, effsize_rules = "field2013", ...) {
   if (!"aov" %in% class(x)) {
     if (!"Residuals" %in% row.names(x)) {
       if (!is.null(x$Within)) {
@@ -302,7 +302,7 @@ analyze.aovlist <- analyze.aov
 #' @author Arnoud Plantinga
 #' @importFrom stringr str_trim
 #' @export
-omega_sq <- function(x, partial=TRUE) {
+omega_sq <- function(x, partial = TRUE) {
   if ("aov" %in% class(x)) {
     summary_aov <- summary(x)[[1]]
   } else {

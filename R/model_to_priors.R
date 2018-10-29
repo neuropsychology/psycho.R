@@ -31,7 +31,7 @@
 #' @importFrom stats update
 #' @importFrom rstanarm normal
 #' @export
-model_to_priors <- function(fit, autoscale=FALSE) {
+model_to_priors <- function(fit, autoscale = FALSE) {
   posteriors <- as.data.frame(fit)
 
   # Varnames
@@ -75,7 +75,7 @@ model_to_priors <- function(fit, autoscale=FALSE) {
 
 
 #' @keywords internal
-.format_priors <- function(priors, autoscale=FALSE) {
+.format_priors <- function(priors, autoscale = FALSE) {
   prior_mean <- data.frame(priors) %>%
     select(contains("mean")) %>%
     gather() %>%

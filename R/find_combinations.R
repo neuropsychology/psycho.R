@@ -52,7 +52,7 @@ find_combinations <- function(object, ...) {
 #' @importFrom utils combn
 #' @importFrom stats terms
 #' @export
-find_combinations.formula <- function(object, interaction=TRUE, fixed=NULL, ...) {
+find_combinations.formula <- function(object, interaction = TRUE, fixed = NULL, ...) {
 
   # Extract infos
   formula <- object

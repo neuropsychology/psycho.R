@@ -14,7 +14,7 @@
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-interpret_d <- function(x, direction=FALSE, rules="cohen1988") {
+interpret_d <- function(x, direction = FALSE, rules = "cohen1988") {
   interpretation <- sapply(x, .interpret_d, direction = direction, rules = rules, return_rules = FALSE)
   return(interpretation)
 }
@@ -41,7 +41,7 @@ interpret_d <- function(x, direction=FALSE, rules="cohen1988") {
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-interpret_d_posterior <- function(posterior, rules="cohen1988") {
+interpret_d_posterior <- function(posterior, rules = "cohen1988") {
   interpretation <- sapply(posterior, .interpret_d, rules = rules, direction = TRUE, return_rules = TRUE)
   rules <- unlist(interpretation[, 1]$rules)
   interpretation <- as.data.frame(unlist(interpretation[1, ]))
@@ -123,7 +123,7 @@ interpret_d_posterior <- function(posterior, rules="cohen1988") {
 
 
 #' @keywords internal
-.interpret_d <- function(x, direction=FALSE, rules="cohen1988", return_rules=TRUE) {
+.interpret_d <- function(x, direction = FALSE, rules = "cohen1988", return_rules = TRUE) {
   if (!is.list(rules)) {
     if (rules == "cohen1988") {
       rules <- list(

@@ -33,5 +33,4 @@ test_that("If it works.", {
 
   means <- get_means(fit, formula = "Birth_Season")
   testthat::expect_equal(mean(means$Mean), -1.413, tolerance = 0.05)
-
 })

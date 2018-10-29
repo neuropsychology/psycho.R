@@ -13,7 +13,6 @@
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-golden <- function(x=1) {
-  return(x*(1+sqrt(5))/2)
+golden <- function(x = 1) {
+  return(x * (1 + sqrt(5)) / 2)
 }
-

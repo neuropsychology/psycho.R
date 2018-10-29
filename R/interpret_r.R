@@ -17,7 +17,7 @@
 #' @seealso Page 88 of APA's 6th Edition
 #'
 #' @export
-interpret_r <- function(x, direction=TRUE, strength=TRUE, rules="cohen1988") {
+interpret_r <- function(x, direction = TRUE, strength = TRUE, rules = "cohen1988") {
   interpretation <- sapply(x, .interpret_r, direction = direction, strength = strength, rules = rules, return_rules = FALSE)
   return(interpretation)
 }
@@ -47,7 +47,7 @@ interpret_r <- function(x, direction=TRUE, strength=TRUE, rules="cohen1988") {
 #' @seealso Page 88 of APA's 6th Edition
 #'
 #' @export
-interpret_r_posterior <- function(posterior, rules="cohen1988") {
+interpret_r_posterior <- function(posterior, rules = "cohen1988") {
   interpretation <- sapply(posterior, .interpret_r, rules = rules)
   rules <- unlist(interpretation[, 1]$rules)
   interpretation <- as.data.frame(unlist(interpretation[1, ]))
@@ -133,7 +133,7 @@ interpret_r_posterior <- function(posterior, rules="cohen1988") {
 
 
 #' @keywords internal
-.interpret_r <- function(x, direction=TRUE, strength=TRUE, rules="cohen1988", return_rules=TRUE) {
+.interpret_r <- function(x, direction = TRUE, strength = TRUE, rules = "cohen1988", return_rules = TRUE) {
   if (!is.list(rules)) {
     if (rules == "evans1996") {
       rules <- list(

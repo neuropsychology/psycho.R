@@ -51,7 +51,7 @@
 #'
 #' @importFrom stats qnorm
 #' @export
-dprime <- function(n_hit, n_fa, n_miss=NULL, n_cr=NULL, n_targets=NULL, n_distractors=NULL, adjusted=TRUE) {
+dprime <- function(n_hit, n_fa, n_miss = NULL, n_cr = NULL, n_targets = NULL, n_distractors = NULL, adjusted = TRUE) {
   if (is.null(n_targets)) {
     n_targets <- n_hit + n_miss
   }

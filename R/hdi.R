@@ -126,9 +126,8 @@ HDImax <- function(x, prob = .95) {
   x <- sort(x)
   ci.index <- ceiling(prob * length(x))
   nCIs <- length(x) - ci.index
-  ci.width <- purrr::map_dbl(1:nCIs, ~ x[.x + ci.index] - x[.x])
+  ci.width <- purrr::map_dbl(1:nCIs, ~x[.x + ci.index] - x[.x])
   HDImin <- x[which.min(ci.width)]
   HDImax <- x[which.min(ci.width) + ci.index]
   return(c(HDImin, HDImax))
 }
-

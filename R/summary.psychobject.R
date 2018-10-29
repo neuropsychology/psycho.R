@@ -10,7 +10,7 @@
 #'
 #' @method summary psychobject
 #' @export
-summary.psychobject <- function(object, round=NULL, ...) {
+summary.psychobject <- function(object, round = NULL, ...) {
   summary <- object$summary
 
   if (!is.null(round)) {

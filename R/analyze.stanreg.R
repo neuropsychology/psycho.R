@@ -66,7 +66,7 @@
 #' @importFrom broom tidy
 #' @importFrom stringr str_squish str_replace
 #' @export
-analyze.stanreg <- function(x, CI=90, index="overlap", ROPE_bounds=NULL, effsize=FALSE, effsize_rules="cohen1988", ...) {
+analyze.stanreg <- function(x, CI = 90, index = "overlap", ROPE_bounds = NULL, effsize = FALSE, effsize_rules = "cohen1988", ...) {
   fit <- x
 
   # Info --------------------------------------------------------------------
@@ -169,8 +169,8 @@ analyze.stanreg <- function(x, CI=90, index="overlap", ROPE_bounds=NULL, effsize
         effsize = effsize,
         effsize_rules = effsize_rules,
         fit = fit,
-        index=index,
-        ROPE_bounds=ROPE_bounds
+        index = index,
+        ROPE_bounds = ROPE_bounds
       )
     }
   }
@@ -199,7 +199,7 @@ analyze.stanreg <- function(x, CI=90, index="overlap", ROPE_bounds=NULL, effsize
   if (effsize == FALSE) {
     summary <- select_(summary, "-Median_std", "-MAD_std")
   }
-  
+
   if (index == "ROPE") {
     summary <- select_(summary, "-Overlap")
   } else {
@@ -344,7 +344,7 @@ analyze.stanreg <- function(x, CI=90, index="overlap", ROPE_bounds=NULL, effsize
 
 
 #' @keywords internal
-.get_info_priors <- function(varname, info_priors, predictors=NULL) {
+.get_info_priors <- function(varname, info_priors, predictors = NULL) {
   # Prior
   # TBD: this doesn't work with categorical predictors :(
   values <- list()
@@ -380,7 +380,7 @@ analyze.stanreg <- function(x, CI=90, index="overlap", ROPE_bounds=NULL, effsize
 
 
 #' @keywords internal
-.process_R2 <- function(varname, posteriors, info_priors, R2.adj=NULL, CI=90, effsize=FALSE) {
+.process_R2 <- function(varname, posteriors, info_priors, R2.adj = NULL, CI = 90, effsize = FALSE) {
   values <- .get_info_priors(varname, info_priors)
   posterior <- posteriors[, varname]
 
@@ -458,7 +458,7 @@ analyze.stanreg <- function(x, CI=90, index="overlap", ROPE_bounds=NULL, effsize
 
 
 #' @keywords internal
-.process_intercept <- function(varname, posteriors, info_priors, predictors, CI=90, effsize=FALSE) {
+.process_intercept <- function(varname, posteriors, info_priors, predictors, CI = 90, effsize = FALSE) {
   values <- .get_info_priors(varname, info_priors, predictors)
   posterior <- posteriors[, varname]
 
@@ -474,9 +474,9 @@ analyze.stanreg <- function(x, CI=90, index="overlap", ROPE_bounds=NULL, effsize
   values$MPE_values <- NA
   values$overlap <- NA
   values$ROPE <- NA
-  
-  
-  
+
+
+
   # Text
   values$text <- paste0(
     " The intercept is at ",
@@ -527,13 +527,12 @@ analyze.stanreg <- function(x, CI=90, index="overlap", ROPE_bounds=NULL, effsize
                             posteriors_std,
                             info_priors,
                             predictors,
-                            CI=90,
-                            effsize=FALSE,
-                            effsize_rules=FALSE,
+                            CI = 90,
+                            effsize = FALSE,
+                            effsize_rules = FALSE,
                             fit,
-                            index="overlap",
-                            ROPE_bounds=NULL) {
-
+                            index = "overlap",
+                            ROPE_bounds = NULL) {
   values <- .get_info_priors(varname, info_priors, predictors)
   posterior <- posteriors[, varname]
 
@@ -559,45 +558,54 @@ analyze.stanreg <- function(x, CI=90, index="overlap", ROPE_bounds=NULL, effsize
     )
   )
 
-  if(!is.null(ROPE_bounds)){
-    rope <- rope(posterior, bounds=ROPE_bounds)
+  if (!is.null(ROPE_bounds)) {
+    rope <- rope(posterior, bounds = ROPE_bounds)
     values$ROPE_decision <- rope$rope_decision
     values$ROPE <- rope$rope_probability
-  }else{
+  } else {
     values$ROPE <- NA
     values$ROPE_decision <- NA
   }
 
-  if(index == "overlap"){
-    index <- paste0("Overlap = ",
-                    format_digit(values$overlap, null_treshold = 0.01),
-                    "%).")
-  } else if(index == "ROPE"){
-    if(!is.null(ROPE_bounds)){
-      index <- paste0("ROPE = ",
-                      format_digit(values$ROPE, null_treshold = 0.001),
-                      ").")
-    } else{
-      if(effsize == TRUE){
-        rope <- rope(posteriors_std[, varname], bounds=c(-0.1, 0.1))
+  if (index == "overlap") {
+    index <- paste0(
+      "Overlap = ",
+      format_digit(values$overlap, null_treshold = 0.01),
+      "%)."
+    )
+  } else if (index == "ROPE") {
+    if (!is.null(ROPE_bounds)) {
+      index <- paste0(
+        "ROPE = ",
+        format_digit(values$ROPE, null_treshold = 0.001),
+        ")."
+      )
+    } else {
+      if (effsize == TRUE) {
+        rope <- rope(posteriors_std[, varname], bounds = c(-0.1, 0.1))
         values$ROPE_decision <- rope$rope_decision
         values$ROPE <- rope$rope_probability
-        index <- paste0("ROPE = ",
-                        format_digit(values$ROPE, null_treshold = 0.001),
-                        ").")
-      } else{
+        index <- paste0(
+          "ROPE = ",
+          format_digit(values$ROPE, null_treshold = 0.001),
+          ")."
+        )
+      } else {
         warning("you need to specify ROPE_bounds (e.g. 'c(-0.1, 0.1)'). Computing overlap instead.")
-        index <- paste0("Overlap = ",
-                        format_digit(values$overlap, null_treshold = 0.01),
-                        "%).")
+        index <- paste0(
+          "Overlap = ",
+          format_digit(values$overlap, null_treshold = 0.01),
+          "%)."
+        )
       }
     }
-
-  } else{
+  } else {
     warning("Parameter 'index' should be 'overlap' or 'ROPE'. Computing overlap.")
-    index <- paste0("Overlap = ",
-                    format_digit(values$overlap, null_treshold = 0.01),
-                    "%).")
+    index <- paste0(
+      "Overlap = ",
+      format_digit(values$overlap, null_treshold = 0.01),
+      "%)."
+    )
   }
 
 
