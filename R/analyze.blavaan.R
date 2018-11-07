@@ -33,14 +33,14 @@ analyze.lavaan <- function(x, ...) {
   fit <- x
 
 
+
+
   # Processing
   # -------------
   values <- list()
 
   # Fit measures
   values$Fit_Measures <- .interpret_fitmeasures(fit)
-
-
 
   # Summary
   # -------------
@@ -62,82 +62,25 @@ analyze.lavaan <- function(x, ...) {
 
 
 #' @keywords internal
-.interpret_fitmeasures.lavaan <- function(fit){
+.interpret_fitmeasures.blavaan <- function(fit, indices=c("BIC", "DIC", "WAIC", "LOOIC")){
   values <- list()
 
-  indices <- lavaan::fitmeasures(fit)
+  indices <- fitmeasures(fit)
 
 
   for (index in names(indices)) {
     values[index] <- indices[index]
   }
 
-  # awang2012
-  # https://www.researchgate.net/post/Whats_the_standard_of_fit_indices_in_SEM
-  if (values$cfi >= 0.9) {
-    cfi <- "satisfactory"
-  } else {
-    cfi <- "poor"
-  }
-  if (values$rmsea <= 0.08) {
-    rmsea <- "satisfactory"
-  } else {
-    rmsea <- "poor"
-  }
-  if (values$gfi >= 0.9) {
-    gfi <- "satisfactory"
-  } else {
-    gfi <- "poor"
-  }
-  if (values$tli >= 0.9) {
-    tli <- "satisfactory"
-  } else {
-    tli <- "poor"
-  }
-  if (values$nfi >= 0.9) {
-    nfi <- "satisfactory"
-  } else {
-    nfi <- "poor"
-  }
-
   # Summary
-  summary <- data.frame(
-    Index = c("RMSEA", "CFI", "GFI", "TLI", "NFI", "Chisq"),
-    Value = c(values$rmsea, values$cfi, values$gfi, values$tli, values$nfi, values$chisq),
-    Interpretation = c(rmsea, cfi, gfi, tli, nfi, NA),
-    Treshold = c("< .08", "> .90", "> 0.90", "> 0.90", "> 0.90", NA)
-  )
+  summary <- as.data.frame(indices) %>%
+    rownames_to_column("Index") %>%
+    rename_("Value" = "indices") %>%
+    mutate_("Index" = "str_to_upper(Index)")
 
   # Text
-  if ("satisfactory" %in% summary$Interpretation) {
-    satisfactory <- summary %>%
-      filter_("Interpretation == 'satisfactory'") %>%
-      mutate_("Index" = "paste0(Index, ' (', format_digit(Value), ' ', Treshold, ')')") %>%
-      select_("Index") %>%
-      pull() %>%
-      paste0(collapse = ", ")
-    satisfactory <- paste0("The ", satisfactory, " show satisfactory indices of fit.")
-  } else {
-    satisfactory <- ""
-  }
-  if ("poor" %in% summary$Interpretation) {
-    poor <- summary %>%
-      filter_("Interpretation == 'poor'") %>%
-      mutate_(
-        "Treshold" = 'stringr::str_replace(Treshold, "<", "SUP")',
-        "Treshold" = 'stringr::str_replace(Treshold, ">", "INF")',
-        "Treshold" = 'stringr::str_replace(Treshold, "SUP", ">")',
-        "Treshold" = 'stringr::str_replace(Treshold, "INF", "<")'
-      ) %>%
-      mutate_("Index" = "paste0(Index, ' (', format_digit(Value), ' ', Treshold, ')')") %>%
-      select_("Index") %>%
-      pull() %>%
-      paste0(collapse = ", ")
-    poor <- paste0("The ", poor, " show poor indices of fit.")
-  } else {
-    poor <- ""
-  }
-  text <- paste(satisfactory, poor)
+  relevant_indices <- summary[summary$Index %in% c("BIC", "DIC", "WAIC", "LOOIC"),]
+  text <- paste0(relevant_indices$Index, " = ", format_digit(relevant_indices$Value), collapse=", ")
 
   output <- list(text = text, summary = summary, values = values, plot="Not available yet")
   class(output) <- c("psychobject", "list")
@@ -147,18 +90,97 @@ analyze.lavaan <- function(x, ...) {
 
 
 
-
-
-
-
+#' @keywords internal
+.get_info_computations.blavaan <- function(fit) {
+  chains <- blavInspect(fit, "n.chains")
+  sample = fit@external$sample
+  warmup = fit@external$burnin
+  text = paste0(chains,
+                "chains, each with iter = ",
+                sample,
+                "; warmup = ",
+                warmup)
+  return(text)
+}
 
 
 
 
 #' @keywords internal
-.summary_lavaan.lavaan <- function(fit){
+.process_blavaan <- function(fit, CI=90){
+  # Get relevant rows
+  PE <- parameterEstimates(fit, se = FALSE, ci=FALSE, remove.eq = FALSE, remove.system.eq = TRUE,
+                           remove.ineq = FALSE, remove.def = FALSE,
+                           add.attributes = TRUE)
+  if(!("group" %in% names(PE))) PE$group <- 1
+  newpt <- fit@ParTable
+  pte2 <- which(newpt$free > 0)
+  relevant_rows <- match(with(newpt, paste(lhs[pte2], op[pte2], rhs[pte2], group[pte2], sep="")),
+                   paste(PE$lhs, PE$op, PE$rhs, PE$group, sep=""))
 
-  solution <- lavaan::parameterEstimates(fit, standardized=TRUE)
+  # Priors
+  priors <- rep(NA, nrow(PE))
+  priors[relevant_rows] <- newpt$prior[pte2]
+  priors[is.na(PE$prior)] <- ""
+
+  # Posterior
+  posteriors <- blavInspect(fit, "draws") %>%
+    as.matrix() %>%
+    as.data.frame()
+  names(posteriors) <- names(coef(fit))
+
+
+  # Effects
+  MPE <- c()
+  Median <- c()
+  MAD <- c()
+  Effect <- c()
+  CI_lower <- c()
+  CI_higher <- c()
+  for(effect in names(posteriors)){
+    posterior <- posteriors[[effect]]
+    Effect <- c(Effect, effect)
+    MPE <- c(MPE, mpe(posterior)$MPE)
+    Median <- c(Median, median(posterior))
+    MAD <- c(MAD, mad(posterior))
+
+    CI_values <- HDI(posterior, prob = CI / 100)
+    CI_lower <- c(CI_lower, CI_values$values$HDImin)
+    CI_higher <- c(CI_higher, CI_values$values$HDImax)
+
+  }
+
+  Effects <- rep(NA, nrow(PE))
+  Effects[relevant_rows] <- Effect
+  MPEs <- rep(NA, nrow(PE))
+  MPEs[relevant_rows] <- MPE
+  Medians <- rep(NA, nrow(PE))
+  Medians[relevant_rows] <- Median
+  MADs <- rep(NA, nrow(PE))
+  MADs[relevant_rows] <- MAD
+  CI_lowers <- rep(NA, nrow(PE))
+  CI_lowers[relevant_rows] <- CI_lower
+  CI_highers <- rep(NA, nrow(PE))
+  CI_highers[relevant_rows] <- CI_higher
+
+  data <- data.frame("Effect" = Effects,
+                     "Median" = Medians,
+                     "MAD" = MADs,
+                     "MPE" = MPEs,
+                     "CI_lower" = CI_lowers,
+                     "CI_higher" = CI_highers,
+                     "Prior" = priors)
+
+  return(data)
+}
+
+
+
+#' @keywords internal
+.summary_lavaan <- function(fit){
+
+  solution <- parameterEstimates(fit, se = TRUE, ci=TRUE, standardized=TRUE)
+
 
   solution <- solution %>%
     rename("From" = "rhs",
@@ -167,7 +189,6 @@ analyze.lavaan <- function(x, ...) {
            "Coef" = "est",
            "Coef_std" = "std.all",
            "SE" = "se",
-           "p" = "pvalue",
            "CI_lower" = "ci.lower",
            "CI_higher" = "ci.upper") %>%
     mutate(Type = dplyr::case_when(
@@ -175,8 +196,14 @@ analyze.lavaan <- function(x, ...) {
       Operator == "~"  ~ "Regression",
       Operator == "~~" ~ "Correlation",
       TRUE ~ NA_character_)) %>%
-    mutate_("p" = "replace_na(p, 0)") %>%
-    select(one_of(c("To", "Operator", "From", "Coef", "SE", "CI_lower", "CI_higher", "p", "Coef_std", "Type")))
+    select(one_of(c("To", "Operator", "From", "Coef_std", "Type"))) %>%
+    cbind(.process_blavaan(fit)) %>%
+    select_("-Effect") %>%
+    mutate_("Median" = "replace_na(Median, 1)",
+            "MAD" = "replace_na(MAD, 0)",
+            "MPE" = "replace_na(MPE, 100)") %>%
+    select(one_of(c("To", "Operator", "From", "Median", "MAD", "CI_lower", "CI_higher", "MPE", "Coef_std", "Prior", "Type")))
+
 
   return(solution)
 }
@@ -207,7 +234,7 @@ analyze.lavaan <- function(x, ...) {
 #'
 #'
 #' @export
-plot_lavaan.lavaan <- function(fit, links=c("Regression"), threshold_p=NULL, threshold_Coef=NULL, digits=2){
+plot_lavaan <- function(fit, links=c("Regression"), threshold_p=NULL, threshold_Coef=NULL, digits=2){
 # https://www.r-bloggers.com/ggplot2-sem-models-with-tidygraph-and-ggraph/
 
   summary <- summary(analyze(fit))
