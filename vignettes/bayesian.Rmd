@@ -462,10 +462,6 @@ Relationships in the real world are often non-linear. For example, based on the 
 
 ### Model Exploration
 
-```{r, message=FALSE, results="hide", warning=FALSE, eval=FALSE}
-# Let's fit our model (it takes more time)
-fit <- rstanarm::stan_lmer(Concealing ~ poly(Age, 2, raw=TRUE) + (1|Salary), data=df)
-```
 ```{r message=FALSE, warning=FALSE, include=FALSE, results="hide"}
 # Let's fit our model (it takes more time)
 fit <- rstanarm::stan_lmer(Concealing ~ poly(Age, 2, raw=TRUE) + (1|Salary), data=df, iter=500, chains=2)
@@ -480,7 +476,7 @@ results <- psycho::analyze(fit)
 summary(results, round = 2)
 ```
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-kable(summary(results, round = 2))
+knitr::kable(summary(results, round = 2))
 ```
 
 As we can see, both the linear relationship and the second order curvature are highly probable. However, when setting `raw=TRUE` in the formula, the coefficients become unintepretable. So let's visualize them.

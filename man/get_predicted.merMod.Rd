@@ -5,8 +5,8 @@
 \title{Compute predicted values of lm models.}
 \usage{
 \method{get_predicted}{merMod}(fit, newdata = "model", prob = NULL,
-  odds_to_probs = TRUE, iter = 100, seed = NULL, re.form = NULL,
-  use.u = FALSE, ...)
+  odds_to_probs = TRUE, iter = 100, seed = NULL,
+  re.form = "default", use.u = FALSE, ...)
 }
 \arguments{
 \item{fit}{An lm model.}
@@ -21,7 +21,7 @@
 
 \item{seed}{An optional seed to use.}
 
-\item{re.form}{Formula for random effects to condition on. If NULL, include all random effects; if NA or ~0, include no random effects (see \link[lme4]{predict.merMod}).}
+\item{re.form}{Formula for random effects to condition on. If NULL, include all random effects; if NA or ~0, include no random effects (see \link[lme4]{predict.merMod}). If "default", then will ne NULL if the random are present in the data, and NA if not.}
 
 \item{use.u}{logical, indicating whether the spherical random effects should be simulated / bootstrapped as well. If TRUE, they are not changed, and all inference is conditional on these values. If FALSE, new normal deviates are drawn (see\link[lme4]{bootMer}).}
 

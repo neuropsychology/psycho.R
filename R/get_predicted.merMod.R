@@ -8,7 +8,7 @@
 #' @param odds_to_probs Transform log odds ratios in logistic models to probabilies.
 #' @param iter An integer indicating the number of iterations for bootstrapping (when prob is not null).
 #' @param seed An optional seed to use.
-#' @param re.form Formula for random effects to condition on. If NULL, include all random effects; if NA or ~0, include no random effects (see \link[lme4]{predict.merMod}).
+#' @param re.form Formula for random effects to condition on. If NULL, include all random effects; if NA or ~0, include no random effects (see \link[lme4]{predict.merMod}). If "default", then will ne NULL if the random are present in the data, and NA if not.
 #' @param use.u logical, indicating whether the spherical random effects should be simulated / bootstrapped as well. If TRUE, they are not changed, and all inference is conditional on these values. If FALSE, new normal deviates are drawn (see\link[lme4]{bootMer}).
 #' @param ... Arguments passed to or from other methods.
 #'
@@ -61,7 +61,7 @@
 #' @importFrom dplyr bind_cols
 #' @importFrom tibble rownames_to_column
 #' @export
-get_predicted.merMod <- function(fit, newdata="model", prob=NULL, odds_to_probs=TRUE, iter=100, seed=NULL, re.form=NULL, use.u=FALSE, ...) {
+get_predicted.merMod <- function(fit, newdata="model", prob=NULL, odds_to_probs=TRUE, iter=100, seed=NULL, re.form="default", use.u=FALSE, ...) {
 
 
   # Extract names
@@ -87,7 +87,15 @@ get_predicted.merMod <- function(fit, newdata="model", prob=NULL, odds_to_probs=
   }
 
 
-
+  # Deal with random
+  if(re.form=="default"){
+    # Check if all predictors are in variables
+    if(all(get_info(fit)$predictors %in% names(newdata))){
+      re.form <- NULL
+    } else{
+      re.form <- NA
+    }
+  }
 
 
 

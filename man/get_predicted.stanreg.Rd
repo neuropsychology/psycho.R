@@ -6,7 +6,8 @@
 \usage{
 \method{get_predicted}{stanreg}(fit, newdata = "model", prob = 0.9,
   odds_to_probs = TRUE, keep_iterations = FALSE, draws = NULL,
-  posterior_predict = FALSE, seed = NULL, transform = FALSE, ...)
+  posterior_predict = FALSE, seed = NULL, transform = FALSE,
+  re.form = "default", ...)
 }
 \arguments{
 \item{fit}{A stanreg model.}
@@ -26,6 +27,8 @@
 \item{seed}{An optional seed to use.}
 
 \item{transform}{If posterior_predict is False, should the linear predictor be transformed using the inverse-link function? The default is FALSE, in which case the untransformed linear predictor is returned.}
+
+\item{re.form}{If object contains group-level parameters, a formula indicating which group-level parameters to condition on when making predictions. re.form is specified in the same form as for predict.merMod. NULL indicates that all estimated group-level parameters are conditioned on. To refrain from conditioning on any group-level parameters, specify NA or ~0. The newdata argument may include new levels of the grouping factors that were specified when the model was estimated, in which case the resulting posterior predictions marginalize over the relevant variables (see \link[rstanarm]{posterior_predict.stanreg}). If "default", then will ne NULL if the random are present in the data, and NA if not.}
 
 \item{...}{Arguments passed to or from other methods.}
 }

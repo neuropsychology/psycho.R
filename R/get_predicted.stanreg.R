@@ -11,6 +11,7 @@
 #' @param posterior_predict Posterior draws of the outcome instead of the link function (i.e., the regression "line").
 #' @param seed An optional seed to use.
 #' @param transform If posterior_predict is False, should the linear predictor be transformed using the inverse-link function? The default is FALSE, in which case the untransformed linear predictor is returned.
+#' @param re.form If object contains group-level parameters, a formula indicating which group-level parameters to condition on when making predictions. re.form is specified in the same form as for predict.merMod. NULL indicates that all estimated group-level parameters are conditioned on. To refrain from conditioning on any group-level parameters, specify NA or ~0. The newdata argument may include new levels of the grouping factors that were specified when the model was estimated, in which case the resulting posterior predictions marginalize over the relevant variables (see \link[rstanarm]{posterior_predict.stanreg}). If "default", then will ne NULL if the random are present in the data, and NA if not.
 #' @param ... Arguments passed to or from other methods.
 #'
 #'
@@ -53,7 +54,7 @@
 #' @importFrom dplyr bind_cols
 #' @importFrom tibble rownames_to_column
 #' @export
-get_predicted.stanreg <- function(fit, newdata = "model", prob = 0.9, odds_to_probs = TRUE, keep_iterations = FALSE, draws = NULL, posterior_predict = FALSE, seed = NULL, transform = FALSE, ...) {
+get_predicted.stanreg <- function(fit, newdata = "model", prob = 0.9, odds_to_probs = TRUE, keep_iterations = FALSE, draws = NULL, posterior_predict = FALSE, seed = NULL, transform = FALSE, re.form="default", ...) {
 
   # Extract names
   predictors <- all.vars(as.formula(fit$formula))
@@ -66,14 +67,6 @@ get_predicted.stanreg <- function(fit, newdata = "model", prob = 0.9, odds_to_pr
     newdata[".wgt."] <- NULL
   }
 
-  # Deal with potential random
-  re.form <- NULL
-  if (!is.null(newdata)) {
-    if (!is.character(newdata) & is.mixed(fit)) {
-      re.form <- NA
-    }
-  }
-
   # Set newdata to actual data
   original_data <- FALSE
   if (!is.null(newdata)) {
@@ -82,6 +75,18 @@ get_predicted.stanreg <- function(fit, newdata = "model", prob = 0.9, odds_to_pr
         original_data <- TRUE
         newdata <- fit$data[predictors]
         newdata <- na.omit(fit$data[predictors])
+      }
+    }
+  }
+
+  # Deal with potential random
+  if(re.form=="default"){
+    if(is.mixed(fit)){
+      # Check if all predictors are in variables
+      if(all(get_info(fit)$predictors %in% names(newdata))){
+        re.form <- NULL
+      } else{
+        re.form <- NA
       }
     }
   }

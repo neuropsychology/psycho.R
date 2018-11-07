@@ -2,12 +2,12 @@
 % Please edit documentation in R/analyze.lavaan.R
 \name{analyze.lavaan}
 \alias{analyze.lavaan}
-\title{Analyze aov objects.}
+\title{Analyze lavaan (SEM or CFA) objects.}
 \usage{
 \method{analyze}{lavaan}(x, ...)
 }
 \arguments{
-\item{x}{aov object.}
+\item{x}{lavaan object.}
 
 \item{...}{Arguments passed to or from other methods.}
 }
@@ -15,7 +15,7 @@
 output
 }
 \description{
-Analyze aov objects.
+Analyze lavaan (SEM or CFA) objects.
 }
 \examples{
 library(psycho)
