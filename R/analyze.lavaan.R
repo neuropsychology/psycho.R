@@ -1,8 +1,10 @@
-#' Analyze lavaan (SEM or CFA) objects.
+#' Analyze lavaan SEM or CFA) objects.
 #'
 #' Analyze lavaan (SEM or CFA) objects.
 #'
 #' @param x lavaan object.
+#' @param CI Confidence interval level.
+#' @param standardize Compute standardized coefs.
 #' @param ... Arguments passed to or from other methods.
 #'
 #' @return output
@@ -29,26 +31,28 @@
 #' @importFrom lavaan parameterEstimates fitmeasures
 #'
 #' @export
-analyze.lavaan <- function(x, ...) {
+analyze.lavaan <- function(x, CI=95, standardize=FALSE, ...) {
   fit <- x
 
 
   # Processing
   # -------------
   values <- list()
+  values$CI = CI
 
   # Fit measures
-  values$Fit_Measures <- .interpret_fitmeasures(fit)
+  values$Fit_Measures <- interpret_lavaan(fit)
+
 
 
 
   # Summary
   # -------------
-  summary <- .summary_lavaan(fit)
+  summary <- .summary_lavaan(fit, CI=CI, standardize=standardize)
 
   # Plot
   # -------------
-  plot <- "Use `plot_lavaan` in association with ggraph."
+  plot <- "Use `get_graph` in association with ggraph."
 
   output <- list(text = values$Fit_Measures$text, plot = plot, summary = summary, values = values)
 
@@ -61,92 +65,6 @@ analyze.lavaan <- function(x, ...) {
 
 
 
-#' @keywords internal
-.interpret_fitmeasures.lavaan <- function(fit){
-  values <- list()
-
-  indices <- lavaan::fitmeasures(fit)
-
-
-  for (index in names(indices)) {
-    values[index] <- indices[index]
-  }
-
-  # awang2012
-  # https://www.researchgate.net/post/Whats_the_standard_of_fit_indices_in_SEM
-  if (values$cfi >= 0.9) {
-    cfi <- "satisfactory"
-  } else {
-    cfi <- "poor"
-  }
-  if (values$rmsea <= 0.08) {
-    rmsea <- "satisfactory"
-  } else {
-    rmsea <- "poor"
-  }
-  if (values$gfi >= 0.9) {
-    gfi <- "satisfactory"
-  } else {
-    gfi <- "poor"
-  }
-  if (values$tli >= 0.9) {
-    tli <- "satisfactory"
-  } else {
-    tli <- "poor"
-  }
-  if (values$nfi >= 0.9) {
-    nfi <- "satisfactory"
-  } else {
-    nfi <- "poor"
-  }
-
-  # Summary
-  summary <- data.frame(
-    Index = c("RMSEA", "CFI", "GFI", "TLI", "NFI", "Chisq"),
-    Value = c(values$rmsea, values$cfi, values$gfi, values$tli, values$nfi, values$chisq),
-    Interpretation = c(rmsea, cfi, gfi, tli, nfi, NA),
-    Treshold = c("< .08", "> .90", "> 0.90", "> 0.90", "> 0.90", NA)
-  )
-
-  # Text
-  if ("satisfactory" %in% summary$Interpretation) {
-    satisfactory <- summary %>%
-      filter_("Interpretation == 'satisfactory'") %>%
-      mutate_("Index" = "paste0(Index, ' (', format_digit(Value), ' ', Treshold, ')')") %>%
-      select_("Index") %>%
-      pull() %>%
-      paste0(collapse = ", ")
-    satisfactory <- paste0("The ", satisfactory, " show satisfactory indices of fit.")
-  } else {
-    satisfactory <- ""
-  }
-  if ("poor" %in% summary$Interpretation) {
-    poor <- summary %>%
-      filter_("Interpretation == 'poor'") %>%
-      mutate_(
-        "Treshold" = 'stringr::str_replace(Treshold, "<", "SUP")',
-        "Treshold" = 'stringr::str_replace(Treshold, ">", "INF")',
-        "Treshold" = 'stringr::str_replace(Treshold, "SUP", ">")',
-        "Treshold" = 'stringr::str_replace(Treshold, "INF", "<")'
-      ) %>%
-      mutate_("Index" = "paste0(Index, ' (', format_digit(Value), ' ', Treshold, ')')") %>%
-      select_("Index") %>%
-      pull() %>%
-      paste0(collapse = ", ")
-    poor <- paste0("The ", poor, " show poor indices of fit.")
-  } else {
-    poor <- ""
-  }
-  text <- paste(satisfactory, poor)
-
-  output <- list(text = text, summary = summary, values = values, plot="Not available yet")
-  class(output) <- c("psychobject", "list")
-  return(output)
-
-}
-
-
-
 
 
 
@@ -156,16 +74,20 @@ analyze.lavaan <- function(x, ...) {
 
 
 #' @keywords internal
-.summary_lavaan.lavaan <- function(fit){
+.summary_lavaan <- function(fit, CI=95, standardize=FALSE){
 
-  solution <- lavaan::parameterEstimates(fit, standardized=TRUE)
+  if(standardize == FALSE){
+    solution <- lavaan::parameterEstimates(fit, se=TRUE, standardized=standardize, level = CI/100)
+  }else{
+    solution <- lavaan::standardizedsolution(fit, se=TRUE, level = CI/100) %>%
+      rename_("est" = "est.std")
+  }
 
   solution <- solution %>%
     rename("From" = "rhs",
            "To" = "lhs",
            "Operator" = "op",
            "Coef" = "est",
-           "Coef_std" = "std.all",
            "SE" = "se",
            "p" = "pvalue",
            "CI_lower" = "ci.lower",
@@ -176,81 +98,13 @@ analyze.lavaan <- function(x, ...) {
       Operator == "~~" ~ "Correlation",
       TRUE ~ NA_character_)) %>%
     mutate_("p" = "replace_na(p, 0)") %>%
-    select(one_of(c("To", "Operator", "From", "Coef", "SE", "CI_lower", "CI_higher", "p", "Coef_std", "Type")))
+    select(one_of(c("From", "Operator", "To", "Coef", "SE", "CI_lower", "CI_higher", "p", "Type")))
 
   return(solution)
 }
 
 
 
-
-
-
-
-#' Plot lavaan (SEM or CFA) objects.
-#'
-#' Plot lavaan (SEM or CFA) objects.
-#'
-#' @param fit lavaan object.
-#' @param links Which links to include? A list including at least one of "Regression", "Loading" or "Correlation".
-#' @param threshold_p Omit all links with a p value below this value.
-#' @param threshold_Coef Omit all links with a Coefs below this value.
-#' @param digits Edges' labels rounding.
-#'
-#' @return A list containing nodes and edges data to be used by `tidygraph::tbl_graph()`.
-#'
-#'
-#' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
-#'
-#' @seealso
-#' https://www.researchgate.net/post/Whats_the_standard_of_fit_indices_in_SEM
-#'
-#'
-#' @export
-plot_lavaan.lavaan <- function(fit, links=c("Regression"), threshold_p=NULL, threshold_Coef=NULL, digits=2){
-# https://www.r-bloggers.com/ggplot2-sem-models-with-tidygraph-and-ggraph/
-
-  summary <- summary(analyze(fit))
-
-  # Sanitize
-  if(is.null(threshold_p)){
-    threshold_p <- 1.1
-  }
-  if(is.null(threshold_Coef)){
-    threshold_Coef <- max(abs(summary$Coef))
-  }
-
-  # Edge properties
-  edges <- summary %>%
-    filter_('Type %in% c(links)',
-           "From != To",
-           "p < threshold_p",
-           "abs(Coef) > threshold_Coef") %>%
-    rename_("to" = "To",
-            "from" = "From") %>%
-    mutate_('Label_Regression' = "ifelse(Type=='Regression', format_digit(Coef, digits), '')",
-           'Label_Correlation' = "ifelse(Type=='Correlation', format_digit(Coef, digits), '')",
-           'Label_Loading' = "ifelse(Type=='Loading', format_digit(Coef, digits), '')")
-  edges <- edges[colSums(!is.na(edges)) > 0]
-
-  # Identify latent variables for nodes
-  latent_nodes <- edges %>%
-    filter_('Type == "Loading"') %>%
-    distinct_("to") %>%
-    transmute_("metric" = "to", "latent" = TRUE)
-
-  nodes_list <- unique(c(edges$from, edges$to))
-
-  # Node properties
-  nodes <- summary %>%
-    filter_("From == To",
-            "From %in% nodes_list") %>%
-    mutate_("metric" = "From") %>%
-    left_join(latent_nodes, by="metric") %>%
-    mutate_("latent" = "if_else(is.na(latent), FALSE, latent)")
-
-  return(output = list(nodes = nodes, edges = edges))
-}
 
 
 

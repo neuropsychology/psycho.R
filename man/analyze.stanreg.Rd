@@ -52,7 +52,7 @@ print(results)
 plot(results)
 
 
-fit <- rstanarm::stan_glmer(Sepal.Length ~ Sepal.Width + (1|Species), data=iris)
+fit <- rstanarm::stan_lmer(Sepal.Length ~ Sepal.Width + (1|Species), data=iris)
 results <- analyze(fit)
 summary(results)
 

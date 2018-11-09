@@ -1,6 +1,12 @@
 # Current Dev
 
+
+
+
+# [0.4.0](https://github.com/neuropsychology/psycho.R/releases/tag/0.4.0) (2018-06-11)
+
 ### Breaking changes
+- Major release, lots of undocumented breaking changes.)
 - Changed `hdi` to `HDI`
 - Removed Mean and SD from summary in `bayes_cor.test`
 ### New functions / parameters

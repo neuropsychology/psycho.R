@@ -35,7 +35,7 @@
 #' plot(results)
 #'
 #'
-#' fit <- rstanarm::stan_glmer(Sepal.Length ~ Sepal.Width + (1|Species), data=iris)
+#' fit <- rstanarm::stan_lmer(Sepal.Length ~ Sepal.Width + (1|Species), data=iris)
 #' results <- analyze(fit)
 #' summary(results)
 #'
@@ -344,7 +344,7 @@ analyze.stanreg <- function(x, CI = 90, index = "overlap", ROPE_bounds = NULL, e
 
 
 #' @keywords internal
-.get_info_priors.stanreg <- function(varname, info_priors, predictors = NULL) {
+.get_info_priors <- function(varname, info_priors, predictors = NULL) {
   # Prior
   # TBD: this doesn't work with categorical predictors :(
   values <- list()

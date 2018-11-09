@@ -26,7 +26,8 @@ Analyze objects. See the documentation for your object's class:
  }
 \itemize{
  \item{\link[=analyze.fa]{analyze.fa}}
- \item{\link[=analyze.fa]{analyze.lavaan}}
+ \item{\link[=analyze.lavaan]{analyze.lavaan}}
+ \item{\link[=analyze.blavaan]{analyze.blavaan}}
  }
 }
 \author{

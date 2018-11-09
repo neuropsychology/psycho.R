@@ -244,14 +244,15 @@ R2_LOO_Adjusted <- function(fit) {
 
   psis_object <- loo::psis(log_ratios = -ll, r_eff = r_eff)
   ypredloo <- loo::E_loo(ypred, psis_object, log_ratios = -ll)$value
+  if(length(ypredloo) != length(y)){
+    warning("Something went wrong in the Loo-adjusted R2 computation.")
+    return(NA)
+  }
   eloo <- ypredloo - y
 
   adj_r_squared <- 1 - stats::var(eloo) / stats::var(y)
   return(adj_r_squared)
 }
-
-
-
 
 
 

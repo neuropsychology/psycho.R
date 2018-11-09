@@ -63,5 +63,6 @@ Suggests:
     testthat,
     covr,
     plotly,
-    GPArotation
+    GPArotation,
+    blavaan (>= 0.3.4)
 VignetteBuilder: knitr

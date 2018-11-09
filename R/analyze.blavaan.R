@@ -1,8 +1,10 @@
-#' Analyze lavaan (SEM or CFA) objects.
+#' Analyze blavaan (SEM or CFA) objects.
 #'
-#' Analyze lavaan (SEM or CFA) objects.
+#' Analyze blavaan (SEM or CFA) objects.
 #'
 #' @param x lavaan object.
+#' @param CI Credible interval level.
+#' @param standardize Compute standardized coefs.
 #' @param ... Arguments passed to or from other methods.
 #'
 #' @return output
@@ -25,30 +27,38 @@
 #' @seealso
 #' https://www.researchgate.net/post/Whats_the_standard_of_fit_indices_in_SEM
 #'
-#'
 #' @importFrom lavaan parameterEstimates fitmeasures
 #'
 #' @export
-analyze.lavaan <- function(x, ...) {
+analyze.blavaan <- function(x, CI=90, standardize=FALSE,...) {
   fit <- x
-
-
 
 
   # Processing
   # -------------
   values <- list()
+  values$CI = CI
 
   # Fit measures
-  values$Fit_Measures <- .interpret_fitmeasures(fit)
+  values$Fit_Measures <- interpret_lavaan(fit)
+
+
+  # Text
+  # -------------
+  computations <- .get_info_computations(fit)
+  fitmeasures <- values$Fit_Measures$text
+  text <- paste0("A Bayesian model was fitted (",
+                 computations,
+                 "). The fit indices are as following: ",
+                 fitmeasures)
 
   # Summary
   # -------------
-  summary <- .summary_lavaan(fit)
+  summary <- .summary_blavaan(fit, CI=CI, standardize=standardize)
 
   # Plot
   # -------------
-  plot <- "Use `plot_lavaan` in association with ggraph."
+  plot <- "Use `get_graph` in association with ggraph."
 
   output <- list(text = values$Fit_Measures$text, plot = plot, summary = summary, values = values)
 
@@ -62,41 +72,12 @@ analyze.lavaan <- function(x, ...) {
 
 
 #' @keywords internal
-.interpret_fitmeasures.blavaan <- function(fit, indices=c("BIC", "DIC", "WAIC", "LOOIC")){
-  values <- list()
-
-  indices <- fitmeasures(fit)
-
-
-  for (index in names(indices)) {
-    values[index] <- indices[index]
-  }
-
-  # Summary
-  summary <- as.data.frame(indices) %>%
-    rownames_to_column("Index") %>%
-    rename_("Value" = "indices") %>%
-    mutate_("Index" = "str_to_upper(Index)")
-
-  # Text
-  relevant_indices <- summary[summary$Index %in% c("BIC", "DIC", "WAIC", "LOOIC"),]
-  text <- paste0(relevant_indices$Index, " = ", format_digit(relevant_indices$Value), collapse=", ")
-
-  output <- list(text = text, summary = summary, values = values, plot="Not available yet")
-  class(output) <- c("psychobject", "list")
-  return(output)
-
-}
-
-
-
-#' @keywords internal
-.get_info_computations.blavaan <- function(fit) {
-  chains <- blavInspect(fit, "n.chains")
+.get_info_computations <- function(fit) {
+  chains <- blavaan::blavInspect(fit, "n.chains")
   sample = fit@external$sample
   warmup = fit@external$burnin
   text = paste0(chains,
-                "chains, each with iter = ",
+                " chains, each with iter = ",
                 sample,
                 "; warmup = ",
                 warmup)
@@ -107,7 +88,7 @@ analyze.lavaan <- function(x, ...) {
 
 
 #' @keywords internal
-.process_blavaan <- function(fit, CI=90){
+.process_blavaan <- function(fit, standardize=FALSE, CI=90){
   # Get relevant rows
   PE <- parameterEstimates(fit, se = FALSE, ci=FALSE, remove.eq = FALSE, remove.system.eq = TRUE,
                            remove.ineq = FALSE, remove.def = FALSE,
@@ -123,11 +104,20 @@ analyze.lavaan <- function(x, ...) {
   priors[relevant_rows] <- newpt$prior[pte2]
   priors[is.na(PE$prior)] <- ""
 
+
+
+
   # Posterior
-  posteriors <- blavInspect(fit, "draws") %>%
-    as.matrix() %>%
-    as.data.frame()
-  names(posteriors) <- names(coef(fit))
+  if(standardize == FALSE){
+    posteriors <- blavaan::blavInspect(fit, "draws") %>%
+      as.matrix() %>%
+      as.data.frame()
+    names(posteriors) <- names(lavaan::coef(fit))
+  } else{
+    posteriors <- blavaan::standardizedposterior(fit) %>%
+      as.data.frame()
+  }
+
 
 
   # Effects
@@ -150,18 +140,27 @@ analyze.lavaan <- function(x, ...) {
 
   }
 
-  Effects <- rep(NA, nrow(PE))
-  Effects[relevant_rows] <- Effect
-  MPEs <- rep(NA, nrow(PE))
-  MPEs[relevant_rows] <- MPE
-  Medians <- rep(NA, nrow(PE))
-  Medians[relevant_rows] <- Median
-  MADs <- rep(NA, nrow(PE))
-  MADs[relevant_rows] <- MAD
-  CI_lowers <- rep(NA, nrow(PE))
-  CI_lowers[relevant_rows] <- CI_lower
-  CI_highers <- rep(NA, nrow(PE))
-  CI_highers[relevant_rows] <- CI_higher
+  if(standardize == FALSE){
+    Effects <- rep(NA, nrow(PE))
+    Effects[relevant_rows] <- Effect
+    MPEs <- rep(NA, nrow(PE))
+    MPEs[relevant_rows] <- MPE
+    Medians <- rep(NA, nrow(PE))
+    Medians[relevant_rows] <- Median
+    MADs <- rep(NA, nrow(PE))
+    MADs[relevant_rows] <- MAD
+    CI_lowers <- rep(NA, nrow(PE))
+    CI_lowers[relevant_rows] <- CI_lower
+    CI_highers <- rep(NA, nrow(PE))
+    CI_highers[relevant_rows] <- CI_higher
+  } else{
+    Effects <- Effect
+    MPEs <- MPE
+    Medians <- Median
+    MADs <- MAD
+    CI_lowers <- CI_lower
+    CI_highers <- CI_higher
+  }
 
   data <- data.frame("Effect" = Effects,
                      "Median" = Medians,
@@ -177,17 +176,15 @@ analyze.lavaan <- function(x, ...) {
 
 
 #' @keywords internal
-.summary_lavaan <- function(fit){
+.summary_blavaan <- function(fit, CI=90, standardize=FALSE){
 
-  solution <- parameterEstimates(fit, se = TRUE, ci=TRUE, standardized=TRUE)
-
+  solution <- lavaan::parameterEstimates(fit, se = TRUE, ci=TRUE, standardized=FALSE, level = CI/100)
 
   solution <- solution %>%
     rename("From" = "rhs",
            "To" = "lhs",
            "Operator" = "op",
            "Coef" = "est",
-           "Coef_std" = "std.all",
            "SE" = "se",
            "CI_lower" = "ci.lower",
            "CI_higher" = "ci.upper") %>%
@@ -196,89 +193,17 @@ analyze.lavaan <- function(x, ...) {
       Operator == "~"  ~ "Regression",
       Operator == "~~" ~ "Correlation",
       TRUE ~ NA_character_)) %>%
-    select(one_of(c("To", "Operator", "From", "Coef_std", "Type"))) %>%
-    cbind(.process_blavaan(fit)) %>%
+    select(one_of(c("To", "Operator", "From", "Type"))) %>%
+    mutate_("Effect" = "as.character(paste0(To, Operator, From))") %>%
+    full_join(.process_blavaan(fit, CI=CI, standardize=standardize) %>%
+                mutate_("Effect" = "as.character(Effect)"), by="Effect") %>%
     select_("-Effect") %>%
     mutate_("Median" = "replace_na(Median, 1)",
             "MAD" = "replace_na(MAD, 0)",
             "MPE" = "replace_na(MPE, 100)") %>%
-    select(one_of(c("To", "Operator", "From", "Median", "MAD", "CI_lower", "CI_higher", "MPE", "Coef_std", "Prior", "Type")))
+    select(one_of(c("From", "Operator", "To", "Median", "MAD", "CI_lower", "CI_higher", "MPE", "Prior", "Type"))) %>%
+    dplyr::filter_("Operator != '~1'")
 
 
   return(solution)
 }
-
-
-
-
-
-
-
-#' Plot lavaan (SEM or CFA) objects.
-#'
-#' Plot lavaan (SEM or CFA) objects.
-#'
-#' @param fit lavaan object.
-#' @param links Which links to include? A list including at least one of "Regression", "Loading" or "Correlation".
-#' @param threshold_p Omit all links with a p value below this value.
-#' @param threshold_Coef Omit all links with a Coefs below this value.
-#' @param digits Edges' labels rounding.
-#'
-#' @return A list containing nodes and edges data to be used by `tidygraph::tbl_graph()`.
-#'
-#'
-#' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
-#'
-#' @seealso
-#' https://www.researchgate.net/post/Whats_the_standard_of_fit_indices_in_SEM
-#'
-#'
-#' @export
-plot_lavaan <- function(fit, links=c("Regression"), threshold_p=NULL, threshold_Coef=NULL, digits=2){
-# https://www.r-bloggers.com/ggplot2-sem-models-with-tidygraph-and-ggraph/
-
-  summary <- summary(analyze(fit))
-
-  # Sanitize
-  if(is.null(threshold_p)){
-    threshold_p <- 1.1
-  }
-  if(is.null(threshold_Coef)){
-    threshold_Coef <- max(abs(summary$Coef))
-  }
-
-  # Edge properties
-  edges <- summary %>%
-    filter_('Type %in% c(links)',
-           "From != To",
-           "p < threshold_p",
-           "abs(Coef) > threshold_Coef") %>%
-    rename_("to" = "To",
-            "from" = "From") %>%
-    mutate_('Label_Regression' = "ifelse(Type=='Regression', format_digit(Coef, digits), '')",
-           'Label_Correlation' = "ifelse(Type=='Correlation', format_digit(Coef, digits), '')",
-           'Label_Loading' = "ifelse(Type=='Loading', format_digit(Coef, digits), '')")
-  edges <- edges[colSums(!is.na(edges)) > 0]
-
-  # Identify latent variables for nodes
-  latent_nodes <- edges %>%
-    filter_('Type == "Loading"') %>%
-    distinct_("to") %>%
-    transmute_("metric" = "to", "latent" = TRUE)
-
-  nodes_list <- unique(c(edges$from, edges$to))
-
-  # Node properties
-  nodes <- summary %>%
-    filter_("From == To",
-            "From %in% nodes_list") %>%
-    mutate_("metric" = "From") %>%
-    left_join(latent_nodes, by="metric") %>%
-    mutate_("latent" = "if_else(is.na(latent), FALSE, latent)")
-
-  return(output = list(nodes = nodes, edges = edges))
-}
-
-
-
-
