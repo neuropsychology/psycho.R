@@ -12,6 +12,7 @@
 [![codecov](https://codecov.io/gh/neuropsychology/psycho.R/branch/master/graph/badge.svg)](https://codecov.io/gh/neuropsychology/psycho.R)
 [![Dependency Status](https://dependencyci.com/github/neuropsychology/psycho.R/badge)](https://dependencyci.com/github/neuropsychology/psycho.R)
 [![CRAN downloads month](https://cranlogs.r-pkg.org/badges/psycho)](https://CRAN.R-project.org/package=psycho)
+[![HitCount](http://hits.dwyl.io/neuropsychology/neuropsychology/Psycho.r.svg)](http://hits.dwyl.io/neuropsychology/neuropsychology/Psycho.r)
 
 
 
