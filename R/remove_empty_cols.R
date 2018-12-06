@@ -1,4 +1,4 @@
-#' Remove empty columns..
+#' Remove empty columns.
 #'
 #' Removes all columns containing ony NaNs.
 #'

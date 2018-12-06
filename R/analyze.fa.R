@@ -265,3 +265,8 @@ plot_loadings <- function(loadings) {
 
   return(p)
 }
+
+
+
+
+

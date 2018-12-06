@@ -14,3 +14,6 @@ interpret_lavaan(fit, ...)
 \description{
 Interpret fit measures of lavaan or blavaan objects
 }
+\author{
+\href{https://dominiquemakowski.github.io/}{Dominique Makowski}
+}

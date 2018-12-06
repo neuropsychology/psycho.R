@@ -14,6 +14,6 @@ bibentry(
 	textVersion =
   	paste("Makowski, D. (2018). The Psycho Package: An Efficient and Publishing-Oriented Workflow for Psychological Science. Journal of Open Source Software, 3(22), 470.",
         "Available from https://github.com/neuropsychology/psycho.R",
-        sep=""),
+        sep=" "),
 
 	mheader = "To cite psycho in publications use:")

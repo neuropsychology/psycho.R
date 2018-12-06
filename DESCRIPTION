@@ -28,7 +28,7 @@ Description: The main goal of the psycho package is to provide tools for psychol
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Depends: 
     R (>= 3.5.0)
 Imports:

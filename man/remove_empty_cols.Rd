@@ -2,7 +2,7 @@
 % Please edit documentation in R/remove_empty_cols.R
 \name{remove_empty_cols}
 \alias{remove_empty_cols}
-\title{Remove empty columns..}
+\title{Remove empty columns.}
 \usage{
 remove_empty_cols(df)
 }

@@ -1,6 +1,12 @@
 #' Interpret fit measures of lavaan or blavaan objects
+#'
+#' Interpret fit measures of lavaan or blavaan objects
+#'
 #' @param fit lavaan or blavaan object.
 #' @param ... Arguments passed to or from other methods.
+#'
+#' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
+#'
 #' @export
 interpret_lavaan <- function(fit, ...) {
   UseMethod("interpret_lavaan")
