@@ -138,7 +138,7 @@ find_best_model.lavaan <- function(fit, latent="", samples=1000, verbose=FALSE, 
   # out %>%
   #   distinct() %>%
   #   return()
-}
+# }
 
 
 
