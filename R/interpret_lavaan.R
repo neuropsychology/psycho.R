@@ -17,7 +17,9 @@ interpret_lavaan <- function(fit, ...) {
 
 
 
-
+#' Interpret fit measures of lavaan objects
+#'
+#' Interpret fit measures of lavaan objects
 #' @export
 interpret_lavaan.lavaan <- function(fit, ...){
   values <- list()

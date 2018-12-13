@@ -88,15 +88,16 @@ get_predicted.merMod <- function(fit, newdata="model", prob=NULL, odds_to_probs=
 
 
   # Deal with random
-  if(re.form=="default"){
-    # Check if all predictors are in variables
-    if(all(get_info(fit)$predictors %in% names(newdata))){
-      re.form <- NULL
-    } else{
-      re.form <- NA
+  if(!is.na(re.form)){
+    if(re.form=="default"){
+      # Check if all predictors are in variables
+      if(all(get_info(fit)$predictors %in% names(newdata))){
+        re.form <- NULL
+      } else{
+        re.form <- NA
+      }
     }
   }
-
 
 
 

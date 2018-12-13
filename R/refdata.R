@@ -7,6 +7,7 @@
 #' @param length.out Length of numeric target variables.
 #' @param factors Type of summary for factors. Can be "combination" or "reference".
 #' @param numerics Type of summary for numerics Can be "combination", any function ("mean", "median", ...) or a value.
+#' @param na.rm Remove NaNs.
 #'
 #' @examples
 #' library(psycho)
@@ -22,7 +23,7 @@
 #' @importFrom purrr keep
 #' @import tidyr
 #' @export
-refdata <- function(df, target = "all", length.out = 10, factors = "reference", numerics = "mean") {
+refdata <- function(df, target = "all", length.out = 10, factors = "reference", numerics = "mean", na.rm=TRUE) {
 
   # Target
   if (all(target == "all") | ncol(df) == 1) {
@@ -41,6 +42,8 @@ refdata <- function(df, target = "all", length.out = 10, factors = "reference", 
 
 
   smart_summary <- function(x, numerics) {
+    if(na.rm == TRUE) x <- na.omit(x)
+
     if (is.numeric(x)) {
       fun <- paste0(numerics, "(x)")
       out <- eval(parse(text = fun))

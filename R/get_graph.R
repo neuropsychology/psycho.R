@@ -4,6 +4,7 @@
 #' \itemize{
 #'  \item{\link[=get_graph.lavaan]{get_graph.lavaan}}
 #'  \item{\link[=get_graph.fa]{get_graph.fa}}
+#'  \item{\link[=get_graph.psychobject_correlation]{get_graph.psychobject_correlation}}
 #'  }
 #'
 #' @param fit Object from which to extract the graph data.
@@ -162,7 +163,6 @@ get_graph.lavaan <- function(fit, links=c("Regression", "Correlation", "Loading"
 #'
 #'
 #' @export
-#' @export
 get_graph.fa <- function(fit, threshold_Coef=NULL, digits=2, ...){
   edges <- summary(analyze(fit)) %>%
     gather("To", "Coef", -one_of("N", "Item", "Label")) %>%
@@ -184,4 +184,43 @@ get_graph.fa <- function(fit, threshold_Coef=NULL, digits=2, ...){
 
   return(list(nodes = nodes, edges = edges))
 
+}
+
+
+
+
+#' Get graph data from correlation.
+#'
+#' Get graph data from correlation.
+#'
+#' @param fit Object from psycho::correlation.
+#' @param ... Arguments passed to or from other methods.
+#'
+#' @return A list containing nodes and edges data to be used by `igraph::graph_from_data_frame()`.
+#'
+#'
+#' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
+#'
+#'
+#' @export
+get_graph.psychobject_correlation <- function(fit, ...){
+
+  vars <- row.names(fit$values$r)
+
+  r <- fit$values$r %>%
+    as.data.frame() %>%
+    tibble::rownames_to_column("from") %>%
+    tidyr::gather("to", "r", vars)
+
+  if("p" %in% names(fit$values)){
+    r <- r %>%
+      full_join(
+        fit$values$p %>%
+          as.data.frame() %>%
+          tibble::rownames_to_column("from") %>%
+          tidyr::gather("to", "p", vars), by = c("from", "to"))
+  }
+
+  r <- filter(r, !from == to)
+  return(r)
 }

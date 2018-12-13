@@ -97,8 +97,15 @@ analyze.lavaan <- function(x, CI=95, standardize=FALSE, ...) {
       Operator == "~"  ~ "Regression",
       Operator == "~~" ~ "Correlation",
       TRUE ~ NA_character_)) %>%
-    mutate_("p" = "replace_na(p, 0)") %>%
-    select(one_of(c("From", "Operator", "To", "Coef", "SE", "CI_lower", "CI_higher", "p", "Type")))
+    mutate_("p" = "replace_na(p, 0)")
+
+  if("group" %in% names(solution)){
+    solution <- solution %>%
+      rename("Group" = "group") %>%
+      select(one_of(c("Group", "From", "Operator", "To", "Coef", "SE", "CI_lower", "CI_higher", "p", "Type")))
+  } else{
+    solution <- select(solution, one_of(c("From", "Operator", "To", "Coef", "SE", "CI_lower", "CI_higher", "p", "Type")))
+  }
 
   return(solution)
 }

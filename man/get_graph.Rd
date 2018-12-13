@@ -16,6 +16,7 @@ To be used with tidygraph::tbl_graph. See the documentation for your object's cl
 \itemize{
  \item{\link[=get_graph.lavaan]{get_graph.lavaan}}
  \item{\link[=get_graph.fa]{get_graph.fa}}
+ \item{\link[=get_graph.psychobject_correlation]{get_graph.psychobject_correlation}}
  }
 }
 \author{

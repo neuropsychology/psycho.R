@@ -80,15 +80,17 @@ get_predicted.stanreg <- function(fit, newdata = "model", prob = 0.9, odds_to_pr
   }
 
   # Deal with potential random
-  if(re.form=="default"){
-    if(is.mixed(fit)){
-      # Check if all predictors are in variables
-      if(all(get_info(fit)$predictors %in% names(newdata))){
-        re.form <- NULL
-      } else{
-        re.form <- NA
+  if(!is.na(re.form)){
+    if(re.form=="default"){
+      if(is.mixed(fit)){
+        # Check if all predictors are in variables
+        if(all(get_info(fit)$predictors %in% names(newdata))){
+          re.form <- NULL
+        } else{
+          re.form <- NA
+        }
       }
-    }
+  }
   }
 
   # Generate draws -------------------------------------------------------

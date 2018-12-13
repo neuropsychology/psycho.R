@@ -324,6 +324,6 @@ correlation <- function(df,
   # -------------
   output <- list(text = text, plot = plot, summary = summary, values = values)
 
-  class(output) <- c("psychobject", "list")
+  class(output) <- c("psychobject", "psychobject_correlation", "list")
   return(output)
 }
