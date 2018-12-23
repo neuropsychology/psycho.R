@@ -39,12 +39,11 @@ df <- psycho::emotion \%>\%
   group_by(Participant_ID, Emotion_Condition) \%>\%
   summarise(Recall = sum(Recall) / n())
 
-x <- aov(Recall ~ Emotion_Condition + Error(Participant_ID), data=df)
-x <- anova(lmerTest::lmer(Recall ~ Emotion_Condition + (1|Participant_ID), data=df))
+x <- aov(Recall ~ Emotion_Condition + Error(Participant_ID), data = df)
+x <- anova(lmerTest::lmer(Recall ~ Emotion_Condition + (1 | Participant_ID), data = df))
 analyze(x)
 summary(x)
 }
-
 
 }
 \references{

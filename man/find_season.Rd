@@ -29,7 +29,6 @@ library(psycho)
 
 dates <- c("2012-02-15", "2017-05-15", "2009-08-15", "1912-11-15")
 find_season(dates)
-
 }
 \seealso{
 https://stackoverflow.com/questions/9500114/find-which-season-a-particular-date-belongs-to

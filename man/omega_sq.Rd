@@ -26,7 +26,6 @@ x <- aov(df$Tolerating ~ df$Salary)
 x <- aov(df$Tolerating ~ df$Salary * df$Sex)
 
 omega_sq(x)
-
 }
 \seealso{
 http://stats.stackexchange.com/a/126520

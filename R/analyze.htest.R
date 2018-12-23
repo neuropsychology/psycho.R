@@ -10,18 +10,17 @@
 #'
 #' @examples
 #' library(psycho)
-#'
+#' 
 #' df <- psycho::affective
-#'
+#' 
 #' x <- t.test(df$Tolerating, df$Adjusting)
 #' x <- t.test(df$Tolerating ~ df$Sex)
-#' x <- t.test(df$Tolerating, mu=2)
+#' x <- t.test(df$Tolerating, mu = 2)
 #' x <- cor.test(df$Tolerating, df$Adjusting)
-#'
+#' 
 #' results <- analyze(x)
 #' summary(results)
 #' print(results)
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @import dplyr

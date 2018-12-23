@@ -23,29 +23,34 @@
 #' library(psycho)
 #' library(ggplot2)
 #' require(rstanarm)
-#'
-#' fit <- rstanarm::stan_glm(Tolerating ~ Adjusting, data=affective)
-#'
+#' 
+#' fit <- rstanarm::stan_glm(Tolerating ~ Adjusting, data = affective)
+#' 
 #' refgrid <- psycho::refdata(affective, "Adjusting")
-#' predicted <- get_predicted(fit, newdata=refgrid)
-#'
-#' ggplot(predicted, aes(x=Adjusting, y=Tolerating_Median)) +
+#' predicted <- get_predicted(fit, newdata = refgrid)
+#' 
+#' ggplot(predicted, aes(x = Adjusting, y = Tolerating_Median)) +
 #'   geom_line() +
-#'   geom_ribbon(aes(ymin=Tolerating_CI_5,
-#'                   ymax=Tolerating_CI_95),
-#'                   alpha=0.1)
-#'
-#' fit <- rstanarm::stan_glm(Sex ~ Adjusting, data=affective, family="binomial")
-#'
+#'   geom_ribbon(aes(
+#'     ymin = Tolerating_CI_5,
+#'     ymax = Tolerating_CI_95
+#'   ),
+#'   alpha = 0.1
+#'   )
+#' 
+#' fit <- rstanarm::stan_glm(Sex ~ Adjusting, data = affective, family = "binomial")
+#' 
 #' refgrid <- psycho::refdata(affective, "Adjusting")
-#' predicted <- get_predicted(fit, newdata=refgrid)
-#'
-#' ggplot(predicted, aes(x=Adjusting, y=Sex_Median)) +
+#' predicted <- get_predicted(fit, newdata = refgrid)
+#' 
+#' ggplot(predicted, aes(x = Adjusting, y = Sex_Median)) +
 #'   geom_line() +
-#'   geom_ribbon(aes(ymin=Sex_CI_5,
-#'                   ymax=Sex_CI_95),
-#'                   alpha=0.1)
-#'
+#'   geom_ribbon(aes(
+#'     ymin = Sex_CI_5,
+#'     ymax = Sex_CI_95
+#'   ),
+#'   alpha = 0.1
+#'   )
 #' }
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
@@ -54,7 +59,7 @@
 #' @importFrom dplyr bind_cols
 #' @importFrom tibble rownames_to_column
 #' @export
-get_predicted.stanreg <- function(fit, newdata = "model", prob = 0.9, odds_to_probs = TRUE, keep_iterations = FALSE, draws = NULL, posterior_predict = FALSE, seed = NULL, transform = FALSE, re.form="default", ...) {
+get_predicted.stanreg <- function(fit, newdata = "model", prob = 0.9, odds_to_probs = TRUE, keep_iterations = FALSE, draws = NULL, posterior_predict = FALSE, seed = NULL, transform = FALSE, re.form = "default", ...) {
 
   # Extract names
   predictors <- all.vars(as.formula(fit$formula))
@@ -80,17 +85,17 @@ get_predicted.stanreg <- function(fit, newdata = "model", prob = 0.9, odds_to_pr
   }
 
   # Deal with potential random
-  if(!is.na(re.form)){
-    if(re.form=="default"){
-      if(is.mixed(fit)){
+  if (!is.na(re.form)) {
+    if (re.form == "default") {
+      if (is.mixed(fit)) {
         # Check if all predictors are in variables
-        if(all(get_info(fit)$predictors %in% names(newdata))){
+        if (all(get_info(fit)$predictors %in% names(newdata))) {
           re.form <- NULL
-        } else{
+        } else {
           re.form <- NA
         }
       }
-  }
+    }
   }
 
   # Generate draws -------------------------------------------------------

@@ -12,10 +12,9 @@
 #'
 #' @examples
 #' library(psycho)
-#'
+#' 
 #' dates <- c("2012-02-15", "2017-05-15", "2009-08-15", "1912-11-15")
 #' find_season(dates)
-#'
 #' @author Josh O'Brien
 #'
 #' @seealso

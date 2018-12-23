@@ -17,7 +17,6 @@ Interpret RMSEA with a set of rules.
 \examples{
 library(psycho)
 interpret_RMSEA(0.04)
-
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

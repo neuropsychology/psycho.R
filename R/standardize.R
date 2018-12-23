@@ -51,10 +51,8 @@ standardize <- function(x, ...) {
 #' @param ... Arguments passed to or from other methods.
 #'
 #' @examples
-#' standardize(x=c(1, 4, 6, 2))
-#' standardize(x=c(1, 4, 6, 2), normalize=TRUE)
-#'
-#'
+#' standardize(x = c(1, 4, 6, 2))
+#' standardize(x = c(1, 4, 6, 2), normalize = TRUE)
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #'
@@ -105,26 +103,26 @@ standardize.numeric <- function(x, normalize = FALSE, ...) {
 #' @examples
 #' \dontrun{
 #' df <- data.frame(
-#'   Participant = as.factor(rep(1:25,each=4)),
+#'   Participant = as.factor(rep(1:25, each = 4)),
 #'   Condition = base::rep_len(c("A", "B", "C", "D"), 100),
 #'   V1 = rnorm(100, 30, .2),
 #'   V2 = runif(100, 3, 5),
 #'   V3 = rnorm(100, 100, 10)
-#'   )
-#'
+#' )
+#' 
 #' dfZ <- standardize(df)
-#' dfZ <- standardize(df, except="V3")
-#' dfZ <- standardize(df, except=c("V1", "V2"))
-#' dfZ <- standardize(df, subset="V3")
-#' dfZ <- standardize(df, subset=c("V1", "V2"))
-#' dfZ <- standardize(df, normalize=TRUE)
-#'
+#' dfZ <- standardize(df, except = "V3")
+#' dfZ <- standardize(df, except = c("V1", "V2"))
+#' dfZ <- standardize(df, subset = "V3")
+#' dfZ <- standardize(df, subset = c("V1", "V2"))
+#' dfZ <- standardize(df, normalize = TRUE)
+#' 
 #' # Respects grouping
 #' dfZ <- df %>%
 #'   dplyr::group_by(Participant) %>%
 #'   standardize(df)
 #' }
-#'
+#' 
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #'
@@ -232,14 +230,13 @@ standardize.data.frame <- function(x, subset = NULL, except = NULL, normalize = 
 #' \dontrun{
 #' library(psycho)
 #' library(rstanarm)
-#'
-#' fit <- rstanarm::stan_glm(Sepal.Length ~ Sepal.Width * Species, data=iris)
-#' fit <- rstanarm::stan_glm(Sepal.Length ~ Sepal.Width * Species, data=standardize(iris))
+#' 
+#' fit <- rstanarm::stan_glm(Sepal.Length ~ Sepal.Width * Species, data = iris)
+#' fit <- rstanarm::stan_glm(Sepal.Length ~ Sepal.Width * Species, data = standardize(iris))
 #' posteriors <- standardize(fit)
-#' posteriors <- standardize(fit, method="posterior")
-#'
+#' posteriors <- standardize(fit, method = "posterior")
 #' }
-#'
+#' 
 #' @author \href{https://github.com/jgabry}{Jonah Gabry}, \href{https://github.com/bgoodri}{bgoodri}
 #'
 #' @seealso https://github.com/stan-dev/rstanarm/issues/298
@@ -300,13 +297,12 @@ standardize.stanreg <- function(x, method = "refit", ...) {
 #' @examples
 #' \dontrun{
 #' library(psycho)
-#' fit <- glm(Sex ~ Adjusting, data=psycho::affective, family="binomial")
-#' fit <- lme4::glmer(Sex ~ Adjusting + (1|Sex), data=psycho::affective, family="binomial")
-#'
+#' fit <- glm(Sex ~ Adjusting, data = psycho::affective, family = "binomial")
+#' fit <- lme4::glmer(Sex ~ Adjusting + (1 | Sex), data = psycho::affective, family = "binomial")
+#' 
 #' standardize(fit)
-#'
 #' }
-#'
+#' 
 #' @author Kamil Barton
 #' @importFrom stats model.frame model.response model.matrix
 #'
@@ -353,18 +349,17 @@ standardize.glmerMod <- standardize.glm
 #' @examples
 #' \dontrun{
 #' library(psycho)
-#'
+#' 
 #' df <- mtcars %>%
 #'   mutate(cyl = as.factor(cyl))
-#'
-#' fit <- lm(wt ~ mpg * cyl, data=df)
-#' fit <- lmerTest::lmer(wt ~ mpg * cyl + (1|gear), data=df)
-#'
+#' 
+#' fit <- lm(wt ~ mpg * cyl, data = df)
+#' fit <- lmerTest::lmer(wt ~ mpg * cyl + (1 | gear), data = df)
+#' 
 #' summary(fit)
 #' standardize(fit)
-#'
 #' }
-#'
+#' 
 #' @author Kamil Barton
 #' @importFrom stats model.frame model.response model.matrix
 #'

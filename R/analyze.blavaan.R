@@ -12,16 +12,12 @@
 #' @examples
 #' library(psycho)
 #' library(lavaan)
-#'
-#' model <- ' visual  =~ x1 + x2 + x3
-#'            textual =~ x4 + x5 + x6
-#'            speed   =~ x7 + x8 + x9 '
-#' x <- lavaan::cfa(model, data=HolzingerSwineford1939)
-#'
+#' 
+#' model <- " visual  =~ x1 + x2 + x3\ntextual =~ x4 + x5 + x6\nspeed   =~ x7 + x8 + x9 "
+#' x <- lavaan::cfa(model, data = HolzingerSwineford1939)
+#' 
 #' rez <- analyze(x)
 #' print(rez)
-#'
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @seealso
@@ -30,14 +26,14 @@
 #' @importFrom lavaan parameterEstimates fitmeasures
 #'
 #' @export
-analyze.blavaan <- function(x, CI=90, standardize=FALSE,...) {
+analyze.blavaan <- function(x, CI = 90, standardize = FALSE, ...) {
   fit <- x
 
 
   # Processing
   # -------------
   values <- list()
-  values$CI = CI
+  values$CI <- CI
 
   # Fit measures
   values$Fit_Measures <- interpret_lavaan(fit)
@@ -47,14 +43,16 @@ analyze.blavaan <- function(x, CI=90, standardize=FALSE,...) {
   # -------------
   computations <- .get_info_computations(fit)
   fitmeasures <- values$Fit_Measures$text
-  text <- paste0("A Bayesian model was fitted (",
-                 computations,
-                 "). The fit indices are as following: ",
-                 fitmeasures)
+  text <- paste0(
+    "A Bayesian model was fitted (",
+    computations,
+    "). The fit indices are as following: ",
+    fitmeasures
+  )
 
   # Summary
   # -------------
-  summary <- .summary_blavaan(fit, CI=CI, standardize=standardize)
+  summary <- .summary_blavaan(fit, CI = CI, standardize = standardize)
 
   # Plot
   # -------------
@@ -74,13 +72,15 @@ analyze.blavaan <- function(x, CI=90, standardize=FALSE,...) {
 #' @keywords internal
 .get_info_computations <- function(fit) {
   chains <- blavaan::blavInspect(fit, "n.chains")
-  sample = fit@external$sample
-  warmup = fit@external$burnin
-  text = paste0(chains,
-                " chains, each with iter = ",
-                sample,
-                "; warmup = ",
-                warmup)
+  sample <- fit@external$sample
+  warmup <- fit@external$burnin
+  text <- paste0(
+    chains,
+    " chains, each with iter = ",
+    sample,
+    "; warmup = ",
+    warmup
+  )
   return(text)
 }
 
@@ -88,16 +88,20 @@ analyze.blavaan <- function(x, CI=90, standardize=FALSE,...) {
 
 
 #' @keywords internal
-.process_blavaan <- function(fit, standardize=FALSE, CI=90){
+.process_blavaan <- function(fit, standardize = FALSE, CI = 90) {
   # Get relevant rows
-  PE <- parameterEstimates(fit, se = FALSE, ci=FALSE, remove.eq = FALSE, remove.system.eq = TRUE,
-                           remove.ineq = FALSE, remove.def = FALSE,
-                           add.attributes = TRUE)
-  if(!("group" %in% names(PE))) PE$group <- 1
+  PE <- parameterEstimates(fit,
+    se = FALSE, ci = FALSE, remove.eq = FALSE, remove.system.eq = TRUE,
+    remove.ineq = FALSE, remove.def = FALSE,
+    add.attributes = TRUE
+  )
+  if (!("group" %in% names(PE))) PE$group <- 1
   newpt <- fit@ParTable
   pte2 <- which(newpt$free > 0)
-  relevant_rows <- match(with(newpt, paste(lhs[pte2], op[pte2], rhs[pte2], group[pte2], sep="")),
-                   paste(PE$lhs, PE$op, PE$rhs, PE$group, sep=""))
+  relevant_rows <- match(
+    with(newpt, paste(lhs[pte2], op[pte2], rhs[pte2], group[pte2], sep = "")),
+    paste(PE$lhs, PE$op, PE$rhs, PE$group, sep = "")
+  )
 
   # Priors
   priors <- rep(NA, nrow(PE))
@@ -108,12 +112,12 @@ analyze.blavaan <- function(x, CI=90, standardize=FALSE,...) {
 
 
   # Posterior
-  if(standardize == FALSE){
+  if (standardize == FALSE) {
     posteriors <- blavaan::blavInspect(fit, "draws") %>%
       as.matrix() %>%
       as.data.frame()
     names(posteriors) <- names(lavaan::coef(fit))
-  } else{
+  } else {
     posteriors <- blavaan::standardizedposterior(fit) %>%
       as.data.frame()
   }
@@ -127,7 +131,7 @@ analyze.blavaan <- function(x, CI=90, standardize=FALSE,...) {
   Effect <- c()
   CI_lower <- c()
   CI_higher <- c()
-  for(effect in names(posteriors)){
+  for (effect in names(posteriors)) {
     posterior <- posteriors[[effect]]
     Effect <- c(Effect, effect)
     MPE <- c(MPE, mpe(posterior)$MPE)
@@ -137,10 +141,9 @@ analyze.blavaan <- function(x, CI=90, standardize=FALSE,...) {
     CI_values <- HDI(posterior, prob = CI / 100)
     CI_lower <- c(CI_lower, CI_values$values$HDImin)
     CI_higher <- c(CI_higher, CI_values$values$HDImax)
-
   }
 
-  if(standardize == FALSE){
+  if (standardize == FALSE) {
     Effects <- rep(NA, nrow(PE))
     Effects[relevant_rows] <- Effect
     MPEs <- rep(NA, nrow(PE))
@@ -153,7 +156,7 @@ analyze.blavaan <- function(x, CI=90, standardize=FALSE,...) {
     CI_lowers[relevant_rows] <- CI_lower
     CI_highers <- rep(NA, nrow(PE))
     CI_highers[relevant_rows] <- CI_higher
-  } else{
+  } else {
     Effects <- Effect
     MPEs <- MPE
     Medians <- Median
@@ -162,13 +165,15 @@ analyze.blavaan <- function(x, CI=90, standardize=FALSE,...) {
     CI_highers <- CI_higher
   }
 
-  data <- data.frame("Effect" = Effects,
-                     "Median" = Medians,
-                     "MAD" = MADs,
-                     "MPE" = MPEs,
-                     "CI_lower" = CI_lowers,
-                     "CI_higher" = CI_highers,
-                     "Prior" = priors)
+  data <- data.frame(
+    "Effect" = Effects,
+    "Median" = Medians,
+    "MAD" = MADs,
+    "MPE" = MPEs,
+    "CI_lower" = CI_lowers,
+    "CI_higher" = CI_highers,
+    "Prior" = priors
+  )
 
   return(data)
 }
@@ -176,31 +181,35 @@ analyze.blavaan <- function(x, CI=90, standardize=FALSE,...) {
 
 
 #' @keywords internal
-.summary_blavaan <- function(fit, CI=90, standardize=FALSE){
-
-  solution <- lavaan::parameterEstimates(fit, se = TRUE, ci=TRUE, standardized=FALSE, level = CI/100)
+.summary_blavaan <- function(fit, CI = 90, standardize = FALSE) {
+  solution <- lavaan::parameterEstimates(fit, se = TRUE, ci = TRUE, standardized = FALSE, level = CI / 100)
 
   solution <- solution %>%
-    rename("From" = "rhs",
-           "To" = "lhs",
-           "Operator" = "op",
-           "Coef" = "est",
-           "SE" = "se",
-           "CI_lower" = "ci.lower",
-           "CI_higher" = "ci.upper") %>%
+    rename(
+      "From" = "rhs",
+      "To" = "lhs",
+      "Operator" = "op",
+      "Coef" = "est",
+      "SE" = "se",
+      "CI_lower" = "ci.lower",
+      "CI_higher" = "ci.upper"
+    ) %>%
     mutate(Type = dplyr::case_when(
       Operator == "=~" ~ "Loading",
-      Operator == "~"  ~ "Regression",
+      Operator == "~" ~ "Regression",
       Operator == "~~" ~ "Correlation",
-      TRUE ~ NA_character_)) %>%
+      TRUE ~ NA_character_
+    )) %>%
     select(one_of(c("To", "Operator", "From", "Type"))) %>%
     mutate_("Effect" = "as.character(paste0(To, Operator, From))") %>%
-    full_join(.process_blavaan(fit, CI=CI, standardize=standardize) %>%
-                mutate_("Effect" = "as.character(Effect)"), by="Effect") %>%
+    full_join(.process_blavaan(fit, CI = CI, standardize = standardize) %>%
+      mutate_("Effect" = "as.character(Effect)"), by = "Effect") %>%
     select_("-Effect") %>%
-    mutate_("Median" = "replace_na(Median, 1)",
-            "MAD" = "replace_na(MAD, 0)",
-            "MPE" = "replace_na(MPE, 100)") %>%
+    mutate_(
+      "Median" = "replace_na(Median, 1)",
+      "MAD" = "replace_na(MAD, 0)",
+      "MPE" = "replace_na(MPE, 100)"
+    ) %>%
     select(one_of(c("From", "Operator", "To", "Median", "MAD", "CI_lower", "CI_higher", "MPE", "Prior", "Type"))) %>%
     dplyr::filter_("Operator != '~1'")
 

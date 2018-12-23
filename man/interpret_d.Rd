@@ -20,7 +20,6 @@ Interpret d with a set of rules.
 library(psycho)
 interpret_d(-0.42)
 interpret_d(-0.62)
-
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

@@ -7,9 +7,8 @@
 #'
 #' @examples
 #' library(psycho)
-#' interpret_R2(x=0.42)
-#' interpret_R2(x=c(0.42, 0.2, 0.9, 0))
-#'
+#' interpret_R2(x = 0.42)
+#' interpret_R2(x = c(0.42, 0.2, 0.9, 0))
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
@@ -33,7 +32,6 @@ interpret_R2 <- function(x, rules = "cohen1988") {
 #' library(psycho)
 #' posterior <- rnorm(1000, 0.4, 0.1)
 #' interpret_R2_posterior(posterior)
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export

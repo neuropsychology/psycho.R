@@ -11,17 +11,15 @@
 #'
 #' @examples
 #' library(psycho)
-#'
+#' 
 #' x <- rnorm(100, 0, 1)
-#'
-#' create_intervals(x, n=4)
-#' create_intervals(x, n=4, equal_range=FALSE)
-#' create_intervals(x, length=1)
-#'
-#' create_intervals(x, n=4, labels="median")
-#' create_intervals(x, n=4, labels=FALSE)
-#'
-#'
+#' 
+#' create_intervals(x, n = 4)
+#' create_intervals(x, n = 4, equal_range = FALSE)
+#' create_intervals(x, length = 1)
+#' 
+#' create_intervals(x, n = 4, labels = "median")
+#' create_intervals(x, n = 4, labels = FALSE)
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @importFrom ggplot2 cut_interval cut_number

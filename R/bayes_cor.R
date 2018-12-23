@@ -16,11 +16,11 @@
 #' library(psycho)
 #' x <- psycho::affective$Concealing
 #' y <- psycho::affective$Tolerating
-#'
+#' 
 #' bayes_cor.test(x, y)
 #' summary(bayes_cor.test(x, y))
 #' }
-#'
+#' 
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @importFrom BayesFactor correlationBF posterior
@@ -152,13 +152,13 @@ bayes_cor.test <- function(x, y, CI = 90, iterations = 10000, effsize_rules_r = 
 #' @examples
 #' \dontrun{
 #' library(psycho)
-#'
+#' 
 #' df <- psycho::affective
 #' cor <- bayes_cor(df)
 #' summary(cor)
 #' print(cor)
 #' plot(cor)
-#'
+#' 
 #' df <- select(psycho::affective, Adjusting, Tolerating)
 #' df2 <- select(psycho::affective, -Adjusting, -Tolerating)
 #' cor <- bayes_cor(df, df2)
@@ -166,7 +166,7 @@ bayes_cor.test <- function(x, y, CI = 90, iterations = 10000, effsize_rules_r = 
 #' print(cor)
 #' plot(cor)
 #' }
-#'
+#' 
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #' @export
 bayes_cor <- function(df, df2 = NULL, reorder = TRUE) {
@@ -314,11 +314,10 @@ bayes_cor <- function(df, df2 = NULL, reorder = TRUE) {
 #'
 #' @examples
 #' library(psycho)
-#'
+#' 
 #' r <- correlation(iris)
 #' r <- r$values$r
 #' r <- reorder_matrix(r)
-#'
 #' @importFrom stats as.dist hclust
 #' @export
 reorder_matrix <- function(mat, dmat = NULL) {

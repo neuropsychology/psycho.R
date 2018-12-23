@@ -12,12 +12,11 @@
 #' @examples
 #' library(psycho)
 #' library(lmerTest)
-#' fit <- lmerTest::lmer(Sepal.Length ~ Sepal.Width + (1|Species), data=iris)
-#'
+#' fit <- lmerTest::lmer(Sepal.Length ~ Sepal.Width + (1 | Species), data = iris)
+#' 
 #' results <- analyze(fit)
 #' summary(results)
 #' print(results)
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @references Nakagawa, S., & Schielzeth, H. (2013). A general and simple method for obtaining R2 from generalized linear mixed-effects models. Methods in Ecology and Evolution, 4(2), 133-142.

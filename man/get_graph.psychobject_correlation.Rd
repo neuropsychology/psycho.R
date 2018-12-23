@@ -4,10 +4,10 @@
 \alias{get_graph.psychobject_correlation}
 \title{Get graph data from correlation.}
 \usage{
-\method{get_graph}{psychobject_correlation}(cor, ...)
+\method{get_graph}{psychobject_correlation}(fit, ...)
 }
 \arguments{
-\item{cor}{Object from psycho::correlation.}
+\item{fit}{Object from psycho::correlation.}
 
 \item{...}{Arguments passed to or from other methods.}
 }

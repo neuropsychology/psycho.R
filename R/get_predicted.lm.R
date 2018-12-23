@@ -15,19 +15,20 @@
 #' \dontrun{
 #' library(psycho)
 #' library(ggplot2)
-#'
-#' fit <- lm(Tolerating ~ Adjusting, data=affective)
-#'
+#' 
+#' fit <- lm(Tolerating ~ Adjusting, data = affective)
+#' 
 #' refgrid <- psycho::refdata(affective, "Adjusting")
-#' predicted <- get_predicted(fit, newdata=refgrid)
-#'
-#' ggplot(predicted, aes(x=Adjusting, y=Tolerating_Predicted)) +
+#' predicted <- get_predicted(fit, newdata = refgrid)
+#' 
+#' ggplot(predicted, aes(x = Adjusting, y = Tolerating_Predicted)) +
 #'   geom_line() +
-#'   geom_ribbon(aes(ymin=Tolerating_CI_2.5,
-#'                   ymax=Tolerating_CI_97.5),
-#'                   alpha=0.1)
-#'
-#'
+#'   geom_ribbon(aes(
+#'     ymin = Tolerating_CI_2.5,
+#'     ymax = Tolerating_CI_97.5
+#'   ),
+#'   alpha = 0.1
+#'   )
 #' }
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'

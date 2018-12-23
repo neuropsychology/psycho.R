@@ -10,8 +10,7 @@
 #'
 #' @examples
 #' library(psycho)
-#' interpret_bf(x=10)
-#'
+#' interpret_bf(x = 10)
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @references

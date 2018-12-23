@@ -14,13 +14,12 @@
 #' @examples
 #' df <- dplyr::select_if(attitude, is.numeric)
 #' results <- psycho::n_factors(df)
-#'
+#' 
 #' summary(results)
 #' plot(results)
-#'
+#' 
 #' # See details on methods
 #' psycho::values(results)$methods
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @importFrom qgraph cor_auto
@@ -101,7 +100,7 @@ n_factors <- function(df, rotate = "varimax", fm = "minres", n = NULL) {
       "Exp.Variance" = "Prop",
       "Cum.Variance" = "Cumu"
     ) %>%
-    mutate_("n.Factors" = ~seq_len(nrow(nS$Analysis)))
+    mutate_("n.Factors" = ~ seq_len(nrow(nS$Analysis)))
 
 
 
@@ -190,15 +189,15 @@ n_factors <- function(df, rotate = "varimax", fm = "minres", n = NULL) {
 
   eigenvalues <- results %>%
     group_by_("n_optimal") %>%
-    summarise_("n_method" = ~n()) %>%
-    mutate_("n_optimal" = ~factor(n_optimal, levels = seq_len(nrow(eigenvalues)))) %>%
+    summarise_("n_method" = ~ n()) %>%
+    mutate_("n_optimal" = ~ factor(n_optimal, levels = seq_len(nrow(eigenvalues)))) %>%
     complete_("n_optimal", fill = list(n_method = 0)) %>%
     arrange_("n_optimal") %>%
     rename_(
       "n.Factors" = "n_optimal",
       "n.Methods" = "n_method"
     ) %>%
-    mutate_("n.Factors" = ~as.integer(n.Factors)) %>%
+    mutate_("n.Factors" = ~ as.integer(n.Factors)) %>%
     left_join(eigenvalues, by = "n.Factors") %>%
     select_("-Exp.Variance")
 
@@ -228,23 +227,36 @@ n_factors <- function(df, rotate = "varimax", fm = "minres", n = NULL) {
 
   # Text
   # -------------
-  # Plural
-  if (best_n == 1) {
-    factor_text <- " factor "
-  } else {
+  # Deal with equality
+  if (length(best_n) > 1) {
+    best_n <- head(best_n, length(best_n) - 1) %>%
+      paste(collapse = ", ") %>%
+      paste(best_n[length(best_n)], sep = " and ")
     factor_text <- " factors "
+    n_methods <- unique(best_n_df$n.Methods)
+    best_n_methods <- paste0(paste(best_n_methods, collapse = "; "), "; respectively")
+  } else {
+    n_methods <- best_n_df$n.Methods
+    # Plural
+    if (best_n == 1) {
+      factor_text <- " factor "
+    } else {
+      factor_text <- " factors "
+    }
   }
+
+
 
   text <- paste0(
     "The choice of ",
     best_n,
     factor_text,
     "is supported by ",
-    best_n_df$n.Methods,
+    n_methods,
     " (out of ",
     round(nrow(results)),
     "; ",
-    round(best_n_df$n.Methods / nrow(results) * 100, 2),
+    round(n_methods / nrow(results) * 100, 2),
     "%) methods (",
     best_n_methods,
     ")."
@@ -277,7 +289,7 @@ n_factors <- function(df, rotate = "varimax", fm = "minres", n = NULL) {
       size = 1
     ) +
     scale_y_continuous(sec.axis = sec_axis(
-      trans = ~. * (max(plot_data$Cum.Variance) / max(plot_data$Eigenvalues)),
+      trans = ~ . * (max(plot_data$Cum.Variance) / max(plot_data$Eigenvalues)),
       name = "Cumulative Variance\n"
     )) +
     ylab("Eigenvalues\n") +

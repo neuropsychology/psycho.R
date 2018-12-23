@@ -20,8 +20,13 @@ interpret_lavaan <- function(fit, ...) {
 #' Interpret fit measures of lavaan objects
 #'
 #' Interpret fit measures of lavaan objects
+#'
+#' @param fit lavaan or blavaan object.
+#' @param ... Arguments passed to or from other methods.
+#'
+#' @importFrom lavaan fitmeasures
 #' @export
-interpret_lavaan.lavaan <- function(fit, ...){
+interpret_lavaan.lavaan <- function(fit, ...) {
   values <- list()
 
   indices <- lavaan::fitmeasures(fit)
@@ -98,10 +103,9 @@ interpret_lavaan.lavaan <- function(fit, ...){
   }
   text <- paste(satisfactory, poor)
 
-  output <- list(text = text, summary = summary, values = values, plot="Not available yet")
+  output <- list(text = text, summary = summary, values = values, plot = "Not available yet")
   class(output) <- c("psychobject", "list")
   return(output)
-
 }
 
 
@@ -109,10 +113,14 @@ interpret_lavaan.lavaan <- function(fit, ...){
 
 
 
+#' Interpret fit measures of blavaan objects
+#'
+#' Interpret fit measures of blavaan objects
+#'
 #' @param indices Vector of strings indicating which indices to report. Only works for bayesian objects for now.
 #' @inheritParams interpret_lavaan
 #' @export
-interpret_lavaan.blavaan <- function(fit, indices=c("BIC", "DIC", "WAIC", "LOOIC"), ...){
+interpret_lavaan.blavaan <- function(fit, indices = c("BIC", "DIC", "WAIC", "LOOIC"), ...) {
   values <- list()
 
   indices <- lavaan::fitmeasures(fit)
@@ -129,13 +137,10 @@ interpret_lavaan.blavaan <- function(fit, indices=c("BIC", "DIC", "WAIC", "LOOIC
     mutate_("Index" = "str_to_upper(Index)")
 
   # Text
-  relevant_indices <- summary[summary$Index %in% c("BIC", "DIC", "WAIC", "LOOIC"),]
-  text <- paste0(relevant_indices$Index, " = ", format_digit(relevant_indices$Value), collapse=", ")
+  relevant_indices <- summary[summary$Index %in% c("BIC", "DIC", "WAIC", "LOOIC"), ]
+  text <- paste0(relevant_indices$Index, " = ", format_digit(relevant_indices$Value), collapse = ", ")
 
-  output <- list(text = text, summary = summary, values = values, plot="Not available yet")
+  output <- list(text = text, summary = summary, values = values, plot = "Not available yet")
   class(output) <- c("psychobject", "list")
   return(output)
-
 }
-
-

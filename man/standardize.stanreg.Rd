@@ -21,11 +21,10 @@ Compute standardized posteriors from which to get standardized coefficients.
 library(psycho)
 library(rstanarm)
 
-fit <- rstanarm::stan_glm(Sepal.Length ~ Sepal.Width * Species, data=iris)
-fit <- rstanarm::stan_glm(Sepal.Length ~ Sepal.Width * Species, data=standardize(iris))
+fit <- rstanarm::stan_glm(Sepal.Length ~ Sepal.Width * Species, data = iris)
+fit <- rstanarm::stan_glm(Sepal.Length ~ Sepal.Width * Species, data = standardize(iris))
 posteriors <- standardize(fit)
-posteriors <- standardize(fit, method="posterior")
-
+posteriors <- standardize(fit, method = "posterior")
 }
 
 }

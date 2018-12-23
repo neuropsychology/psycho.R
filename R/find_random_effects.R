@@ -5,7 +5,6 @@
 #' @examples
 #' library(psycho)
 #' find_random_effects("Y ~ X + (1|Group)")
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @importFrom stringr str_remove_all

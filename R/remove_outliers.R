@@ -10,8 +10,8 @@
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-remove_outliers <- function(df, target, threshold=qnorm(0.95), direction="both"){
-  for(var in c(target)){
+remove_outliers <- function(df, target, threshold = qnorm(0.95), direction = "both") {
+  for (var in c(target)) {
     df <- .remove_outliers(df, var, threshold, direction)
   }
   return(df)
@@ -23,15 +23,15 @@ remove_outliers <- function(df, target, threshold=qnorm(0.95), direction="both")
 
 
 #' @keywords internal
-.remove_outliers <- function(df, target, threshold=qnorm(0.95), direction="both"){
+.remove_outliers <- function(df, target, threshold = qnorm(0.95), direction = "both") {
   df <- df %>%
     mutate_("outlier_criterion" = target) %>%
-    standardize(subset="outlier_criterion")
-  if(direction %in% c("both", "upper")){
+    standardize(subset = "outlier_criterion")
+  if (direction %in% c("both", "upper")) {
     df <- df %>%
       filter_("outlier_criterion <= threshold")
   }
-  if(direction %in% c("both", "lower")){
+  if (direction %in% c("both", "lower")) {
     df <- df %>%
       filter_("outlier_criterion >= -threshold")
   }

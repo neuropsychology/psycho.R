@@ -20,18 +20,19 @@ library(tidyverse)
 library(psycho)
 
 df <- mtcars \%>\%
-  mutate(cyl = as.factor(cyl),
-  gear = as.factor(gear))
+  mutate(
+    cyl = as.factor(cyl),
+    gear = as.factor(gear)
+  )
 
-fit <- lm(wt ~ mpg , data=df)
-fit <- lm(wt ~ cyl, data=df)
-fit <- lm(wt ~ mpg * cyl, data=df)
-fit <- lm(wt ~ cyl * gear, data=df)
-fit <- lmerTest::lmer(wt ~ mpg * gear + (1|cyl), data=df)
-fit <- rstanarm::stan_lmer(wt ~ mpg * gear + (1|cyl), data=df)
+fit <- lm(wt ~ mpg, data = df)
+fit <- lm(wt ~ cyl, data = df)
+fit <- lm(wt ~ mpg * cyl, data = df)
+fit <- lm(wt ~ cyl * gear, data = df)
+fit <- lmerTest::lmer(wt ~ mpg * gear + (1 | cyl), data = df)
+fit <- rstanarm::stan_lmer(wt ~ mpg * gear + (1 | cyl), data = df)
 
 get_data(fit)
-
 }
 
 }

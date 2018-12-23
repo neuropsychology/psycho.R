@@ -23,19 +23,20 @@
 #'
 #' @examples
 #' df <- attitude
-#'
+#' 
 #' # Normal correlations
 #' results <- psycho::correlation(df)
 #' print(results)
 #' plot(results)
-#'
+#' 
 #' # Partial correlations with correction
-#' results <- psycho::correlation(df, type="partial",
-#'                                    method="spearman",
-#'                                    adjust="holm")
+#' results <- psycho::correlation(df,
+#'   type = "partial",
+#'   method = "spearman",
+#'   adjust = "holm"
+#' )
 #' print(results)
 #' plot(results)
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @importFrom stats na.omit p.adjust cor runif

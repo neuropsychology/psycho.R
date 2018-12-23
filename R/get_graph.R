@@ -56,71 +56,76 @@ get_graph <- function(fit, ...) {
 #'
 #'
 #' @export
-get_graph.lavaan <- function(fit, links=c("Regression", "Correlation", "Loading"), standardize=FALSE, threshold_Coef=NULL, threshold_p=NULL, threshold_MPE=NULL, digits=2, CI="default", labels_CI=TRUE, ...){
+get_graph.lavaan <- function(fit, links = c("Regression", "Correlation", "Loading"), standardize = FALSE, threshold_Coef = NULL, threshold_p = NULL, threshold_MPE = NULL, digits = 2, CI = "default", labels_CI = TRUE, ...) {
   # https://www.r-bloggers.com/ggplot2-sem-models-with-tidygraph-and-ggraph/
 
 
-  if(labels_CI==TRUE){
-    if(CI != "default"){
-      results <- analyze(fit, CI=CI, standardize=standardize)
-    } else{
-      results <- analyze(fit, standardize=standardize)
+  if (labels_CI == TRUE) {
+    if (CI != "default") {
+      results <- analyze(fit, CI = CI, standardize = standardize)
+    } else {
+      results <- analyze(fit, standardize = standardize)
     }
-  } else{
-    results <- analyze(fit, standardize=standardize)
+  } else {
+    results <- analyze(fit, standardize = standardize)
   }
 
   summary <- summary(results)
   CI <- results$values$CI
 
   # Check what type of model
-  if(class(fit) %in% c("blavaan")){
+  if (class(fit) %in% c("blavaan")) {
     summary$Coef <- summary$Median
-    if(is.null(threshold_MPE)){
+    if (is.null(threshold_MPE)) {
       threshold_MPE <- -1
     }
     summary <- summary %>%
       filter_("MPE >= threshold_MPE")
-
-  } else if(class(fit) %in% c("lavaan")){
-    if(is.null(threshold_p)){
+  } else if (class(fit) %in% c("lavaan")) {
+    if (is.null(threshold_p)) {
       threshold_p <- 1.1
     }
     summary <- summary %>%
       filter_("p <= threshold_p")
-  } else{
+  } else {
     stop(paste("Error in UseMethod('plot_lavaan') : no applicable method for 'plot_lavaan' applied to an object of class", class(fit)))
   }
 
   # Deal with thresholds
-  if(is.null(threshold_Coef)){
-    threshold_Coef <- min(abs(summary$Coef))-1
+  if (is.null(threshold_Coef)) {
+    threshold_Coef <- min(abs(summary$Coef)) - 1
   }
 
   # Edge properties
   edges <- summary %>%
     mutate_("abs_coef" = "abs(Coef)") %>%
-    filter_('Type %in% c(links)',
-            "From != To",
-            "abs_coef >= threshold_Coef") %>%
+    filter_(
+      "Type %in% c(links)",
+      "From != To",
+      "abs_coef >= threshold_Coef"
+    ) %>%
     select(-one_of("abs_coef")) %>%
-    rename_("to" = "To",
-            "from" = "From")
+    rename_(
+      "to" = "To",
+      "from" = "From"
+    )
 
   # Labels
-  if(labels_CI == TRUE){
+  if (labels_CI == TRUE) {
     edges <- edges %>%
-      mutate_('Label' = 'paste0(format_digit(Coef, digits),
+      mutate_("Label" = 'paste0(format_digit(Coef, digits),
               ", ", CI, "% CI [", format_digit(CI_lower, digits),
               ", ", format_digit(CI_higher, digits), "]")')
-  } else{
+  } else {
     edges <- edges %>%
-      mutate_('Label' = 'format_digit(Coef, digits)')
+      mutate_("Label" = "format_digit(Coef, digits)")
   }
   edges <- edges %>%
-    mutate_('Label_Regression' = "ifelse(Type=='Regression', Label, '')",
-            'Label_Correlation' = "ifelse(Type=='Correlation', Label, '')",
-            'Label_Loading' = "ifelse(Type=='Loading', Label, '')")
+    mutate_(
+      "Label_Regression" = "ifelse(Type=='Regression', Label, '')",
+      "Label_Correlation" = "ifelse(Type=='Correlation', Label, '')",
+      "Label_Loading" = "ifelse(Type=='Loading', Label, '')"
+    )
   edges <- edges[colSums(!is.na(edges)) > 0]
 
   # Identify latent variables for nodes
@@ -133,10 +138,12 @@ get_graph.lavaan <- function(fit, links=c("Regression", "Correlation", "Loading"
 
   # Node properties
   nodes <- summary %>%
-    filter_("From == To",
-            "From %in% nodes_list") %>%
+    filter_(
+      "From == To",
+      "From %in% nodes_list"
+    ) %>%
     mutate_("Name" = "From") %>%
-    left_join(latent_nodes, by="Name") %>%
+    left_join(latent_nodes, by = "Name") %>%
     mutate_("Latent" = "if_else(is.na(Latent), FALSE, Latent)") %>%
     select(one_of(c("Name", "Latent")))
 
@@ -163,7 +170,7 @@ get_graph.lavaan <- function(fit, links=c("Regression", "Correlation", "Loading"
 #'
 #'
 #' @export
-get_graph.fa <- function(fit, threshold_Coef=NULL, digits=2, ...){
+get_graph.fa <- function(fit, threshold_Coef = NULL, digits = 2, ...) {
   edges <- summary(analyze(fit)) %>%
     gather("To", "Coef", -one_of("N", "Item", "Label")) %>%
     rename_("From" = "Item") %>%
@@ -172,8 +179,8 @@ get_graph.fa <- function(fit, threshold_Coef=NULL, digits=2, ...){
     filter()
 
   # Deal with thresholds
-  if(is.null(threshold_Coef)){
-    threshold_Coef <- min(abs(edges$Coef))-1
+  if (is.null(threshold_Coef)) {
+    threshold_Coef <- min(abs(edges$Coef)) - 1
   }
 
   edges <- edges %>%
@@ -183,7 +190,6 @@ get_graph.fa <- function(fit, threshold_Coef=NULL, digits=2, ...){
     distinct_("Name")
 
   return(list(nodes = nodes, edges = edges))
-
 }
 
 
@@ -203,8 +209,7 @@ get_graph.fa <- function(fit, threshold_Coef=NULL, digits=2, ...){
 #'
 #'
 #' @export
-get_graph.psychobject_correlation <- function(fit, ...){
-
+get_graph.psychobject_correlation <- function(fit, ...) {
   vars <- row.names(fit$values$r)
 
   r <- fit$values$r %>%
@@ -212,15 +217,17 @@ get_graph.psychobject_correlation <- function(fit, ...){
     tibble::rownames_to_column("from") %>%
     tidyr::gather("to", "r", vars)
 
-  if("p" %in% names(fit$values)){
+  if ("p" %in% names(fit$values)) {
     r <- r %>%
       full_join(
         fit$values$p %>%
           as.data.frame() %>%
           tibble::rownames_to_column("from") %>%
-          tidyr::gather("to", "p", vars), by = c("from", "to"))
+          tidyr::gather("to", "p", vars),
+        by = c("from", "to")
+      )
   }
 
-  r <- filter(r, !from == to)
+  r <- filter_(r, "!from == to")
   return(r)
 }

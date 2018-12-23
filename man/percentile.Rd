@@ -15,7 +15,6 @@ Transform z score to percentile.
 \examples{
 library(psycho)
 percentile(-1.96)
-
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

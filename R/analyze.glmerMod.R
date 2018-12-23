@@ -13,15 +13,14 @@
 #' \dontrun{
 #' library(psycho)
 #' library(lme4)
-#'
-#' fit <- lme4::glmer(vs ~ wt + (1|gear), data=mtcars, family="binomial")
-#'
+#' 
+#' fit <- lme4::glmer(vs ~ wt + (1 | gear), data = mtcars, family = "binomial")
+#' 
 #' results <- analyze(fit)
 #' summary(results)
 #' print(results)
 #' }
-#'
-#'
+#' 
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @references Nakagawa, S., & Schielzeth, H. (2013). A general and simple method for obtaining R2 from generalized linear mixed-effects models. Methods in Ecology and Evolution, 4(2), 133-142.

@@ -7,13 +7,12 @@
 #'
 #' @examples
 #' library(psycho)
-#'
+#' 
 #' df <- psycho::affective
 #' is.standardized(df)
-#'
+#' 
 #' dfZ <- psycho::standardize(df)
 #' is.standardized(dfZ)
-#'
 #' @return bool.
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

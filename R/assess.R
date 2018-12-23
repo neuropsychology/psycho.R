@@ -21,10 +21,9 @@
 #' @return output
 #'
 #' @examples
-#' result <- assess(patient=124, mean=100, sd=15, n=100)
+#' result <- assess(patient = 124, mean = 100, sd = 15, n = 100)
 #' print(result)
 #' plot(result)
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @details Until relatively recently the standard way of testing for a difference between a case and controls was to convert the case’s score to a z score using the control sample mean and standard deviation (SD). If z was less than -1.645 (i.e., below 95% of the controls) then it was concluded that the case was significantly lower than controls. However, this method has serious disadvantages (Crawford and Garthwaite, 2012).

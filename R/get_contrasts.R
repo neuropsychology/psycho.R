@@ -21,19 +21,18 @@
 #' library(psycho)
 #' require(lmerTest)
 #' require(rstanarm)
-#'
-#' fit <- lm(Adjusting ~ Birth_Season * Salary, data=affective)
+#' 
+#' fit <- lm(Adjusting ~ Birth_Season * Salary, data = affective)
 #' get_contrasts(fit)
-#'
-#' fit <- lm(Adjusting ~ Birth_Season * Salary, data=affective)
-#' get_contrasts(fit, adjust="bonf")
-#'
-#' fit <- lmerTest::lmer(Adjusting ~ Birth_Season * Salary + (1|Salary), data=affective)
-#' get_contrasts(fit, formula="Birth_Season")
-#'
-#' fit <- rstanarm::stan_glm(Adjusting ~ Birth_Season, data=affective)
-#' get_contrasts(fit, formula="Birth_Season", ROPE_bounds=c(-0.1, 0.1))
-#'
+#' 
+#' fit <- lm(Adjusting ~ Birth_Season * Salary, data = affective)
+#' get_contrasts(fit, adjust = "bonf")
+#' 
+#' fit <- lmerTest::lmer(Adjusting ~ Birth_Season * Salary + (1 | Salary), data = affective)
+#' get_contrasts(fit, formula = "Birth_Season")
+#' 
+#' fit <- rstanarm::stan_glm(Adjusting ~ Birth_Season, data = affective)
+#' get_contrasts(fit, formula = "Birth_Season", ROPE_bounds = c(-0.1, 0.1))
 #' }
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'

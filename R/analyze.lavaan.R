@@ -12,16 +12,12 @@
 #' @examples
 #' library(psycho)
 #' library(lavaan)
-#'
-#' model <- ' visual  =~ x1 + x2 + x3
-#'            textual =~ x4 + x5 + x6
-#'            speed   =~ x7 + x8 + x9 '
-#' x <- lavaan::cfa(model, data=HolzingerSwineford1939)
-#'
+#' 
+#' model <- " visual  =~ x1 + x2 + x3\ntextual =~ x4 + x5 + x6\nspeed   =~ x7 + x8 + x9 "
+#' x <- lavaan::cfa(model, data = HolzingerSwineford1939)
+#' 
 #' rez <- analyze(x)
 #' print(rez)
-#'
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @seealso
@@ -31,14 +27,14 @@
 #' @importFrom lavaan parameterEstimates fitmeasures
 #'
 #' @export
-analyze.lavaan <- function(x, CI=95, standardize=FALSE, ...) {
+analyze.lavaan <- function(x, CI = 95, standardize = FALSE, ...) {
   fit <- x
 
 
   # Processing
   # -------------
   values <- list()
-  values$CI = CI
+  values$CI <- CI
 
   # Fit measures
   values$Fit_Measures <- interpret_lavaan(fit)
@@ -48,7 +44,7 @@ analyze.lavaan <- function(x, CI=95, standardize=FALSE, ...) {
 
   # Summary
   # -------------
-  summary <- .summary_lavaan(fit, CI=CI, standardize=standardize)
+  summary <- .summary_lavaan(fit, CI = CI, standardize = standardize)
 
   # Plot
   # -------------
@@ -74,45 +70,40 @@ analyze.lavaan <- function(x, CI=95, standardize=FALSE, ...) {
 
 
 #' @keywords internal
-.summary_lavaan <- function(fit, CI=95, standardize=FALSE){
-
-  if(standardize == FALSE){
-    solution <- lavaan::parameterEstimates(fit, se=TRUE, standardized=standardize, level = CI/100)
-  }else{
-    solution <- lavaan::standardizedsolution(fit, se=TRUE, level = CI/100) %>%
+.summary_lavaan <- function(fit, CI = 95, standardize = FALSE) {
+  if (standardize == FALSE) {
+    solution <- lavaan::parameterEstimates(fit, se = TRUE, standardized = standardize, level = CI / 100)
+  } else {
+    solution <- lavaan::standardizedsolution(fit, se = TRUE, level = CI / 100) %>%
       rename_("est" = "est.std")
   }
 
   solution <- solution %>%
-    rename("From" = "rhs",
-           "To" = "lhs",
-           "Operator" = "op",
-           "Coef" = "est",
-           "SE" = "se",
-           "p" = "pvalue",
-           "CI_lower" = "ci.lower",
-           "CI_higher" = "ci.upper") %>%
+    rename(
+      "From" = "rhs",
+      "To" = "lhs",
+      "Operator" = "op",
+      "Coef" = "est",
+      "SE" = "se",
+      "p" = "pvalue",
+      "CI_lower" = "ci.lower",
+      "CI_higher" = "ci.upper"
+    ) %>%
     mutate(Type = dplyr::case_when(
       Operator == "=~" ~ "Loading",
-      Operator == "~"  ~ "Regression",
+      Operator == "~" ~ "Regression",
       Operator == "~~" ~ "Correlation",
-      TRUE ~ NA_character_)) %>%
+      TRUE ~ NA_character_
+    )) %>%
     mutate_("p" = "replace_na(p, 0)")
 
-  if("group" %in% names(solution)){
+  if ("group" %in% names(solution)) {
     solution <- solution %>%
       rename("Group" = "group") %>%
       select(one_of(c("Group", "From", "Operator", "To", "Coef", "SE", "CI_lower", "CI_higher", "p", "Type")))
-  } else{
+  } else {
     solution <- select(solution, one_of(c("From", "Operator", "To", "Coef", "SE", "CI_lower", "CI_higher", "p", "Type")))
   }
 
   return(solution)
 }
-
-
-
-
-
-
-

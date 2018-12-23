@@ -38,40 +38,45 @@ Compute predicted from a lm model.
 library(psycho)
 library(ggplot2)
 
-fit <- lmerTest::lmer(Tolerating ~ Adjusting + (1|Salary), data=affective)
+fit <- lmerTest::lmer(Tolerating ~ Adjusting + (1 | Salary), data = affective)
 
 refgrid <- psycho::refdata(affective, "Adjusting")
-predicted <- get_predicted(fit, newdata=refgrid)
+predicted <- get_predicted(fit, newdata = refgrid)
 
-ggplot(predicted, aes(x=Adjusting, y=Tolerating_Predicted)) +
+ggplot(predicted, aes(x = Adjusting, y = Tolerating_Predicted)) +
   geom_line()
 
-predicted <- get_predicted(fit, newdata=refgrid, prob=0.95, iter=100)  # Takes a long time
+predicted <- get_predicted(fit, newdata = refgrid, prob = 0.95, iter = 100) # Takes a long time
 
-ggplot(predicted, aes(x=Adjusting, y=Tolerating_Predicted)) +
+ggplot(predicted, aes(x = Adjusting, y = Tolerating_Predicted)) +
   geom_line() +
-  geom_ribbon(aes(ymin=Tolerating_CI_2.5,
-                  ymax=Tolerating_CI_97.5),
-                  alpha=0.1)
+  geom_ribbon(aes(
+    ymin = Tolerating_CI_2.5,
+    ymax = Tolerating_CI_97.5
+  ),
+  alpha = 0.1
+  )
 
 
 
-fit <- lme4::glmer(Sex ~ Adjusting + (1|Salary), data=affective, family="binomial")
+fit <- lme4::glmer(Sex ~ Adjusting + (1 | Salary), data = affective, family = "binomial")
 
 refgrid <- psycho::refdata(affective, "Adjusting")
-predicted <- get_predicted(fit, newdata=refgrid)
+predicted <- get_predicted(fit, newdata = refgrid)
 
-ggplot(predicted, aes(x=Adjusting, y=Sex_Predicted)) +
+ggplot(predicted, aes(x = Adjusting, y = Sex_Predicted)) +
   geom_line()
 
-predicted <- get_predicted(fit, newdata=refgrid, prob=0.95, iter=100)  # Takes a long time
+predicted <- get_predicted(fit, newdata = refgrid, prob = 0.95, iter = 100) # Takes a long time
 
-ggplot(predicted, aes(x=Adjusting, y=Sex_Predicted)) +
+ggplot(predicted, aes(x = Adjusting, y = Sex_Predicted)) +
   geom_line() +
-  geom_ribbon(aes(ymin=Sex_CI_2.5,
-                  ymax=Sex_CI_97.5),
-                  alpha=0.1)
-
+  geom_ribbon(aes(
+    ymin = Sex_CI_2.5,
+    ymax = Sex_CI_97.5
+  ),
+  alpha = 0.1
+  )
 }
 }
 \author{

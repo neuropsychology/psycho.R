@@ -21,11 +21,12 @@ Get information about models.
 library(psycho)
 library(lme4)
 
-fit <- lm(vs ~ wt, data=mtcars, family="binomial")
+fit <- lm(vs ~ wt, data = mtcars, family = "binomial")
 
 info <- get_info(fit)
 info
 
+#
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

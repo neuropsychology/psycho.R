@@ -9,7 +9,6 @@
 #' @examples
 #' library(psycho)
 #' find_matching_string("Hwo rea ouy", c("How are you", "Not this word", "Nice to meet you"))
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export

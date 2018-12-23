@@ -25,7 +25,6 @@ is.standardized(df)
 
 dfZ <- psycho::standardize(df)
 is.standardized(dfZ)
-
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

@@ -39,14 +39,14 @@ library(psycho)
 library(rstanarm)
 
 data <- standardize(attitude)
-fit <- rstanarm::stan_glm(rating ~ advance + privileges, data=data)
+fit <- rstanarm::stan_glm(rating ~ advance + privileges, data = data)
 
 best <- find_best_model(fit)
 best_formula <- best$formula
 best$table
 
 # To deactivate Kfold evaluation
-best <- find_best_model(fit, K=0)
+best <- find_best_model(fit, K = 0)
 }
 
 }

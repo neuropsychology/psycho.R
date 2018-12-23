@@ -39,13 +39,12 @@ find_combinations <- function(object, ...) {
 #'
 #' @examples
 #' library(psycho)
-#'
+#' 
 #' f <- as.formula("Y ~ A + B + C + D")
 #' f <- as.formula("Y ~ A + B + C + D + (1|E)")
 #' f <- as.formula("Y ~ A + B + C + D + (1|E) + (1|F)")
-#'
+#' 
 #' find_combinations(f)
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @method find_combinations formula
@@ -78,8 +77,7 @@ find_combinations.formula <- function(object, interaction = TRUE, fixed = NULL, 
     lapply(
       1:n,
       function(i) combn(1:n, i, simplify = FALSE)
-    )
-    ,
+    ),
     recursive = FALSE
   )
 

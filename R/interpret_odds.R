@@ -9,8 +9,7 @@
 #'
 #' @examples
 #' library(psycho)
-#' interpret_odds(x=2)
-#'
+#' interpret_odds(x = 2)
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @seealso http://imaging.mrc-cbu.cam.ac.uk/statswiki/FAQ/effectSize
@@ -52,7 +51,6 @@ interpret_odds <- function(x, log = FALSE, direction = FALSE, rules = "chen2010"
 #' interpret_odds_posterior(posterior)
 #' interpret_odds_posterior(rnorm(1000, 0.1, 1))
 #' interpret_odds_posterior(rnorm(1000, 3, 1.5))
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
@@ -214,8 +212,7 @@ interpret_odds_posterior <- function(posterior, log = FALSE, rules = "chen2010")
 #'
 #' @examples
 #' library(psycho)
-#' odds_to_d(x=2)
-#'
+#' odds_to_d(x = 2)
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @seealso https://www.meta-analysis.com/downloads/Meta-analysis%20Converting%20among%20effect%20sizes.pdf

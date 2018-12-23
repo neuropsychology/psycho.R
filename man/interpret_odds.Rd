@@ -20,8 +20,7 @@ Interpret odds with a set of rules.
 }
 \examples{
 library(psycho)
-interpret_odds(x=2)
-
+interpret_odds(x = 2)
 }
 \references{
 \itemize{

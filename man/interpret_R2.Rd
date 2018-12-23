@@ -16,9 +16,8 @@ Interpret R2 with a set of rules.
 }
 \examples{
 library(psycho)
-interpret_R2(x=0.42)
-interpret_R2(x=c(0.42, 0.2, 0.9, 0))
-
+interpret_R2(x = 0.42)
+interpret_R2(x = c(0.42, 0.2, 0.9, 0))
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

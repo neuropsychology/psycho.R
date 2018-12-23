@@ -20,7 +20,6 @@ x <- psych::fa(psych::Thurstone.33, 2)
 plot_loadings(format_loadings(x)$loadings)
 }
 
-
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

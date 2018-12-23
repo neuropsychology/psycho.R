@@ -44,25 +44,27 @@ library(psycho)
 library(rstanarm)
 
 data <- attitude
-fit <- rstanarm::stan_glm(rating ~ advance + privileges, data=data)
+fit <- rstanarm::stan_glm(rating ~ advance + privileges, data = data)
 
-results <- analyze(fit, effsize=TRUE)
+results <- analyze(fit, effsize = TRUE)
 summary(results)
 print(results)
 plot(results)
 
 
-fit <- rstanarm::stan_lmer(Sepal.Length ~ Sepal.Width + (1|Species), data=iris)
+fit <- rstanarm::stan_lmer(Sepal.Length ~ Sepal.Width + (1 | Species), data = iris)
 results <- analyze(fit)
 summary(results)
 
 fit <- rstanarm::stan_glm(Sex ~ Adjusting,
-    data=psycho::affective, family="binomial")
+  data = psycho::affective, family = "binomial"
+)
 results <- analyze(fit)
 summary(results)
 
-fit <- rstanarm::stan_glmer(Sex ~ Adjusting + (1|Salary),
-    data=psycho::affective, family="binomial")
+fit <- rstanarm::stan_glmer(Sex ~ Adjusting + (1 | Salary),
+  data = psycho::affective, family = "binomial"
+)
 results <- analyze(fit)
 summary(results)
 }

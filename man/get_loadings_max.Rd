@@ -20,7 +20,6 @@ x <- psych::fa(psych::Thurstone.33, 2)
 get_loadings_max(format_loadings(x)$loadings)
 }
 
-
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

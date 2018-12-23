@@ -23,8 +23,6 @@ Convert (log)odds to probabilies.
 \examples{
 library(psycho)
 odds_to_probs(-1.45)
-
-
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

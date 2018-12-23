@@ -17,8 +17,6 @@ Convert probabilities to (log)odds.
 \examples{
 library(psycho)
 probs_to_odds(0.75)
-
-
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

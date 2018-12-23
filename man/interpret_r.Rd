@@ -22,7 +22,6 @@ Interpret r with a set of rules.
 \examples{
 library(psycho)
 interpret_r(-0.42)
-
 }
 \seealso{
 Page 88 of APA's 6th Edition

@@ -7,8 +7,7 @@
 #'
 #' @examples
 #' library(psycho)
-#' interpret_omega_sq(x=0.05)
-#'
+#' interpret_omega_sq(x = 0.05)
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @seealso http://imaging.mrc-cbu.cam.ac.uk/statswiki/FAQ/effectSize

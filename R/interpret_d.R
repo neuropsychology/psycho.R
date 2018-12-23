@@ -10,7 +10,6 @@
 #' library(psycho)
 #' interpret_d(-0.42)
 #' interpret_d(-0.62)
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
@@ -37,7 +36,6 @@ interpret_d <- function(x, direction = FALSE, rules = "cohen1988") {
 #' posterior <- rnorm(1000, 0.6, 0.05)
 #' interpret_d_posterior(posterior)
 #' interpret_d_posterior(rnorm(1000, 0.1, 1))
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export

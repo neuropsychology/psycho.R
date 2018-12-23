@@ -12,15 +12,13 @@
 #' @examples
 #' library(psycho)
 #' library(psych)
-#'
+#' 
 #' x <- psych::fa(psych::Thurstone.33, 2)
-#'
+#' 
 #' results <- analyze(x)
 #' print(results)
 #' summary(results)
 #' plot(results)
-#'
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
@@ -109,11 +107,11 @@ analyze.fa <- function(x, labels = NULL, treshold = "max", ...) {
 #' @examples
 #' \dontrun{
 #' library(psycho)
-#'
+#' 
 #' x <- psych::fa(psych::Thurstone.33, 2)
 #' format_loadings(x)
 #' }
-#'
+#' 
 #' @import dplyr
 #' @export
 format_loadings <- function(x, labels = NULL) {
@@ -163,12 +161,11 @@ format_loadings <- function(x, labels = NULL) {
 #' @examples
 #' \dontrun{
 #' library(psycho)
-#'
+#' 
 #' x <- psych::fa(psych::Thurstone.33, 2)
 #' get_loadings_max(format_loadings(x)$loadings)
 #' }
-#'
-#'
+#' 
 #' @import dplyr
 #' @export
 get_loadings_max <- function(loadings) {
@@ -194,14 +191,13 @@ get_loadings_max <- function(loadings) {
 #' @examples
 #' \dontrun{
 #' library(psycho)
-#'
+#' 
 #' x <- psych::fa(psych::Thurstone.33, 2)
 #' loadings <- format_loadings(x)$loadings
-#' get_cfa_model(loadings, treshold="max")
-#' get_cfa_model(loadings, treshold=0.1)
+#' get_cfa_model(loadings, treshold = "max")
+#' get_cfa_model(loadings, treshold = 0.1)
 #' }
-#'
-#'
+#' 
 #' @import dplyr
 #' @export
 get_cfa_model <- function(loadings, treshold = "max") {
@@ -240,12 +236,11 @@ get_cfa_model <- function(loadings, treshold = "max") {
 #' @examples
 #' \dontrun{
 #' library(psycho)
-#'
+#' 
 #' x <- psych::fa(psych::Thurstone.33, 2)
 #' plot_loadings(format_loadings(x)$loadings)
 #' }
-#'
-#'
+#' 
 #' @import dplyr
 #' @export
 plot_loadings <- function(loadings) {
@@ -265,8 +260,3 @@ plot_loadings <- function(loadings) {
 
   return(p)
 }
-
-
-
-
-

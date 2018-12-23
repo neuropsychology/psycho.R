@@ -16,10 +16,9 @@ For mixed-effects models, R² can be categorized into two types. Marginal R_GLMM
 \dontrun{
 library(psycho)
 
-fit <- lmerTest::lmer(Sepal.Length ~ Sepal.Width + (1|Species), data=iris)
+fit <- lmerTest::lmer(Sepal.Length ~ Sepal.Width + (1 | Species), data = iris)
 
 R2_nakagawa(fit)
-
 }
 
 }

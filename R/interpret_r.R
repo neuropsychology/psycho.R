@@ -11,7 +11,6 @@
 #' @examples
 #' library(psycho)
 #' interpret_r(-0.42)
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @seealso Page 88 of APA's 6th Edition
@@ -41,7 +40,6 @@ interpret_r <- function(x, direction = TRUE, strength = TRUE, rules = "cohen1988
 #' library(psycho)
 #' posterior <- rnorm(1000, 0.5, 0.5)
 #' interpret_r_posterior(posterior)
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @seealso Page 88 of APA's 6th Edition

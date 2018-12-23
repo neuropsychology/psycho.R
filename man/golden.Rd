@@ -17,7 +17,6 @@ library(psycho)
 
 golden()
 golden(8)
-
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

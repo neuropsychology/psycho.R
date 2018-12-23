@@ -31,7 +31,6 @@ f <- as.formula("Y ~ A + B + C + D + (1|E)")
 f <- as.formula("Y ~ A + B + C + D + (1|E) + (1|F)")
 
 find_combinations(f)
-
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

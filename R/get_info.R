@@ -11,13 +11,11 @@
 #' @examples
 #' library(psycho)
 #' library(lme4)
-#'
-#' fit <- lme4::glmer(vs ~ wt + (1|gear), data=mtcars, family="binomial")
-#'
+#' 
+#' fit <- lme4::glmer(vs ~ wt + (1 | gear), data = mtcars, family = "binomial")
+#' 
 #' info <- get_info(fit)
 #' info
-#'
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
@@ -46,13 +44,13 @@ get_info <- function(x, ...) {
 #' @examples
 #' library(psycho)
 #' library(lme4)
-#'
-#' fit <- lme4::glmer(vs ~ wt + (1|gear), data=mtcars, family="binomial")
-#'
+#' 
+#' fit <- lme4::glmer(vs ~ wt + (1 | gear), data = mtcars, family = "binomial")
+#' 
 #' info <- get_info(fit)
 #' info
-#'
-#
+#' 
+#' #
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
@@ -114,13 +112,13 @@ get_info.lmerMod <- get_info.lmerModLmerTest
 #' @examples
 #' library(psycho)
 #' library(lme4)
-#'
-#' fit <- lm(vs ~ wt, data=mtcars, family="binomial")
-#'
+#' 
+#' fit <- lm(vs ~ wt, data = mtcars, family = "binomial")
+#' 
 #' info <- get_info(fit)
 #' info
-#'
-#
+#' 
+#' #
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export

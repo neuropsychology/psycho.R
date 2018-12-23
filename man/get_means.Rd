@@ -29,15 +29,14 @@ require(lmerTest)
 require(rstanarm)
 
 
-fit <- glm(Sex ~ Birth_Season, data=affective, family="binomial")
+fit <- glm(Sex ~ Birth_Season, data = affective, family = "binomial")
 get_means(fit)
 
-fit <- lmerTest::lmer(Adjusting ~ Birth_Season * Salary + (1|Salary), data=affective)
-get_means(fit, formula="Birth_Season")
+fit <- lmerTest::lmer(Adjusting ~ Birth_Season * Salary + (1 | Salary), data = affective)
+get_means(fit, formula = "Birth_Season")
 
-fit <- rstanarm::stan_glm(Adjusting ~ Birth_Season, data=affective)
-get_means(fit, formula="Birth_Season")
-
+fit <- rstanarm::stan_glm(Adjusting ~ Birth_Season, data = affective)
+get_means(fit, formula = "Birth_Season")
 }
 }
 \author{

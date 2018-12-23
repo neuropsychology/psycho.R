@@ -44,28 +44,33 @@ library(psycho)
 library(ggplot2)
 require(rstanarm)
 
-fit <- rstanarm::stan_glm(Tolerating ~ Adjusting, data=affective)
+fit <- rstanarm::stan_glm(Tolerating ~ Adjusting, data = affective)
 
 refgrid <- psycho::refdata(affective, "Adjusting")
-predicted <- get_predicted(fit, newdata=refgrid)
+predicted <- get_predicted(fit, newdata = refgrid)
 
-ggplot(predicted, aes(x=Adjusting, y=Tolerating_Median)) +
+ggplot(predicted, aes(x = Adjusting, y = Tolerating_Median)) +
   geom_line() +
-  geom_ribbon(aes(ymin=Tolerating_CI_5,
-                  ymax=Tolerating_CI_95),
-                  alpha=0.1)
+  geom_ribbon(aes(
+    ymin = Tolerating_CI_5,
+    ymax = Tolerating_CI_95
+  ),
+  alpha = 0.1
+  )
 
-fit <- rstanarm::stan_glm(Sex ~ Adjusting, data=affective, family="binomial")
+fit <- rstanarm::stan_glm(Sex ~ Adjusting, data = affective, family = "binomial")
 
 refgrid <- psycho::refdata(affective, "Adjusting")
-predicted <- get_predicted(fit, newdata=refgrid)
+predicted <- get_predicted(fit, newdata = refgrid)
 
-ggplot(predicted, aes(x=Adjusting, y=Sex_Median)) +
+ggplot(predicted, aes(x = Adjusting, y = Sex_Median)) +
   geom_line() +
-  geom_ribbon(aes(ymin=Sex_CI_5,
-                  ymax=Sex_CI_95),
-                  alpha=0.1)
-
+  geom_ribbon(aes(
+    ymin = Sex_CI_5,
+    ymax = Sex_CI_95
+  ),
+  alpha = 0.1
+  )
 }
 }
 \author{

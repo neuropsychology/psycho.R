@@ -11,19 +11,18 @@
 #'
 #' @examples
 #' library(psycho)
-#'
+#' 
 #' df <- psycho::affective
-#' newdata <- refdata(df, target="Sex")
-#' newdata <- refdata(df, target="Sex", factors="combinations")
-#' newdata <- refdata(df, target=c("Sex", "Salary", "Tolerating"), length.out=3)
-#' newdata <- refdata(df, target=c("Sex", "Salary", "Tolerating"), numerics=0)
-#'
+#' newdata <- refdata(df, target = "Sex")
+#' newdata <- refdata(df, target = "Sex", factors = "combinations")
+#' newdata <- refdata(df, target = c("Sex", "Salary", "Tolerating"), length.out = 3)
+#' newdata <- refdata(df, target = c("Sex", "Salary", "Tolerating"), numerics = 0)
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @importFrom purrr keep
 #' @import tidyr
 #' @export
-refdata <- function(df, target = "all", length.out = 10, factors = "reference", numerics = "mean", na.rm=TRUE) {
+refdata <- function(df, target = "all", length.out = 10, factors = "reference", numerics = "mean", na.rm = TRUE) {
 
   # Target
   if (all(target == "all") | ncol(df) == 1) {
@@ -42,7 +41,7 @@ refdata <- function(df, target = "all", length.out = 10, factors = "reference", 
 
 
   smart_summary <- function(x, numerics) {
-    if(na.rm == TRUE) x <- na.omit(x)
+    if (na.rm == TRUE) x <- na.omit(x)
 
     if (is.numeric(x)) {
       fun <- paste0(numerics, "(x)")

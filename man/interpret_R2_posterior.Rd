@@ -18,7 +18,6 @@ Interpret R2 with a set of rules.
 library(psycho)
 posterior <- rnorm(1000, 0.4, 0.1)
 interpret_R2_posterior(posterior)
-
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
