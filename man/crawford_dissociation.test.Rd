@@ -34,7 +34,6 @@ controls_X <- c(100, 125, 89, 105, 109, 99)
 controls_Y <- c(7, 8, 9, 6, 7, 10)
 
 crawford_dissociation.test(case_X, case_Y, controls_X, controls_Y)
-
 }
 \author{
 Dominique Makowski

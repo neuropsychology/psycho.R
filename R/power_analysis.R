@@ -21,25 +21,27 @@
 #' \dontrun{
 #' library(dplyr)
 #' library(psycho)
-#'
-#' fit <- lm(Sepal.Length ~ Sepal.Width, data=iris)
-#'
-#' results <- power_analysis(fit, n_max=300, n_min=100, step=5, n_batch=20)
-#'
+#' 
+#' fit <- lm(Sepal.Length ~ Sepal.Width, data = iris)
+#' 
+#' results <- power_analysis(fit, n_max = 300, n_min = 100, step = 5, n_batch = 20)
+#' 
 #' results %>%
-#'   filter(Variable=="Sepal.Width") %>%
+#'   filter(Variable == "Sepal.Width") %>%
 #'   select(n, p) %>%
 #'   group_by(n) %>%
-#'   summarise(p_median = median(p),
-#'             p_mad = mad(p))
-#'  }
-#'
+#'   summarise(
+#'     p_median = median(p),
+#'     p_mad = mad(p)
+#'   )
+#' }
+#' 
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @importFrom stats model.frame
 #' @import dplyr
 #' @export
-power_analysis <- function(fit, n_max, n_min=NULL, step=1, n_batch=1, groups=NULL, verbose=TRUE, CI=90, effsize=FALSE, effsize_rules="cohen1988", bayes_factor=FALSE, overlap=FALSE) {
+power_analysis <- function(fit, n_max, n_min = NULL, step = 1, n_batch = 1, groups = NULL, verbose = TRUE, CI = 90, effsize = FALSE, effsize_rules = "cohen1988", bayes_factor = FALSE, overlap = FALSE) {
 
   # Parameters
   df <- model.frame(fit)

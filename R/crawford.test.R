@@ -23,14 +23,13 @@
 #'
 #' @examples
 #' library(psycho)
-#'
-#' crawford.test(patient = 125, mean=100, sd=15, n=100)
-#' plot(crawford.test(patient = 80, mean=100, sd=15, n=100))
-#'
+#' 
+#' crawford.test(patient = 125, mean = 100, sd = 15, n = 100)
+#' plot(crawford.test(patient = 80, mean = 100, sd = 15, n = 100))
+#' 
 #' crawford.test(patient = 10, controls = c(0, -2, 5, 2, 1, 3, -4, -2))
 #' test <- crawford.test(patient = 7, controls = c(0, -2, 5, -6, 0, 3, -4, -2))
 #' plot(test)
-#'
 #' @author Dominique Makowski
 #'
 #' @importFrom stats pnorm var approx rchisq
@@ -38,19 +37,19 @@
 #' @import ggplot2
 #' @export
 crawford.test <- function(patient,
-                          controls=NULL,
-                          mean=NULL,
-                          sd=NULL,
-                          n=NULL,
-                          CI=95,
-                          treshold=0.1,
-                          iter=10000,
-                          color_controls="#2196F3",
-                          color_CI="#E91E63",
-                          color_score="black",
-                          color_size=2,
-                          alpha_controls=1,
-                          alpha_CI=0.8) {
+                          controls = NULL,
+                          mean = NULL,
+                          sd = NULL,
+                          n = NULL,
+                          CI = 95,
+                          treshold = 0.1,
+                          iter = 10000,
+                          color_controls = "#2196F3",
+                          color_CI = "#E91E63",
+                          color_score = "black",
+                          color_size = 2,
+                          alpha_controls = 1,
+                          alpha_CI = 0.8) {
   if (is.null(controls)) {
     # Check if a parameter is null
     if (length(c(mean, sd, n)) != 3) {
@@ -225,10 +224,9 @@ crawford.test <- function(patient,
 #'
 #' @examples
 #' library(psycho)
-#'
+#' 
 #' crawford.test.freq(patient = 10, controls = c(0, -2, 5, 2, 1, 3, -4, -2))
 #' crawford.test.freq(patient = 7, controls = c(0, -2, 5, 2, 1, 3, -4, -2))
-#'
 #' @author Dan Mirman, Dominique Makowski
 #'
 #' @importFrom stats pt sd

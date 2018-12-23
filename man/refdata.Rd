@@ -5,7 +5,7 @@
 \title{Create a reference grid.}
 \usage{
 refdata(df, target = "all", length.out = 10, factors = "reference",
-  numerics = "mean")
+  numerics = "mean", na.rm = TRUE)
 }
 \arguments{
 \item{df}{The dataframe.}
@@ -17,6 +17,8 @@ refdata(df, target = "all", length.out = 10, factors = "reference",
 \item{factors}{Type of summary for factors. Can be "combination" or "reference".}
 
 \item{numerics}{Type of summary for numerics Can be "combination", any function ("mean", "median", ...) or a value.}
+
+\item{na.rm}{Remove NaNs.}
 }
 \description{
 Create a reference grid.
@@ -25,11 +27,10 @@ Create a reference grid.
 library(psycho)
 
 df <- psycho::affective
-newdata <- refdata(df, target="Sex")
-newdata <- refdata(df, target="Sex", factors="combinations")
-newdata <- refdata(df, target=c("Sex", "Salary", "Tolerating"), length.out=3)
-newdata <- refdata(df, target=c("Sex", "Salary", "Tolerating"), numerics=0)
-
+newdata <- refdata(df, target = "Sex")
+newdata <- refdata(df, target = "Sex", factors = "combinations")
+newdata <- refdata(df, target = c("Sex", "Salary", "Tolerating"), length.out = 3)
+newdata <- refdata(df, target = c("Sex", "Salary", "Tolerating"), numerics = 0)
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

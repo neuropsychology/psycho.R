@@ -20,8 +20,7 @@ Return the interpretation of a Bayes Factor.
 }
 \examples{
 library(psycho)
-interpret_bf(x=10)
-
+interpret_bf(x = 10)
 }
 \references{
 \itemize{

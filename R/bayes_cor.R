@@ -16,18 +16,18 @@
 #' library(psycho)
 #' x <- psycho::affective$Concealing
 #' y <- psycho::affective$Tolerating
-#'
+#' 
 #' bayes_cor.test(x, y)
 #' summary(bayes_cor.test(x, y))
 #' }
-#'
+#' 
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @importFrom BayesFactor correlationBF posterior
 #' @importFrom stats complete.cases cor.test
 #' @import dplyr
 #' @export
-bayes_cor.test <- function(x, y, CI=90, iterations = 10000, effsize_rules_r="cohen1988", effsize_rules_bf="jeffreys1961") {
+bayes_cor.test <- function(x, y, CI = 90, iterations = 10000, effsize_rules_r = "cohen1988", effsize_rules_bf = "jeffreys1961") {
 
 
   # Varnames ----------------------------------------------------------------
@@ -152,13 +152,13 @@ bayes_cor.test <- function(x, y, CI=90, iterations = 10000, effsize_rules_r="coh
 #' @examples
 #' \dontrun{
 #' library(psycho)
-#'
+#' 
 #' df <- psycho::affective
 #' cor <- bayes_cor(df)
 #' summary(cor)
 #' print(cor)
 #' plot(cor)
-#'
+#' 
 #' df <- select(psycho::affective, Adjusting, Tolerating)
 #' df2 <- select(psycho::affective, -Adjusting, -Tolerating)
 #' cor <- bayes_cor(df, df2)
@@ -166,10 +166,10 @@ bayes_cor.test <- function(x, y, CI=90, iterations = 10000, effsize_rules_r="coh
 #' print(cor)
 #' plot(cor)
 #' }
-#'
+#' 
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #' @export
-bayes_cor <- function(df, df2=NULL, reorder=TRUE) {
+bayes_cor <- function(df, df2 = NULL, reorder = TRUE) {
   df <- purrr::keep(df, is.numeric)
 
   if (!is.null(df2)) {
@@ -314,14 +314,13 @@ bayes_cor <- function(df, df2=NULL, reorder=TRUE) {
 #'
 #' @examples
 #' library(psycho)
-#'
+#' 
 #' r <- correlation(iris)
 #' r <- r$values$r
 #' r <- reorder_matrix(r)
-#'
 #' @importFrom stats as.dist hclust
 #' @export
-reorder_matrix <- function(mat, dmat=NULL) {
+reorder_matrix <- function(mat, dmat = NULL) {
   if (is.null(dmat)) {
     dmat <- mat
   }

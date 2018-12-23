@@ -17,10 +17,8 @@
 Standardize (Z-score, "normalize") a vector.
 }
 \examples{
-standardize(x=c(1, 4, 6, 2))
-standardize(x=c(1, 4, 6, 2), normalize=TRUE)
-
-
+standardize(x = c(1, 4, 6, 2))
+standardize(x = c(1, 4, 6, 2), normalize = TRUE)
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

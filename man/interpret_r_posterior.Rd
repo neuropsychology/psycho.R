@@ -18,7 +18,6 @@ Interpret r with a set of rules.
 library(psycho)
 posterior <- rnorm(1000, 0.5, 0.5)
 interpret_r_posterior(posterior)
-
 }
 \seealso{
 Page 88 of APA's 6th Edition

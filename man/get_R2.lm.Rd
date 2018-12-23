@@ -18,10 +18,9 @@ R2 and adjusted R2 for Linear Models.
 \dontrun{
 library(psycho)
 
-fit <- lm(Tolerating ~ Adjusting, data=psycho::affective)
+fit <- lm(Tolerating ~ Adjusting, data = psycho::affective)
 
 get_R2(fit)
-
 }
 
 }

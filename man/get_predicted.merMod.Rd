@@ -5,8 +5,8 @@
 \title{Compute predicted values of lm models.}
 \usage{
 \method{get_predicted}{merMod}(fit, newdata = "model", prob = NULL,
-  odds_to_probs = TRUE, iter = 100, seed = NULL, re.form = NULL,
-  use.u = FALSE, ...)
+  odds_to_probs = TRUE, iter = 100, seed = NULL,
+  re.form = "default", use.u = FALSE, ...)
 }
 \arguments{
 \item{fit}{An lm model.}
@@ -21,7 +21,7 @@
 
 \item{seed}{An optional seed to use.}
 
-\item{re.form}{Formula for random effects to condition on. If NULL, include all random effects; if NA or ~0, include no random effects (see \link[lme4]{predict.merMod}).}
+\item{re.form}{Formula for random effects to condition on. If NULL, include all random effects; if NA or ~0, include no random effects (see \link[lme4]{predict.merMod}). If "default", then will ne NULL if the random are present in the data, and NA if not.}
 
 \item{use.u}{logical, indicating whether the spherical random effects should be simulated / bootstrapped as well. If TRUE, they are not changed, and all inference is conditional on these values. If FALSE, new normal deviates are drawn (see\link[lme4]{bootMer}).}
 
@@ -38,40 +38,45 @@ Compute predicted from a lm model.
 library(psycho)
 library(ggplot2)
 
-fit <- lmerTest::lmer(Tolerating ~ Adjusting + (1|Salary), data=affective)
+fit <- lmerTest::lmer(Tolerating ~ Adjusting + (1 | Salary), data = affective)
 
 refgrid <- psycho::refdata(affective, "Adjusting")
-predicted <- get_predicted(fit, newdata=refgrid)
+predicted <- get_predicted(fit, newdata = refgrid)
 
-ggplot(predicted, aes(x=Adjusting, y=Tolerating_Predicted)) +
+ggplot(predicted, aes(x = Adjusting, y = Tolerating_Predicted)) +
   geom_line()
 
-predicted <- get_predicted(fit, newdata=refgrid, prob=0.95, iter=100)  # Takes a long time
+predicted <- get_predicted(fit, newdata = refgrid, prob = 0.95, iter = 100) # Takes a long time
 
-ggplot(predicted, aes(x=Adjusting, y=Tolerating_Predicted)) +
+ggplot(predicted, aes(x = Adjusting, y = Tolerating_Predicted)) +
   geom_line() +
-  geom_ribbon(aes(ymin=Tolerating_CI_2.5,
-                  ymax=Tolerating_CI_97.5),
-                  alpha=0.1)
+  geom_ribbon(aes(
+    ymin = Tolerating_CI_2.5,
+    ymax = Tolerating_CI_97.5
+  ),
+  alpha = 0.1
+  )
 
 
 
-fit <- lme4::glmer(Sex ~ Adjusting + (1|Salary), data=affective, family="binomial")
+fit <- lme4::glmer(Sex ~ Adjusting + (1 | Salary), data = affective, family = "binomial")
 
 refgrid <- psycho::refdata(affective, "Adjusting")
-predicted <- get_predicted(fit, newdata=refgrid)
+predicted <- get_predicted(fit, newdata = refgrid)
 
-ggplot(predicted, aes(x=Adjusting, y=Sex_Predicted)) +
+ggplot(predicted, aes(x = Adjusting, y = Sex_Predicted)) +
   geom_line()
 
-predicted <- get_predicted(fit, newdata=refgrid, prob=0.95, iter=100)  # Takes a long time
+predicted <- get_predicted(fit, newdata = refgrid, prob = 0.95, iter = 100) # Takes a long time
 
-ggplot(predicted, aes(x=Adjusting, y=Sex_Predicted)) +
+ggplot(predicted, aes(x = Adjusting, y = Sex_Predicted)) +
   geom_line() +
-  geom_ribbon(aes(ymin=Sex_CI_2.5,
-                  ymax=Sex_CI_97.5),
-                  alpha=0.1)
-
+  geom_ribbon(aes(
+    ymin = Sex_CI_2.5,
+    ymax = Sex_CI_97.5
+  ),
+  alpha = 0.1
+  )
 }
 }
 \author{

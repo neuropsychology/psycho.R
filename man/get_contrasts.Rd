@@ -2,23 +2,46 @@
 % Please edit documentation in R/get_contrasts.R
 \name{get_contrasts}
 \alias{get_contrasts}
-\title{Get Marginal Means and Contrasts.}
+\title{Compute estimated contrasts from models.}
 \usage{
 get_contrasts(fit, ...)
 }
 \arguments{
-\item{fit}{Model.}
+\item{fit}{A model.}
 
 \item{...}{Arguments passed to or from other methods.}
 }
+\value{
+Estimated contrasts.
+}
 \description{
-Compute estimated marginal means and contrasts from models. See the
-documentation for your model's class:
+Compute estimated contrasts between factor levels based on a fitted model.
+See the documentation for your model's class:
 \itemize{
- \item{\link[=get_contrasts.stanreg]{get_contrasts.stanreg}}
+ \item{\link[=get_contrasts.glm]{get_contrasts.glm}}
  \item{\link[=get_contrasts.lmerModLmerTest]{get_contrasts.merModLmerTest}}
  \item{\link[=get_contrasts.glmerMod]{get_contrasts.glmerMod}}
+ \item{\link[=get_contrasts.stanreg]{get_contrasts.stanreg}}
  }
+}
+\examples{
+\dontrun{
+library(psycho)
+require(lmerTest)
+require(rstanarm)
+
+fit <- lm(Adjusting ~ Birth_Season * Salary, data = affective)
+get_contrasts(fit)
+
+fit <- lm(Adjusting ~ Birth_Season * Salary, data = affective)
+get_contrasts(fit, adjust = "bonf")
+
+fit <- lmerTest::lmer(Adjusting ~ Birth_Season * Salary + (1 | Salary), data = affective)
+get_contrasts(fit, formula = "Birth_Season")
+
+fit <- rstanarm::stan_glm(Adjusting ~ Birth_Season, data = affective)
+get_contrasts(fit, formula = "Birth_Season", ROPE_bounds = c(-0.1, 0.1))
+}
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

@@ -8,7 +8,7 @@
 #' @param odds_to_probs Transform log odds ratios in logistic models to probabilies.
 #' @param iter An integer indicating the number of iterations for bootstrapping (when prob is not null).
 #' @param seed An optional seed to use.
-#' @param re.form Formula for random effects to condition on. If NULL, include all random effects; if NA or ~0, include no random effects (see \link[lme4]{predict.merMod}).
+#' @param re.form Formula for random effects to condition on. If NULL, include all random effects; if NA or ~0, include no random effects (see \link[lme4]{predict.merMod}). If "default", then will ne NULL if the random are present in the data, and NA if not.
 #' @param use.u logical, indicating whether the spherical random effects should be simulated / bootstrapped as well. If TRUE, they are not changed, and all inference is conditional on these values. If FALSE, new normal deviates are drawn (see\link[lme4]{bootMer}).
 #' @param ... Arguments passed to or from other methods.
 #'
@@ -20,48 +20,53 @@
 #' \dontrun{
 #' library(psycho)
 #' library(ggplot2)
-#'
-#' fit <- lmerTest::lmer(Tolerating ~ Adjusting + (1|Salary), data=affective)
-#'
+#' 
+#' fit <- lmerTest::lmer(Tolerating ~ Adjusting + (1 | Salary), data = affective)
+#' 
 #' refgrid <- psycho::refdata(affective, "Adjusting")
-#' predicted <- get_predicted(fit, newdata=refgrid)
-#'
-#' ggplot(predicted, aes(x=Adjusting, y=Tolerating_Predicted)) +
+#' predicted <- get_predicted(fit, newdata = refgrid)
+#' 
+#' ggplot(predicted, aes(x = Adjusting, y = Tolerating_Predicted)) +
 #'   geom_line()
-#'
-#' predicted <- get_predicted(fit, newdata=refgrid, prob=0.95, iter=100)  # Takes a long time
-#'
-#' ggplot(predicted, aes(x=Adjusting, y=Tolerating_Predicted)) +
+#' 
+#' predicted <- get_predicted(fit, newdata = refgrid, prob = 0.95, iter = 100) # Takes a long time
+#' 
+#' ggplot(predicted, aes(x = Adjusting, y = Tolerating_Predicted)) +
 #'   geom_line() +
-#'   geom_ribbon(aes(ymin=Tolerating_CI_2.5,
-#'                   ymax=Tolerating_CI_97.5),
-#'                   alpha=0.1)
-#'
-#'
-#'
-#' fit <- lme4::glmer(Sex ~ Adjusting + (1|Salary), data=affective, family="binomial")
-#'
+#'   geom_ribbon(aes(
+#'     ymin = Tolerating_CI_2.5,
+#'     ymax = Tolerating_CI_97.5
+#'   ),
+#'   alpha = 0.1
+#'   )
+#' 
+#' 
+#' 
+#' fit <- lme4::glmer(Sex ~ Adjusting + (1 | Salary), data = affective, family = "binomial")
+#' 
 #' refgrid <- psycho::refdata(affective, "Adjusting")
-#' predicted <- get_predicted(fit, newdata=refgrid)
-#'
-#' ggplot(predicted, aes(x=Adjusting, y=Sex_Predicted)) +
+#' predicted <- get_predicted(fit, newdata = refgrid)
+#' 
+#' ggplot(predicted, aes(x = Adjusting, y = Sex_Predicted)) +
 #'   geom_line()
-#'
-#' predicted <- get_predicted(fit, newdata=refgrid, prob=0.95, iter=100)  # Takes a long time
-#'
-#' ggplot(predicted, aes(x=Adjusting, y=Sex_Predicted)) +
+#' 
+#' predicted <- get_predicted(fit, newdata = refgrid, prob = 0.95, iter = 100) # Takes a long time
+#' 
+#' ggplot(predicted, aes(x = Adjusting, y = Sex_Predicted)) +
 #'   geom_line() +
-#'   geom_ribbon(aes(ymin=Sex_CI_2.5,
-#'                   ymax=Sex_CI_97.5),
-#'                   alpha=0.1)
-#'
+#'   geom_ribbon(aes(
+#'     ymin = Sex_CI_2.5,
+#'     ymax = Sex_CI_97.5
+#'   ),
+#'   alpha = 0.1
+#'   )
 #' }
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @importFrom dplyr bind_cols
 #' @importFrom tibble rownames_to_column
 #' @export
-get_predicted.merMod <- function(fit, newdata="model", prob=NULL, odds_to_probs=TRUE, iter=100, seed=NULL, re.form=NULL, use.u=FALSE, ...) {
+get_predicted.merMod <- function(fit, newdata = "model", prob = NULL, odds_to_probs = TRUE, iter = 100, seed = NULL, re.form = "default", use.u = FALSE, ...) {
 
 
   # Extract names
@@ -87,8 +92,17 @@ get_predicted.merMod <- function(fit, newdata="model", prob=NULL, odds_to_probs=
   }
 
 
-
-
+  # Deal with random
+  if (!is.na(re.form)) {
+    if (re.form == "default") {
+      # Check if all predictors are in variables
+      if (all(get_info(fit)$predictors %in% names(newdata))) {
+        re.form <- NULL
+      } else {
+        re.form <- NA
+      }
+    }
+  }
 
 
 
@@ -99,7 +113,7 @@ get_predicted.merMod <- function(fit, newdata="model", prob=NULL, odds_to_probs=
 
   if (!is.null(prob)) {
     predFun <- function(fit) {
-      predict(fit, newdata)
+      predict(fit, newdata, newdata = newdata, re.form = re.form)
     }
     predMat <- lme4::bootMer(fit, nsim = iter, FUN = predFun, use.u = use.u, seed = seed)$t
 

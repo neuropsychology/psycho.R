@@ -7,16 +7,15 @@
 #'
 #' @examples
 #' library(psycho)
-#'
+#' 
 #' distribution <- rnorm(1000, 0, 1)
 #' HDI_values <- HDI(distribution)
 #' print(HDI_values)
 #' plot(HDI_values)
 #' summary(HDI_values)
-#'
+#' 
 #' x <- matrix(rexp(200), 100)
 #' HDI_values <- HDI(x)
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
@@ -131,4 +130,3 @@ HDImax <- function(x, prob = .95) {
   HDImax <- x[which.min(ci.width) + ci.index]
   return(c(HDImin, HDImax))
 }
-

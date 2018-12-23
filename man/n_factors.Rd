@@ -32,7 +32,6 @@ plot(results)
 
 # See details on methods
 psycho::values(results)$methods
-
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

@@ -10,24 +10,23 @@
 #'
 #' @examples
 #' library(psycho)
-#'
+#' 
 #' df <- psycho::affective
-#'
+#' 
 #' x <- t.test(df$Tolerating, df$Adjusting)
 #' x <- t.test(df$Tolerating ~ df$Sex)
-#' x <- t.test(df$Tolerating, mu=2)
+#' x <- t.test(df$Tolerating, mu = 2)
 #' x <- cor.test(df$Tolerating, df$Adjusting)
-#'
+#' 
 #' results <- analyze(x)
 #' summary(results)
 #' print(results)
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @import dplyr
 #'
 #' @export
-analyze.htest <- function(x, effsize_rules="cohen1988", ...) {
+analyze.htest <- function(x, effsize_rules = "cohen1988", ...) {
 
 
   # Processing
@@ -71,7 +70,7 @@ analyze.htest <- function(x, effsize_rules="cohen1988", ...) {
       ")."
     )
 
-  # T-TEST
+    # T-TEST
   } else if (grepl("t-test", values$method)) {
     if (names(x$null.value) == "mean") {
       means <- paste0(
@@ -117,7 +116,7 @@ analyze.htest <- function(x, effsize_rules="cohen1988", ...) {
       format_p(values$p, stars = FALSE),
       ")."
     )
-  # OTHER
+    # OTHER
   } else {
     stop(paste0("The ", values$method, " is not implemented yet."))
   }

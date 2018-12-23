@@ -24,8 +24,6 @@ Generates a sample of size n with a near-perfect normal distribution.
 library(psycho)
 x <- rnorm_perfect(10)
 plot(density(x))
-
-
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

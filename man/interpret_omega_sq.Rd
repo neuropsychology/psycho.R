@@ -16,8 +16,7 @@ Return the interpretation of Omegas Squared.
 }
 \examples{
 library(psycho)
-interpret_omega_sq(x=0.05)
-
+interpret_omega_sq(x = 0.05)
 }
 \references{
 \itemize{

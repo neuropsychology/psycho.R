@@ -7,13 +7,12 @@
 #'
 #' @examples
 #' library(psycho)
-#' interpret_R2(x=0.42)
-#' interpret_R2(x=c(0.42, 0.2, 0.9, 0))
-#'
+#' interpret_R2(x = 0.42)
+#' interpret_R2(x = c(0.42, 0.2, 0.9, 0))
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-interpret_R2 <- function(x, rules="cohen1988") {
+interpret_R2 <- function(x, rules = "cohen1988") {
   interpretation <- sapply(x, .interpret_R2, rules = rules, return_rules = FALSE)
   return(interpretation)
 }
@@ -33,11 +32,10 @@ interpret_R2 <- function(x, rules="cohen1988") {
 #' library(psycho)
 #' posterior <- rnorm(1000, 0.4, 0.1)
 #' interpret_R2_posterior(posterior)
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-interpret_R2_posterior <- function(posterior, rules="cohen1988") {
+interpret_R2_posterior <- function(posterior, rules = "cohen1988") {
   interpretation <- sapply(posterior, .interpret_R2, rules = rules)
   rules <- unlist(interpretation[, 1]$rules)
   interpretation <- as.data.frame(unlist(interpretation[1, ]))
@@ -101,7 +99,7 @@ interpret_R2_posterior <- function(posterior, rules="cohen1988") {
 
 
 #' @keywords internal
-.interpret_R2 <- function(x, rules="cohen1988", return_rules=TRUE) {
+.interpret_R2 <- function(x, rules = "cohen1988", return_rules = TRUE) {
   if (!is.list(rules)) {
     if (rules == "cohen1988") {
       rules <- list(

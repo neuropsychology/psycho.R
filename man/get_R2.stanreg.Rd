@@ -21,10 +21,9 @@ Computes R2 and \link[=R2_LOO_Adjusted]{LOO-adjusted R2}.
 library(psycho)
 library(rstanarm)
 
-fit <- rstanarm::stan_glm(Adjusting ~ Tolerating, data=psycho::affective)
+fit <- rstanarm::stan_glm(Adjusting ~ Tolerating, data = psycho::affective)
 
 get_R2(fit)
-
 }
 
 }

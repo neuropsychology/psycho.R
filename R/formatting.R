@@ -84,7 +84,7 @@ format_string <- function(x, fmt, ...) {
 #'
 #' @importFrom stringr str_remove_all
 #' @export
-format_p <- function(pvalues, stars=TRUE) {
+format_p <- function(pvalues, stars = TRUE) {
   p <- ifelse(pvalues < 0.001, "< .001***",
     ifelse(pvalues < 0.01, "< .01**",
       ifelse(pvalues < 0.05, "< .05*",
@@ -120,13 +120,11 @@ format_p <- function(pvalues, stars=TRUE) {
 #' @examples
 #' library(psycho)
 #' library(lme4)
-#'
-#' fit <- lme4::glmer(vs ~ wt + (1|gear), data=mtcars, family="binomial")
-#' fit <- lm(hp ~ wt, data=mtcars)
-#'
+#' 
+#' fit <- lme4::glmer(vs ~ wt + (1 | gear), data = mtcars, family = "binomial")
+#' fit <- lm(hp ~ wt, data = mtcars)
+#' 
 #' format_formula(get_formula(fit))
-#'
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export

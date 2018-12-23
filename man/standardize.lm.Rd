@@ -28,12 +28,11 @@ library(psycho)
 df <- mtcars \%>\%
   mutate(cyl = as.factor(cyl))
 
-fit <- lm(wt ~ mpg * cyl, data=df)
-fit <- lmerTest::lmer(wt ~ mpg * cyl + (1|gear), data=df)
+fit <- lm(wt ~ mpg * cyl, data = df)
+fit <- lmerTest::lmer(wt ~ mpg * cyl + (1 | gear), data = df)
 
 summary(fit)
 standardize(fit)
-
 }
 
 }

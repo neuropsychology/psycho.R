@@ -16,8 +16,7 @@ odds_to_d(x, log = TRUE)
 }
 \examples{
 library(psycho)
-odds_to_d(x=2)
-
+odds_to_d(x = 2)
 }
 \references{
 \itemize{

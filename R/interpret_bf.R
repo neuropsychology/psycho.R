@@ -10,8 +10,7 @@
 #'
 #' @examples
 #' library(psycho)
-#' interpret_bf(x=10)
-#'
+#' interpret_bf(x = 10)
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @references
@@ -20,7 +19,7 @@
 #'  \item{Jarosz, A. F., & Wiley, J. (2014). What are the odds? A practical guide to computing and reporting Bayes factors. The Journal of Problem Solving, 7(1), 2.}
 #'  }
 #' @export
-interpret_bf <- function(x, direction=TRUE, bf=TRUE, rules="jeffreys1961") {
+interpret_bf <- function(x, direction = TRUE, bf = TRUE, rules = "jeffreys1961") {
   interpretation <- sapply(x, .interpret_bf, direction = direction, bf = bf, rules = rules, return_rules = FALSE)
   return(interpretation)
 }
@@ -37,7 +36,7 @@ interpret_bf <- function(x, direction=TRUE, bf=TRUE, rules="jeffreys1961") {
 #' @param max Treshold for maximum.
 #'
 #' @export
-format_bf <- function(bf, max=100) {
+format_bf <- function(bf, max = 100) {
   if (bf > max) {
     bf <- paste0("BF > ", max)
   } else {
@@ -56,7 +55,7 @@ format_bf <- function(bf, max=100) {
 
 
 #' @keywords internal
-.interpret_bf <- function(x, direction=TRUE, bf=TRUE, rules="jeffreys1961", return_rules=TRUE) {
+.interpret_bf <- function(x, direction = TRUE, bf = TRUE, rules = "jeffreys1961", return_rules = TRUE) {
   if (x < 1) {
     x <- 1 / abs(x)
     dir <- "against"

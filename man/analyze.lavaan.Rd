@@ -2,12 +2,16 @@
 % Please edit documentation in R/analyze.lavaan.R
 \name{analyze.lavaan}
 \alias{analyze.lavaan}
-\title{Analyze aov objects.}
+\title{Analyze lavaan SEM or CFA) objects.}
 \usage{
-\method{analyze}{lavaan}(x, ...)
+\method{analyze}{lavaan}(x, CI = 95, standardize = FALSE, ...)
 }
 \arguments{
-\item{x}{aov object.}
+\item{x}{lavaan object.}
+
+\item{CI}{Confidence interval level.}
+
+\item{standardize}{Compute standardized coefs.}
 
 \item{...}{Arguments passed to or from other methods.}
 }
@@ -15,21 +19,17 @@
 output
 }
 \description{
-Analyze aov objects.
+Analyze lavaan (SEM or CFA) objects.
 }
 \examples{
 library(psycho)
 library(lavaan)
 
-model <- ' visual  =~ x1 + x2 + x3
-           textual =~ x4 + x5 + x6
-           speed   =~ x7 + x8 + x9 '
-x <- lavaan::cfa(model, data=HolzingerSwineford1939)
+model <- " visual  =~ x1 + x2 + x3\\ntextual =~ x4 + x5 + x6\\nspeed   =~ x7 + x8 + x9 "
+x <- lavaan::cfa(model, data = HolzingerSwineford1939)
 
 rez <- analyze(x)
 print(rez)
-
-
 }
 \seealso{
 https://www.researchgate.net/post/Whats_the_standard_of_fit_indices_in_SEM

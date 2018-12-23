@@ -18,10 +18,9 @@ library(psycho)
 library(rstanarm)
 
 data <- attitude
-fit <- rstanarm::stan_glm(rating ~ advance + privileges, data=data)
+fit <- rstanarm::stan_glm(rating ~ advance + privileges, data = data)
 
 R2_LOO_Adjusted(fit)
-
 }
 
 }

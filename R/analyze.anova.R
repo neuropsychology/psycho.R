@@ -11,30 +11,29 @@
 #' @examples
 #' \dontrun{
 #' library(psycho)
-#'
+#' 
 #' df <- psycho::affective
-#'
+#' 
 #' x <- aov(df$Tolerating ~ df$Salary)
 #' x <- aov(df$Tolerating ~ df$Salary * df$Sex)
-#'
+#' 
 #' x <- anova(lm(df$Tolerating ~ df$Salary * df$Sex))
-#'
-#'
+#' 
+#' 
 #' summary(analyze(x))
 #' print(analyze(x))
-#'
+#' 
 #' df <- psycho::emotion %>%
 #'   mutate(Recall = ifelse(Recall == TRUE, 1, 0)) %>%
 #'   group_by(Participant_ID, Emotion_Condition) %>%
 #'   summarise(Recall = sum(Recall) / n())
-#'
-#' x <- aov(Recall ~ Emotion_Condition + Error(Participant_ID), data=df)
-#' x <- anova(lmerTest::lmer(Recall ~ Emotion_Condition + (1|Participant_ID), data=df))
+#' 
+#' x <- aov(Recall ~ Emotion_Condition + Error(Participant_ID), data = df)
+#' x <- anova(lmerTest::lmer(Recall ~ Emotion_Condition + (1 | Participant_ID), data = df))
 #' analyze(x)
 #' summary(x)
 #' }
-#'
-#'
+#' 
 #' @references
 #' \itemize{
 #'  \item{Levine, T. R., & Hullett, C. R. (2002). Eta squared, partial eta squared, and misreporting of effect size in communication research. Human Communication Research, 28(4), 612-625.}
@@ -48,7 +47,7 @@
 #' @import broom
 #'
 #' @export
-analyze.aov <- function(x, effsize_rules="field2013", ...) {
+analyze.aov <- function(x, effsize_rules = "field2013", ...) {
   if (!"aov" %in% class(x)) {
     if (!"Residuals" %in% row.names(x)) {
       if (!is.null(x$Within)) {
@@ -289,20 +288,19 @@ analyze.aovlist <- analyze.aov
 #'
 #' @examples
 #' library(psycho)
-#'
+#' 
 #' df <- psycho::affective
-#'
+#' 
 #' x <- aov(df$Tolerating ~ df$Salary)
 #' x <- aov(df$Tolerating ~ df$Salary * df$Sex)
-#'
+#' 
 #' omega_sq(x)
-#'
 #' @seealso http://stats.stackexchange.com/a/126520
 #'
 #' @author Arnoud Plantinga
 #' @importFrom stringr str_trim
 #' @export
-omega_sq <- function(x, partial=TRUE) {
+omega_sq <- function(x, partial = TRUE) {
   if ("aov" %in% class(x)) {
     summary_aov <- summary(x)[[1]]
   } else {

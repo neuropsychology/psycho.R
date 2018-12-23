@@ -51,15 +51,13 @@ standardize <- function(x, ...) {
 #' @param ... Arguments passed to or from other methods.
 #'
 #' @examples
-#' standardize(x=c(1, 4, 6, 2))
-#' standardize(x=c(1, 4, 6, 2), normalize=TRUE)
-#'
-#'
+#' standardize(x = c(1, 4, 6, 2))
+#' standardize(x = c(1, 4, 6, 2), normalize = TRUE)
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #'
 #' @export
-standardize.numeric <- function(x, normalize=FALSE, ...) {
+standardize.numeric <- function(x, normalize = FALSE, ...) {
   if (all(is.na(x)) | length(unique(x)) == 2) {
     return(x)
   }
@@ -105,33 +103,33 @@ standardize.numeric <- function(x, normalize=FALSE, ...) {
 #' @examples
 #' \dontrun{
 #' df <- data.frame(
-#'   Participant = as.factor(rep(1:25,each=4)),
+#'   Participant = as.factor(rep(1:25, each = 4)),
 #'   Condition = base::rep_len(c("A", "B", "C", "D"), 100),
 #'   V1 = rnorm(100, 30, .2),
 #'   V2 = runif(100, 3, 5),
 #'   V3 = rnorm(100, 100, 10)
-#'   )
-#'
+#' )
+#' 
 #' dfZ <- standardize(df)
-#' dfZ <- standardize(df, except="V3")
-#' dfZ <- standardize(df, except=c("V1", "V2"))
-#' dfZ <- standardize(df, subset="V3")
-#' dfZ <- standardize(df, subset=c("V1", "V2"))
-#' dfZ <- standardize(df, normalize=TRUE)
-#'
+#' dfZ <- standardize(df, except = "V3")
+#' dfZ <- standardize(df, except = c("V1", "V2"))
+#' dfZ <- standardize(df, subset = "V3")
+#' dfZ <- standardize(df, subset = c("V1", "V2"))
+#' dfZ <- standardize(df, normalize = TRUE)
+#' 
 #' # Respects grouping
 #' dfZ <- df %>%
 #'   dplyr::group_by(Participant) %>%
 #'   standardize(df)
 #' }
-#'
+#' 
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #'
 #' @importFrom purrr keep discard
 #' @import dplyr
 #' @export
-standardize.data.frame <- function(x, subset=NULL, except=NULL, normalize=FALSE, ...) {
+standardize.data.frame <- function(x, subset = NULL, except = NULL, normalize = FALSE, ...) {
   if (inherits(x, "grouped_df")) {
     dfZ <- x %>% dplyr::do_(".standardize_df(., subset=subset, except=except, normalize=normalize, ...)")
   } else {
@@ -158,7 +156,7 @@ standardize.data.frame <- function(x, subset=NULL, except=NULL, normalize=FALSE,
 
 
 #' @keywords internal
-.standardize_df <- function(x, subset=NULL, except=NULL, normalize=FALSE, ...) {
+.standardize_df <- function(x, subset = NULL, except = NULL, normalize = FALSE, ...) {
   df <- x
 
   # Variable order
@@ -232,21 +230,20 @@ standardize.data.frame <- function(x, subset=NULL, except=NULL, normalize=FALSE,
 #' \dontrun{
 #' library(psycho)
 #' library(rstanarm)
-#'
-#' fit <- rstanarm::stan_glm(Sepal.Length ~ Sepal.Width * Species, data=iris)
-#' fit <- rstanarm::stan_glm(Sepal.Length ~ Sepal.Width * Species, data=standardize(iris))
+#' 
+#' fit <- rstanarm::stan_glm(Sepal.Length ~ Sepal.Width * Species, data = iris)
+#' fit <- rstanarm::stan_glm(Sepal.Length ~ Sepal.Width * Species, data = standardize(iris))
 #' posteriors <- standardize(fit)
-#' posteriors <- standardize(fit, method="posterior")
-#'
+#' posteriors <- standardize(fit, method = "posterior")
 #' }
-#'
+#' 
 #' @author \href{https://github.com/jgabry}{Jonah Gabry}, \href{https://github.com/bgoodri}{bgoodri}
 #'
 #' @seealso https://github.com/stan-dev/rstanarm/issues/298
 #'
 #' @importFrom utils capture.output
 #' @export
-standardize.stanreg <- function(x, method="refit", ...) {
+standardize.stanreg <- function(x, method = "refit", ...) {
   fit <- x
 
   predictors <- get_info(fit)$predictors
@@ -300,20 +297,19 @@ standardize.stanreg <- function(x, method="refit", ...) {
 #' @examples
 #' \dontrun{
 #' library(psycho)
-#' fit <- glm(Sex ~ Adjusting, data=psycho::affective, family="binomial")
-#' fit <- lme4::glmer(Sex ~ Adjusting + (1|Sex), data=psycho::affective, family="binomial")
-#'
+#' fit <- glm(Sex ~ Adjusting, data = psycho::affective, family = "binomial")
+#' fit <- lme4::glmer(Sex ~ Adjusting + (1 | Sex), data = psycho::affective, family = "binomial")
+#' 
 #' standardize(fit)
-#'
 #' }
-#'
+#' 
 #' @author Kamil Barton
 #' @importFrom stats model.frame model.response model.matrix
 #'
 #' @seealso https://think-lab.github.io/d/205/
 #'
 #' @export
-standardize.glm <- function(x, method="refit", ...) {
+standardize.glm <- function(x, method = "refit", ...) {
   fit <- x
 
   if (method == "agresti") {
@@ -321,7 +317,6 @@ standardize.glm <- function(x, method="refit", ...) {
     X <- as.matrix(model.matrix(fit)[, -1]) # -1 to drop column of 1s for intercept
     sd_X <- sd(X, na.rm = TRUE)
     coefs <- coefs * sd_X
-
   } else {
     # refit method
     data <- get_data(fit)
@@ -354,23 +349,22 @@ standardize.glmerMod <- standardize.glm
 #' @examples
 #' \dontrun{
 #' library(psycho)
-#'
+#' 
 #' df <- mtcars %>%
 #'   mutate(cyl = as.factor(cyl))
-#'
-#' fit <- lm(wt ~ mpg * cyl, data=df)
-#' fit <- lmerTest::lmer(wt ~ mpg * cyl + (1|gear), data=df)
-#'
+#' 
+#' fit <- lm(wt ~ mpg * cyl, data = df)
+#' fit <- lmerTest::lmer(wt ~ mpg * cyl + (1 | gear), data = df)
+#' 
 #' summary(fit)
 #' standardize(fit)
-#'
 #' }
-#'
+#' 
 #' @author Kamil Barton
 #' @importFrom stats model.frame model.response model.matrix
 #'
 #' @export
-standardize.lm <- function(x, method="refit", partial_sd=FALSE, preserve_factors=TRUE, ...) {
+standardize.lm <- function(x, method = "refit", partial_sd = FALSE, preserve_factors = TRUE, ...) {
   fit <- x
 
   if (method == "posthoc") {
@@ -448,7 +442,7 @@ standardize.lmerMod <- standardize.lm
 
 #' @importFrom stats nobs vcov
 #' @keywords internal
-.standardize_coefs <- function(fit, partial_sd = FALSE, preserve_factors=TRUE, ...) {
+.standardize_coefs <- function(fit, partial_sd = FALSE, preserve_factors = TRUE, ...) {
   # coefs <- MuMIn::coefTable(fit, ...)
   coefs <- as.data.frame(MuMIn::coefTable(fit))
   model_matrix <- model.matrix(fit)

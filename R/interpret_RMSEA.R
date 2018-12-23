@@ -8,11 +8,10 @@
 #' @examples
 #' library(psycho)
 #' interpret_RMSEA(0.04)
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-interpret_RMSEA <- function(x, rules="awang2012") {
+interpret_RMSEA <- function(x, rules = "awang2012") {
   interpretation <- sapply(x, .interpret_RMSEA, rules = rules, return_rules = FALSE)
   return(interpretation)
 }
@@ -22,7 +21,7 @@ interpret_RMSEA <- function(x, rules="awang2012") {
 
 
 #' @keywords internal
-.interpret_RMSEA <- function(x, rules="awang2012", return_rules=TRUE) {
+.interpret_RMSEA <- function(x, rules = "awang2012", return_rules = TRUE) {
   if (!is.list(rules)) {
     if (rules == "awang2012") {
       rules <- list(

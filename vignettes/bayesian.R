@@ -105,23 +105,21 @@ results <- psycho::analyze(fit)
 # We can extract a formatted summary table
 print(results)
 
-## ---- message=FALSE, results="hide"--------------------------------------
-contrasts <- psycho::get_contrasts(fit, "Salary")
-
 ## ----echo=T, message=FALSE, warning=FALSE, results='hide'----------------
-contrasts$means
+psycho::get_means(fit)
 
 ## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
-kable(contrasts$means, digits=2)
+kable(psycho::get_means(fit), digits=2)
 
 ## ----echo=T, message=FALSE, warning=FALSE, results='hide'----------------
-contrasts$contrasts
+psycho::get_contrasts(fit)
 
 ## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
-kable(contrasts$contrasts, digits=2)
+kable(psycho::get_contrasts(fit), digits=2)
 
 ## ---- fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA----
-ggplot(contrasts$means, aes(x=Level, y=Median, group=1)) +
+psycho::get_means(fit) %>% 
+  ggplot(aes(x=Level, y=Median, group=1)) +
   geom_line() +
   geom_pointrange(aes(ymin=CI_lower, ymax=CI_higher)) +
   ylab("Life Satisfaction") +

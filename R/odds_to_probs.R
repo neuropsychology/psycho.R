@@ -10,13 +10,11 @@
 #' @examples
 #' library(psycho)
 #' odds_to_probs(-1.45)
-#'
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @importFrom purrr keep discard
 #' @export
-odds_to_probs <- function(odds, subset=NULL, except=NULL, log=TRUE) {
+odds_to_probs <- function(odds, subset = NULL, except = NULL, log = TRUE) {
 
   # If vector
   if (ncol(as.matrix(odds)) == 1) {
@@ -74,7 +72,7 @@ odds_to_probs <- function(odds, subset=NULL, except=NULL, log=TRUE) {
 
 
 #' @keywords internal
-.odds_to_probs <- function(odds, log=TRUE) {
+.odds_to_probs <- function(odds, log = TRUE) {
   if (log == TRUE) {
     odds <- exp(odds)
   }

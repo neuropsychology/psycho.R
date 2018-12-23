@@ -1,6 +1,6 @@
-#' Omega Squared Interpretation
+#' Odds ratio interpreation for a posterior distribution.
 #'
-#' Return the interpretation of Omegas Squared.
+#' Interpret odds with a set of rules.
 #'
 #' @param x Odds ratio.
 #' @param log Are these log odds ratio?
@@ -9,8 +9,7 @@
 #'
 #' @examples
 #' library(psycho)
-#' interpret_odds(x=2)
-#'
+#' interpret_odds(x = 2)
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @seealso http://imaging.mrc-cbu.cam.ac.uk/statswiki/FAQ/effectSize
@@ -20,7 +19,7 @@
 #'  \item{Chen, H., Cohen, P., & Chen, S. (2010). How big is a big odds ratio? Interpreting the magnitudes of odds ratios in epidemiological studies. Communications in Statistics—Simulation and Computation®, 39(4), 860-864.}
 #'  }
 #' @export
-interpret_odds <- function(x, log=FALSE, direction=FALSE, rules="chen2010") {
+interpret_odds <- function(x, log = FALSE, direction = FALSE, rules = "chen2010") {
   if (rules %in% c("cohen1988", "sawilowsky2009")) {
     interpretation <- sapply(odds_to_d(x, log = log), .interpret_d, direction = direction, rules = rules, return_rules = FALSE)
   } else {
@@ -52,11 +51,10 @@ interpret_odds <- function(x, log=FALSE, direction=FALSE, rules="chen2010") {
 #' interpret_odds_posterior(posterior)
 #' interpret_odds_posterior(rnorm(1000, 0.1, 1))
 #' interpret_odds_posterior(rnorm(1000, 3, 1.5))
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-interpret_odds_posterior <- function(posterior, log=FALSE, rules="chen2010") {
+interpret_odds_posterior <- function(posterior, log = FALSE, rules = "chen2010") {
   if (rules %in% c("cohen1988", "sawilowsky2009")) {
     posterior <- odds_to_d(posterior, log = log)
     interpretation <- sapply(posterior, .interpret_d, direction = TRUE, rules = rules, return_rules = TRUE)
@@ -145,7 +143,7 @@ interpret_odds_posterior <- function(posterior, log=FALSE, rules="chen2010") {
 
 
 #' @keywords internal
-.interpret_odds <- function(x, log=FALSE, direction=FALSE, rules="chen2010", return_rules=TRUE) {
+.interpret_odds <- function(x, log = FALSE, direction = FALSE, rules = "chen2010", return_rules = TRUE) {
   if (x > 0) {
     d <- "positive"
   } else {
@@ -214,8 +212,7 @@ interpret_odds_posterior <- function(posterior, log=FALSE, rules="chen2010") {
 #'
 #' @examples
 #' library(psycho)
-#' odds_to_d(x=2)
-#'
+#' odds_to_d(x = 2)
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @seealso https://www.meta-analysis.com/downloads/Meta-analysis%20Converting%20among%20effect%20sizes.pdf
@@ -225,7 +222,7 @@ interpret_odds_posterior <- function(posterior, log=FALSE, rules="chen2010") {
 #'  \item{Sánchez-Meca, J., Marín-Martínez, F., & Chacón-Moscoso, S. (2003). Effect-size indices for dichotomized outcomes in meta-analysis. Psychological methods, 8(4), 448.}
 #'  }
 #' @export
-odds_to_d <- function(x, log=TRUE) {
+odds_to_d <- function(x, log = TRUE) {
   if (log == FALSE) {
     x <- log(x)
   }

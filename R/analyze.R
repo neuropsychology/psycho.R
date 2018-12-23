@@ -6,7 +6,7 @@
 #'  \item{\link[=analyze.lmerModLmerTest]{analyze.merModLmerTest}}
 #'  \item{\link[=analyze.glmerMod]{analyze.glmerMod}}
 #'  \item{\link[=analyze.lm]{analyze.lm}}
-#'  \item{\link[=analyze.lm]{analyze.glm}}
+#'  \item{\link[=analyze.glm]{analyze.glm}}
 #'  }
 #'  \itemize{
 #'  \item{\link[=analyze.htest]{analyze.htest}}
@@ -14,7 +14,9 @@
 #'  }
 #' \itemize{
 #'  \item{\link[=analyze.fa]{analyze.fa}}
-#'  \item{\link[=analyze.fa]{analyze.lavaan}}
+#'  \item{\link[=analyze.principal]{analyze.principal}}
+#'  \item{\link[=analyze.lavaan]{analyze.lavaan}}
+#'  \item{\link[=analyze.blavaan]{analyze.blavaan}}
 #'  }
 #'
 #' @param x object to analyze.

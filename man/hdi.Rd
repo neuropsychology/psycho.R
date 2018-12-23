@@ -25,7 +25,6 @@ summary(HDI_values)
 
 x <- matrix(rexp(200), 100)
 HDI_values <- HDI(x)
-
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

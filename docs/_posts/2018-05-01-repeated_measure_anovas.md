@@ -187,8 +187,8 @@ anova(fit)
 It seems that there is a significant main effect of the emotion condition, as well as an interaction with the participants' sex. Let's plot the estimated means.
 
 ``` r
-results <- get_contrasts(fit, "Emotion_Condition * Participant_Sex")
-print(results$means)
+estimated_means <- get_means(fit, "Emotion_Condition * Participant_Sex")
+estimated_means
 ```
 
 | Emotion\_Condition | Participant\_Sex |    Mean|    SE|    df|  CI\_lower|  CI\_higher|
@@ -199,7 +199,7 @@ print(results$means)
 | Neutral            | Male             |   12.89|  6.35|  23.3|      -0.24|       26.02|
 
 ``` r
-ggplot(results$means, aes(x=Emotion_Condition, y=Mean, color=Participant_Sex, group=Participant_Sex)) +
+ggplot(estimated_means, aes(x=Emotion_Condition, y=Mean, color=Participant_Sex, group=Participant_Sex)) +
   geom_line(position = position_dodge(.3)) +
   geom_pointrange(aes(ymin=CI_lower, ymax=CI_higher), 
                   position = position_dodge(.3)) +
@@ -213,7 +213,7 @@ ggplot(results$means, aes(x=Emotion_Condition, y=Mean, color=Participant_Sex, gr
 Let's investigate the contrasts:
 
 ``` r
-print(results$contrasts)
+get_contrasts(fit, "Emotion_Condition * Participant_Sex")
 ```
 
 | Contrast                         |  Difference|    SE|     df|  t.ratio|  p.value|
@@ -228,8 +228,7 @@ print(results$contrasts)
 It appears that the differences between men and women is not significant. However, by default, `get_contrasts` uses the Tukey method for p value adjustment. We can, with an exploratory mindset, **turn off the p value correction** (or choose other methods such as *bonferonni*, *fdr* and such).
 
 ``` r
-results <- get_contrasts(fit, "Emotion_Condition * Participant_Sex", adjust = "none")
-print(results$contrasts)
+get_contrasts(fit, "Emotion_Condition * Participant_Sex", adjust = "none")
 ```
 
 | Contrast                         |  Difference|    SE|     df|  t.ratio|  p.value|

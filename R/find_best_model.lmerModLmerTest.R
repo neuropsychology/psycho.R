@@ -14,16 +14,15 @@
 #' \dontrun{
 #' library(psycho)
 #' library(lmerTest)
-#'
+#' 
 #' data <- standardize(iris)
-#' fit <- lmerTest::lmer(Sepal.Length ~ Sepal.Width + Petal.Length + (1|Species), data=data)
-#'
+#' fit <- lmerTest::lmer(Sepal.Length ~ Sepal.Width + Petal.Length + (1 | Species), data = data)
+#' 
 #' best <- find_best_model(fit)
 #' best_formula <- best$formula
 #' best$table
-#'
 #' }
-#'
+#' 
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @importFrom stats update
@@ -31,16 +30,16 @@
 #'
 #' @method find_best_model lmerModLmerTest
 #' @export
-find_best_model.lmerModLmerTest <- function(fit, interaction=TRUE, fixed=NULL, ...) {
+find_best_model.lmerModLmerTest <- function(fit, interaction = TRUE, fixed = NULL, ...) {
 
   # Extract infos
   combinations <- find_combinations(as.formula(get_formula(fit)), interaction = interaction, fixed = fixed)
 
-  
+
   # Recreating the dataset without NA
   dataComplete <- fit@frame[complete.cases(fit@frame), ]
-  
-  
+
+
   # fit models
   models <- c()
   for (formula in combinations) {
@@ -51,14 +50,24 @@ find_best_model.lmerModLmerTest <- function(fit, interaction=TRUE, fixed=NULL, .
 
   # No warning messages for this part
   options(warn = -1)
-  
+
   # Model comparison
   comparison <- as.data.frame(do.call("anova", models))
-  comparison$formula <- combinations
 
   # Re-displaying warning messages
   options(warn = 0)
-  
+
+  # Creating row names to the combinations array equivalent to the comparison data frame
+  combinations <- as.data.frame(combinations, row.names = paste0("MODEL", seq(1, length(combinations))))
+
+  # Reordering the rows in the same way for both combinations and comparison before implementing the formulas
+  comparison <- comparison[ order(row.names(comparison)), ]
+  comparison$formula <- combinations[order(row.names(combinations)), ]
+
+  # Sorting the data frame by the AIC then BIC
+  comparison <- comparison[order(comparison$AIC, comparison$BIC), ]
+
+
 
   # Best model by criterion
   best_aic <- dplyr::arrange_(comparison, "AIC") %>%

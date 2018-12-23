@@ -23,19 +23,20 @@
 #'
 #' @examples
 #' df <- attitude
-#'
+#' 
 #' # Normal correlations
 #' results <- psycho::correlation(df)
 #' print(results)
 #' plot(results)
-#'
+#' 
 #' # Partial correlations with correction
-#' results <- psycho::correlation(df, type="partial",
-#'                                    method="spearman",
-#'                                    adjust="holm")
+#' results <- psycho::correlation(df,
+#'   type = "partial",
+#'   method = "spearman",
+#'   adjust = "holm"
+#' )
 #' print(results)
 #' plot(results)
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @importFrom stats na.omit p.adjust cor runif
@@ -91,7 +92,6 @@ correlation <- function(df,
     t <- corr$t
     ci <- corr$ci
     ci.adj <- corr$ci.adj
-
   } else {
     if (is.null(df2) == FALSE) {
       df <- cbind(df, df2)
@@ -142,7 +142,7 @@ correlation <- function(df,
   if (is.null(p) == FALSE) {
     if (adjust != "none") {
       if ((type == "full" & is.null(df2) == FALSE) | (type == "semi")) {
-        p[,] <- p.adjust(p, method = adjust)
+        p[, ] <- p.adjust(p, method = adjust)
       } else {
         p[lower.tri(p)] <- p.adjust(p[lower.tri(p)], method = adjust, n = choose(nrow(p), 2))
         p[upper.tri(p)] <- p.adjust(p[upper.tri(p)], method = adjust, n = choose(nrow(p), 2))
@@ -325,6 +325,6 @@ correlation <- function(df,
   # -------------
   output <- list(text = text, plot = plot, summary = summary, values = values)
 
-  class(output) <- c("psychobject", "list")
+  class(output) <- c("psychobject", "psychobject_correlation", "list")
   return(output)
 }

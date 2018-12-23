@@ -7,22 +7,22 @@
 #' @param length.out Length of numeric target variables.
 #' @param factors Type of summary for factors. Can be "combination" or "reference".
 #' @param numerics Type of summary for numerics Can be "combination", any function ("mean", "median", ...) or a value.
+#' @param na.rm Remove NaNs.
 #'
 #' @examples
 #' library(psycho)
-#'
+#' 
 #' df <- psycho::affective
-#' newdata <- refdata(df, target="Sex")
-#' newdata <- refdata(df, target="Sex", factors="combinations")
-#' newdata <- refdata(df, target=c("Sex", "Salary", "Tolerating"), length.out=3)
-#' newdata <- refdata(df, target=c("Sex", "Salary", "Tolerating"), numerics=0)
-#'
+#' newdata <- refdata(df, target = "Sex")
+#' newdata <- refdata(df, target = "Sex", factors = "combinations")
+#' newdata <- refdata(df, target = c("Sex", "Salary", "Tolerating"), length.out = 3)
+#' newdata <- refdata(df, target = c("Sex", "Salary", "Tolerating"), numerics = 0)
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @importFrom purrr keep
 #' @import tidyr
 #' @export
-refdata <- function(df, target="all", length.out=10, factors="reference", numerics="mean") {
+refdata <- function(df, target = "all", length.out = 10, factors = "reference", numerics = "mean", na.rm = TRUE) {
 
   # Target
   if (all(target == "all") | ncol(df) == 1) {
@@ -41,6 +41,8 @@ refdata <- function(df, target="all", length.out=10, factors="reference", numeri
 
 
   smart_summary <- function(x, numerics) {
+    if (na.rm == TRUE) x <- na.omit(x)
+
     if (is.numeric(x)) {
       fun <- paste0(numerics, "(x)")
       out <- eval(parse(text = fun))
@@ -98,7 +100,7 @@ refdata <- function(df, target="all", length.out=10, factors="reference", numeri
 
 
 #' @keywords internal
-.refdata_target <- function(target, length.out=10) {
+.refdata_target <- function(target, length.out = 10) {
   at_vars <- names(target)
   at_df <- data.frame()
   for (var in at_vars) {
@@ -130,10 +132,10 @@ refdata <- function(df, target="all", length.out=10, factors="reference", numeri
 
 
 #' @keywords internal
-.refdata_var <- function(x, length.out=10, varname=NULL) {
+.refdata_var <- function(x, length.out = 10, varname = NULL) {
   if (is.numeric(x)) {
-    out <- data.frame(seq(min(x, na.rm=TRUE),
-      max(x, na.rm=TRUE),
+    out <- data.frame(seq(min(x, na.rm = TRUE),
+      max(x, na.rm = TRUE),
       length.out = length.out
     ))
   } else if (is.factor(x)) {

@@ -25,12 +25,10 @@ Get formula of models. Implemented for:
 library(psycho)
 library(lme4)
 
-fit <- lme4::glmer(vs ~ wt + (1|gear), data=mtcars, family="binomial")
-fit <- lm(hp ~ wt, data=mtcars)
+fit <- lme4::glmer(vs ~ wt + (1 | gear), data = mtcars, family = "binomial")
+fit <- lm(hp ~ wt, data = mtcars)
 
 get_formula(fit)
-
-
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

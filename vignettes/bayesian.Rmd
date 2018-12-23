@@ -251,25 +251,22 @@ print(results)
 
 What interest us is the pairwise comparison between the groups. The `get_contrasts` function computes the estimated marginal means (least-squares means), *i.e.*, the means of each group estimated by the model, as well as the contrasts.
 
-```{r, message=FALSE, results="hide"}
-contrasts <- psycho::get_contrasts(fit, "Salary")
-```
 
-We can see the estimated means like that:
+We can see the estimated means (in fact, the median of the posterior distribution of the estimated means) like that:
 ```{r echo=T, message=FALSE, warning=FALSE, results='hide'}
-contrasts$means
+psycho::get_means(fit)
 ```
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-kable(contrasts$means, digits=2)
+kable(psycho::get_means(fit), digits=2)
 ```
 
 
 And the contrasts comparisons like that:
 ```{r echo=T, message=FALSE, warning=FALSE, results='hide'}
-contrasts$contrasts
+psycho::get_contrasts(fit)
 ```
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-kable(contrasts$contrasts, digits=2)
+kable(psycho::get_contrasts(fit), digits=2)
 ```
 
 As we can see, the only probable difference (MPE > 90%) is between **Salary <1000** and **Salary 2000+**.
@@ -277,7 +274,8 @@ As we can see, the only probable difference (MPE > 90%) is between **Salary <100
 ### Model Visualization
 
 ```{r, fig.width=7, fig.height=4.5, eval = TRUE, results='markup', fig.align='center', comment=NA}
-ggplot(contrasts$means, aes(x=Level, y=Median, group=1)) +
+psycho::get_means(fit) %>% 
+  ggplot(aes(x=Level, y=Median, group=1)) +
   geom_line() +
   geom_pointrange(aes(ymin=CI_lower, ymax=CI_higher)) +
   ylab("Life Satisfaction") +
@@ -464,10 +462,6 @@ Relationships in the real world are often non-linear. For example, based on the 
 
 ### Model Exploration
 
-```{r, message=FALSE, results="hide", warning=FALSE, eval=FALSE}
-# Let's fit our model (it takes more time)
-fit <- rstanarm::stan_lmer(Concealing ~ poly(Age, 2, raw=TRUE) + (1|Salary), data=df)
-```
 ```{r message=FALSE, warning=FALSE, include=FALSE, results="hide"}
 # Let's fit our model (it takes more time)
 fit <- rstanarm::stan_lmer(Concealing ~ poly(Age, 2, raw=TRUE) + (1|Salary), data=df, iter=500, chains=2)
@@ -482,7 +476,7 @@ results <- psycho::analyze(fit)
 summary(results, round = 2)
 ```
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-kable(summary(results, round = 2))
+knitr::kable(summary(results, round = 2))
 ```
 
 As we can see, both the linear relationship and the second order curvature are highly probable. However, when setting `raw=TRUE` in the formula, the coefficients become unintepretable. So let's visualize them.

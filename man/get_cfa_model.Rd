@@ -20,10 +20,9 @@ library(psycho)
 
 x <- psych::fa(psych::Thurstone.33, 2)
 loadings <- format_loadings(x)$loadings
-get_cfa_model(loadings, treshold="max")
-get_cfa_model(loadings, treshold=0.1)
+get_cfa_model(loadings, treshold = "max")
+get_cfa_model(loadings, treshold = 0.1)
 }
-
 
 }
 \author{

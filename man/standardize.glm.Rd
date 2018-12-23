@@ -19,11 +19,10 @@ Compute standardized coefficients.
 \examples{
 \dontrun{
 library(psycho)
-fit <- glm(Sex ~ Adjusting, data=psycho::affective, family="binomial")
-fit <- lme4::glmer(Sex ~ Adjusting + (1|Sex), data=psycho::affective, family="binomial")
+fit <- glm(Sex ~ Adjusting, data = psycho::affective, family = "binomial")
+fit <- lme4::glmer(Sex ~ Adjusting + (1 | Sex), data = psycho::affective, family = "binomial")
 
 standardize(fit)
-
 }
 
 }

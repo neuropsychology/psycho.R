@@ -20,11 +20,10 @@ Pseudo-R-squared for Logistic Models.
 \dontrun{
 library(psycho)
 
-fit <- glm(vs ~ wt, data=mtcars, family="binomial")
-fit <- glm(Sex ~ Adjusting, data=psycho::affective, family="binomial")
+fit <- glm(vs ~ wt, data = mtcars, family = "binomial")
+fit <- glm(Sex ~ Adjusting, data = psycho::affective, family = "binomial")
 
 get_R2(fit)
-
 }
 
 }

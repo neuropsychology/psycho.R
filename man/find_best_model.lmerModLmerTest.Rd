@@ -29,12 +29,11 @@ library(psycho)
 library(lmerTest)
 
 data <- standardize(iris)
-fit <- lmerTest::lmer(Sepal.Length ~ Sepal.Width + Petal.Length + (1|Species), data=data)
+fit <- lmerTest::lmer(Sepal.Length ~ Sepal.Width + Petal.Length + (1 | Species), data = data)
 
 best <- find_best_model(fit)
 best_formula <- best$formula
 best$table
-
 }
 
 }

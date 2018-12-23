@@ -16,25 +16,27 @@
 #' \dontrun{
 #' library(psycho)
 #' library(ggplot2)
-#'
-#' fit <- glm(Sex ~ Adjusting, data=affective, family="binomial")
-#'
+#' 
+#' fit <- glm(Sex ~ Adjusting, data = affective, family = "binomial")
+#' 
 #' refgrid <- psycho::refdata(affective, "Adjusting")
-#' predicted <- get_predicted(fit, newdata=refgrid)
-#'
-#' ggplot(predicted, aes(x=Adjusting, y=Sex_Predicted)) +
+#' predicted <- get_predicted(fit, newdata = refgrid)
+#' 
+#' ggplot(predicted, aes(x = Adjusting, y = Sex_Predicted)) +
 #'   geom_line() +
-#'   geom_ribbon(aes(ymin=Sex_CI_2.5,
-#'                   ymax=Sex_CI_97.5),
-#'                   alpha=0.1)
-#'
+#'   geom_ribbon(aes(
+#'     ymin = Sex_CI_2.5,
+#'     ymax = Sex_CI_97.5
+#'   ),
+#'   alpha = 0.1
+#'   )
 #' }
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @importFrom dplyr bind_cols
 #' @importFrom tibble rownames_to_column
 #' @export
-get_predicted.glm <- function(fit, newdata="model", prob=0.95, odds_to_probs=TRUE, ...) {
+get_predicted.glm <- function(fit, newdata = "model", prob = 0.95, odds_to_probs = TRUE, ...) {
 
 
   # Extract names

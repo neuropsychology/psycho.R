@@ -22,18 +22,18 @@
 #' \dontrun{
 #' library(psycho)
 #' library(rstanarm)
-#'
+#' 
 #' data <- standardize(attitude)
-#' fit <- rstanarm::stan_glm(rating ~ advance + privileges, data=data)
-#'
+#' fit <- rstanarm::stan_glm(rating ~ advance + privileges, data = data)
+#' 
 #' best <- find_best_model(fit)
 #' best_formula <- best$formula
 #' best$table
-#'
+#' 
 #' # To deactivate Kfold evaluation
-#' best <- find_best_model(fit, K=0)
+#' best <- find_best_model(fit, K = 0)
 #' }
-#'
+#' 
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @importFrom rstanarm loo kfold bayes_R2
@@ -42,7 +42,7 @@
 #'
 #' @method find_best_model stanreg
 #' @export
-find_best_model.stanreg <- function(fit, interaction=TRUE, fixed=NULL, K=10, k_treshold=NULL, ...) {
+find_best_model.stanreg <- function(fit, interaction = TRUE, fixed = NULL, K = 10, k_treshold = NULL, ...) {
 
   # Extract infos
   combinations <- find_combinations(fit$formula, interaction = interaction, fixed = fixed)
@@ -58,15 +58,15 @@ find_best_model.stanreg <- function(fit, interaction=TRUE, fixed=NULL, K=10, k_t
     formula <- combinations[i]
     newfit <- update(fit, formula = formula, verbose = FALSE)
     R2s[[formula]] <- median(rstanarm::bayes_R2(newfit))
-    
-    
+
+
     if (!is.null(k_treshold)) {
       loo <- rstanarm::loo(newfit, k_treshold = k_treshold)
     } else {
       loo <- rstanarm::loo(newfit)
     }
-    
-    
+
+
     complexities[[formula]] <- length(newfit$coefficients)
     loos[[formula]] <- loo
     if (K > 1) {
@@ -88,14 +88,14 @@ find_best_model.stanreg <- function(fit, interaction=TRUE, fixed=NULL, K=10, k_t
       formula = formula,
       complexity = complexity - 1,
       R2 = R2s[[formula]],
-      looic = Estimates["looic","Estimate"],
-      looic_se = Estimates["looic","SE"],
-      elpd_loo = Estimates["elpd_loo","Estimate"],
-      elpd_loo_se = Estimates["elpd_loo","SE"],
-      p_loo = Estimates["p_loo","Estimate"],
-      p_loo_se = Estimates["p_loo","SE"],
-      elpd_kfold = Estimates["p_loo","Estimate"],
-      elpd_kfold_se = Estimates["p_loo","SE"]
+      looic = Estimates["looic", "Estimate"],
+      looic_se = Estimates["looic", "SE"],
+      elpd_loo = Estimates["elpd_loo", "Estimate"],
+      elpd_loo_se = Estimates["elpd_loo", "SE"],
+      p_loo = Estimates["p_loo", "Estimate"],
+      p_loo_se = Estimates["p_loo", "SE"],
+      elpd_kfold = Estimates["p_loo", "Estimate"],
+      elpd_kfold_se = Estimates["p_loo", "SE"]
     )
     comparison <- rbind(comparison, model)
   }

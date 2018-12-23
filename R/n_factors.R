@@ -14,13 +14,12 @@
 #' @examples
 #' df <- dplyr::select_if(attitude, is.numeric)
 #' results <- psycho::n_factors(df)
-#'
+#' 
 #' summary(results)
 #' plot(results)
-#'
+#' 
 #' # See details on methods
 #' psycho::values(results)$methods
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @importFrom qgraph cor_auto
@@ -33,7 +32,7 @@
 #' @importFrom stats dnorm
 #' @importFrom stats qnorm
 #' @export
-n_factors <- function(df, rotate="varimax", fm="minres", n=NULL) {
+n_factors <- function(df, rotate = "varimax", fm = "minres", n = NULL) {
 
   # Copy the parallel function from nFactors to correct the use of mvrnorm
   parallel <- function(subject = 100, var = 10, rep = 100, cent = 0.05,
@@ -228,23 +227,36 @@ n_factors <- function(df, rotate="varimax", fm="minres", n=NULL) {
 
   # Text
   # -------------
-  # Plural
-  if (best_n == 1) {
-    factor_text <- " factor "
-  } else {
+  # Deal with equality
+  if (length(best_n) > 1) {
+    best_n <- head(best_n, length(best_n) - 1) %>%
+      paste(collapse = ", ") %>%
+      paste(best_n[length(best_n)], sep = " and ")
     factor_text <- " factors "
+    n_methods <- unique(best_n_df$n.Methods)
+    best_n_methods <- paste0(paste(best_n_methods, collapse = "; "), "; respectively")
+  } else {
+    n_methods <- best_n_df$n.Methods
+    # Plural
+    if (best_n == 1) {
+      factor_text <- " factor "
+    } else {
+      factor_text <- " factors "
+    }
   }
+
+
 
   text <- paste0(
     "The choice of ",
     best_n,
     factor_text,
     "is supported by ",
-    best_n_df$n.Methods,
+    n_methods,
     " (out of ",
     round(nrow(results)),
     "; ",
-    round(best_n_df$n.Methods / nrow(results) * 100, 2),
+    round(n_methods / nrow(results) * 100, 2),
     "%) methods (",
     best_n_methods,
     ")."

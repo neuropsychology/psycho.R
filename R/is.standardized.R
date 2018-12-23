@@ -7,20 +7,19 @@
 #'
 #' @examples
 #' library(psycho)
-#'
+#' 
 #' df <- psycho::affective
 #' is.standardized(df)
-#'
+#' 
 #' dfZ <- psycho::standardize(df)
 #' is.standardized(dfZ)
-#'
 #' @return bool.
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @import purrr
 #' @export
-is.standardized <- function(df, tol=0.1) {
+is.standardized <- function(df, tol = 0.1) {
   dfZ <- standardize(df)
   dfZnum <- purrr::keep(dfZ, is.numeric)
 

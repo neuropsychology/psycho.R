@@ -7,8 +7,7 @@
 #'
 #' @examples
 #' library(psycho)
-#' interpret_omega_sq(x=0.05)
-#'
+#' interpret_omega_sq(x = 0.05)
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @seealso http://imaging.mrc-cbu.cam.ac.uk/statswiki/FAQ/effectSize
@@ -18,7 +17,7 @@
 #'  \item{Field, A (2013) Discovering statistics using IBM SPSS Statistics. Fourth Edition. Sage:London.}
 #'  }
 #' @export
-interpret_omega_sq <- function(x, rules="field2013") {
+interpret_omega_sq <- function(x, rules = "field2013") {
   interpretation <- sapply(x, .interpret_omega_sq, rules = rules, return_rules = FALSE)
   return(interpretation)
 }
@@ -29,7 +28,7 @@ interpret_omega_sq <- function(x, rules="field2013") {
 
 
 #' @keywords internal
-.interpret_omega_sq <- function(x, rules="field2013", return_rules=TRUE) {
+.interpret_omega_sq <- function(x, rules = "field2013", return_rules = TRUE) {
   if (!is.list(rules)) {
     if (rules == "field2013") {
       rules <- list(

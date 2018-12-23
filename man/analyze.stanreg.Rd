@@ -15,7 +15,7 @@
 
 \item{index}{Index of effect existence to report. Can be 'overlap' or 'ROPE'.}
 
-\item{ROPE_bounds}{Bounds ot the ROPE. If NULL and effsize is TRUE, than the ROPE.
+\item{ROPE_bounds}{Bounds of the ROPE. If NULL and effsize is TRUE, than the ROPE.
 will have default values c(-0.1, 0.1) and computed on the standardized posteriors.}
 
 \item{effsize}{Compute Effect Sizes according to Cohen (1988). For linear models only.}
@@ -44,25 +44,27 @@ library(psycho)
 library(rstanarm)
 
 data <- attitude
-fit <- rstanarm::stan_glm(rating ~ advance + privileges, data=data)
+fit <- rstanarm::stan_glm(rating ~ advance + privileges, data = data)
 
-results <- analyze(fit, effsize=TRUE)
+results <- analyze(fit, effsize = TRUE)
 summary(results)
 print(results)
 plot(results)
 
 
-fit <- rstanarm::stan_glmer(Sepal.Length ~ Sepal.Width + (1|Species), data=iris)
+fit <- rstanarm::stan_lmer(Sepal.Length ~ Sepal.Width + (1 | Species), data = iris)
 results <- analyze(fit)
 summary(results)
 
 fit <- rstanarm::stan_glm(Sex ~ Adjusting,
-    data=psycho::affective, family="binomial")
+  data = psycho::affective, family = "binomial"
+)
 results <- analyze(fit)
 summary(results)
 
-fit <- rstanarm::stan_glmer(Sex ~ Adjusting + (1|Salary),
-    data=psycho::affective, family="binomial")
+fit <- rstanarm::stan_glmer(Sex ~ Adjusting + (1 | Salary),
+  data = psycho::affective, family = "binomial"
+)
 results <- analyze(fit)
 summary(results)
 }

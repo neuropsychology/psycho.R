@@ -23,13 +23,12 @@ Analyze lm objects.
 }
 \examples{
 library(psycho)
-fit <- lm(Sepal.Length ~ Sepal.Width, data=iris)
-fit <- lm(Sepal.Length ~ Sepal.Width * Species, data=iris)
+fit <- lm(Sepal.Length ~ Sepal.Width, data = iris)
+fit <- lm(Sepal.Length ~ Sepal.Width * Species, data = iris)
 
 results <- analyze(fit)
 summary(results)
 print(results)
-
 }
 \author{
 \href{https://dominiquemakowski.github.io/}{Dominique Makowski}

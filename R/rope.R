@@ -12,15 +12,14 @@
 #'
 #' @examples
 #' library(psycho)
-#'
+#' 
 #' posterior <- rnorm(1000, 0, 0.01)
 #' results <- rope(posterior)
 #' results$decision
-#'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
-rope <- function(posterior, bounds=c(-0.1, 0.1), CI=95, overlap=FALSE) {
+rope <- function(posterior, bounds = c(-0.1, 0.1), CI = 95, overlap = FALSE) {
 
 
   # Basic rope --------------------------------------------------------------
