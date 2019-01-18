@@ -8,25 +8,26 @@
 #' \dontrun{
 #' library(rstanarm)
 #' library(psycho)
-#'
+#' 
 #' fit <- stan_glm(Sepal.Length ~ Petal.Width, data = iris)
 #' priors <- model_to_priors(fit)
 #' update(fit, prior = priors$prior)
-#'
+#' 
 #' fit <- stan_glmer(Subjective_Valence ~ Emotion_Condition + (1 | Participant_ID),
-#'     data = psycho::emotion)
+#'   data = psycho::emotion
+#' )
 #' priors <- model_to_priors(fit)
-#'
+#' 
 #' fit1 <- stan_glm(Subjective_Valence ~ Emotion_Condition,
 #'   data = filter(psycho::emotion, Participant_ID == "1S")
 #' )
-#'
+#' 
 #' fit2 <- stan_glm(Subjective_Valence ~ Emotion_Condition,
 #'   data = filter(psycho::emotion, Participant_ID == "1S"),
 #'   prior = priors$prior, prior_intercept = priors$prior_intercept
 #' )
 #' }
-#'
+#' 
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @import dplyr

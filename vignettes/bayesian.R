@@ -224,10 +224,6 @@ ggplot(predicted_linear, aes(x=Age, y=Concealing_Median)) +
                   ymax=Concealing_CI_95), 
               alpha=0.1)
 
-## ---- message=FALSE, results="hide", warning=FALSE, eval=FALSE-----------
-#  # Let's fit our model (it takes more time)
-#  fit <- rstanarm::stan_lmer(Concealing ~ poly(Age, 2, raw=TRUE) + (1|Salary), data=df)
-
 ## ----message=FALSE, warning=FALSE, include=FALSE, results="hide"---------
 # Let's fit our model (it takes more time)
 fit <- rstanarm::stan_lmer(Concealing ~ poly(Age, 2, raw=TRUE) + (1|Salary), data=df, iter=500, chains=2)
@@ -240,7 +236,7 @@ results <- psycho::analyze(fit)
 summary(results, round = 2)
 
 ## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
-kable(summary(results, round = 2))
+knitr::kable(summary(results, round = 2))
 
 ## ----echo=T, message=FALSE, warning=FALSE--------------------------------
 refgrid <- df %>% 

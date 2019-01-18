@@ -3,7 +3,7 @@
 
 
 
-# [0.4.0](https://github.com/neuropsychology/psycho.R/releases/tag/0.4.0) (2018-06-11)
+# [0.4.0](https://github.com/neuropsychology/psycho.R/) (2018-06-11)
 
 ### Breaking changes
 - Major release, lots of undocumented breaking changes.)
