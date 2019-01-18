@@ -4,12 +4,14 @@
 \alias{format_p}
 \title{Format p values.}
 \usage{
-format_p(pvalues, stars = TRUE)
+format_p(pvalues, stars = TRUE, stars_only = FALSE)
 }
 \arguments{
-\item{pvalues}{P values (scalar or vector).}
+\item{pvalues}{p values (scalar or vector).}
 
-\item{stars}{Add stars.}
+\item{stars}{Add significance stars.}
+
+\item{stars_only}{Return only significance stars.}
 }
 \description{
 Format p values.

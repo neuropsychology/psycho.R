@@ -40,8 +40,8 @@ Imports:
     purrr,
     psych,
     MASS,
+	qgraph,
     nFactors,
-    qgraph,
     ppcor,
     ggcorrplot,
     rstanarm,
@@ -56,13 +56,13 @@ Imports:
     BayesFactor (>= 0.9.1),
     scales,
     loo (>= 2.0.0),
-    lavaan
+    lavaan,
+	blavaan (>= 0.3.4)
 Suggests:
     knitr,
     rmarkdown,
     testthat,
     covr,
     plotly,
-    GPArotation,
-    blavaan (>= 0.3.4)
+    GPArotation   
 VignetteBuilder: knitr

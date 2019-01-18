@@ -8,7 +8,7 @@
 #'
 #' @examples
 #' library(psycho)
-#' 
+#'
 #' data <- simulate_data_regression(coefs = c(0.1, 0.8), sample = 50, error = 0)
 #' fit <- lm(y ~ ., data = data)
 #' coef(fit)
@@ -38,7 +38,7 @@ simulate_data_regression <- function(coefs = 0.5, sample = 100, error = 0) {
   X <- X %*% chol_0
 
   # create new correlation structure (zeros can be replaced with other r vals)
-  coefs_structure <- diag(x = 1, nrow = n_var + 1, ncol = n_var + 1, names = TRUE)
+  coefs_structure <- diag(x = 1, nrow = n_var + 1, ncol = n_var + 1)
   coefs_structure[-1, 1] <- coefs
   coefs_structure[1, -1] <- coefs
 

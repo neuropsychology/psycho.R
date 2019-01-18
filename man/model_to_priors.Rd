@@ -24,7 +24,8 @@ priors <- model_to_priors(fit)
 update(fit, prior = priors$prior)
 
 fit <- stan_glmer(Subjective_Valence ~ Emotion_Condition + (1 | Participant_ID),
-    data = psycho::emotion)
+  data = psycho::emotion
+)
 priors <- model_to_priors(fit)
 
 fit1 <- stan_glm(Subjective_Valence ~ Emotion_Condition,

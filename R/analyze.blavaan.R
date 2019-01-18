@@ -12,10 +12,10 @@
 #' @examples
 #' library(psycho)
 #' library(lavaan)
-#' 
+#'
 #' model <- " visual  =~ x1 + x2 + x3\ntextual =~ x4 + x5 + x6\nspeed   =~ x7 + x8 + x9 "
 #' x <- lavaan::cfa(model, data = HolzingerSwineford1939)
-#' 
+#'
 #' rez <- analyze(x)
 #' print(rez)
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
@@ -24,6 +24,7 @@
 #' https://www.researchgate.net/post/Whats_the_standard_of_fit_indices_in_SEM
 #'
 #' @importFrom lavaan parameterEstimates fitmeasures
+#' @importFrom blavaan standardizedposterior
 #'
 #' @export
 analyze.blavaan <- function(x, CI = 90, standardize = FALSE, ...) {
