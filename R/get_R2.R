@@ -28,12 +28,12 @@ get_R2 <- function(fit, ...) {
 #' @examples
 #' \dontrun{
 #' library(psycho)
-#'
+#' 
 #' fit <- lm(Tolerating ~ Adjusting, data = psycho::affective)
-#'
+#' 
 #' get_R2(fit)
 #' }
-#'
+#' 
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #' @export
 get_R2.lm <- function(fit, ...) {
@@ -57,13 +57,13 @@ get_R2.lm <- function(fit, ...) {
 #' @examples
 #' \dontrun{
 #' library(psycho)
-#'
+#' 
 #' fit <- glm(vs ~ wt, data = mtcars, family = "binomial")
 #' fit <- glm(Sex ~ Adjusting, data = psycho::affective, family = "binomial")
-#'
+#' 
 #' get_R2(fit)
 #' }
-#'
+#' 
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @export
@@ -93,12 +93,12 @@ get_R2.glm <- function(fit, method = "nakagawa", ...) {
 #' \dontrun{
 #' library(psycho)
 #' library(rstanarm)
-#'
+#' 
 #' fit <- rstanarm::stan_glm(Adjusting ~ Tolerating, data = psycho::affective)
-#'
+#' 
 #' get_R2(fit)
 #' }
-#'
+#' 
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @seealso \link[=bayes_R2.stanreg]{"bayes_R2.stanreg"}
@@ -146,15 +146,17 @@ get_R2.stanreg <- function(fit, silent = FALSE, ...) {
 #' @examples
 #' \dontrun{
 #' library(psycho)
-#'
+#' 
 #' fit <- lmerTest::lmer(Tolerating ~ Adjusting + (1 | Sex),
-#'    data = psycho::affective)
+#'   data = psycho::affective
+#' )
 #' fit <- lme4::glmer(Sex ~ Adjusting + (1 | Salary),
-#'    data = na.omit(psycho::affective), family = "binomial")
-#'
+#'   data = na.omit(psycho::affective), family = "binomial"
+#' )
+#' 
 #' get_R2(fit)
 #' }
-#'
+#' 
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #' @export
 get_R2.merMod <- function(fit, ...) {
@@ -175,12 +177,12 @@ get_R2.merMod <- function(fit, ...) {
 #' @examples
 #' \dontrun{
 #' library(psycho)
-#'
+#' 
 #' fit <- lmerTest::lmer(Sepal.Length ~ Sepal.Width + (1 | Species), data = iris)
-#'
+#' 
 #' R2_nakagawa(fit)
 #' }
-#'
+#' 
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
 #' @references
@@ -209,13 +211,13 @@ R2_nakagawa <- function(fit) {
 #' \dontrun{
 #' library(psycho)
 #' library(rstanarm)
-#'
+#' 
 #' data <- attitude
 #' fit <- rstanarm::stan_glm(rating ~ advance + privileges, data = data)
-#'
+#' 
 #' R2_LOO_Adjusted(fit)
 #' }
-#'
+#' 
 #' @author \href{https://github.com/strengejacke}{Daniel Luedecke}
 #'
 #' @import rstantools
@@ -262,7 +264,7 @@ R2_LOO_Adjusted <- function(fit) {
 #' @examples
 #' library(psycho)
 #' library(lme4)
-#'
+#' 
 #' fit <- lme4::glmer(vs ~ wt + (1 | gear), data = mtcars, family = "binomial")
 #' R2_tjur(fit)
 #' @author \href{https://github.com/strengejacke}{Daniel Lüdecke}

@@ -19,9 +19,11 @@ R2 and adjusted R2 for GLMMs.
 library(psycho)
 
 fit <- lmerTest::lmer(Tolerating ~ Adjusting + (1 | Sex),
-   data = psycho::affective)
+  data = psycho::affective
+)
 fit <- lme4::glmer(Sex ~ Adjusting + (1 | Salary),
-   data = na.omit(psycho::affective), family = "binomial")
+  data = na.omit(psycho::affective), family = "binomial"
+)
 
 get_R2(fit)
 }
