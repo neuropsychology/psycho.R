@@ -12,7 +12,6 @@
 [![codecov](https://codecov.io/gh/neuropsychology/psycho.R/branch/master/graph/badge.svg)](https://codecov.io/gh/neuropsychology/psycho.R)
 [![Dependency Status](https://dependencyci.com/github/neuropsychology/psycho.R/badge)](https://dependencyci.com/github/neuropsychology/psycho.R)
 [![CRAN downloads month](https://cranlogs.r-pkg.org/badges/psycho)](https://CRAN.R-project.org/package=psycho)
-[![HitCount](http://hits.dwyl.io/neuropsychology/neuropsychology/Psycho.r.svg)](http://hits.dwyl.io/neuropsychology/neuropsychology/Psycho.r)
 
 
 
@@ -27,6 +26,10 @@
 |Authors|[![](https://img.shields.io/badge/CV-D._Makowski-purple.svg?colorB=9C27B0)](https://dominiquemakowski.github.io/)|
 |Reference|[![DOI](http://joss.theoj.org/papers/10.21105/joss.00470/status.svg)](https://doi.org/10.21105/joss.00470)|
 
+---
+
+
+:warning: **NOTE: This package is being deprecated in favour of the [report](https://github.com/easystats/report) package. Please check it out and ask for any missing features.**
 
 ---
 

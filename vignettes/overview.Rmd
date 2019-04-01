@@ -32,8 +32,13 @@ library(rstanarm)
 ```
 
 
+The package mainly revolves around the `psychobject`. Main functions from the package return this type, and the `analyze()` function transforms other R objects into psychobjects. 4 functions can be then applied on a psychobject: `summary()`, `print()`, `plot()` and `values()`.
 
-## Installation
+```{r, out.width=700, echo = FALSE, eval = TRUE, fig.align='center'}
+knitr::include_graphics("images/workflow.PNG")
+```
+
+# Installation
 
 
 ### Install R and R Studio
@@ -73,14 +78,6 @@ library(psycho)
 ```
 
 
-## General Workflow
-
-
-The package mainly revolves around the `psychobject`. Main functions from the package return this type, and the `analyze()` function transforms other R objects into psychobjects. 4 functions can be then applied on a psychobject: `summary()`, `print()`, `plot()` and `values()`.
-
-```{r, out.width=700, echo = FALSE, eval = TRUE, fig.align='center'}
-knitr::include_graphics("images/workflow.PNG")
-```
 
 <!-- ![](https://github.com/neuropsychology/psycho.R/blob/master/vignettes/images/workflow.PNG) -->
 
@@ -107,96 +104,96 @@ knitr::include_graphics("images/workflow.PNG")
 - [Installing R, R Studio and psycho](https://neuropsychology.github.io/psycho.R/2018/03/21/installingR.html)
 
 
-# Other 
+<!-- # Other  -->
 
 
-## Custom Plots
+<!-- ## Custom Plots -->
 
-In general, the `plot()` function returns, most of the times, a ggplot object. That means it remains quite flexible. Here's an example.
-
-
-```{r eval=TRUE, fig.align='center', fig.height=4.5, fig.width=9, message=FALSE, warning=FALSE, results='markup'}
-library(psycho)
-
-# Let's create a correlation plot
-p <- plot(psycho::correlation(iris))
-
-# Custom theme and colours
-p <- p +
-  scale_fill_gradientn(colors = c("#4CAF50", "#FFEB3B", "#FF5722")) +
-  ylab("Variables\n") +
-  labs(fill = "r") +
-  theme(
-    plot.background = element_rect(fill = "#607D8B"),
-    axis.title.y = element_text(size = 20, angle = 90, colour = "white"),
-    axis.text = element_text(size = 15, colour = "white"),
-    legend.title = element_text(size = 20, colour = "white"),
-    legend.text = element_text(size = 15, colour = "white"),
-    title = element_text(size = 16, colour = "white")
-  )
-p
-```
+<!-- In general, the `plot()` function returns, most of the times, a ggplot object. That means it remains quite flexible. Here's an example. -->
 
 
-------
+<!-- ```{r eval=TRUE, fig.align='center', fig.height=4.5, fig.width=9, message=FALSE, warning=FALSE, results='markup'} -->
+<!-- library(psycho) -->
 
-## Single-case methods
+<!-- # Let's create a correlation plot -->
+<!-- p <- plot(psycho::correlation(iris)) -->
 
-### Crawford-Garthwaite (2007) Bayesian test for single-case vs. control group
-
-Neuropsychologists often need to compare a single case to a small control group. However, the standard two-sample t-test does not work because the case is only one observation. Crawford and Garthwaite (2012) demonstrate that the Crawford-Garthwaite (2007) t-test is a better approach (in terms of controlling Type I error rate) than other commonly-used alternatives.
-
-
-```{r echo=TRUE, message=FALSE, warning=FALSE, results='markup'}
-library(psycho)
-
-patient <- 61 # The IQ of a patient
-controls <- c(86, 100, 112, 95, 121, 102) # The IQs of a control group
-
-result <- crawford.test(patient, controls)
-print(result)
-plot(result)
-```
-
-### Crawford-Howell (1998) t-test for dissociation
-
-Assessing dissociation between processes is a fundamental part of clinical neuropsychology. However, while the detection of suspected impairments is a fundamental feature of single-case studies, evidence of an impairment on a given task usually becomes of theoretical interest only if it is observed in the context of less impaired or normal performance on other tasks. Crawford and Garthwaite (2012) demonstrate that the Crawford-Howell (1998) t-test for dissociation is a better approach (in terms of controlling Type I error rate) than other commonly-used alternatives.
+<!-- # Custom theme and colours -->
+<!-- p <- p + -->
+<!--   scale_fill_gradientn(colors = c("#4CAF50", "#FFEB3B", "#FF5722")) + -->
+<!--   ylab("Variables\n") + -->
+<!--   labs(fill = "r") + -->
+<!--   theme( -->
+<!--     plot.background = element_rect(fill = "#607D8B"), -->
+<!--     axis.title.y = element_text(size = 20, angle = 90, colour = "white"), -->
+<!--     axis.text = element_text(size = 15, colour = "white"), -->
+<!--     legend.title = element_text(size = 20, colour = "white"), -->
+<!--     legend.text = element_text(size = 15, colour = "white"), -->
+<!--     title = element_text(size = 16, colour = "white") -->
+<!--   ) -->
+<!-- p -->
+<!-- ``` -->
 
 
-```{r echo=TRUE, message=FALSE, warning=FALSE, results='markup'}
-library(psycho)
+<!-- ------ -->
 
-case_X <- 132
-case_Y <- 7
-controls_X <- c(100, 125, 89, 105, 109, 99)
-controls_Y <- c(7, 8, 9, 6, 7, 10)
+<!-- ## Single-case methods -->
 
-result <- crawford_dissociation.test(case_X, case_Y, controls_X, controls_Y)
-```
+<!-- ### Crawford-Garthwaite (2007) Bayesian test for single-case vs. control group -->
+
+<!-- Neuropsychologists often need to compare a single case to a small control group. However, the standard two-sample t-test does not work because the case is only one observation. Crawford and Garthwaite (2012) demonstrate that the Crawford-Garthwaite (2007) t-test is a better approach (in terms of controlling Type I error rate) than other commonly-used alternatives. -->
 
 
-### Mellenbergh & van den Brink (1998) test for pre-post comparison
+<!-- ```{r echo=TRUE, message=FALSE, warning=FALSE, results='markup'} -->
+<!-- library(psycho) -->
 
-Clinicians willing to check if their intervention had an effect on a single participant might want to use the Mellenbergh & van den Brink (1998) test, comparing the difference between baseline and post-test to the standart deviation of a control group.
+<!-- patient <- 61 # The IQ of a patient -->
+<!-- controls <- c(86, 100, 112, 95, 121, 102) # The IQs of a control group -->
 
-```{r echo=TRUE, message=FALSE, warning=FALSE, results='markup'}
-library(psycho)
+<!-- result <- crawford.test(patient, controls) -->
+<!-- print(result) -->
+<!-- plot(result) -->
+<!-- ``` -->
 
-t0 <- 82 # The IQ of a patient at baseline
-t1 <- 105 # The IQ of a patient after the new therapy
-controls <- c(94, 100, 108, 95, 102, 94) # The IQs of a control group
+<!-- ### Crawford-Howell (1998) t-test for dissociation -->
 
-rez <- mellenbergh.test(t0, t1, controls = controls)
-
-# if we do not have a control group, we can also directly enter the SD of the score.
-# For IQ, the SD is of 15.
-rez <- mellenbergh.test(t0, t1, controls = 15)
-```
+<!-- Assessing dissociation between processes is a fundamental part of clinical neuropsychology. However, while the detection of suspected impairments is a fundamental feature of single-case studies, evidence of an impairment on a given task usually becomes of theoretical interest only if it is observed in the context of less impaired or normal performance on other tasks. Crawford and Garthwaite (2012) demonstrate that the Crawford-Howell (1998) t-test for dissociation is a better approach (in terms of controlling Type I error rate) than other commonly-used alternatives. -->
 
 
+<!-- ```{r echo=TRUE, message=FALSE, warning=FALSE, results='markup'} -->
+<!-- library(psycho) -->
+
+<!-- case_X <- 132 -->
+<!-- case_Y <- 7 -->
+<!-- controls_X <- c(100, 125, 89, 105, 109, 99) -->
+<!-- controls_Y <- c(7, 8, 9, 6, 7, 10) -->
+
+<!-- result <- crawford_dissociation.test(case_X, case_Y, controls_X, controls_Y) -->
+<!-- ``` -->
 
 
-## Credits
+<!-- ### Mellenbergh & van den Brink (1998) test for pre-post comparison -->
+
+<!-- Clinicians willing to check if their intervention had an effect on a single participant might want to use the Mellenbergh & van den Brink (1998) test, comparing the difference between baseline and post-test to the standart deviation of a control group. -->
+
+<!-- ```{r echo=TRUE, message=FALSE, warning=FALSE, results='markup'} -->
+<!-- library(psycho) -->
+
+<!-- t0 <- 82 # The IQ of a patient at baseline -->
+<!-- t1 <- 105 # The IQ of a patient after the new therapy -->
+<!-- controls <- c(94, 100, 108, 95, 102, 94) # The IQs of a control group -->
+
+<!-- rez <- mellenbergh.test(t0, t1, controls = controls) -->
+
+<!-- # if we do not have a control group, we can also directly enter the SD of the score. -->
+<!-- # For IQ, the SD is of 15. -->
+<!-- rez <- mellenbergh.test(t0, t1, controls = 15) -->
+<!-- ``` -->
+
+
+
+
+# Credits
 
 This package helped you? Don't forget to cite the various packages you used :)
 
@@ -205,6 +202,6 @@ You can cite `psycho` as follows:
 - Makowski, (2018). *The psycho Package: An Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470
 
 
-## Contribution
+# Contribution
 
 Improve this vignette by modifying [this](https://github.com/neuropsychology/psycho.R/blob/master/vignettes/overview.Rmd) file!
