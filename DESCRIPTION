@@ -1,7 +1,7 @@
 Package: psycho
 Type: Package
 Title: Efficient and Publishing-Oriented Workflow for Psychological Science
-Version: 0.4.9
+Version: 0.5.0
 Authors@R: c(
     person("Dominique", 
         "Makowski", 
@@ -33,6 +33,11 @@ Depends:
     R (>= 3.5.0)
 Imports:
     methods,
+    insight,
+    bayestestR,
+    parameters,
+    performance,
+    effectsize,
     dplyr,
     ggplot2,
     tidyr,
@@ -40,7 +45,7 @@ Imports:
     purrr,
     psych,
     MASS,
-	qgraph,
+    qgraph,
     nFactors,
     ppcor,
     ggcorrplot,
