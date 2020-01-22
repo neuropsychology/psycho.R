@@ -4,8 +4,13 @@
 \alias{crawford_dissociation.test}
 \title{Crawford-Howell (1998) modified t-test for testing difference between a patientâ€™s performance on two tasks.}
 \usage{
-crawford_dissociation.test(case_X, case_Y, controls_X, controls_Y,
-  verbose = TRUE)
+crawford_dissociation.test(
+  case_X,
+  case_Y,
+  controls_X,
+  controls_Y,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{case_X}{Single value (patient's score on test X).}

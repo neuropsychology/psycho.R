@@ -19,13 +19,12 @@
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
-#' @import purrr
 #' @export
 is.standardized <- function(df, tol = 0.1) {
   dfZ <- effectsize::standardize(df)
-  dfZnum <- purrr::keep(dfZ, is.numeric)
+  dfZnum <- dfZ[sapply(dfZ, is.numeric)]
 
-  dfnum <- purrr::keep(df, is.numeric)
+  dfnum <- dfZ[sapply(df, is.numeric)]
 
   error <- as.matrix(dfnum) - as.matrix(dfZnum)
   error <- as.data.frame(error)
@@ -50,105 +49,69 @@ is.standardized <- function(df, tol = 0.1) {
 
 
 
-#' Model to Prior.
-#'
-#' Convert a Bayesian model's results to priors.
-#'
-#' @param fit A stanreg model.
-#' @param autoscale Set autoscale.
-#' @examples
-#' \dontrun{
-#' library(rstanarm)
-#' library(psycho)
-#'
-#' fit <- stan_glm(Sepal.Length ~ Petal.Width, data = iris)
-#' priors <- model_to_priors(fit)
-#' update(fit, prior = priors$prior)
-#'
-#' fit <- stan_glmer(Subjective_Valence ~ Emotion_Condition + (1 | Participant_ID),
-#'   data = psycho::emotion
-#' )
-#' priors <- model_to_priors(fit)
-#'
-#' fit1 <- stan_glm(Subjective_Valence ~ Emotion_Condition,
-#'   data = filter(psycho::emotion, Participant_ID == "1S")
-#' )
-#'
-#' fit2 <- stan_glm(Subjective_Valence ~ Emotion_Condition,
-#'   data = filter(psycho::emotion, Participant_ID == "1S"),
-#'   prior = priors$prior, prior_intercept = priors$prior_intercept
-#' )
-#' }
-#'
-#' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
-#'
-#' @import dplyr
-#' @importFrom stats update
-#' @importFrom rstanarm normal
-#' @export
-model_to_priors <- function(fit, autoscale = FALSE) {
-  posteriors <- as.data.frame(fit)
-
-  # Varnames
-  varnames <- names(posteriors)
-  varnames <- varnames[grepl("b\\[", varnames) == FALSE]
-
-  fixed_effects <- names(fit$coefficients)
-  fixed_effects <- fixed_effects[grepl("b\\[", fixed_effects) == FALSE]
-  fixed_effects <- fixed_effects[fixed_effects != "(Intercept)"]
-
-  # Get priors
-  prior_intercept <- list()
-  priors <- list()
-  prior_aux <- list()
-  for (prior in varnames) {
-    if (prior == "(Intercept)") {
-      prior_intercept$mean <- mean(posteriors[[prior]])
-      prior_intercept$sd <- sd(posteriors[[prior]])
-    } else if (prior %in% fixed_effects) {
-      priors[[prior]] <- list()
-      priors[[prior]]$mean <- mean(posteriors[[prior]])
-      priors[[prior]]$sd <- sd(posteriors[[prior]])
-    } else {
-      prior_aux[[prior]] <- list()
-      prior_aux[[prior]]$mean <- mean(posteriors[[prior]])
-      prior_aux[[prior]]$sd <- sd(posteriors[[prior]])
-    }
-  }
+# model_to_priors <- function(fit, autoscale = FALSE) {
+#   posteriors <- as.data.frame(fit)
+#
+#   # Varnames
+#   varnames <- names(posteriors)
+#   varnames <- varnames[grepl("b\\[", varnames) == FALSE]
+#
+#   fixed_effects <- names(fit$coefficients)
+#   fixed_effects <- fixed_effects[grepl("b\\[", fixed_effects) == FALSE]
+#   fixed_effects <- fixed_effects[fixed_effects != "(Intercept)"]
+#
+#   # Get priors
+#   prior_intercept <- list()
+#   priors <- list()
+#   prior_aux <- list()
+#   for (prior in varnames) {
+#     if (prior == "(Intercept)") {
+#       prior_intercept$mean <- mean(posteriors[[prior]])
+#       prior_intercept$sd <- sd(posteriors[[prior]])
+#     } else if (prior %in% fixed_effects) {
+#       priors[[prior]] <- list()
+#       priors[[prior]]$mean <- mean(posteriors[[prior]])
+#       priors[[prior]]$sd <- sd(posteriors[[prior]])
+#     } else {
+#       prior_aux[[prior]] <- list()
+#       prior_aux[[prior]]$mean <- mean(posteriors[[prior]])
+#       prior_aux[[prior]]$sd <- sd(posteriors[[prior]])
+#     }
+#   }
+#
+#
+#   prior_intercept <- rstanarm::normal(
+#     prior_intercept$mean,
+#     prior_intercept$sd,
+#     autoscale = autoscale
+#   )
+#   prior <- .format_priors(priors, autoscale = autoscale)
+#   prior_aux <- .format_priors(prior_aux, autoscale = autoscale)
+#
+#   return(list(prior_intercept = prior_intercept, prior = prior, priox_aux = prior_aux))
+# }
 
 
-  prior_intercept <- rstanarm::normal(
-    prior_intercept$mean,
-    prior_intercept$sd,
-    autoscale = autoscale
-  )
-  prior <- .format_priors(priors, autoscale = autoscale)
-  prior_aux <- .format_priors(prior_aux, autoscale = autoscale)
 
-  return(list(prior_intercept = prior_intercept, prior = prior, priox_aux = prior_aux))
-}
-
-
-#' @keywords internal
-.format_priors <- function(priors, autoscale = FALSE) {
-  prior_mean <- data.frame(priors) %>%
-    select(contains("mean")) %>%
-    tidyr::gather() %>%
-    select_("value") %>%
-    pull()
-
-  prior_sd <- data.frame(priors) %>%
-    select(contains("sd")) %>%
-    tidyr::gather() %>%
-    select_("value") %>%
-    pull()
-
-  prior <- rstanarm::normal(
-    prior_mean,
-    prior_sd,
-    autoscale = autoscale
-  )
-}
+# .format_priors <- function(priors, autoscale = FALSE) {
+#   prior_mean <- data.frame(priors) %>%
+#     select(contains("mean")) %>%
+#     tidyr::gather() %>%
+#     select_("value") %>%
+#     pull()
+#
+#   prior_sd <- data.frame(priors) %>%
+#     select(contains("sd")) %>%
+#     tidyr::gather() %>%
+#     select_("value") %>%
+#     pull()
+#
+#   prior <- rstanarm::normal(
+#     prior_mean,
+#     prior_sd,
+#     autoscale = autoscale
+#   )
+# }
 
 
 
@@ -239,7 +202,7 @@ percentile_to_z <- function(percentile) {
 #'
 #' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
 #'
-#' @importFrom stats model.frame
+#' @importFrom stats model.frame update
 #' @import dplyr
 #' @export
 power_analysis <- function(fit, n_max, n_min = NULL, step = 1, n_batch = 1, groups = NULL, verbose = TRUE, CI = 90) {
@@ -282,7 +245,7 @@ power_analysis <- function(fit, n_max, n_min = NULL, step = 1, n_batch = 1, grou
     }
     # Progress
     if (verbose == TRUE) {
-      cat(paste0(format_digit(round((n - n_min) / (n_max - n_min) * 100)), "%\n"))
+      cat(paste0(insight::format_value(round((n - n_min) / (n_max - n_min) * 100)), "%\n"))
     }
   }
   return(results)

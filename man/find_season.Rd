@@ -4,8 +4,13 @@
 \alias{find_season}
 \title{Find season of dates.}
 \usage{
-find_season(dates, winter = "12-21", spring = "3-20",
-  summer = "6-21", fall = "9-22")
+find_season(
+  dates,
+  winter = "12-21",
+  spring = "3-20",
+  summer = "6-21",
+  fall = "9-22"
+)
 }
 \arguments{
 \item{dates}{Array of dates.}

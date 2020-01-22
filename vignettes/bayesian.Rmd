@@ -11,30 +11,11 @@ abstract: |
   Why use frequentist methods when you can use, in an even simpler way, the Bayesian framework? Throughout this tutorial, we will explore many of the analyses you might want to do with your data.
 vignette: >
   %\VignetteIndexEntry{BayesianPsychology}
-  %\VignetteDepends{dplyr}
-  %\VignetteDepends{tidyr}
-  %\VignetteDepends{ggplot2}
-  %\VignetteDepends{plotly}
   \usepackage[utf8]{inputenc}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
   chunk_output_type: console
 ---
-
-
-
-------
-
-<!-- ```{r, echo=FALSE, message=FALSE, warning=FALSE} -->
-<!-- library(knitr) -->
-<!-- library(rstanarm) -->
-<!-- library(emmeans) -->
-<!-- library(dplyr) -->
-<!-- library(tidyr) -->
-<!-- library(ggplot2) -->
-<!-- library(psycho) -->
-<!-- options(mc.cores=1) -->
-<!-- ``` -->
 
 
 

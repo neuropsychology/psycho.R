@@ -122,7 +122,7 @@ crawford.test <- function(patient,
     direction,
     insight::format_value((1 - p) * 100),
     "% (",
-    parameters::format_ci(ci$CI_low, ci$CI_high, ci = CI / 100),
+    insight::format_ci(ci$CI_low, ci$CI_high, ci = CI / 100),
     ") of the control population."
   )
 

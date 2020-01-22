@@ -4,8 +4,16 @@
 \alias{power_analysis}
 \title{Power analysis for fitted models.}
 \usage{
-power_analysis(fit, n_max, n_min = NULL, step = 1, n_batch = 1,
-  groups = NULL, verbose = TRUE, CI = 90)
+power_analysis(
+  fit,
+  n_max,
+  n_min = NULL,
+  step = 1,
+  n_batch = 1,
+  groups = NULL,
+  verbose = TRUE,
+  CI = 90
+)
 }
 \arguments{
 \item{fit}{A lm or stanreg model.}

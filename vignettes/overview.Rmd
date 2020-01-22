@@ -26,9 +26,6 @@ vignette: >
 
 ```{r, echo=F, message=FALSE, warning=FALSE}
 library(knitr)
-library(dplyr)
-library(ggplot2)
-library(rstanarm)
 ```
 
 

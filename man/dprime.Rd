@@ -4,8 +4,15 @@
 \alias{dprime}
 \title{Dprime (d') and Other Signal Detection Theory indices.}
 \usage{
-dprime(n_hit, n_fa, n_miss = NULL, n_cr = NULL, n_targets = NULL,
-  n_distractors = NULL, adjusted = TRUE)
+dprime(
+  n_hit,
+  n_fa,
+  n_miss = NULL,
+  n_cr = NULL,
+  n_targets = NULL,
+  n_distractors = NULL,
+  adjusted = TRUE
+)
 }
 \arguments{
 \item{n_hit}{Number of hits.}

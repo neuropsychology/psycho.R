@@ -1,7 +1,3 @@
-
-
-
-
 #' Remove empty columns.
 #'
 #' Removes all columns containing ony NaNs.
@@ -25,90 +21,6 @@ remove_empty_cols <- function(df) {
 #'
 #' @export
 is.psychobject <- function(x) inherits(x, "psychobject")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#' Simulates data for single or multiple regression.
-#'
-#' Simulates data for single or multiple regression.
-#'
-#' @param coefs Desired theorethical coefs. Can be a single value or a list.
-#' @param sample Desired sample size.
-#' @param error The error (standard deviation of gaussian noise).
-#'
-#' @examples
-#' library(psycho)
-#'
-#' data <- simulate_data_regression(coefs = c(0.1, 0.8), sample = 50, error = 0)
-#' fit <- lm(y ~ ., data = data)
-#' coef(fit)
-#' @details See https://stats.stackexchange.com/questions/59062/multiple-linear-regression-simulation
-#'
-#' @author TPArrow
-#'
-#' @export
-simulate_data_regression <- function(coefs = 0.5, sample = 100, error = 0) {
-
-  # Prevent error
-  coefs[coefs == 0] <- 0.01
-
-  y <- rnorm(sample, 0, 1)
-
-  n_var <- length(coefs)
-  X <- scale(matrix(rnorm(sample * (n_var), 0, 1), ncol = n_var))
-  X <- cbind(y, X)
-
-  # find the current correlation matrix
-  cor_0 <- var(X)
-
-  # cholesky decomposition to get independence
-  chol_0 <- solve(chol(cor_0))
-
-  X <- X %*% chol_0
-
-  # create new correlation structure (zeros can be replaced with other r vals)
-  coefs_structure <- diag(x = 1, nrow = n_var + 1, ncol = n_var + 1)
-  coefs_structure[-1, 1] <- coefs
-  coefs_structure[1, -1] <- coefs
-
-  X <- X %*% chol(coefs_structure) * sd(y) + mean(y)
-  X <- X[, -1]
-
-  # Add noise
-  y <- y + rnorm(sample, 0, error)
-
-  data <- data.frame(X)
-  names(data) <- paste0("V", 1:n_var)
-  data$y <- as.vector(y)
-
-  return(data)
-}
-
-
-
-
-
 
 
 
@@ -315,6 +227,30 @@ simulate_data_regression <- function(coefs = 0.5, sample = 100, error = 0) {
 
 
 
+# interpret_blavaan <- function(fit, indices = c("BIC", "DIC", "WAIC", "LOOIC"), ...) {
+#   values <- list()
+#
+#   indices <- lavaan::fitmeasures(fit)
+#
+#
+#   for (index in names(indices)) {
+#     values[index] <- indices[index]
+#   }
+#
+#   # Summary
+#   summary <- as.data.frame(indices) %>%
+#     tibble::rownames_to_column("Index") %>%
+#     rename_("Value" = "indices") %>%
+#     mutate_("Index" = "str_to_upper(Index)")
+#
+#   # Text
+#   relevant_indices <- summary[summary$Index %in% c("BIC", "DIC", "WAIC", "LOOIC"), ]
+#   text <- paste0(relevant_indices$Index, " = ", insight::format_value(relevant_indices$Value), collapse = ", ")
+#
+#   output <- list(text = text, summary = summary, values = values, plot = "Not available yet")
+#   class(output) <- c("psychobject", "list")
+#   return(output)
+# }
 
 
 
@@ -437,335 +373,5 @@ find_combinations.formula <- function(object, interaction = TRUE, fixed = NULL, 
   combinations <- paste0(outcome, " ~ ", fixed, combinations, paste0(random, collapse = ""))
   return(combinations)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#' Clean and format formula.
-#'
-#' Clean and format formula.
-#'
-#' @param formula formula
-#' @param ... Arguments passed to or from other methods.
-#'
-#'
-#' @examples
-#' library(psycho)
-#' library(lme4)
-#'
-#' fit <- lm(hp ~ wt, data = mtcars)
-#'
-#' format_formula(fit$call$formula)
-#' @author \href{https://dominiquemakowski.github.io/}{Dominique Makowski}
-#'
-#' @export
-format_formula <- function(formula) {
-  formula <- tryCatch({
-    stringr::str_squish(paste(format(eval(formula)), collapse = ""))
-  }, error = function(e) {
-    formula <- stringr::str_squish(paste(format(formula), collapse = ""))
-  })
-
-  return(formula)
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# get_graph.lavaan <- function(fit, links = c("Regression", "Correlation", "Loading"), standardize = FALSE, threshold_Coef = NULL, threshold_p = NULL, threshold_MPE = NULL, digits = 2, CI = "default", labels_CI = TRUE, ...) {
-#   # https://www.r-bloggers.com/ggplot2-sem-models-with-tidygraph-and-ggraph/
-#
-#
-#   if (labels_CI == TRUE) {
-#     if (CI != "default") {
-#       results <- analyze(fit, CI = CI, standardize = standardize)
-#     } else {
-#       results <- analyze(fit, standardize = standardize)
-#     }
-#   } else {
-#     results <- analyze(fit, standardize = standardize)
-#   }
-#
-#   summary <- summary(results)
-#   CI <- results$values$CI
-#
-#   # Check what type of model
-#   if (class(fit) %in% c("blavaan")) {
-#     summary$Coef <- summary$Median
-#     if (is.null(threshold_MPE)) {
-#       threshold_MPE <- -1
-#     }
-#     summary <- summary %>%
-#       filter_("MPE >= threshold_MPE")
-#   } else if (class(fit) %in% c("lavaan")) {
-#     if (is.null(threshold_p)) {
-#       threshold_p <- 1.1
-#     }
-#     summary <- summary %>%
-#       filter_("p <= threshold_p")
-#   } else {
-#     stop(paste("Error in UseMethod('plot_lavaan') : no applicable method for 'plot_lavaan' applied to an object of class", class(fit)))
-#   }
-#
-#   # Deal with thresholds
-#   if (is.null(threshold_Coef)) {
-#     threshold_Coef <- min(abs(summary$Coef)) - 1
-#   }
-#
-#   # Edge properties
-#   edges <- summary %>%
-#     mutate_("abs_coef" = "abs(Coef)") %>%
-#     filter_(
-#       "Type %in% c(links)",
-#       "From != To",
-#       "abs_coef >= threshold_Coef"
-#     ) %>%
-#     select(-one_of("abs_coef")) %>%
-#     rename_(
-#       "to" = "To",
-#       "from" = "From"
-#     )
-#
-#   # Labels
-#   if (labels_CI == TRUE) {
-#     edges <- edges %>%
-#       mutate_("Label" = 'paste0(insight::format_value(Coef, digits),
-#               ", ", CI, "% CI [", insight::format_value(CI_lower, digits),
-#               ", ", insight::format_value(CI_higher, digits), "]")')
-#   } else {
-#     edges <- edges %>%
-#       mutate_("Label" = "insight::format_value(Coef, digits)")
-#   }
-#   edges <- edges %>%
-#     mutate_(
-#       "Label_Regression" = "ifelse(Type=='Regression', Label, '')",
-#       "Label_Correlation" = "ifelse(Type=='Correlation', Label, '')",
-#       "Label_Loading" = "ifelse(Type=='Loading', Label, '')"
-#     )
-#   edges <- edges[colSums(!is.na(edges)) > 0]
-#
-#   # Identify latent variables for nodes
-#   latent_nodes <- edges %>%
-#     filter_('Type == "Loading"') %>%
-#     distinct_("to") %>%
-#     transmute_("Name" = "to", "Latent" = TRUE)
-#
-#   nodes_list <- unique(c(edges$from, edges$to))
-#
-#   # Node properties
-#   nodes <- summary %>%
-#     filter_(
-#       "From == To",
-#       "From %in% nodes_list"
-#     ) %>%
-#     mutate_("Name" = "From") %>%
-#     left_join(latent_nodes, by = "Name") %>%
-#     mutate_("Latent" = "if_else(is.na(Latent), FALSE, Latent)") %>%
-#     select(one_of(c("Name", "Latent")))
-#
-#   return(list(nodes = nodes, edges = edges))
-# }
-
-
-
-
-
-
-# get_graph.fa <- function(fit, threshold_Coef = NULL, digits = 2, ...) {
-#   edges <- summary(analyze(fit)) %>%
-#     tidyr::gather("To", "Coef", -one_of("N", "Item", "Label")) %>%
-#     rename_("From" = "Item") %>%
-#     mutate_("Label" = "insight::format_value(Coef, digits)") %>%
-#     select(one_of("From", "To", "Coef", "Label"), everything()) %>%
-#     dplyr::filter()
-#
-#   # Deal with thresholds
-#   if (is.null(threshold_Coef)) {
-#     threshold_Coef <- min(abs(edges$Coef)) - 1
-#   }
-#
-#   edges <- edges %>%
-#     filter_("Coef > threshold_Coef")
-#
-#   nodes <- data.frame("Name" = c(edges$From, edges$To)) %>%
-#     distinct_("Name")
-#
-#   return(list(nodes = nodes, edges = edges))
-# }
-
-
-
-
-# get_graph.psychobject_correlation <- function(fit, ...) {
-#   vars <- row.names(fit$values$r)
-#
-#   r <- fit$values$r %>%
-#     as.data.frame() %>%
-#     tibble::rownames_to_column("from") %>%
-#     tidyr::gather("to", "r", vars)
-#
-#   if ("p" %in% names(fit$values)) {
-#     r <- r %>%
-#       full_join(
-#         fit$values$p %>%
-#           as.data.frame() %>%
-#           tibble::rownames_to_column("from") %>%
-#           tidyr::gather("to", "p", vars),
-#         by = c("from", "to")
-#       )
-#   }
-#
-#   r <- filter_(r, "!from == to")
-#   return(r)
-# }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#' Interpret fit measures of blavaan objects
-#'
-#' Interpret fit measures of blavaan objects
-#'
-#' @param indices Vector of strings indicating which indices to report. Only works for bayesian objects for now.
-#' @param fit A blavaan model.
-#' @param ... Other arguments.
-#' @export
-interpret_blavaan <- function(fit, indices = c("BIC", "DIC", "WAIC", "LOOIC"), ...) {
-  values <- list()
-
-  indices <- lavaan::fitmeasures(fit)
-
-
-  for (index in names(indices)) {
-    values[index] <- indices[index]
-  }
-
-  # Summary
-  summary <- as.data.frame(indices) %>%
-    tibble::rownames_to_column("Index") %>%
-    rename_("Value" = "indices") %>%
-    mutate_("Index" = "str_to_upper(Index)")
-
-  # Text
-  relevant_indices <- summary[summary$Index %in% c("BIC", "DIC", "WAIC", "LOOIC"), ]
-  text <- paste0(relevant_indices$Index, " = ", insight::format_value(relevant_indices$Value), collapse = ", ")
-
-  output <- list(text = text, summary = summary, values = values, plot = "Not available yet")
-  class(output) <- c("psychobject", "list")
-  return(output)
-}
-
-
-
-
-
-
-
-
-
-
-
-
 
 

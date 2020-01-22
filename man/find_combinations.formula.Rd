@@ -4,8 +4,7 @@
 \alias{find_combinations.formula}
 \title{Generate all combinations of predictors of a formula.}
 \usage{
-\method{find_combinations}{formula}(object, interaction = TRUE,
-  fixed = NULL, ...)
+\method{find_combinations}{formula}(object, interaction = TRUE, fixed = NULL, ...)
 }
 \arguments{
 \item{object}{Formula.}
