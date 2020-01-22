@@ -41,7 +41,7 @@ The main goal of the `psycho` package is to provide tools for psychologists, neu
 
 ## Contribute
 
-**`psycho` is a young package in need of affection.** You can easily hop aboard the developpment of this open-source software and improve psychological science:
+**`psycho` is a young package in need of affection.** You can easily hop aboard the development of this open-source software and improve psychological science:
 
 - Need some help? Found a bug? Request a new feature? Just open an [issue](https://github.com/neuropsychology/psycho.R/issues) :relaxed:
 - Want to add a feature? Correct a bug? You're more than welcome to [contribute](https://github.com/neuropsychology/psycho.R/blob/master/.github/CONTRIBUTING.md)!
