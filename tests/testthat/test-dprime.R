@@ -1,6 +1,7 @@
 context("dprime")
 
-test_that("Correct Value", {
+
+test_that("dprime", {
   testthat::expect_equal(dprime(9, 2, 1, 7)$dprime, 1.65, tolerance = 0.1)
   testthat::expect_equal(dprime(1, 9, 1, 0)$dprime, -1.49, tolerance = 0.1)
 

@@ -1,4 +1,7 @@
-#' Crawford-Howell (1998) modified t-test for testing difference between a patient’s performance on two tasks.
+
+
+
+#' Crawford-Howell (1998) modified t-test for testing difference between a patientâ€™s performance on two tasks.
 #'
 #' Assessing dissociation between processes is a fundamental part of clinical neuropsychology. However, while the detection of suspected impairments is a fundamental feature of single-case studies, evidence of an impairment on a given task usually becomes of theoretical interest only if it is observed in the context of less impaired or normal performance on other tasks. Crawford and Garthwaite (2012) demonstrate that the Crawford-Howell (1998) t-test for dissociation is a better approach (in terms of controlling Type I error rate) than other commonly-used alternatives.
 #' .
@@ -13,16 +16,16 @@
 #'
 #' @examples
 #' library(psycho)
-#' 
+#'
 #' case_X <- 142
 #' case_Y <- 7
 #' controls_X <- c(100, 125, 89, 105, 109, 99)
 #' controls_Y <- c(7, 8, 9, 6, 7, 10)
-#' 
+#'
 #' crawford_dissociation.test(case_X, case_Y, controls_X, controls_Y)
 #' @author Dominique Makowski
 #'
-#' @importFrom stats sd pt
+#' @importFrom stats sd pt cor
 #' @export
 crawford_dissociation.test <- function(case_X, case_Y, controls_X, controls_Y, verbose = TRUE) {
   X_mean <- mean(controls_X)
@@ -63,9 +66,9 @@ crawford_dissociation.test <- function(case_X, case_Y, controls_X, controls_Y, v
     "dissociation between test X and test Y (t(",
     degfree,
     ") = ",
-    format_digit(tval),
+    insight::format_value(tval),
     ", p ",
-    format_p(pval),
+    parameters::format_p(pval),
     "). The patient's score on ",
     var_interpretation1,
     " is",
@@ -84,3 +87,7 @@ crawford_dissociation.test <- function(case_X, case_Y, controls_X, controls_Y, v
 
   return(result)
 }
+
+
+
+

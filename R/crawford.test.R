@@ -23,16 +23,16 @@
 #'
 #' @examples
 #' library(psycho)
-#' 
+#'
 #' crawford.test(patient = 125, mean = 100, sd = 15, n = 100)
 #' plot(crawford.test(patient = 80, mean = 100, sd = 15, n = 100))
-#' 
+#'
 #' crawford.test(patient = 10, controls = c(0, -2, 5, 2, 1, 3, -4, -2))
 #' test <- crawford.test(patient = 7, controls = c(0, -2, 5, -6, 0, 3, -4, -2))
 #' plot(test)
 #' @author Dominique Makowski
 #'
-#' @importFrom stats pnorm var approx rchisq
+#' @importFrom stats pnorm var approx rchisq rnorm density
 #' @importFrom scales rescale
 #' @import ggplot2
 #' @export
@@ -94,9 +94,7 @@ crawford.test <- function(patient,
 
   pvalues <- pvalues / 2
   p <- mean(pvalues)
-  CI <- HDI(pvalues, prob = CI / 100)
-  # CI_1 <- sort(pvalues)[iter * (100 - CI) / 100]
-
+  ci <- bayestestR::hdi(pvalues, ci = CI / 100)
 
   # Text --------------------------------------------------------------------
 
@@ -106,26 +104,26 @@ crawford.test <- function(patient,
 
   text <- paste0(
     "The Bayesian test for single case assessment (Crawford, Garthwaite, 2007) suggests that the patient's score (Raw = ",
-    format_digit(patient),
+    insight::format_value(patient),
     ", Z = ",
-    format_digit(z_score),
+    insight::format_value(z_score),
     ", percentile = ",
-    format_digit(perc),
+    insight::format_value(perc),
     ") is",
     p_interpretation,
     "different from the controls (M = ",
-    format_digit(sample_mean),
+    insight::format_value(sample_mean),
     ", SD = ",
-    format_digit(sample_sd),
+    insight::format_value(sample_sd),
     ", p ",
-    format_p(p),
+    parameters::format_p(p),
     ").",
     " The patient's score is",
     direction,
-    format_digit((1 - p) * 100),
-    "% (95% CI [",
-    paste(format_digit(sort(c((1 - CI$values$HDImin) * 100, (1 - CI$values$HDImax) * 100))), collapse = ", "),
-    "]) of the control population."
+    insight::format_value((1 - p) * 100),
+    "% (",
+    insight::format_ci(ci$CI_low, ci$CI_high, ci = CI / 100),
+    ") of the control population."
   )
 
 
@@ -143,8 +141,8 @@ crawford.test <- function(patient,
     controls_n = n,
     text = text,
     p = p,
-    CI_lower = CI$values$HDImin,
-    CI_higher = CI$values$HDImax
+    CI_lower = ci$CI_low,
+    CI_higher = ci$CI_high
   )
 
   summary <- data.frame(
@@ -152,12 +150,12 @@ crawford.test <- function(patient,
     controls_sd = sample_sd,
     controls_n = n,
     p = p,
-    CI_lower = CI$values$HDImin,
-    CI_higher = CI$values$HDImax
+    CI_lower = ci$CI_low,
+    CI_higher = ci$CI_high
   )
 
   if (is.null(controls)) {
-    controls <- rnorm_perfect(n, sample_mean, sample_sd)
+    controls <- bayestestR::distribution_normal(n, sample_mean, sample_sd)
   }
 
 
@@ -171,16 +169,16 @@ crawford.test <- function(patient,
 
 
 
-  plot <- rnorm_perfect(length(uncertainty), 0, 1) %>%
+  plot <- bayestestR::distribution_normal(length(uncertainty), 0, 1) %>%
     density() %>%
     as.data.frame() %>%
     mutate_(y = "y/max(y)") %>%
     mutate(distribution = "Control") %>%
     rbind(uncertainty %>%
-      density() %>%
-      as.data.frame() %>%
-      mutate_(y = "y/max(y)") %>%
-      mutate(distribution = "Uncertainty")) %>%
+            density() %>%
+            as.data.frame() %>%
+            mutate_(y = "y/max(y)") %>%
+            mutate(distribution = "Uncertainty")) %>%
     mutate_(x = "scales::rescale(x, from=c(0, 1), to = c(sample_mean, sample_mean+sample_sd))") %>%
     ggplot(aes_string(x = "x", ymin = 0, ymax = "y")) +
     geom_ribbon(aes_string(fill = "distribution", alpha = "distribution")) +
@@ -224,7 +222,7 @@ crawford.test <- function(patient,
 #'
 #' @examples
 #' library(psycho)
-#' 
+#'
 #' crawford.test.freq(patient = 10, controls = c(0, -2, 5, 2, 1, 3, -4, -2))
 #' crawford.test.freq(patient = 7, controls = c(0, -2, 5, 2, 1, 3, -4, -2))
 #' @author Dan Mirman, Dominique Makowski
@@ -242,7 +240,7 @@ crawford.test.freq <- function(patient, controls) {
   if (pval > .05 & pval / 2 < .05) {
     one_tailed <- paste0(
       " However, the null hypothesis of no difference can be rejected at a one-tailed 5% significance level (one-tailed p ",
-      format_p(pval / 2),
+      parameters::format_p(pval / 2),
       ")."
     )
   } else {
@@ -255,24 +253,24 @@ crawford.test.freq <- function(patient, controls) {
 
   text <- paste0(
     "The Crawford-Howell (1998) t-test suggests that the patient's score (",
-    format_digit(patient),
+    insight::format_value(patient),
     ") is",
     p_interpretation,
     "different from the controls (M = ",
-    format_digit(mean(controls)),
+    insight::format_value(mean(controls)),
     ", SD = ",
-    format_digit(sd(controls)),
+    insight::format_value(sd(controls)),
     ", t(",
     degfree,
     ") = ",
-    format_digit(tval),
+    insight::format_value(tval),
     ", p ",
-    format_p(pval),
+    parameters::format_p(pval),
     ").",
     one_tailed,
     " The patient's score is",
     t_interpretation,
-    format_digit((1 - pval) * 100),
+    insight::format_value((1 - pval) * 100),
     "% of the control population."
   )
 
@@ -288,5 +286,5 @@ crawford.test.freq <- function(patient, controls) {
 
   output <- list(text = text, plot = plot, summary = summary, values = values)
   class(output) <- c("psychobject", "list")
-  return(output)
+  output
 }

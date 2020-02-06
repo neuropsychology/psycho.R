@@ -2,10 +2,17 @@
 % Please edit documentation in R/dprime.R
 \name{dprime}
 \alias{dprime}
-\title{Dprime and Other Signal Detection Theory indices.}
+\title{Dprime (d') and Other Signal Detection Theory indices.}
 \usage{
-dprime(n_hit, n_fa, n_miss = NULL, n_cr = NULL, n_targets = NULL,
-  n_distractors = NULL, adjusted = TRUE)
+dprime(
+  n_hit,
+  n_fa,
+  n_miss = NULL,
+  n_cr = NULL,
+  n_targets = NULL,
+  n_distractors = NULL,
+  adjusted = TRUE
+)
 }
 \arguments{
 \item{n_hit}{Number of hits.}
@@ -38,7 +45,7 @@ Returns a list containing the following indices:
 Note that for d' and beta, adjustement for extreme values are made following the recommandations of Hautus (1995).
 }
 \description{
-Computes Signal Detection Theory indices (d', beta, A', B''D, c).
+Computes Signal Detection Theory indices, including d', beta, A', B''D and c.
 }
 \examples{
 library(psycho)

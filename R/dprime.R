@@ -1,6 +1,6 @@
-#' Dprime and Other Signal Detection Theory indices.
+#' Dprime (d') and Other Signal Detection Theory indices.
 #'
-#' Computes Signal Detection Theory indices (d', beta, A', B''D, c).
+#' Computes Signal Detection Theory indices, including d', beta, A', B''D and c.
 #'
 #' @param n_hit Number of hits.
 #' @param n_fa Number of false alarms.
@@ -23,25 +23,24 @@
 #'
 #'
 #' Note that for d' and beta, adjustement for extreme values are made following the recommandations of Hautus (1995).
-
-
+#'
 #' @examples
 #' library(psycho)
-#' 
+#'
 #' n_hit <- 9
 #' n_fa <- 2
 #' n_miss <- 1
 #' n_cr <- 7
-#' 
+#'
 #' indices <- psycho::dprime(n_hit, n_fa, n_miss, n_cr)
-#' 
-#' 
+#'
+#'
 #' df <- data.frame(
 #'   Participant = c("A", "B", "C"),
 #'   n_hit = c(1, 2, 5),
 #'   n_fa = c(6, 8, 1)
 #' )
-#' 
+#'
 #' indices <- psycho::dprime(
 #'   n_hit = df$n_hit,
 #'   n_fa = df$n_fa,
@@ -54,6 +53,8 @@
 #' @importFrom stats qnorm
 #' @export
 dprime <- function(n_hit, n_fa, n_miss = NULL, n_cr = NULL, n_targets = NULL, n_distractors = NULL, adjusted = TRUE) {
+
+  # Initialize
   if (is.null(n_targets)) {
     n_targets <- n_hit + n_miss
   }
@@ -61,6 +62,7 @@ dprime <- function(n_hit, n_fa, n_miss = NULL, n_cr = NULL, n_targets = NULL, n_
   if (is.null(n_distractors)) {
     n_distractors <- n_fa + n_cr
   }
+
 
 
   # Parametric Indices ------------------------------------------------------
@@ -75,8 +77,8 @@ dprime <- function(n_hit, n_fa, n_miss = NULL, n_cr = NULL, n_targets = NULL, n_
       fa_rate_adjusted <- n_fa / n_distractors
     } else {
       # Adjusted ratios
-      hit_rate_adjusted <- (n_hit + 0.5) / ((n_hit + 0.5) + n_miss + 1)
-      fa_rate_adjusted <- (n_fa + 0.5) / ((n_fa + 0.5) + n_cr + 1)
+      hit_rate_adjusted <- (n_hit + 0.5)/(n_hit + n_miss + 1)
+      fa_rate_adjusted <- (n_fa + 0.5)/(n_fa + n_cr + 1)
     }
 
     # dprime
@@ -108,6 +110,11 @@ dprime <- function(n_hit, n_fa, n_miss = NULL, n_cr = NULL, n_targets = NULL, n_
 
   # Non-Parametric Indices ------------------------------------------------------
 
+  if(any(n_distractors == 0)){
+    warning("Oops, it seems like tehre are observations with 0 distractors. It's impossible to compute non-parametric indices :(")
+    return(list(dprime = dprime, beta = beta, aprime = NA, bppd = NA, c = c))
+  }
+
   # Ratios
   hit_rate <- n_hit / n_targets
   fa_rate <- n_fa / n_distractors
@@ -127,5 +134,5 @@ dprime <- function(n_hit, n_fa, n_miss = NULL, n_cr = NULL, n_targets = NULL, n_
 
 
 
-  return(list(dprime = dprime, beta = beta, aprime = aprime, bppd = bppd, c = c))
+  list(dprime = dprime, beta = beta, aprime = aprime, bppd = bppd, c = c)
 }

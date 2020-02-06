@@ -10,7 +10,7 @@
 #'
 #' @examples
 #' library(psycho)
-#' 
+#'
 #' mellenbergh.test(t0 = 4, t1 = 12, controls = c(0, -2, 5, 2, 1, 3, -4, -2))
 #' mellenbergh.test(t0 = 8, t1 = 2, controls = 2.6)
 #' @author Dominique Makowski
@@ -36,7 +36,7 @@ mellenbergh.test <- function(t0, t1, controls) {
   if (pval > .05 & pval / 2 < .05) {
     one_tailed <- paste0(
       " However, the null hypothesis of no change can be rejected at a one-tailed 5% significance level (one-tailed p ",
-      format_p(pval / 2),
+      parameters::format_p(pval / 2),
       ")."
     )
   } else {
@@ -50,15 +50,15 @@ mellenbergh.test <- function(t0, t1, controls) {
     "The Mellenbergh & van den Brink (1998) test suggests that the change is",
     p_interpretation,
     "significant (d = ",
-    format_digit(diff),
+    insight::format_value(diff),
     ", 90% CI [",
-    format_digit(diff_CI_bottom),
+    insight::format_value(diff_CI_bottom),
     ", ",
-    format_digit(diff_CI_top),
+    insight::format_value(diff_CI_top),
     "], z = ",
-    format_digit(z),
+    insight::format_value(z),
     ", p ",
-    format_p(pval),
+    parameters::format_p(pval),
     ").",
     one_tailed
   )

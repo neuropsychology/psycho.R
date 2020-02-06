@@ -4,11 +4,22 @@
 \alias{crawford.test}
 \title{Crawford-Garthwaite (2007) Bayesian test for single-case analysis.}
 \usage{
-crawford.test(patient, controls = NULL, mean = NULL, sd = NULL,
-  n = NULL, CI = 95, treshold = 0.1, iter = 10000,
-  color_controls = "#2196F3", color_CI = "#E91E63",
-  color_score = "black", color_size = 2, alpha_controls = 1,
-  alpha_CI = 0.8)
+crawford.test(
+  patient,
+  controls = NULL,
+  mean = NULL,
+  sd = NULL,
+  n = NULL,
+  CI = 95,
+  treshold = 0.1,
+  iter = 10000,
+  color_controls = "#2196F3",
+  color_CI = "#E91E63",
+  color_score = "black",
+  color_size = 2,
+  alpha_controls = 1,
+  alpha_CI = 0.8
+)
 }
 \arguments{
 \item{patient}{Single value (patient's score).}
