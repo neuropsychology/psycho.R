@@ -123,15 +123,22 @@ dprime <- function(n_hit, n_fa, n_miss = NULL, n_cr = NULL, n_targets = NULL, n_
   a <- 1 / 2 + ((hit_rate - fa_rate) * (1 + hit_rate - fa_rate) / (4 * hit_rate * (1 - fa_rate)))
   b <- 1 / 2 - ((fa_rate - hit_rate) * (1 + fa_rate - hit_rate) / (4 * fa_rate * (1 - hit_rate)))
 
-  a[fa_rate > hit_rate] <- b[fa_rate > hit_rate]
-  a[fa_rate == hit_rate] <- .5
+  # Store possible missing values due to absence of targets / distractors
+  ok <- !(is.na(a) | is.na(b))
+
+  a[ok][fa_rate[ok] > hit_rate[ok]] <- b[ok][fa_rate[ok] > hit_rate[ok]]
+  a[ok][fa_rate[ok] == hit_rate[ok]] <- .5
   aprime <- a
 
   # bppd
-  bppd <- (hit_rate * (1 - hit_rate) - fa_rate * (1 - fa_rate)) / (hit_rate * (1 - hit_rate) + fa_rate * (1 - fa_rate))
-  bppd_b <- (fa_rate * (1 - fa_rate) - hit_rate * (1 - hit_rate)) / (fa_rate * (1 - fa_rate) + hit_rate * (1 - hit_rate))
-  bppd[fa_rate > hit_rate] <- bppd_b[fa_rate > hit_rate]
+  numerator <- (hit_rate[ok] * (1 - hit_rate[ok]) - fa_rate[ok] * (1 - fa_rate[ok]))
+  denominator <- (hit_rate[ok] * (1 - hit_rate[ok]) + fa_rate[ok] * (1 - fa_rate[ok]))
+  bppd <- numerator / denominator
 
+  numerator <- (fa_rate[ok] * (1 - fa_rate[ok]) - hit_rate[ok] * (1 - hit_rate[ok]))
+  denominator <- (fa_rate[ok] * (1 - fa_rate[ok]) + hit_rate[ok] * (1 - hit_rate[ok]))
+  bppd_b <- numerator / denominator
+  bppd[ok][fa_rate[ok] > hit_rate[ok]] <- bppd_b[ok][fa_rate[ok] > hit_rate[ok]]
 
 
   list(dprime = dprime, beta = beta, aprime = aprime, bppd = bppd, c = c)

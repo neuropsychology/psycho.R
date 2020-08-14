@@ -4,7 +4,8 @@
 \name{emotion}
 \alias{emotion}
 \title{Emotional Ratings of Pictures}
-\format{A data frame with 912 rows and 11 variables:
+\format{
+A data frame with 912 rows and 11 variables:
 \describe{
   \item{Participant_ID}{Subject's number}
   \item{Participant_Age}{Subject's age}
@@ -17,7 +18,8 @@
   \item{Subjective_Valence}{Participant's rating of valence (-100: negative, 100: positive, 0: neutral)}
   \item{Autobiographical_Link}{Participant's rating of autobiographical connection (is the picture's content associated with memories)}
   \item{Recall}{Whether the participant recalled the picture 20min after presentation}
-}}
+}
+}
 \usage{
 emotion
 }

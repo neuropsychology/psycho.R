@@ -4,7 +4,8 @@
 \name{affective}
 \alias{affective}
 \title{Data from the Affective Style Questionnaire (ASQ - French Validation)}
-\format{A data frame with 1277 rows and 8 variables:
+\format{
+A data frame with 1277 rows and 8 variables:
 \describe{
   \item{Sex}{Sex (F or M)}
   \item{Birth_Season}{Season of birth}
@@ -14,7 +15,8 @@
   \item{Concealing}{Concealing score}
   \item{Adjusting}{Adjusting score}
   \item{Tolerating}{Tolerating score}
-}}
+}
+}
 \usage{
 affective
 }
