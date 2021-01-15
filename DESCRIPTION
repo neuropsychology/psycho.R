@@ -1,7 +1,7 @@
 Package: psycho
 Type: Package
 Title: Efficient and Publishing-Oriented Workflow for Psychological Science
-Version: 0.6.0
+Version: 0.6.1
 Authors@R: c(
     person("Dominique", 
         "Makowski", 
