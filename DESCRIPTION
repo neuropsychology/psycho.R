@@ -50,6 +50,5 @@ Suggests:
     rmarkdown,
     testthat,
     covr,
-    plotly,
     GPArotation   
 VignetteBuilder: knitr

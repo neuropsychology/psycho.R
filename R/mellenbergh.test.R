@@ -36,7 +36,7 @@ mellenbergh.test <- function(t0, t1, controls) {
   if (pval > .05 & pval / 2 < .05) {
     one_tailed <- paste0(
       " However, the null hypothesis of no change can be rejected at a one-tailed 5% significance level (one-tailed p ",
-      parameters::format_p(pval / 2),
+      insight::format_p(pval / 2),
       ")."
     )
   } else {
@@ -58,7 +58,7 @@ mellenbergh.test <- function(t0, t1, controls) {
     "], z = ",
     insight::format_value(z),
     ", p ",
-    parameters::format_p(pval),
+    insight::format_p(pval),
     ").",
     one_tailed
   )

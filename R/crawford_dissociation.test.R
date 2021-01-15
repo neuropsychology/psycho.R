@@ -68,7 +68,7 @@ crawford_dissociation.test <- function(case_X, case_Y, controls_X, controls_Y, v
     ") = ",
     insight::format_value(tval),
     ", p ",
-    parameters::format_p(pval),
+    insight::format_p(pval),
     "). The patient's score on ",
     var_interpretation1,
     " is",
