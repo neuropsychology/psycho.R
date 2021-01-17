@@ -20,7 +20,7 @@
 |----------------|---|
 |Stable|[![CRAN](https://www.r-pkg.org/badges/version/psycho)](https://CRAN.R-project.org/package=psycho)|
 |Documentation|[![Rdoc](https://www.rdocumentation.org/badges/version/psycho)](https://www.rdocumentation.org/packages/psycho)|
-|Blog|[![](https://img.shields.io/badge/blog-psycho-orange.svg?colorB=E91E63)](https://neuropsychology.github.io/psycho.R)|
+|Blog|[![](https://img.shields.io/badge/blog-psycho-orange.svg?colorB=E91E63)](https://neuropsychology.github.io/psycho.R/)|
 |Examples|[![](https://img.shields.io/badge/vignettes-0.2.8-orange.svg?colorB=FF5722)](https://CRAN.R-project.org/package=psycho/vignettes/overview.html)|
 |Questions|[![](https://img.shields.io/badge/issue-create-purple.svg?colorB=FF9800)](https://github.com/neuropsychology/psycho.R/issues)|
 |Authors|[![](https://img.shields.io/badge/CV-D._Makowski-purple.svg?colorB=9C27B0)](https://dominiquemakowski.github.io/)|
@@ -105,8 +105,6 @@ library("psycho")
 You can cite the package as following:
 - Makowski, (2018). *The psycho Package: an Efficient and Publishing-Oriented Workflow for Psychological Science*. Journal of Open Source Software, 3(22), 470. https://doi.org/10.21105/joss.00470
 
-
-Please remember that `psycho` is a high-level package that heavily relies on many other packages, such as [tidyverse](https://www.tidyverse.org/), [psych](http://personality-project.org/r/overview.pdf), [qgraph](http://sachaepskamp.com/qgraph), [rstanarm](https://github.com/stan-dev/rstanarm), [lme4](https://CRAN.R-project.org/package=lme4) and others (See [Description](https://github.com/neuropsychology/psycho.R/blob/master/DESCRIPTION) for the full list of dependencies). Please cite their authors ;)
 
 ## Contributors
 

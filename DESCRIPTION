@@ -32,18 +32,15 @@ RoxygenNote: 7.1.1
 Depends: 
     R (>= 3.5.0)
 Imports:
-    methods,
     stats,
     scales,
     utils,
     dplyr,
-    tidyr,
     stringr,
     ggplot2,
     insight,
     bayestestR,
     parameters,
-    performance,
     effectsize
 Suggests:
     knitr,
