@@ -228,7 +228,7 @@ power_analysis <- function(fit, n_max, n_min = NULL, step = 1, n_batch = 1, grou
       # Sample data.frame
       if (!is.null(groups)) {
         newdf <- df %>%
-          group_by_(groups) %>%
+          group_by(pick(all_of(groups))) %>%
           dplyr::sample_frac(n / nrow(df), replace = TRUE)
       } else {
         newdf <- dplyr::sample_frac(df, n / nrow(df), replace = TRUE)
