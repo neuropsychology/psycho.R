@@ -172,14 +172,14 @@ crawford.test <- function(patient,
   plot <- bayestestR::distribution_normal(length(uncertainty), 0, 1) %>%
     density() %>%
     as.data.frame() %>%
-    mutate_(y = "y/max(y)") %>%
+    mutate(y = .data$y / max(.data$y)) %>%
     mutate(distribution = "Control") %>%
     rbind(uncertainty %>%
             density() %>%
             as.data.frame() %>%
-            mutate_(y = "y/max(y)") %>%
+            mutate(y = .data$y / max(.data$y)) %>%
             mutate(distribution = "Uncertainty")) %>%
-    mutate_(x = "scales::rescale(x, from=c(0, 1), to = c(sample_mean, sample_mean+sample_sd))") %>%
+    mutate(x = scales::rescale(.data$x, from = c(0, 1), to = c(sample_mean, sample_mean + sample_sd))) %>%
     ggplot(aes_string(x = "x", ymin = 0, ymax = "y")) +
     geom_ribbon(aes_string(fill = "distribution", alpha = "distribution")) +
     geom_vline(xintercept = patient, colour = color_score, size = color_size) +
