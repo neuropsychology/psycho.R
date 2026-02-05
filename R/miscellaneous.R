@@ -31,7 +31,7 @@ is.standardized <- function(df, tol = 0.1) {
   names(error) <- names(dfnum)
 
   error_mean <- error %>%
-    summarise_all(mean)
+    summarise(across(everything(), mean))
 
   if (TRUE %in% as.character(error_mean[1, ] > tol)) {
     standardized <- FALSE
